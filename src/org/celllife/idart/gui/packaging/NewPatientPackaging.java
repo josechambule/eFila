@@ -2750,9 +2750,56 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				Calendar theCal = Calendar.getInstance();
 
 				theCal.setTime(btnCaptureDate.getDate());
-				theCal.add(Calendar.DATE, numPeriods * 7);
-				adjustForNewAppointmentDate(theCal.getTime());
+		//		theCal.add(Calendar.DATE, numPeriods * 7);
+		//		adjustForNewAppointmentDate(theCal.getTime());
+		//		adjustForNewDispDate(btnCaptureDate.getDate());
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				if (numPeriods == 1 || numPeriods == 2) {
+					theCal.add(Calendar.DATE, numPeriods * 7);
+					adjustForNewAppointmentDate(theCal.getTime());
+					adjustForNewDispDate(btnCaptureDate.getDate());
+				}
+
+				else if (numPeriods == 4) {
+
+					theCal.add(Calendar.MONTH, 1);
+					adjustForNewAppointmentDate(theCal.getTime());
+					adjustForNewDispDate(btnCaptureDate.getDate());
+				}
+
+				else if (numPeriods == 8) {
+
+					theCal.add(Calendar.MONTH, 2);
+					adjustForNewAppointmentDate(theCal.getTime());
+					adjustForNewDispDate(btnCaptureDate.getDate());
+				}
+
+				else if (numPeriods == 12) {
+
+					theCal.add(Calendar.MONTH, 3);
+					adjustForNewAppointmentDate(theCal.getTime());
+					adjustForNewDispDate(btnCaptureDate.getDate());
+				}
+				
+				
 				adjustForNewDispDate(btnCaptureDate.getDate());
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			}
 		}
 

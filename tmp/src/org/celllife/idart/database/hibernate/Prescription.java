@@ -106,6 +106,7 @@ public class Prescription {
 	private char tb;
 	private char tpc;
 	private char tpi;
+	//private char saaj;
 
 	/**
 	 * @param clinicalStage
@@ -135,7 +136,7 @@ public class Prescription {
 			Doctor doctor, int duration, int id, char modified,
 			Set<Packages> packages, Patient patient,
 			List<PrescribedDrugs> prescribedDrugs, String prescriptionId,
-			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, char tpi) {
+			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, char tpi, char saaj) {
 		super();
 		this.clinicalStage = clinicalStage;
 		this.current = current;
@@ -158,7 +159,7 @@ public class Prescription {
 		this.tb=tb;
 		this.tpc=tpc;
 		this.tpi=tpi;
-
+	//	this.saaj=saaj;
 	}
 
 	public Prescription() {
@@ -535,8 +536,15 @@ public class Prescription {
 	public void setPtv(char ptv) {
 		this.ptv = ptv;
 	}
+	/*
+	public char getSaaj() {
+		return saaj;
+	}
 	
-	
+	public void setSaaj(char saaj) {
+		this.saaj = saaj;
+	}
+	*/
 	public char getTb() {
 		return tb;
 	}

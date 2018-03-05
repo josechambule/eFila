@@ -170,6 +170,8 @@ iDARTChangeListener {
 	private Button chkBtnPTV;
 	
 	private Button chkBtnTB;
+	
+	private Button chkBtnSAAJ;
 		
 	// cotrimoxazol & isoniazida
 		
@@ -577,6 +579,13 @@ iDARTChangeListener {
 		chkBtnPTV.setText("PTV B+");
 		chkBtnPTV.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnPTV.setSelection(false);
+		
+		chkBtnSAAJ = new Button(grpPatientID, SWT.CHECK);
+		chkBtnSAAJ.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false, 1,1));
+		chkBtnSAAJ.setBounds(new Rectangle(377, 60, 50, 20));
+		chkBtnSAAJ.setText("SAAJ");
+		chkBtnSAAJ.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		chkBtnSAAJ.setSelection(false);
 
 		chkBtnPPE = new Button(grpPatientID, SWT.CHECK);
 		chkBtnPPE.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
@@ -1409,6 +1418,26 @@ iDARTChangeListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				// set the previous SAAJ
+				
+				
+				try {
+					
+					String tb=(AdministrationManager.loadTb(localPrescription.getPatient().getId()));
+					
+					System.out.println(" SAAJ actual "+tb);
+					
+					
+					if (tb.trim().equals("T"))
+					chkBtnTB.setSelection(true);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		
 		
 		// set the previous ptv
@@ -2227,7 +2256,7 @@ try {
 			localPrescription.setPtv('T');
 			
 		}
-
+		
 		else {
 			localPrescription.setPtv('F');
 		}
@@ -2238,6 +2267,14 @@ try {
 			
 		}
 
+		else {
+			localPrescription.setTb('F');
+		}
+		
+		if (chkBtnSAAJ.getSelection()) { 
+		//	localPrescription.setSaaj('T');
+		}
+		
 		else {
 			localPrescription.setTb('F');
 		}
@@ -2477,6 +2514,7 @@ try {
 			chkBtnPPE.setSelection(false);
 			chkBtnTB.setSelection(false);
 			chkBtnPTV.setSelection(false);
+			chkBtnSAAJ.setSelection(false);
 			//chkBtnTPC.setSelection(false);
 			//chkBtnTPI.setSelection(false);
 			btnSearch.setEnabled(true);
@@ -2534,6 +2572,7 @@ try {
 		chkBtnPPE.setEnabled(enable);
 		chkBtnTB.setEnabled(enable);
 		chkBtnPTV.setEnabled(enable);
+		chkBtnSAAJ.setEnabled(enable);
 		//chkBtnTPI.setEnabled(enable);
 		//chkBtnTPC.setEnabled(enable);
 		Color theColour;
@@ -2677,8 +2716,4 @@ try {
 			cmbLinha.setText(r.getLinhanome());
 		}
 	}
-	
-	
-
 }
-

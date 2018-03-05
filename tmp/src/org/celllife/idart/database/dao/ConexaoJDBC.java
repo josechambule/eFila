@@ -1648,6 +1648,58 @@ tb=rs.getString("tb");
 
 
 /**
+ * Devolve tb  duma prescricao
+ * 
+ * @param idpaciente
+ * @return
+ * @throws ClassNotFoundException
+ * @throws SQLException
+ */
+
+public String carregaSAAJ(int idpaciente) throws ClassNotFoundException, SQLException
+
+{
+	
+	String query=" "
+			+ " SELECT "
+			+ " tb "
+			+ "  FROM "
+			+ "   "
+			+ "  prescription "
+			+ "  WHERE "
+			+ "   "
+			+ "  "
+			+ "  prescription.patient="+idpaciente
+			+ "  AND "
+			+ "  prescription.current=\'T\'"
+			+ "";
+	
+	
+	 conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+	 String tb="";
+		ResultSet rs=st.executeQuery(query);
+		
+		if (rs != null)
+        {
+           
+            while (rs.next())
+            {
+
+
+tb=rs.getString("saaj");
+
+            } 
+            rs.close(); //
+        }
+		
+		return tb;
+		
+		
+}
+
+
+/**
  * Devolve se um ARV � pedi�trico ou adulto
  * 
  * @param idpaciente
