@@ -1,0 +1,8 @@
+.classpath
+.settings/org.eclipse.core.resources.prefs	
+idart.log
+idart.properties
+lib/swt-debug.jar
+lib/swt.jar
+src/jdbc.properties
+

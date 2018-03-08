@@ -2272,7 +2272,7 @@ try {
 		}
 		
 		if (chkBtnSAAJ.getSelection()) { 
-			localPrescription.setSaaj('T');
+		//	localPrescription.setSaaj('T');
 		}
 		
 		else {
