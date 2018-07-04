@@ -241,7 +241,7 @@ iDARTChangeListener {
 	boolean fromShortcut;
 
 	private DateButton btnCaptureDate;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -1674,7 +1674,7 @@ try {
 			cmbUpdateReason.setText("");
 
 			localPrescription = thePatient.getMostRecentPrescription();
-
+			
 			if (localPrescription == null) {
 				// Patient has had a previous prescription, but doesn't
 				// have an active one at the moment
@@ -1920,21 +1920,16 @@ try {
 					try {
 						tx = getHSession().beginTransaction();
 						if (localPrescription.getPatient().getId() <= 0) {
-							PatientManager.savePatient(getHSession(),
-									localPrescription.getPatient());
+							PatientManager.savePatient(getHSession(),localPrescription.getPatient());
 						}
 						setLocalPrescription();
 
 						SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-						Prescription oldPrescription = localPrescription
-						.getPatient().getCurrentPrescription();
+						Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
 						// Check if any packages have been created for the
 						// prescription
-						if ((oldPrescription != null)
-								&& PackageManager.getPackagesForPrescription(
-										getHSession(), oldPrescription).size() == 0) {
-							List<PrescribedDrugs> prescribedDrugs = oldPrescription
-							.getPrescribedDrugs();
+						if ((oldPrescription != null) && PackageManager.getPackagesForPrescription(getHSession(), oldPrescription).size() == 0) {
+							List<PrescribedDrugs> prescribedDrugs = oldPrescription.getPrescribedDrugs();
 							String drugs = "";
 							if (prescribedDrugs.size() == 0) {
 								drugs = "\nNão há medicamentos nesta prescrição!";
@@ -1942,15 +1937,13 @@ try {
 							for (int i = 0; i < prescribedDrugs.size(); i++) {
 								drugs = drugs
 								+ "\n\t\t"
-								+ prescribedDrugs.get(i).getDrug()
-								.getName();
+								+ prescribedDrugs.get(i).getDrug().getName();
 							}
-							MessageBox box = new MessageBox(getShell(),
-									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							
+							MessageBox box = new MessageBox(getShell(),SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 
 							box.setText("Remover Prescrições anteriores, não usadas");
-							box
-							.setMessage("Este paciente não recebeu nenhum medicamento desde "
+							box.setMessage("Este paciente não recebeu nenhum medicamento desde "
 									+ "a sua Prescrição anterior com o id "
 									+ oldPrescription.getPrescriptionId()
 									+ " (detalhes abaixo). \n\n"
@@ -1977,10 +1970,8 @@ try {
 							case SWT.YES:
 								// before we try anything, lets ask the user for
 								// their password
-								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-										getShell(), getHSession());
-								passwordDialog
-								.setMessage("Por favor insserir a Password");
+								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
+								passwordDialog.setMessage("Por favor insserir a Password");
 								// if password verified
 								String messg = passwordDialog.open();
 								if (messg.equalsIgnoreCase("verified")) {
@@ -1995,36 +1986,40 @@ try {
 						if(localPrescription.containsARVDrug())
 							localPrescription.setDrugTypes("ARV");
 						
-						PackageManager.saveNewPrescription(getHSession(),
-								localPrescription, deletedPrescription);
-						getHSession().flush();
-						tx.commit();
-
-						getLog().info(
-								"Saved Prescription for Patient: "
-								+ localPrescription.getPatient().getId());
-						MessageBox done = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_INFORMATION);
-						done.setText("Base de dados actualizada");
-						done.setMessage("Prescrição '".concat(
-								localPrescription.getPrescriptionId()).concat(
-								"' foi adicionado ao paciente '").concat(
-										localPrescription.getPatient().getPatientId())
-										.concat("'."));
-						done.open();
-						saveSuccessful = true;
+						if (patientsPrescriptions.size() > 0) {
+							if (localPrescription.getRegimeTerapeutico().getCodigoregime() < oldPrescription.getRegimeTerapeutico().getCodigoregime()) {
+								MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+								errorBox.setText("Não foi possível salvar a prescrição, má alteração da linha terapêutica");
+								errorBox.setMessage("Não é possível mudar o regime terapeutico do paciente de " + oldPrescription.getRegimeTerapeutico().getRegimeesquema() 
+										+ " para " + localPrescription.getRegimeTerapeutico().getRegimeesquema());
+								errorBox.open();
+								saveSuccessful = false;
+							} else {
+								PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+								getHSession().flush();
+								tx.commit();
+								getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
+								MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+								done.setText("Base de dados actualizada");
+								done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+								done.open();
+								saveSuccessful = true;
+							}
+						} else if (patientsPrescriptions.size() == 0) { 
+							PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+							getHSession().flush();
+							tx.commit();
+							getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
+							MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+							done.setText("Base de dados actualizada");
+							done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+							done.open();
+							saveSuccessful = true;
+						} 
 					} catch (IllegalArgumentException ie) {
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
-						errorBox
-						.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
-						errorBox
-						.setMessage("A Prescrição '"
-								.concat(
-										localPrescription
-										.getPrescriptionId())
-										.concat(
-										"' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+						errorBox.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
+						errorBox.setMessage("A Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
 						errorBox.open();
 						if (tx != null) {
 							tx.rollback();
@@ -2035,11 +2030,9 @@ try {
 
 					catch (HibernateException he) {
 
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 						errorBox.setText("Não pode salvar: Actualização da base de dados falhou");
-						errorBox
-						.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
+						errorBox.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
 						if (tx != null) {
 							tx.rollback();
 						}
@@ -2066,37 +2059,28 @@ try {
 					try {
 						tx = getHSession().beginTransaction();
 						if (localPrescription.getPatient().getId() <= 0) {
-							PatientManager.savePatient(getHSession(),
-									localPrescription.getPatient());
+							PatientManager.savePatient(getHSession(),localPrescription.getPatient());
 						}
 						setLocalPrescription();
 
 						SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-						Prescription oldPrescription = localPrescription
-						.getPatient().getCurrentPrescription();
+						Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
 						// Check if any packages have been created for the
 						// prescription
-						if ((oldPrescription != null)
-								&& PackageManager.getPackagesForPrescription(
-										getHSession(), oldPrescription).size() == 0) {
-							List<PrescribedDrugs> prescribedDrugs = oldPrescription
-							.getPrescribedDrugs();
+						if ((oldPrescription != null) && PackageManager.getPackagesForPrescription(getHSession(), oldPrescription).size() == 0) {
+							List<PrescribedDrugs> prescribedDrugs = oldPrescription.getPrescribedDrugs();
 							String drugs = "";
 							if (prescribedDrugs.size() == 0) {
 								drugs = "\nNão há medicamentos nesta Prescrição!";
 							}
 							for (int i = 0; i < prescribedDrugs.size(); i++) {
-								drugs = drugs
-								+ "\n\t\t"
-								+ prescribedDrugs.get(i).getDrug()
-								.getName();
+								drugs = drugs + "\n\t\t" + prescribedDrugs.get(i).getDrug().getName();
 							}
 							MessageBox box = new MessageBox(getShell(),
 									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 
 							box.setText("Remover Prescrições anteriores, não usadas");
-							box
-							.setMessage("Este paciente não recebeu nenhum medicamento desde "
+							box.setMessage("Este paciente não recebeu nenhum medicamento desde "
 									+ "a sua Prescrição anterior com o id "
 									+ oldPrescription.getPrescriptionId()
 									+ " (detalhes abaixo). \n\n '"
@@ -2123,10 +2107,8 @@ try {
 							case SWT.YES:
 								// before we try anything, lets ask the user for
 								// their password
-								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-										getShell(), getHSession());
-								passwordDialog
-								.setMessage("Por favor insserir a Password");
+								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
+								passwordDialog.setMessage("Por favor insserir a Password");
 								// if password verified
 								String messg = passwordDialog.open();
 								if (messg.equalsIgnoreCase("verified")) {
@@ -2141,36 +2123,40 @@ try {
 						if(localPrescription.containsARVDrug())
 							localPrescription.setDrugTypes("ARV");
 						
-						PackageManager.saveNewPrescription(getHSession(),
-								localPrescription, deletedPrescription);
-						getHSession().flush();
-						tx.commit();
-
-						getLog().info(
-								"Saved Prescription for Patient: "
-								+ localPrescription.getPatient().getId());
-						MessageBox done = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_INFORMATION);
-						done.setText("Base de dados actualizada");
-						done.setMessage("Prescrição '".concat(
-								localPrescription.getPrescriptionId()).concat(
-								"' foi adicionado ao paciente '").concat(
-										localPrescription.getPatient().getPatientId())
-										.concat("'."));
-						done.open();
-						saveSuccessful = true;
+						if (patientsPrescriptions.size() > 0) {
+							if (localPrescription.getRegimeTerapeutico().getCodigoregime() < oldPrescription.getRegimeTerapeutico().getCodigoregime()) {
+								MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+								errorBox.setText("Não foi possível salvar a prescrição, má alteração da linha terapêutica");
+								errorBox.setMessage("Não é possível mudar o regime terapeutico do paciente de " + oldPrescription.getRegimeTerapeutico().getRegimeesquema() 
+										+ " para " + localPrescription.getRegimeTerapeutico().getRegimeesquema());
+								errorBox.open();
+								saveSuccessful = false;
+							} else {
+								PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+								getHSession().flush();
+								tx.commit();
+								getLog().info("Saved Prescription for Patient: "+ localPrescription.getPatient().getId());
+								MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+								done.setText("Base de dados actualizada");
+								done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+								done.open();
+								saveSuccessful = true;
+							}
+						} else if (patientsPrescriptions.size() == 0) {
+							PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+							getHSession().flush();
+							tx.commit();
+							getLog().info("Saved Prescription for Patient: "+ localPrescription.getPatient().getId());
+							MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+							done.setText("Base de dados actualizada");
+							done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+							done.open();
+							saveSuccessful = true;
+						}
 					} catch (IllegalArgumentException ie) {
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
-						errorBox
-						.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
-						errorBox
-						.setMessage("A Prescrição '"
-								.concat(
-										localPrescription
-										.getPrescriptionId())
-										.concat(
-										"' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+						errorBox.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
+						errorBox.setMessage("A Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
 						errorBox.open();
 						if (tx != null) {
 							tx.rollback();
@@ -2181,8 +2167,7 @@ try {
 
 					catch (HibernateException he) {
 
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 						errorBox.setText("Não pode salvar: Actualização da base de dados falhou");
 						errorBox.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
 						if (tx != null) {
@@ -2272,11 +2257,11 @@ try {
 		}
 		
 		if (chkBtnSAAJ.getSelection()) { 
-		//	localPrescription.setSaaj('T');
+			localPrescription.setSaaj('T');
 		}
 		
 		else {
-			localPrescription.setTb('F');
+			localPrescription.setSaaj('F'); 
 		}
 		
 		localPrescription.setTpc('F');
@@ -2683,14 +2668,13 @@ try {
 	 *            Transaction
 	 */
 	private void deleteScript(Prescription prescriptionToRemove, Transaction tx) {
-		DeletionsManager.removeUndispensedPrescription(getHSession(),
-				prescriptionToRemove);
+		
+		DeletionsManager.removeUndispensedPrescription(getHSession(),prescriptionToRemove);
 		getHSession().flush();
 
 		MessageBox mb = new MessageBox(getShell());
 		mb.setText("Prescrição apagada com sucesso");
-		mb
-		.setMessage("Essa Prescrição foi removida com sucesso da base de dados.");
+		mb.setMessage("Essa Prescrição foi removida com sucesso da base de dados.");
 		mb.open();
 
 	}
