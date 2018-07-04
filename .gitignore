@@ -5,4 +5,12 @@ idart.properties
 lib/swt-debug.jar
 lib/swt.jar
 src/jdbc.properties
-
+/Reports/*.jasper
+Pharmacy.jar
+/bin
+idart.log*
+idart.properties
+src/jdbc.properties
+/target
+/tmp
+Reports/tmpPackageProcessing.csv
