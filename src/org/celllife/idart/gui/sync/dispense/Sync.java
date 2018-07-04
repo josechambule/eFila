@@ -5,13 +5,9 @@
  */
 
 package org.celllife.idart.gui.sync.dispense;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Vector;
 
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -25,7 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -136,7 +131,7 @@ public class Sync extends GenericFormGui  {
 	 */
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = "Sincronização das bases de dados iDART e SESP (Levantamentos de Medicamentos)";
+		String headerTxt = "Sincronizaï¿½ï¿½o das bases de dados iDART e SESP (Levantamentos de Medicamentos)";
 		iDartImage icoImage = iDartImage.HOURGLASS;
 		buildCompHeaderSync(headerTxt, icoImage);
 	}
@@ -186,13 +181,13 @@ public class Sync extends GenericFormGui  {
 		
 		// 2 - clmlevIdart
 		clmLevIdart = new TableColumn(tblSync, SWT.CENTER);
-		clmLevIdart.setText("ÚLTIMO LEVANTAMENTO - IDART");
+		clmLevIdart.setText("ï¿½LTIMO LEVANTAMENTO - IDART");
 		clmLevIdart.setWidth(50);
 		clmLevIdart.setResizable(false);
 
 		// 3 - clmlevSesp
 		clmLevSesp = new TableColumn(tblSync, SWT.CENTER);
-		clmLevSesp.setText("ÚLTIMO LEVANTAMENTO - SESP");
+		clmLevSesp.setText("ï¿½LTIMO LEVANTAMENTO - SESP");
 		clmLevSesp.setWidth(50);
 		clmLevSesp.setResizable(false);
 		
@@ -309,9 +304,7 @@ class SyncProgressBar extends ProgressBarDialog {
 	  @Override
 	  public void initGuage() {
 		  
-		  
-	 ;
-		  ConexaoODBC c2=new ConexaoODBC();	
+		  /*ConexaoODBC c2=new ConexaoODBC();	
 		    Vector<SyncLinha> synclinha=jdbc.sync_table_dispense();
 		 
 		    info = new String[synclinha.size()];
@@ -321,19 +314,19 @@ class SyncProgressBar extends ProgressBarDialog {
 		  	 c2.syncdata_dispense(synclinha.get(i));
 		  	 
 		  	info[i] = "A processar  nid  " + synclinha.get(i).getNid();
-		   }
+		   }*/
 		 
 //		   MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_INFORMATION
 //					| SWT.OK);
 //       	conexaoACCESS.setText("Dados Sincronizados");
 //       	conexaoACCESS
-//			.setMessage("A SINCRONIZAÇÃO TERMINADA COM SUCESSO!");
+//			.setMessage("A SINCRONIZAï¿½ï¿½O TERMINADA COM SUCESSO!");
 //       	conexaoACCESS.open();
 //       	
 	    this.setExecuteTime(info.length);
     this.setMayCancel(true);
 	    this.setProcessMessage("Por favor aguarde....");
-	    this.setShellTitle("Sincronização de Dados");
+	    this.setShellTitle("Sincronizaï¿½ï¿½o de Dados");
 	    jdbc.delete_sync_temp_dispense();
 	  }
 

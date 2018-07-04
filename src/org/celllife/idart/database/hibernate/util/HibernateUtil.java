@@ -43,6 +43,7 @@ import org.celllife.idart.database.hibernate.Logging;
 import org.celllife.idart.database.hibernate.MessageSchedule;
 import org.celllife.idart.database.hibernate.Motivomudanca;
 import org.celllife.idart.database.hibernate.NationalClinics;
+import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
@@ -100,7 +101,7 @@ public class HibernateUtil {
 
 		if (validate)
 		ac.setProperty("hibernate.hbm2ddl.auto", "validate");
-		ac.setProperty("hibernate.show_sql", "false");
+		ac.setProperty("hibernate.show_sql", "true");
 		ac.setProperty("hibernate.use_outer_join", "false");
 		ac.setProperty("hibernate.cache.provider_class",
 		"org.hibernate.cache.HashtableCacheProvider");
@@ -172,6 +173,7 @@ public class HibernateUtil {
 		ac.addAnnotatedClass(RegimeTerapeutico.class);
 		ac.addAnnotatedClass(Motivomudanca.class);
 		ac.addAnnotatedClass(LinhaT.class);
+		ac.addAnnotatedClass(OpenmrsErrorLog.class);
 		sessionFactory = ac.buildSessionFactory();
 	}
 

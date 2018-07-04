@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
+import model.manager.OpenmrsErrorLogManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.SearchManager;
@@ -55,13 +56,13 @@ import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.AccumulatedDrugs;
 import org.celllife.idart.database.hibernate.Appointment;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Form;
+import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
@@ -195,6 +196,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	private boolean dateAlreadyDispensed;
 	private Patient localPatient;
 	private int dias = 0;
+	private boolean postOpenMrsEncounterStatus;
 
 	/**
 	 * Constructor
@@ -2607,8 +2609,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				pdi.setDateExpectedString(sdf.format(btnNextAppDate.getDate()));
 			} else {
 
-				Appointment nextApp = PatientManager
-						.getLatestAppointmentForPatient(newPack.getPrescription().getPatient(), true);
+				Appointment nextApp = PatientManager.getLatestAppointmentForPatient(newPack.getPrescription().getPatient(), true);
 
 				if (nextApp != null)
 					pdi.setDateExpectedString(sdf.format(nextApp.getAppointmentDate()));
@@ -2626,7 +2627,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 		if (newPack.hasARVDrug())
 			newPack.setDrugTypes("ARV");
 
-		PackageManager.savePackage(getHSession(), newPack);
+		//PackageManager.savePackage(getHSession(), newPack);
 
 		//
 		int patientId = newPack.getPrescription().getPatient().getId();
@@ -2655,8 +2656,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			// Patient NID
 			String nid = newPack.getPrescription().getPatient().getPatientId().trim();
 
-			String nidRest = restClient
-					.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+			String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
 
 			// Patient NID uuid
 			String nidUuid = nidRest.substring(21, 57);
@@ -2666,8 +2666,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 			String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
 
-			String response = restClient.getOpenMRSResource(
-					iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+			String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
 
 			// Provider
 			String providerUuid = response.substring(21, 57);
@@ -2675,8 +2674,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			String facility = newPack.getClinic().getClinicName().trim();
 
 			// Location
-			String strFacility = restClient
-					.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
+			String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
 
 			// Health Facility
 			String strFacilityUuid = strFacility.substring(21, 57);
@@ -2701,15 +2699,37 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
 
 			try {
-				restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-						strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
-						iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
-						iDartProperties.VISIT_UUID, strNextPickUp);
+				postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+					strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
+					iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
+					iDartProperties.VISIT_UUID, strNextPickUp);
+				
+					System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
+					
+					if (postOpenMrsEncounterStatus)
+						PackageManager.savePackage(getHSession(), newPack);
+				
 			} catch (Exception e) {
+				System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
 				getLog().info(e.getMessage());
-			}
-		}
+				OpenmrsErrorLog errorLog = new OpenmrsErrorLog();
+				errorLog.setPatient(patientId);
+				errorLog.setPrescription(newPack.getPrescription().getId());
+				errorLog.setPickupdate(newPack.getPickupDate());
+				errorLog.setReturnpickupdate(dtNextPickUp);
+				errorLog.setErrordescription(e.getMessage());
+				errorLog.setDatacreated(new Date());
+				OpenmrsErrorLogManager.saveOpenmrsRestLog(getHSession(), errorLog);
+				
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+				m.setText("Problema salvando o pacote de medicamentos");
+				m.setMessage("Houve um problema ao salvar o pacote de medicamentos para o paciente " + nid + ". " + "Por favor contacte o SIS.");
 
+				m.open();
+			}
+		} else {
+			PackageManager.savePackage(getHSession(), newPack);
+		}
 	}
 
 	/**
@@ -2995,8 +3015,10 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 								// accumulated amount>)
 
 								// before printing the labels, save pdi List
-								TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-								getHSession().flush();
+								if (postOpenMrsEncounterStatus) {
+									TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+									getHSession().flush();
+								}
 
 							}
 						}
@@ -3112,7 +3134,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 					 */
 					Vector<String> vMedicamentos = new Vector<String>();
 					// ConexaoJDBC conn=new ConexaoJDBC();
-					ConexaoODBC conn2 = new ConexaoODBC();
+					//ConexaoODBC conn2 = new ConexaoODBC();
 
 					// Inicializa as variaveis para a insercao n acess
 					int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
@@ -3246,7 +3268,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 					if (dataInicioNoutroServico != null)
 						dataNoutroServico = format2.format(dataInicioNoutroServico);
 
-					if (motivomudanca != null && motivomudanca.length() > 0)
+					/*if (motivomudanca != null && motivomudanca.length() > 0)
 						// quando ha motivo de mudanca
 						conn2.insereT_tarvMotivo(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
 								weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, motivomudanca, linha);
@@ -3262,7 +3284,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 						// metodo invocado para a insercao em t_tarv no ms
 						// access
 						conn2.insereT_tarv(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime, weeksSupply,
-								reasonforupdate, resultdataproximaconsulta, idade, linha);
+								reasonforupdate, resultdataproximaconsulta, idade, linha);*/
 
 				}
 
@@ -3288,54 +3310,56 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 						}
 					}
 
-					savePackageAndPackagedDrugs(dispenseNow, allPackagedDrugsList);
-					getLog().info("savePackageAndPackagedDrugs() called");
-					setNextAppointmentDate();
+						savePackageAndPackagedDrugs(dispenseNow, allPackagedDrugsList);
+						getLog().info("savePackageAndPackagedDrugs() called");
+						setNextAppointmentDate();
 
-					if (allPackagedDrugsList.size() > 0) {
+						if (allPackagedDrugsList.size() > 0) {
 
-						// This map keeps a track of drugs dispensed in separate
-						// batches
-						Map<String, String> drugNames = new HashMap<String, String>();
+							// This map keeps a track of drugs dispensed in separate
+							// batches
+							Map<String, String> drugNames = new HashMap<String, String>();
 
-						// Update pdi's to include accum drugs
-						for (PackageDrugInfo info : allPackagedDrugsList) {
+							// Update pdi's to include accum drugs
+							for (PackageDrugInfo info : allPackagedDrugsList) {
 
-							info.setQtyInHand(PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(),
-									info.getDispensedQty(), info.getDrugName(),
-									info.getPackagedDrug().getStock().getDrug().getPackSize(), false, true));
+								info.setQtyInHand(PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(),
+										info.getDispensedQty(), info.getDrugName(),
+										info.getPackagedDrug().getStock().getDrug().getPackSize(), false, true));
 
-							labelQuantities.put(info, 1);
-							// set the String that will print out on each drug
-							// label
-							// to indicate
-							// (<amount dispensed> + <accumulated amount>)
+								labelQuantities.put(info, 1);
+								// set the String that will print out on each drug
+								// label
+								// to indicate
+								// (<amount dispensed> + <accumulated amount>)
 
-							if (drugNames.containsKey(info.getDrugName())) {
-								// not first batch, exclude pillcount value
-								info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
-										newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
-										info.getDispensedQty(), false, false));
-							} else {
+								if (drugNames.containsKey(info.getDrugName())) {
+									// not first batch, exclude pillcount value
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, false));
+								} else {
 
-								info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
-										newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
-										info.getDispensedQty(), false, true));
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, true));
+								}
+								drugNames.put(info.getDrugName(), "test");
+								// set the String that will print out on the
+								// prescription summary label to indicate
+								// for each drug the (<total amount dispensed> +
+								// <total
+								// accumulated amount>)
+
+								// before printing the labels, save pdi List
+								if (postOpenMrsEncounterStatus) {
+									TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+									getHSession().flush();
+								}
+
 							}
-							drugNames.put(info.getDrugName(), "test");
-							// set the String that will print out on the
-							// prescription summary label to indicate
-							// for each drug the (<total amount dispensed> +
-							// <total
-							// accumulated amount>)
-
-							// before printing the labels, save pdi List
-							TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-							getHSession().flush();
-
 						}
-					}
-
+					
 					// Add interoperability with OpenMRS through Rest Web
 					// Services
 					/*
@@ -3443,7 +3467,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				 */
 				Vector<String> vMedicamentos = new Vector<String>();
 				// ConexaoJDBC conn=new ConexaoJDBC();
-				ConexaoODBC conn2 = new ConexaoODBC();
+				//ConexaoODBC conn2 = new ConexaoODBC();
 
 				// Inicializa as variaveis para a insercao n acess
 				int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
@@ -3577,7 +3601,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				if (dataInicioNoutroServico != null)
 					dataNoutroServico = format2.format(dataInicioNoutroServico);
 
-				if (motivomudanca != null && motivomudanca.length() > 0)
+				/*if (motivomudanca != null && motivomudanca.length() > 0)
 					// quando ha motivo de mudanca
 					conn2.insereT_tarvMotivo(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
 							weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, motivomudanca, linha);
@@ -3591,7 +3615,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				else
 					// metodo invocado para a insercao em t_tarv no ms access
 					conn2.insereT_tarv(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime, weeksSupply,
-							reasonforupdate, resultdataproximaconsulta, idade, linha);
+							reasonforupdate, resultdataproximaconsulta, idade, linha);*/
 
 			}
 
@@ -3602,8 +3626,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			}
 
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
-			m.setText("Problem Saving Package");
-			m.setMessage("There was a problem saving this package of drugs.");
+			m.setText("Problema salvando o pacote de medicamentos");
+			m.setMessage("Houve um problema ao salvar este pacote de medicamentos");
 
 			m.open();
 		}

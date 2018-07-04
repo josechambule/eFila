@@ -106,7 +106,7 @@ public class Prescription {
 	private char tb;
 	private char tpc;
 	private char tpi;
-	//private char saaj;
+	private char saaj;
 
 	/**
 	 * @param clinicalStage
@@ -159,7 +159,7 @@ public class Prescription {
 		this.tb=tb;
 		this.tpc=tpc;
 		this.tpi=tpi;
-	//	this.saaj=saaj;
+		this.saaj=saaj;
 	}
 
 	public Prescription() {
@@ -536,7 +536,7 @@ public class Prescription {
 	public void setPtv(char ptv) {
 		this.ptv = ptv;
 	}
-	/*
+	
 	public char getSaaj() {
 		return saaj;
 	}
@@ -544,7 +544,7 @@ public class Prescription {
 	public void setSaaj(char saaj) {
 		this.saaj = saaj;
 	}
-	*/
+	
 	public char getTb() {
 		return tb;
 	}
