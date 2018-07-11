@@ -3185,7 +3185,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 					int idade = lp.get(0).getIdade();
 					Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
 					String motivomudanca = lp.get(0).getMotivomudanca();
-					String linha = lp.get(0).getLinha();
 
 					for (int i = 0; i < allPackagedDrugsList.size(); i++) {
 						// adiciona os medicantos no vector
@@ -3278,7 +3277,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 					System.out.println(" DAta inicio noutro servico: " + dataInicioNoutroServico);
 					System.out.println(" Motivo da mudanca: " + motivomudanca);
-					System.out.println(" Linha Terapeutica: " + linha);
 
 					// convertendo a data para adequar com a coluna datatarv do
 					// ms access - t_tarv
@@ -3518,7 +3516,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				int idade = lp.get(0).getIdade();
 				Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
 				String motivomudanca = lp.get(0).getMotivomudanca();
-				String linha = lp.get(0).getLinha();
 
 				for (int i = 0; i < allPackagedDrugsList.size(); i++) {
 					// adiciona os medicantos no vector
@@ -3611,7 +3608,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 				System.out.println(" DAta inicio noutro servico: " + dataInicioNoutroServico);
 				System.out.println(" Motivo da mudanca: " + motivomudanca);
-				System.out.println(" Linha Terapeutica: " + linha);
 
 				// convertendo a data para adequar com a coluna datatarv do ms
 				// access - t_tarv
