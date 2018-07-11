@@ -128,8 +128,7 @@ public class ConexaoJDBC {
 				+ "prescription AS p " + "WHERE ("
 				+ "(p.current = \'T\'::bpchar) " + "AND "
 				+ "(pt.id = p.patient) " + "AND " + "(pt.patientid=\'"
-				+ patientid + "\') " + "AND " + "(rt.regimeid=p.regimeid) "
-				+ "AND " + "(lt.linhaid=p.linhaid)) ";
+				+ patientid + "\') " + "AND " + "(rt.regimeid=p.regimeid))";
 
 		// ResultSet rs =
 		// st.executeQuery("select id, current, duration, reasonforupdate, notes, patientid from PrescriptioToPatient where patientid=\'"+patientid+"\'");
@@ -139,15 +138,8 @@ public class ConexaoJDBC {
 
 			while (rs.next()) {
 
-				ptp.add(new PrescriptionToPatient(rs.getInt("id"), rs
-						.getString("current"), rs.getInt("duration"), rs
-						.getString("reasonforupdate"), rs.getString("notes"),
-						rs.getString("patientid"), rs
-								.getString("regimeesquema"),
-						rs.getInt("idade"), rs.getString("motivomudanca"), rs
-								.getDate("datainicionoutroservico"), rs
-								.getString("linhanome")));
-
+				ptp.add(new PrescriptionToPatient(rs.getInt("id"), rs.getString("current"), rs.getInt("duration"), rs.getString("reasonforupdate"), rs.getString("notes"),
+						rs.getString("patientid"), rs.getString("regimeesquema"),rs.getInt("idade"), rs.getString("motivomudanca"), rs.getDate("datainicionoutroservico")));
 			}
 			rs.close(); // � necess�rio fechar o resultado ao terminar
 		}

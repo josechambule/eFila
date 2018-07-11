@@ -96,10 +96,6 @@ public class Prescription {
 
 	@Transient
 	private HashSet<Drug> arvDrugSet;
-
-	@ManyToOne
-	@JoinColumn(name = "linhaid")
-	private LinhaT linha;
 	
 	private char ppe;
 	private char ptv;
@@ -509,16 +505,6 @@ public class Prescription {
 
 	public void setMotivoMudanca(String motivoMudanca) {
 		this.motivoMudanca = motivoMudanca;
-	}
-
-	public void setLinha(LinhaT linha) {
-		this.linha=linha;
-		
-	}
-
-	public LinhaT getLinha() {
-		return this.linha;
-		
 	}
 
 	public char getPpe() {

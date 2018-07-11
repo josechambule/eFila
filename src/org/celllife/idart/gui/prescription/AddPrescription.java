@@ -229,7 +229,6 @@ iDARTChangeListener {
 
 	private Text txtWeight;
 
-	private CCombo cmbLinha;
 	private CCombo cmbRegime;
 
 	private Button btnRemoveDrug;
@@ -281,6 +280,7 @@ iDARTChangeListener {
 				checkFirstPrescription();
 				loadPatientDetails();
 				enableFields(true);
+				//cmbLinha.setEnabled(Boolean.FALSE);  
 				txtPatientId.setEnabled(false);
 				btnSearch.setEnabled(false);
 				btnEkapaSearch.setEnabled(false);
@@ -836,37 +836,11 @@ iDARTChangeListener {
 					public void focusGained(FocusEvent e) {
 						cmbRegime.removeAll();
 						CommonObjects.populateRegimesTerapeuticos(getHSession(), cmbRegime, false);
-						cmbRegime.setVisibleItemCount(Math.min(
-								cmbRegime.getItemCount(), 25));
+						cmbRegime.setVisibleItemCount(Math.min(cmbRegime.getItemCount(), 25));
 					}
 				});
 				cmbRegime.setFocus();
 				
-				
-				// Linha Terapeutica
-		Label lblLinha = new Label(grpParticulars, SWT.NONE);
-		lblLinha.setBounds(new Rectangle(350, 120, 90, 20));
-		lblLinha.setText("* Linha:");
-		lblLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		cmbLinha = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
-		cmbLinha.setBounds(new Rectangle(450, 120, 130, 20));
-		cmbLinha.setVisibleItemCount(10);
-		cmbLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-		//popula o ccombo de linhas
-		CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-		cmbLinha.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				cmbLinha.removeAll();
-				CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-				cmbLinha.setVisibleItemCount(Math.min(
-						cmbLinha.getItemCount(), 25));
-			}
-		});
-		cmbLinha.setFocus();
-
 		// Prescription Notes
 		Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
 		lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
@@ -1198,7 +1172,7 @@ iDARTChangeListener {
 	@Override
 	protected boolean fieldsOk() {
 
-		if ((cmbLinha.getText().trim().equals("")) || (cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
+		if ((cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
 				|| (lblNewPrescriptionId.getText().trim().equals(""))
 				|| (cmbDuration.getText().trim().equals(""))) {
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
@@ -1325,14 +1299,10 @@ iDARTChangeListener {
 
 		cmbUpdateReason.setText("Manter");
 		String tempAmtPerTime = "";
-		cmbDoctor.setText(""
-				+ AdministrationManager.getDoctor(getHSession(),
-						localPrescription.getDoctor().getFullname())
-						.getFullname());
+		cmbDoctor.setText(""+ AdministrationManager.getDoctor(getHSession(),localPrescription.getDoctor().getFullname()).getFullname());
 		
 		try {
-			cmbRegime.setText(""
-					+ AdministrationManager.loadRegime(localPrescription.getPatient().getId()));
+			cmbRegime.setText("" + AdministrationManager.loadRegime(localPrescription.getPatient().getId()));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1341,23 +1311,6 @@ iDARTChangeListener {
 			e.printStackTrace();
 		}
 		
-		
-
-		
-		try {
-			cmbLinha.setText(""
-					+ AdministrationManager.loadLinha(localPrescription.getPatient().getId()));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-					
-
 		if (localPrescription.getDuration() <= 2) {
 			cmbDuration.setText(localPrescription.getDuration() + " semanas");
 		} else {
@@ -2321,12 +2274,6 @@ try {
 		localPrescription.setRegimeTerapeutico(AdministrationManager.getRegimeTerapeutico(
 				getHSession(), cmbRegime.getText()));
 		
-		
-		localPrescription.setLinha(AdministrationManager.getLinha(
-				getHSession(), cmbLinha.getText()));
-		
-		
-		
 		localPrescription.setMotivoMudanca(cmbMotivoMudanca.getText());
 		
 		localPrescription.setModified('T');
@@ -2475,7 +2422,6 @@ try {
 			txtClinic.setText("");
 			cmbDoctor.setText("");
 			cmbRegime.setText("");
-			cmbLinha.setText("");
 			txtWeight.setText("");
 			txtDOB.setText("");
 			lblNewPrescriptionId.setText("");
@@ -2543,7 +2489,6 @@ try {
 		btnDispenseDrugs.setEnabled(enable);
 
 		// cmbClinicalStage.setEnabled(enable);
-		cmbLinha.setEnabled(enable);
 		cmbDuration.setEnabled(enable);
 		cmbRegime.setEnabled(enable);
 		txtWeight.setEnabled(enable);
@@ -2572,7 +2517,6 @@ try {
 		cmbDoctor.setBackground(theColour);
 		cmbDuration.setBackground(theColour);
 		cmbRegime.setBackground(theColour);
-		cmbLinha.setBackground(theColour);
 		cmbMotivoMudanca.setBackground(theColour);
 	}
 
@@ -2693,11 +2637,6 @@ try {
 		if (o instanceof RegimeTerapeutico) {
 			RegimeTerapeutico r = (RegimeTerapeutico) o;
 			cmbRegime.setText(r.getRegimeesquema());
-		}
-		
-		if (o instanceof LinhaT) {
-			LinhaT r = (LinhaT) o;
-			cmbLinha.setText(r.getLinhanome());
 		}
 	}
 }
