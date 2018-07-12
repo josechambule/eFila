@@ -2724,7 +2724,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				m.setText("Problema salvando o pacote de medicamentos");
 				m.setMessage("Houve um problema ao salvar o pacote de medicamentos para o paciente " + nid + ". " + "Por favor contacte o SIS.");
-
+				
 				m.open();
 			}
 		} else {
