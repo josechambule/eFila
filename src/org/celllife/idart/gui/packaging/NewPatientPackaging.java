@@ -142,6 +142,8 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  */
@@ -197,7 +199,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	private Patient localPatient;
 	private int dias = 0;
 	private boolean postOpenMrsEncounterStatus;
-
 	/**
 	 * Constructor
 	 * 
@@ -2657,9 +2658,24 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			String nid = newPack.getPrescription().getPatient().getPatientId().trim();
 
 			String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
-
-			// Patient NID uuid
-			String nidUuid = nidRest.substring(21, 57);
+			
+			JSONObject jsonObject = new JSONObject(nidRest);
+			JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
+			String nidUuid = null;
+			
+			for (int i = 0; i < _jsonArray.length(); i++) {
+				JSONObject results = (JSONObject) _jsonArray.get(i);
+				nidUuid = (String) results.get("uuid");
+			}
+			
+			if (nidUuid==null) { 
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Problema dispensando o pacote de medicamentos");
+				m.setMessage("O NID deste paciente foi alterado no OpenMRS. Por favor contacte o SIS.");
+				m.open();
+				
+				return;
+			}
 
 			String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " "
 					+ newPack.getPrescription().getDoctor().getLastname().trim();

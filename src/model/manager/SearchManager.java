@@ -1221,5 +1221,4 @@ public class SearchManager {
 
 		return result;
 	}
-
 }

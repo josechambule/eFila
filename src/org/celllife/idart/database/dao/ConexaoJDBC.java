@@ -1533,7 +1533,7 @@ public class ConexaoJDBC {
 
 	{
 
-		String query = " " + " SELECT " + " tb " + "  FROM " + "   "
+		String query = " " + " SELECT " + " saaj " + "  FROM " + "   "
 				+ "  prescription " + "  WHERE " + "   " + "  "
 				+ "  prescription.patient=" + idpaciente + "  AND "
 				+ "  prescription.current=\'T\'" + "";
@@ -1541,20 +1541,20 @@ public class ConexaoJDBC {
 		conecta(iDartProperties.hibernateUsername,
 				iDartProperties.hibernatePassword);
 
-		String tb = "";
+		String saaj = "";
 		ResultSet rs = st.executeQuery(query);
 
 		if (rs != null) {
 
 			while (rs.next()) {
 
-				tb = rs.getString("saaj");
+				saaj = rs.getString("saaj");
 
 			}
 			rs.close(); //
 		}
 
-		return tb;
+		return saaj;
 
 	}
 

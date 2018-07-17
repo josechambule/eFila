@@ -1376,13 +1376,13 @@ iDARTChangeListener {
 				
 				try {
 					
-					String tb=(AdministrationManager.loadTb(localPrescription.getPatient().getId()));
+					String saaj=(AdministrationManager.loadSAAJ(localPrescription.getPatient().getId()));
 					
-					System.out.println(" SAAJ actual "+tb);
+					System.out.println(" SAAJ actual "+saaj);
 					
 					
-					if (tb.trim().equals("T"))
-					chkBtnTB.setSelection(true);
+					if (saaj.trim().equals("T"))
+					chkBtnSAAJ.setSelection(true);
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
