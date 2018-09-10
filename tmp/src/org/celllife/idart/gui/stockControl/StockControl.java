@@ -20,12 +20,10 @@
 package org.celllife.idart.gui.stockControl;
 
 import java.sql.Connection;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.gui.deletions.DeleteStockPrescriptionsPackages;
 import org.celllife.idart.gui.deletions.DestroyStock;
 import org.celllife.idart.gui.packaging.NewPatientPackaging;
@@ -37,7 +35,6 @@ import org.celllife.idart.gui.prescription.AddPrescription;
 import org.celllife.idart.gui.stockArrives.StockArrives;
 import org.celllife.idart.gui.stockTake.StockTakeGui;
 import org.celllife.idart.gui.sync.dispense.Sync;
-import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
@@ -106,7 +103,7 @@ public class StockControl extends GenericAdminGui {
 
 	/**
 	 * This method initializes compHeader
-	 *
+	 * 
 	 */
 	@Override
 	protected void createCompHeader() {
@@ -117,7 +114,7 @@ public class StockControl extends GenericAdminGui {
 
 	/**
 	 * This method initializes compOptions
-	 *
+	 * 
 	 */
 	@Override
 	protected void createCompOptions() {
@@ -136,18 +133,19 @@ public class StockControl extends GenericAdminGui {
 		// btnPrescriptionz
 		btnPrescription = new Button(compOptions, SWT.NONE);
 		btnPrescription.setBounds(new Rectangle(105, 22, 260, 40));
-		btnPrescription
-		.setToolTipText(Messages.getString("StockControl.button.updatePrescription.tooltip")); //$NON-NLS-1$
-		btnPrescription.setText(Messages.getString("StockControl.button.updatePrescription")); //$NON-NLS-1$
+		btnPrescription.setToolTipText(Messages
+				.getString("StockControl.button.updatePrescription.tooltip")); //$NON-NLS-1$
+		btnPrescription.setText(Messages
+				.getString("StockControl.button.updatePrescription")); //$NON-NLS-1$
 		btnPrescription.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnPrescription
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdUpdatePrescriptionWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdUpdatePrescriptionWidgetSelected();
+					}
+				});
 
 		// lblPatientPackaging
 		lblPatientPackaging = new Label(compOptions, SWT.NONE);
@@ -172,20 +170,21 @@ public class StockControl extends GenericAdminGui {
 
 		// btnPatientPackaging
 		btnPatientPackaging = new Button(compOptions, SWT.NONE);
-		btnPatientPackaging.setText(Messages.getString("StockControl.button.packaging")); //$NON-NLS-1$
+		btnPatientPackaging.setText(Messages
+				.getString("StockControl.button.packaging")); //$NON-NLS-1$
 		btnPatientPackaging
-		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnPatientPackaging
-		.setToolTipText(Messages.getString("StockControl.button.packaging.tooltip")); //$NON-NLS-1$
+				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		btnPatientPackaging.setToolTipText(Messages
+				.getString("StockControl.button.packaging.tooltip")); //$NON-NLS-1$
 		btnPatientPackaging.setBounds(new Rectangle(105, 102, 260, 40));
 		btnPatientPackaging
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdPatientPackagingSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdPatientPackagingSelected();
+					}
+				});
 
 		lblDispenseToPatients = new Label(compOptions, SWT.NONE);
 		lblDispenseToPatients.setBounds(new Rectangle(50, 180, 50, 43));
@@ -196,8 +195,8 @@ public class StockControl extends GenericAdminGui {
 
 			@Override
 			public void mouseUp(MouseEvent mu) {
-			     //Desactivar scan out pakagers
-				//cmdDispenseToPatientsSelected();
+				// Desactivar scan out pakagers
+				// cmdDispenseToPatientsSelected();
 			}
 
 			@Override
@@ -213,19 +212,20 @@ public class StockControl extends GenericAdminGui {
 		btnDispenseToPatients.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		btnDispenseToPatients.setBounds(new Rectangle(105, 182, 260, 40));
-		btnDispenseToPatients.setText(Messages.getString("StockControl.button.scanOut")); //$NON-NLS-1$
+		btnDispenseToPatients.setText(Messages
+				.getString("StockControl.button.scanOut")); //$NON-NLS-1$
+		btnDispenseToPatients.setToolTipText(Messages
+				.getString("StockControl.button.scanOut.tooltip")); //$NON-NLS-1$
 		btnDispenseToPatients
-		.setToolTipText(Messages.getString("StockControl.button.scanOut.tooltip")); //$NON-NLS-1$
-		btnDispenseToPatients
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdDispenseToPatientsSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdDispenseToPatientsSelected();
+					}
+				});
 
-           //Desactivar scan out pakagers
+		// Desactivar scan out pakagers
 		btnDispenseToPatients.setEnabled(false);
 
 		if (iDartProperties.downReferralMode
@@ -241,7 +241,7 @@ public class StockControl extends GenericAdminGui {
 
 				@Override
 				public void mouseUp(MouseEvent mu) {
-					
+
 					cmdDistributePackagesToClinicSelected();
 				}
 
@@ -256,44 +256,42 @@ public class StockControl extends GenericAdminGui {
 
 			// btnDistributePackages
 			btnDistributePackagesToClinic = new Button(compOptions, SWT.NONE);
-			btnDistributePackagesToClinic
-			.setBounds(new Rectangle(105, 262, 260, 40));
-			String label = Messages.getString("StockControl.button.scanDownRefer"); //$NON-NLS-1$
+			btnDistributePackagesToClinic.setBounds(new Rectangle(105, 262,
+					260, 40));
+			String label = Messages
+					.getString("StockControl.button.scanDownRefer"); //$NON-NLS-1$
 
-			btnDistributePackagesToClinic
-			.setText(label);
-		
+			btnDistributePackagesToClinic.setText(label);
+
 			btnDistributePackagesToClinic.setFont(ResourceUtils
 					.getFont(iDartFont.VERASANS_8));
-			btnDistributePackagesToClinic
-			.setToolTipText(Messages.getString("StockControl.button.scanDownRefer.tooltip")); //$NON-NLS-1$
+			btnDistributePackagesToClinic.setToolTipText(Messages
+					.getString("StockControl.button.scanDownRefer.tooltip")); //$NON-NLS-1$
 
 			btnDistributePackagesToClinic
-			.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-				@Override
-				public void widgetSelected(
-						org.eclipse.swt.events.SelectionEvent e) {
-					cmdDistributePackagesToClinicSelected();
-				}
-			});
-			
+					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+						@Override
+						public void widgetSelected(
+								org.eclipse.swt.events.SelectionEvent e) {
+							cmdDistributePackagesToClinicSelected();
+						}
+					});
+
 		}
-		
+
 		// Return Uncollected Packages
-		lblSync= new Label(compOptions, SWT.NONE);
+		lblSync = new Label(compOptions, SWT.NONE);
 		if (iDartProperties.downReferralMode
 				.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
 			lblSync.setBounds(new Rectangle(50, 340, 50, 43));
 		} else {
 			lblSync.setBounds(new Rectangle(50, 260, 50, 43));
 		}
-		lblSync.setImage(ResourceUtils
-				.getImage(iDartImage.PACKAGERETURN));
+		lblSync.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
 		lblSync.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseUp(MouseEvent mu) {
-	
 
 				cmdSync();
 			}
@@ -316,13 +314,11 @@ public class StockControl extends GenericAdminGui {
 			btnSync.setBounds(new Rectangle(105, 262, 260, 40));
 		}
 		btnSync.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnSync
-		.setToolTipText("Clique este menu para sincronizar as bases de dados iDART e SESP"); //$NON-NLS-1$
+		btnSync.setToolTipText("Clique este menu para sincronizar as bases de dados iDART e SESP"); //$NON-NLS-1$
 		btnSync.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
-				
-			
+
 				cmdSync();
 			}
 
@@ -334,8 +330,7 @@ public class StockControl extends GenericAdminGui {
 			public void mouseDoubleClick(MouseEvent dc) {
 			}
 		});
-		
-		
+
 		btnSync.setEnabled(Boolean.FALSE);
 
 		// lblStockArrives
@@ -361,33 +356,34 @@ public class StockControl extends GenericAdminGui {
 
 		// btnStockArrives
 		btnStockArrives = new Button(compOptions, SWT.NONE);
-		btnStockArrives.setText(Messages.getString("StockControl.button.stockArrives")); //$NON-NLS-1$
+		btnStockArrives.setText(Messages
+				.getString("StockControl.button.stockArrives")); //$NON-NLS-1$
 		btnStockArrives.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnStockArrives
-		.setToolTipText(Messages.getString("StockControl.button.stockArrives.tooltip")); //$NON-NLS-1$
+		btnStockArrives.setToolTipText(Messages
+				.getString("StockControl.button.stockArrives.tooltip")); //$NON-NLS-1$
 		btnStockArrives.setBounds(new Rectangle(470, 22, 260, 40));
 		btnStockArrives
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdStockArrivesSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdStockArrivesSelected();
+					}
+				});
 
 		// lblDestroyStock
 		lblDestroyStock = new Label(compOptions, SWT.NONE);
 		lblDestroyStock.setBounds(new Rectangle(415, 100, 50, 43));
 		lblDestroyStock
-		.setImage(ResourceUtils.getImage(iDartImage.DRUGALLERGY));
+				.setImage(ResourceUtils.getImage(iDartImage.DRUGALLERGY));
 		lblDestroyStock.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseUp(MouseEvent mu) {
-				
-				//Desactivar o bptao Stock destroy
-				
-				//scmdDestroyStockSelected();
+
+				// Desactivar o bptao Stock destroy
+
+				// scmdDestroyStockSelected();
 			}
 
 			@Override
@@ -402,20 +398,21 @@ public class StockControl extends GenericAdminGui {
 		// btnDestroyStock
 		btnDestroyStock = new Button(compOptions, SWT.NONE);
 		btnDestroyStock.setBounds(new Rectangle(470, 102, 260, 40));
-		btnDestroyStock.setText(Messages.getString("StockControl.button.destroyStock")); //$NON-NLS-1$
+		btnDestroyStock.setText(Messages
+				.getString("StockControl.button.destroyStock")); //$NON-NLS-1$
 		btnDestroyStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		btnDestroyStock.setToolTipText(Messages
+				.getString("StockControl.button.destroyStock.tooltip")); //$NON-NLS-1$
 		btnDestroyStock
-		.setToolTipText(Messages.getString("StockControl.button.destroyStock.tooltip")); //$NON-NLS-1$
-		btnDestroyStock
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdDestroyStockSelected();
-			}
-		});
-		
-		//Desactivar o bptao Stock destroy
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdDestroyStockSelected();
+					}
+				});
+
+		// Desactivar o bptao Stock destroy
 		btnDestroyStock.setEnabled(true);
 
 		// lblReturnStock
@@ -426,8 +423,8 @@ public class StockControl extends GenericAdminGui {
 
 			@Override
 			public void mouseUp(MouseEvent mu) {
-				//Desactivar stockreturn
-				//cmdReturnStockSelected();
+				// Desactivar stockreturn
+				// cmdReturnStockSelected();
 			}
 
 			@Override
@@ -444,18 +441,16 @@ public class StockControl extends GenericAdminGui {
 		btnSync.setBounds(new Rectangle(470, 182, 260, 40));
 		btnSync.setText(Messages.getString("StockControl.button.deletions")); //$NON-NLS-1$
 		btnSync.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnSync
-		.setToolTipText(Messages.getString("StockControl.button.deletions.tooltip")); //$NON-NLS-1$
-		btnSync
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+		btnSync.setToolTipText(Messages
+				.getString("StockControl.button.deletions.tooltip")); //$NON-NLS-1$
+		btnSync.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
 				cmdReturnStockSelected();
 			}
 		});
-		
-		// Desactivar btnReturnStock 
+
+		// Desactivar btnReturnStock
 		btnSync.setEnabled(false);
 		// lblStockTake
 		lblStockTake = new Label(compOptions, SWT.NONE);
@@ -481,77 +476,74 @@ public class StockControl extends GenericAdminGui {
 		// btnStockTake
 		btnStockTake = new Button(compOptions, SWT.NONE);
 		btnStockTake.setBounds(new Rectangle(470, 262, 260, 40));
-		btnStockTake.setText(Messages.getString("StockControl.button.stocktake")); //$NON-NLS-1$
+		btnStockTake.setText(Messages
+				.getString("StockControl.button.stocktake")); //$NON-NLS-1$
 		btnStockTake.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnStockTake
-		.setToolTipText(Messages.getString("StockControl.button.stocktake.tooltip")); //$NON-NLS-1$
+		btnStockTake.setToolTipText(Messages
+				.getString("StockControl.button.stocktake.tooltip")); //$NON-NLS-1$
 
 		btnStockTake
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdStockTakeSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdStockTakeSelected();
+					}
+				});
 
 	}
 
 	private void cmdReturnPackage() {
 		new PackageReturn(getShell());
 	}
-	
+
 	private void cmdSync() {
-		 ConexaoJDBC jdbc=new ConexaoJDBC();
- 
-		ConexaoODBC odbc=new ConexaoODBC();
-		Connection c=null;
-		
-		try {
-			
-		 c=odbc.getConnection();
-			 
+		ConexaoJDBC jdbc = new ConexaoJDBC();
+
+		//ConexaoODBC odbc = new ConexaoODBC();
+		Connection c = null;
+
+/*		try {
+
+			c = odbc.getConnection();
+
 		} catch (Exception e) {
-		
+
 			e.printStackTrace();
+		}*/
+		ConexaoJDBC conn = new ConexaoJDBC();
+		if (c == null) {
+			// se n�o houver conexao
+			MessageBox conexaoACCESS = new MessageBox(new Shell(),
+					SWT.ICON_ERROR | SWT.OK);
+			conexaoACCESS.setText("Conex�o com Base de Dados SESP");
+			conexaoACCESS
+					.setMessage("O iDART n�o est� a se conectar com o SESP.\n Por favor verifique se os cabos da rede est�o ligados no seu \ncomputador ou se o computador com SESP est� ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, n�o ser� possivel sincronizar as bases de dados");
+			conexaoACCESS.open();
+
 		}
-		ConexaoJDBC conn=new ConexaoJDBC();
-		if(c==null){
-			//se n�o houver conexao
-			MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_ERROR
-					| SWT.OK);
-        	conexaoACCESS.setText("Conex�o com Base de Dados SESP");
-        	conexaoACCESS
-			.setMessage("O iDART n�o est� a se conectar com o SESP.\n Por favor verifique se os cabos da rede est�o ligados no seu \ncomputador ou se o computador com SESP est� ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, n�o ser� possivel sincronizar as bases de dados");
-        	conexaoACCESS.open();
-			
-		}
-		
-		else if(conn.sync_table_dispense().size()<1){
-		//se os dados estiverem sincronizados
-			MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_INFORMATION
-					| SWT.OK);
-        	conexaoACCESS.setText("Dados Sincronizados");
-        	conexaoACCESS
-			.setMessage("TODOS LEVANTAMENTOS DE MEDICAMENTOS EST�O SINCRONIZADOS");
-        	conexaoACCESS.open();
-        	 jdbc.delete_sync_temp_dispense();
-        	  
-		}
-		else {
-			
-			
-			//Sincroniza
+
+		else if (conn.sync_table_dispense().size() < 1) {
+			// se os dados estiverem sincronizados
+			MessageBox conexaoACCESS = new MessageBox(new Shell(),
+					SWT.ICON_INFORMATION | SWT.OK);
+			conexaoACCESS.setText("Dados Sincronizados");
+			conexaoACCESS
+					.setMessage("TODOS LEVANTAMENTOS DE MEDICAMENTOS EST�O SINCRONIZADOS");
+			conexaoACCESS.open();
+			jdbc.delete_sync_temp_dispense();
+
+		} else {
+
+			// Sincroniza
 			// ConexaoJDBC jdbc=new ConexaoJDBC();
-			
+
 			// jdbc.insere_sync_temp_dispense();
 			// jdbc.delete_sync_temp_dispense();
-			 jdbc.delete_sync_temp_dispense();
-			new Sync (getShell(), false);
+			jdbc.delete_sync_temp_dispense();
+			new Sync(getShell(), false);
 		}
-		
-		
-		
+
 	}
 
 	private void cmdStockArrivesSelected() {
@@ -567,7 +559,6 @@ public class StockControl extends GenericAdminGui {
 		new PackagesToPatients(getShell());
 	}
 
-
 	private void cmdDistributePackagesToClinicSelected() {
 		if (iDartProperties.downReferralMode
 				.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
@@ -577,10 +568,9 @@ public class StockControl extends GenericAdminGui {
 	}
 
 	private void cmdUpdatePrescriptionWidgetSelected() {
-		
-	new AddPrescription(null, getShell(), false);
-		
-	
+
+		new AddPrescription(null, getShell(), false);
+
 	}
 
 	private void cmdReturnStockSelected() {

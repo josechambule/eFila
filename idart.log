@@ -1,922 +1,830 @@
-17-07-2018 11:22:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:10 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:22:10 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:22:11 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:22:12 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:22:12 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:22:12 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:13 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:22:13 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:22:13 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e64f6fe  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:22:13 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:22:14 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:22:28 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:22:28 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:22:28 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:22:28 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:22:33 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:22:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:22:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:22:37 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 11:23:11 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:23:11 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:23:11 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 11:23:11 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:23:11 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:23:12 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 11:23:12 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 11:23:12 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:12 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:23:13 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:23:13 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:23:13 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:23:13 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:23:14 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:23:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:15 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:23:15 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:23:15 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@54563cc2  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:23:15 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:23:15 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:23:21 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:23:21 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:23:21 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:23:21 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:23:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:23:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:23:25 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:23:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:23:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:23:29 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 11:25:54 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 11:26:06 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:26:06 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:26:06 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 11:26:06 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:26:06 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:26:06 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 11:26:06 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 11:26:06 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:07 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:26:07 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:26:07 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:26:07 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:26:07 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:26:08 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:26:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:09 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:26:09 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:26:09 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e64f6fe  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:26:09 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:26:10 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:26:14 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:26:14 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:26:14 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:26:14 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:26:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:26:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:26:18 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:26:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:26:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:26:25 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 11:27:58 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 11:30:06 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 11:30:06 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 11:30:06 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:30:07 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:30:07 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:30:07 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-17-07-2018 11:30:07 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:30:07 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:30:14 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:30:14 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:30:14 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 11:30:14 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:30:14 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:30:15 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 11:30:15 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 11:30:15 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:16 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:30:16 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:30:16 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:30:16 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:30:16 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:30:17 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:30:17 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:18 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:30:18 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:30:18 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@70d76d51  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:30:18 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:30:18 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:30:23 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:30:24 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:30:24 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:30:24 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:30:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:30:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:30:28 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:30:32 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:30:32 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:30:37 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 11:36:00 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 11:36:00 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 11:36:00 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:51:40 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:51:40 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:51:40 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 11:51:40 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:51:40 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:51:41 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 11:51:41 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 11:51:41 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:42 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:51:42 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:51:42 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:51:43 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:51:43 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:51:44 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:51:44 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:45 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:51:45 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:51:45 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@5c538b31  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:51:45 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:51:45 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:51:50 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:51:50 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:51:50 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:51:51 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:51:51 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:51 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:51:51 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:51:51 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:52:42 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:52:48 [main] INFO  gui.packaging.BatchInformation - Populating 10 batches
-17-07-2018 11:52:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:52:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:52:52 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 11:56:32 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:56:32 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:56:32 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 11:56:32 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 11:56:32 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 11:56:32 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 11:56:33 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 11:56:33 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:33 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 11:56:33 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:56:33 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 11:56:34 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:56:34 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 11:56:34 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 11:56:34 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:35 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 11:56:35 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 11:56:35 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@60437dcb  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 11:56:36 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 11:56:36 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 11:56:40 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 11:56:41 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 11:56:41 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 11:56:41 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 11:56:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:56:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:56:44 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 11:56:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 11:56:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 11:56:52 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:02:08 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:02:08 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:02:08 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:02:08 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:02:08 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:02:08 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:02:08 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:02:08 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:08 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:02:09 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:02:09 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:02:09 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:02:09 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:02:10 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:02:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:11 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:02:11 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:02:11 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@33469a69  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:02:11 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:02:11 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:02:16 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:02:16 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:02:16 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:02:16 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:02:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:02:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:02:24 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:02:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:02:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:02:31 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:02:50 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 12:03:11 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 12:03:11 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 12:03:11 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:03:17 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:03:17 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:03:17 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:03:17 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:03:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:03:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:03:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:03:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:03:20 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:03:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:03:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:03:28 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:40:09 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:40:09 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:40:09 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:40:09 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:40:09 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:40:10 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:40:10 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:40:10 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:10 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:40:10 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:40:11 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:40:11 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:40:11 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:40:12 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:40:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:13 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:40:13 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:40:13 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e64f6fe  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:40:13 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:40:14 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:40:20 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:40:20 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:40:20 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:40:20 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:40:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:40:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:40:24 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:40:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:40:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:40:34 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:42:10 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:42:10 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:42:10 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:42:10 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:42:10 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:42:11 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:42:11 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:42:11 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:11 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:42:12 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:42:12 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:42:12 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:42:12 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:42:13 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:42:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:14 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:42:14 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:42:14 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6437153d  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:42:14 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:42:14 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:42:23 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:42:23 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:42:23 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:42:23 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:42:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:42:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:42:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:44:25 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:44:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:44:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:44:33 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:45:33 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 12:46:23 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 12:46:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:46:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:46:23 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 12:46:23 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 12:46:27 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 12:46:27 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 12:46:27 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:46:28 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:46:28 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:46:28 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-17-07-2018 12:46:28 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:46:28 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:46:55 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:46:55 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:46:55 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:46:55 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:46:55 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:46:55 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:46:55 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:46:55 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:56 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:46:56 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:46:56 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:46:56 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:46:56 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:46:57 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:46:57 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:46:58 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:46:58 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:46:58 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6cceb6dd  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:46:58 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:46:58 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:47:03 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:47:03 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:47:03 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:47:03 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:47:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:47:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:47:07 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:47:09 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:09 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:47:09 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:47:10 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 12:47:12 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 12:47:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:47:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:47:12 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 12:47:12 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 12:47:42 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 12:47:57 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:47:57 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:48:12 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 735159
-17-07-2018 12:48:13 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:48:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:48:14 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:48:14 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:48:14 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 12:48:27 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 12:48:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:48:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:48:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:48:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:48:27 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 12:48:27 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 12:48:30 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 12:48:30 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 12:48:30 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:48:32 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:48:32 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:48:32 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-17-07-2018 12:48:32 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:48:32 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:09 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:09 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:09 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:49:09 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:09 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:09 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:49:10 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:49:10 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:10 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:49:10 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:49:10 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:49:11 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:49:11 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:49:11 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:49:11 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:12 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:49:12 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:49:12 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@54563cc2  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:49:12 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:49:13 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:49:14 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:14 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:14 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-17-07-2018 12:49:14 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:14 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:19 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:19 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:19 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 12:49:19 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 12:49:19 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 12:49:19 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 12:49:19 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 12:49:19 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:19 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 12:49:19 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:49:20 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 12:49:20 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:49:20 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 12:49:21 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 12:49:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:22 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 12:49:22 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 12:49:22 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6437153d  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 12:49:22 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 12:49:22 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 12:49:47 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 12:49:48 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 12:49:48 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 12:49:48 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 12:49:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:49:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:49:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:49:52 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 12:50:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:50:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:50:26 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 735167
-17-07-2018 12:50:27 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 12:50:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 12:50:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 12:50:29 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 12:51:52 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 13:04:50 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 13:04:50 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 13:04:50 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 13:04:50 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 13:04:50 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 13:04:52 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 13:04:53 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 13:04:53 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:53 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 13:04:53 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 13:04:54 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 13:04:55 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 13:04:55 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 13:04:56 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 13:04:56 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:04:57 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 13:04:57 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 13:04:57 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@7d9ab9c5  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 13:04:57 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 13:04:58 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 13:05:05 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 13:05:06 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 13:05:06 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 13:05:06 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 13:05:06 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:05:06 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 13:05:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:05:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 13:05:17 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 13:05:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 13:05:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 13:05:23 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:00:21 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:00:21 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:00:21 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 14:00:21 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:00:21 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:00:22 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 14:00:22 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 14:00:22 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:23 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 14:00:24 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:00:24 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 14:00:25 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:00:25 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:00:26 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:00:26 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:27 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 14:00:27 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 14:00:27 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@77f31432  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 14:00:27 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 14:00:28 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:00:32 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 14:00:33 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 14:00:33 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 14:00:33 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 14:00:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:00:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:00:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:00:37 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 14:05:35 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 14:05:35 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 14:05:35 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:05:36 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:05:36 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:05:36 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-17-07-2018 14:05:36 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:05:36 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:05:39 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:05:39 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:05:39 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 14:05:39 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:05:39 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:05:39 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 14:05:40 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 14:05:40 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:40 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 14:05:40 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:05:40 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 14:05:40 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:05:41 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:05:41 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:05:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:42 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 14:05:42 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 14:05:42 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6437153d  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 14:05:42 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 14:05:43 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:05:47 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 14:05:47 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 14:05:47 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 14:05:47 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 14:05:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:05:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:05:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:05:53 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 14:05:55 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 14:05:55 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 14:05:57 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 14:05:57 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 14:08:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:08:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:08:30 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:09:40 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 419723
-17-07-2018 14:09:40 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 14:09:40 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
-17-07-2018 14:09:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:09:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:09:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:09:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:09:40 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 14:09:40 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 14:11:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:11:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:11:32 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:26:33 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:26:33 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:26:33 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 14:26:33 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:26:33 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:26:35 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 14:26:35 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 14:26:35 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:36 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 14:26:36 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:26:37 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 14:26:37 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:26:37 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:26:38 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:26:38 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:26:40 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 14:26:40 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 14:26:40 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@1259b924  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 14:26:41 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 14:26:43 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:27:14 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 14:27:16 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 14:27:16 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 14:27:17 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 14:27:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:27:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:27:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:27:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:27:26 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 14:27:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:27:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:27:41 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:29:40 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 14:38:18 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 14:38:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:38:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:38:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:38:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:38:19 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 14:38:19 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 14:38:19 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 14:38:19 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 14:38:19 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:38:27 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 14:38:27 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 14:38:27 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 14:38:27 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 14:38:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:38:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:38:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:38:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:38:31 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 14:38:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:38:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:38:45 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:39:05 [main] INFO  .packaging.NewPatientPackaging - Failed : HTTP error code : 400
-17-07-2018 14:39:53 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 14:39:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:39:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:39:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:39:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:39:53 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 14:39:53 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 14:58:13 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:58:13 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:58:13 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-17-07-2018 14:58:13 [main] INFO  dart.start.PharmacyApplication - *********************
-17-07-2018 14:58:13 [main] INFO  dart.start.PharmacyApplication - 
-17-07-2018 14:58:14 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-17-07-2018 14:58:14 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-17-07-2018 14:58:14 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:15 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-17-07-2018 14:58:15 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:58:15 [main] INFO                       liquibase - Successfully acquired change log lock
-17-07-2018 14:58:16 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:58:16 [main] INFO                       liquibase - Reading from databasechangelog
-17-07-2018 14:58:17 [main] INFO                       liquibase - Successfully released change log lock
-17-07-2018 14:58:17 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:19 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-17-07-2018 14:58:19 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-17-07-2018 14:58:19 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6ea85b4  Av./Rua Cidade Tel CS 17 DE SETEMBRO
-17-07-2018 14:58:19 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-17-07-2018 14:58:19 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 14:58:24 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 14:58:25 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 14:58:25 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 14:58:25 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 14:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:58:36 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 14:59:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:59:24 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:59:43 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 735183
-17-07-2018 14:59:45 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 14:59:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:59:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:59:48 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 14:59:49 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 419723
-17-07-2018 14:59:50 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 14:59:50 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
-17-07-2018 14:59:50 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:59:50 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:59:50 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 14:59:50 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 14:59:50 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 14:59:50 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 15:09:56 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-17-07-2018 15:09:56 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-17-07-2018 15:09:56 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-17-07-2018 15:10:23 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
-17-07-2018 15:10:23 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-17-07-2018 15:10:23 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-17-07-2018 15:10:23 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-17-07-2018 15:10:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:10:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:10:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:10:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:10:27 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
-17-07-2018 15:10:35 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
-17-07-2018 15:11:39 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:11:39 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:11:43 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 15:11:48 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 15:11:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:11:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:11:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:11:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:11:48 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 15:11:48 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 15:13:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:13:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:13:40 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 15:13:48 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 15:13:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:13:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:13:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:13:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:13:48 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 15:13:48 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
-17-07-2018 15:15:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:15:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:15:12 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
-17-07-2018 15:15:13 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 419723
-17-07-2018 15:15:13 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
-17-07-2018 15:15:13 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
-17-07-2018 15:15:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:15:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:15:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
-URL = jdbc:postgresql://localhost:5432/efila
-17-07-2018 15:15:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-17-07-2018 15:15:13 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
-17-07-2018 15:15:13 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 13:55:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:04 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 13:55:04 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 13:55:04 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 13:55:05 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 13:55:05 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 13:55:05 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 13:55:05 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:06 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 13:55:06 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 13:55:06 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4693c5e7  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 13:55:06 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 13:55:06 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 13:55:11 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 13:55:11 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 13:55:11 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 13:55:11 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 13:55:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:55:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:55:15 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 13:55:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:55:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:55:40 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 13:57:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 13:57:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 13:57:35 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 13:57:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 13:57:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 13:57:36 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 13:57:36 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 13:57:36 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:36 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 13:57:37 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 13:57:37 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 13:57:37 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 13:57:37 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 13:57:38 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 13:57:38 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:39 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 13:57:39 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 13:57:39 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@54563cc2  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 13:57:39 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 13:57:39 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 13:57:44 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 13:57:44 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 13:57:44 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 13:57:44 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 13:57:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:57:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:57:48 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 13:57:51 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:57:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:57:52 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 13:58:25 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
+10-09-2018 13:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:58:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:58:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 13:58:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 13:58:26 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
+10-09-2018 13:58:26 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 14:08:29 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 14:08:29 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 14:08:29 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:47:16 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:47:16 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:47:16 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 14:47:16 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:47:16 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:51:27 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:51:27 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:51:27 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 14:51:27 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:51:27 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:51:28 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 14:51:28 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 14:51:28 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:28 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:29 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 14:51:29 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:51:29 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 14:51:30 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:51:30 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:51:30 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:51:30 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:32 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 14:51:32 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 14:51:32 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@3c250cce  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 14:51:32 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 14:51:32 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:51:37 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 14:51:37 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 14:51:37 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 14:51:37 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 14:51:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:51:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:51:44 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 14:51:56 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:51:56 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:52:11 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 907484
+10-09-2018 14:52:12 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 14:52:15 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:15 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:52:15 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 14:52:15 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 14:52:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:52:29 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 14:52:29 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 14:52:34 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 14:52:34 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 14:52:34 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:52:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:52:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:52:35 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 14:52:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:52:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:52:59 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:52:59 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:52:59 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 14:52:59 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:52:59 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:52:59 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 14:52:59 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 14:52:59 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:52:59 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:53:00 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 14:53:00 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:53:00 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 14:53:00 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:53:00 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:53:01 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:53:01 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:53:02 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 14:53:02 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 14:53:02 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4f4a1ab7  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 14:53:02 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 14:53:02 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:53:07 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 14:53:07 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 14:53:07 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 14:53:07 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 14:53:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:53:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:53:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:53:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:53:11 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 14:53:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:53:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:53:16 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 14:56:14 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:56:14 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:56:14 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 14:56:14 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:56:14 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:56:15 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 14:56:15 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 14:56:15 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:15 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 14:56:15 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:56:15 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 14:56:16 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:56:16 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:56:17 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:56:17 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:18 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 14:56:18 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 14:56:18 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@70d76d51  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 14:56:18 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 14:56:18 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:56:22 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 14:56:23 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 14:56:23 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 14:56:23 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 14:56:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:56:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:23 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:56:29 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 14:56:44 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:56:44 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:56:44 [main] WARN  ate.util.JDBCExceptionReporter - SQL Error: 0, SQLState: 22021
+10-09-2018 14:56:44 [main] ERROR ate.util.JDBCExceptionReporter - Batch entry 0 insert into Patient (accountStatus, address1, address2, address3, cellphone, clinic, dateOfBirth, firstNames, homePhone, lastname, modified, nextOfKinName, nextOfKinPhone, patientId, province, race, sex, workPhone, id) values (1, , Maquival, Safuri, , 2, 1993-07-25 00:00:00.000000 +02:00, Marito, , Conselho, T, , , 04015113/16/0503, Select a Province, NULL,  , , 907490) was aborted.  Call getNextException to see the cause.
+10-09-2018 14:56:44 [main] WARN  ate.util.JDBCExceptionReporter - SQL Error: 0, SQLState: 22021
+10-09-2018 14:56:44 [main] ERROR ate.util.JDBCExceptionReporter - ERROR: invalid byte sequence for encoding "UTF8": 0x00
+10-09-2018 14:56:44 [main] ERROR .AbstractFlushingEventListener - Could not synchronize database state with session
+org.hibernate.exception.DataException: Could not execute JDBC batch update
+	at org.hibernate.exception.SQLStateConverter.convert(SQLStateConverter.java:77)
+	at org.hibernate.exception.JDBCExceptionHelper.convert(JDBCExceptionHelper.java:43)
+	at org.hibernate.jdbc.AbstractBatcher.executeBatch(AbstractBatcher.java:253)
+	at org.hibernate.jdbc.AbstractBatcher.prepareStatement(AbstractBatcher.java:92)
+	at org.hibernate.jdbc.AbstractBatcher.prepareStatement(AbstractBatcher.java:87)
+	at org.hibernate.jdbc.AbstractBatcher.prepareBatchStatement(AbstractBatcher.java:222)
+	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:2224)
+	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:2660)
+	at org.hibernate.action.EntityInsertAction.execute(EntityInsertAction.java:56)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:250)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:234)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:141)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:298)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:27)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1000)
+	at org.celllife.idart.gui.patient.AddPatientIdart.submitForm(AddPatientIdart.java:1600)
+	at org.celllife.idart.gui.patient.AddPatientIdart.doSave(AddPatientIdart.java:2542)
+	at org.celllife.idart.gui.patient.AddPatientIdart.cmdUpdatePrescriptionWidgetSelected(AddPatientIdart.java:1749)
+	at org.celllife.idart.gui.patient.AddPatientIdart.access$21(AddPatientIdart.java:1746)
+	at org.celllife.idart.gui.patient.AddPatientIdart$18.widgetSelected(AddPatientIdart.java:2292)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:234)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1258)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3540)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3161)
+	at org.celllife.idart.gui.welcome.GenericWelcome.showGUI(GenericWelcome.java:134)
+	at org.celllife.idart.gui.welcome.GenericWelcome.<init>(GenericWelcome.java:106)
+	at org.celllife.idart.gui.welcome.PharmacyWelcome.<init>(PharmacyWelcome.java:28)
+	at org.celllife.idart.start.PharmacyApplication.runIDART(PharmacyApplication.java:188)
+	at org.celllife.idart.start.PharmacyApplication.launch(PharmacyApplication.java:115)
+	at org.celllife.idart.start.PharmacyApplication.main(PharmacyApplication.java:96)
+Caused by: java.sql.BatchUpdateException: Batch entry 0 insert into Patient (accountStatus, address1, address2, address3, cellphone, clinic, dateOfBirth, firstNames, homePhone, lastname, modified, nextOfKinName, nextOfKinPhone, patientId, province, race, sex, workPhone, id) values (1, , Maquival, Safuri, , 2, 1993-07-25 00:00:00.000000 +02:00, Marito, , Conselho, T, , , 04015113/16/0503, Select a Province, NULL,  , , 907490) was aborted.  Call getNextException to see the cause.
+	at org.postgresql.jdbc2.AbstractJdbc2Statement$BatchResultHandler.handleError(AbstractJdbc2Statement.java:2531)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1344)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:343)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeBatch(AbstractJdbc2Statement.java:2670)
+	at org.hibernate.jdbc.BatchingBatcher.doExecuteBatch(BatchingBatcher.java:48)
+	at org.hibernate.jdbc.AbstractBatcher.executeBatch(AbstractBatcher.java:246)
+	... 28 more
+10-09-2018 14:56:44 [main] ERROR rt.gui.patient.AddPatientIdart - Error saving patient to the database.
+org.hibernate.exception.DataException: Could not execute JDBC batch update
+	at org.hibernate.exception.SQLStateConverter.convert(SQLStateConverter.java:77)
+	at org.hibernate.exception.JDBCExceptionHelper.convert(JDBCExceptionHelper.java:43)
+	at org.hibernate.jdbc.AbstractBatcher.executeBatch(AbstractBatcher.java:253)
+	at org.hibernate.jdbc.AbstractBatcher.prepareStatement(AbstractBatcher.java:92)
+	at org.hibernate.jdbc.AbstractBatcher.prepareStatement(AbstractBatcher.java:87)
+	at org.hibernate.jdbc.AbstractBatcher.prepareBatchStatement(AbstractBatcher.java:222)
+	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:2224)
+	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:2660)
+	at org.hibernate.action.EntityInsertAction.execute(EntityInsertAction.java:56)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:250)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:234)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:141)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:298)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:27)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1000)
+	at org.celllife.idart.gui.patient.AddPatientIdart.submitForm(AddPatientIdart.java:1600)
+	at org.celllife.idart.gui.patient.AddPatientIdart.doSave(AddPatientIdart.java:2542)
+	at org.celllife.idart.gui.patient.AddPatientIdart.cmdUpdatePrescriptionWidgetSelected(AddPatientIdart.java:1749)
+	at org.celllife.idart.gui.patient.AddPatientIdart.access$21(AddPatientIdart.java:1746)
+	at org.celllife.idart.gui.patient.AddPatientIdart$18.widgetSelected(AddPatientIdart.java:2292)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:234)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1258)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3540)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3161)
+	at org.celllife.idart.gui.welcome.GenericWelcome.showGUI(GenericWelcome.java:134)
+	at org.celllife.idart.gui.welcome.GenericWelcome.<init>(GenericWelcome.java:106)
+	at org.celllife.idart.gui.welcome.PharmacyWelcome.<init>(PharmacyWelcome.java:28)
+	at org.celllife.idart.start.PharmacyApplication.runIDART(PharmacyApplication.java:188)
+	at org.celllife.idart.start.PharmacyApplication.launch(PharmacyApplication.java:115)
+	at org.celllife.idart.start.PharmacyApplication.main(PharmacyApplication.java:96)
+Caused by: java.sql.BatchUpdateException: Batch entry 0 insert into Patient (accountStatus, address1, address2, address3, cellphone, clinic, dateOfBirth, firstNames, homePhone, lastname, modified, nextOfKinName, nextOfKinPhone, patientId, province, race, sex, workPhone, id) values (1, , Maquival, Safuri, , 2, 1993-07-25 00:00:00.000000 +02:00, Marito, , Conselho, T, , , 04015113/16/0503, Select a Province, NULL,  , , 907490) was aborted.  Call getNextException to see the cause.
+	at org.postgresql.jdbc2.AbstractJdbc2Statement$BatchResultHandler.handleError(AbstractJdbc2Statement.java:2531)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1344)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:343)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeBatch(AbstractJdbc2Statement.java:2670)
+	at org.hibernate.jdbc.BatchingBatcher.doExecuteBatch(BatchingBatcher.java:48)
+	at org.hibernate.jdbc.AbstractBatcher.executeBatch(AbstractBatcher.java:246)
+	... 28 more
+10-09-2018 14:56:59 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:56:59 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:56:59 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 14:56:59 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:56:59 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:56:59 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 14:56:59 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 14:56:59 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:00 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 14:57:00 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:57:00 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 14:57:00 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:57:01 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:57:01 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:57:01 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:02 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 14:57:02 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 14:57:02 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4f4a1ab7  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 14:57:02 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 14:57:02 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:57:07 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 14:57:07 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 14:57:07 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 14:57:07 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 14:57:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:57:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:57:11 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 14:57:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:57:49 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 907494
+10-09-2018 14:57:51 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 14:57:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:57:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:57:53 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 14:57:53 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 14:58:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:58:03 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 14:58:03 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 14:58:07 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 14:58:07 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 14:58:07 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:58:08 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:58:08 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:58:08 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 14:58:08 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:58:08 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:58:11 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:58:11 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:58:11 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 14:58:11 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 14:58:11 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 14:58:11 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 14:58:12 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 14:58:12 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:12 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 14:58:12 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:58:12 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 14:58:13 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:58:13 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 14:58:13 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 14:58:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:14 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 14:58:14 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 14:58:14 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@69af0fcf  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 14:58:15 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 14:58:15 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 14:58:20 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 14:58:21 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 14:58:21 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 14:58:21 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 14:58:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 14:58:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 14:58:21 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:02:31 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:02:31 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:02:31 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:02:32 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:02:32 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:02:32 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:02:32 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:02:32 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:02:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:02:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:02:35 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:02:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:02:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:02:35 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:02:35 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:02:35 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:35 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:36 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:02:36 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:02:36 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:02:36 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:02:36 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:02:37 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:02:37 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:02:38 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:02:38 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:02:38 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@54563cc2  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:02:38 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:02:38 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:03:02 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:03:03 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:03:03 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:03:03 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:03:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:03:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:03:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:03:03 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:03:09 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 15:03:32 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:03:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:03:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:03:36 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:04:13 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 751457
+10-09-2018 15:04:13 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
+10-09-2018 15:04:13 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
+10-09-2018 15:04:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:04:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:04:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:04:13 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:04:13 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
+10-09-2018 15:04:13 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:08:52 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:08:52 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:08:52 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:08:53 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:08:53 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:08:53 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:08:53 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:08:53 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:20:07 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:20:07 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:20:07 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:20:07 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:20:07 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:20:08 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:20:08 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:20:08 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:08 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:20:09 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:20:09 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:20:09 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:20:09 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:20:10 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:20:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:11 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:20:11 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:20:11 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e64f6fe  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:20:11 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:20:11 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:20:16 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:20:16 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:20:16 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:20:16 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:20:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:20:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:20:25 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 15:20:37 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:20:42 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:42 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:20:47 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:20:48 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 751457
+10-09-2018 15:20:48 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
+10-09-2018 15:20:48 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
+10-09-2018 15:20:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:20:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:20:48 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:20:48 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
+10-09-2018 15:20:48 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:21:34 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:21:34 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:21:34 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:21:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:21:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:21:35 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:21:35 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:21:35 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:22:11 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:22:11 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:22:11 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:22:11 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:22:11 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:22:12 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:22:12 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:22:12 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:12 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:22:12 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:22:12 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:22:13 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:22:13 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:22:14 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:22:14 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:14 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:22:14 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:22:15 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@fa5e4e4  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:22:15 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:22:15 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:22:19 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:22:19 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:22:19 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:22:20 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:22:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:22:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:20 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:22:24 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:22:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:22:35 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:23:30 [main] INFO      model.manager.StockManager - Calculating StockLevel for stock 751457
+10-09-2018 15:23:30 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
+10-09-2018 15:23:30 [main] INFO  anager.TemporaryRecordsManager - Saving package drug infos.
+10-09-2018 15:23:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:23:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:23:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:23:30 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:23:30 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
+10-09-2018 15:23:30 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:25:35 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:25:35 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:25:35 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:25:36 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:25:36 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:25:36 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:25:36 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:25:36 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:25:52 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:25:52 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:25:52 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:25:52 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:25:52 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:25:53 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:25:53 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:25:53 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:53 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:25:53 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:25:54 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:25:54 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:25:54 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:25:55 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:25:55 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:25:56 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:25:56 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:25:56 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e64f6fe  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:25:56 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:25:56 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:26:07 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:26:07 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:26:07 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:26:07 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:26:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:26:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:26:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:26:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:26:13 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 15:26:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:26:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:26:45 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 907513
+10-09-2018 15:26:46 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:26:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:26:47 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:26:47 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:26:47 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:27:23 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:27:23 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:27:23 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:27:23 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:27:23 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:27:23 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:27:23 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:27:23 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:23 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:24 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:27:24 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:27:24 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:27:25 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:27:25 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:27:27 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:27:27 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:28 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:27:28 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:27:28 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@3c250cce  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:27:28 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:27:28 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:27:36 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:27:37 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:27:37 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:27:37 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:27:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:27:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:27:41 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:27:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:27:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:27:45 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:28:08 [main] INFO  .packaging.NewPatientPackaging - savePackageAndPackagedDrugs() called
+10-09-2018 15:28:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:28:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:28:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:28:08 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:28:08 [main] INFO  .packaging.NewPatientPackaging - submitForm() called
+10-09-2018 15:28:08 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:28:56 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:28:56 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:28:56 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:28:57 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:28:57 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:28:57 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:28:57 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:28:57 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:29:02 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:29:02 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:29:02 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:29:03 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:29:03 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:29:03 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:29:03 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:29:03 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:29:23 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:29:23 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:29:23 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:29:23 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:29:23 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:29:23 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:29:24 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:29:24 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:24 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:29:24 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:29:24 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:29:25 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:29:25 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:29:25 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:29:25 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:26 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:29:26 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:29:26 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4f4a1ab7  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:29:26 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:29:27 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:29:39 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:29:39 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:29:39 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:29:40 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:29:45 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 15:30:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:30:07 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:31:11 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 907520
+10-09-2018 15:31:13 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:31:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:31:16 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:31:16 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:32:41 [main] INFO  .packaging.NewPatientPackaging - cmdDispenseDrugsSelected() called
+10-09-2018 15:34:02 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+10-09-2018 15:34:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:34:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:34:33 [main] INFO  i.prescription.AddPrescription - Saved Prescription for Patient: 907526
+10-09-2018 15:34:35 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:34:39 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:34:39 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:34:39 [main] INFO  .packaging.NewPatientPackaging - getSelectedWeekSupply() called
+10-09-2018 15:38:15 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:38:15 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:38:15 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+10-09-2018 15:38:15 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:38:15 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:38:15 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+10-09-2018 15:38:15 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+10-09-2018 15:38:15 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:16 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+10-09-2018 15:38:16 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:38:16 [main] INFO                       liquibase - Successfully acquired change log lock
+10-09-2018 15:38:17 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:38:17 [main] INFO                       liquibase - Reading from databasechangelog
+10-09-2018 15:38:17 [main] INFO                       liquibase - Successfully released change log lock
+10-09-2018 15:38:17 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:18 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+10-09-2018 15:38:18 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+10-09-2018 15:38:18 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6437153d  Av./Rua Cidade Tel CS DE COALANE
+10-09-2018 15:38:18 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+10-09-2018 15:38:18 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:38:25 [main] INFO  celllife.idart.gui.login.Login - Login successful for user admin
+10-09-2018 15:38:26 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+10-09-2018 15:38:26 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+10-09-2018 15:38:26 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+10-09-2018 15:38:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:38:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5433/cs24DeJulho
+10-09-2018 15:38:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+10-09-2018 15:38:44 [main] INFO  t.gui.composite.PillCountTable - Creating PillCountTable
+10-09-2018 15:41:35 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+10-09-2018 15:41:35 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+10-09-2018 15:41:35 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+10-09-2018 15:41:37 [main] INFO  dart.start.PharmacyApplication - 
+10-09-2018 15:41:37 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:41:37 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+10-09-2018 15:41:37 [main] INFO  dart.start.PharmacyApplication - *********************
+10-09-2018 15:41:37 [main] INFO  dart.start.PharmacyApplication - 

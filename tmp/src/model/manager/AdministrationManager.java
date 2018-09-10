@@ -19,7 +19,6 @@
 
 package model.manager;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ import model.nonPersistent.PharmacyDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.AtcCode;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -249,6 +247,16 @@ public static String loadTb(int idPatient)throws ClassNotFoundException, SQLExce
 { ConexaoJDBC conn=new ConexaoJDBC();
 
 return conn.carregaTb(idPatient);
+
+}
+
+//Previous TB
+
+public static String loadSAAJ(int idPatient)throws ClassNotFoundException, SQLException
+
+{ ConexaoJDBC conn=new ConexaoJDBC();
+
+return conn.carregaSAAJ(idPatient);
 
 }
 

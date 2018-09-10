@@ -69,5 +69,4 @@ public abstract class RestUtils {
 		
 		return calendar;
 	}
-
 }

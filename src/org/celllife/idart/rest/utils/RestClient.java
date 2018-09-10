@@ -10,6 +10,9 @@ import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.rest.ApiAuthRest;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -21,6 +24,7 @@ public class RestClient {
 	
 	Properties prop = new Properties();
 	InputStream input = null;
+	private boolean pacTarv;
 	
 	//SET VALUE FOR CONNECT TO OPENMRS
 	public RestClient() {
@@ -190,5 +194,23 @@ public class RestClient {
 			e.printStackTrace();
 		}
 		return resource;
+	}
+	
+	public boolean isPatientInTarv (String personUuid) throws JSONException, Exception {
+		
+		JSONObject jsonObject = new JSONObject(ApiAuthRest.getRequestGet(iDartProperties.REST_PROGRAM_ENROLLMENT+personUuid));
+
+		JSONArray jsonArray = (JSONArray) jsonObject.get("results");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject results = (JSONObject) jsonArray.get(i);
+
+			if ((String.valueOf(results.get("display"))).trim().equals("SERVICO TARV - TRATAMENTO") && 
+					(String.valueOf(results.get("dateCompleted"))).trim().equals("null")) {
+				pacTarv = true; 
+				break;
+			}
+		}
+		return pacTarv;
 	}
 }

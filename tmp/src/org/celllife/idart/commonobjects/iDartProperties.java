@@ -34,6 +34,8 @@ public class iDartProperties {
 	
 	public static final String REST_GET_PROVIDER = "provider?q=";
 	
+	public static final String REST_PROGRAM_ENROLLMENT = "programenrollment?patient=";
+	
 	public static final String REST_GET_LOCATION = "location?q=";
 	
 	public static final String ENCOUNTER_PATIENT = "encounter?patient=";

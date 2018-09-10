@@ -21,6 +21,7 @@ package org.celllife.idart.gui.packaging;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
@@ -199,6 +201,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	private Patient localPatient;
 	private int dias = 0;
 	private boolean postOpenMrsEncounterStatus;
+	private Properties prop;
 	/**
 	 * Constructor
 	 * 
@@ -208,6 +211,17 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	public NewPatientPackaging(Shell parent) {
 		super(parent, HibernateUtil.getNewSession());
 		createScreen();
+		
+		InputStream input = null;
+		prop = new Properties();
+		
+		input = getClass().getClassLoader().getResourceAsStream("jdbc.properties");
+		
+		try {
+			prop.load(input);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -2658,7 +2672,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			String nid = newPack.getPrescription().getPatient().getPatientId().trim();
 
 			String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
-			
+						
 			JSONObject jsonObject = new JSONObject(nidRest);
 			JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
 			String nidUuid = null;
@@ -2668,6 +2682,31 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				nidUuid = (String) results.get("uuid");
 			}
 			
+			//get program art
+			JSONObject patientProgramArt = new JSONObject(restClient.getOpenMRSResource(iDartProperties.REPORTING_REST + prop.getProperty("programArtCohortUuid") + iDartProperties.REST_GET_PERSON_UUID + nidUuid));
+			
+			//get program art, active state
+			JSONObject patientProgramArtActive = new JSONObject(restClient.getOpenMRSResource(iDartProperties.REPORTING_REST + prop.getProperty("programArtActiveCohortUuid") + 
+					iDartProperties.REST_GET_PERSON_UUID + nidUuid));
+			
+			if (patientProgramArt.getJSONArray("members").length()==0) { 
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Problema dispensando o pacote de medicamentos");
+				m.setMessage("O Paciente não está activo no programa SERVIÇO TARV - TRATAMENTO. Por favor contacte o SIS.");
+				m.open();
+				
+				return;
+			}
+			
+			if (patientProgramArtActive.getJSONArray("members").length()==0) { 
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Problema dispensando o pacote de medicamentos");
+				m.setMessage("Para efectuar a dispensa o estado do paciente deve ser ACTIVO NO PROGRAMA/TRANSFERIDO DE. Por favor contacte o SIS.");
+				m.open();
+				
+				return;
+			}
+			 
 			if (nidUuid==null) { 
 				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 				m.setText("Problema dispensando o pacote de medicamentos");
@@ -2676,7 +2715,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				
 				return;
 			}
-
+			
 			String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " "
 					+ newPack.getPrescription().getDoctor().getLastname().trim();
 

@@ -10,6 +10,9 @@ import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.rest.ApiAuthRest;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -21,6 +24,7 @@ public class RestClient {
 	
 	Properties prop = new Properties();
 	InputStream input = null;
+	private boolean pacTarv;
 	
 	//SET VALUE FOR CONNECT TO OPENMRS
 	public RestClient() {
@@ -49,6 +53,8 @@ public class RestClient {
 		String packSize = null;
 		
 		String dosage;
+		
+		String dosage_1;
 		
 		String customizedDosage = null;
 		
@@ -86,7 +92,7 @@ public class RestClient {
 		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage+"\"},{\"person\":\""+nidUuid+"\","
 		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
 		 			);*/
-		} else if (prescribedDrugs.size() == 2) {
+		} else if (prescribedDrugs.size() > 1) {
 			
 			//Dosage
 			dosage = String.valueOf(prescribedDrugs.get(0).getTimesPerDay());
@@ -95,12 +101,12 @@ public class RestClient {
 					+ iDartProperties.COMP + dosage + iDartProperties.VEZES_DIA;
 			
 			//Dosage
-			String dosage_1 = String.valueOf(prescribedDrugs.get(1).getTimesPerDay());
+			dosage_1 = String.valueOf(prescribedDrugs.get(1).getTimesPerDay());
 					
 			String customizedDosage_1 = iDartProperties.TOMAR + String.valueOf((int)(prescribedDrugs.get(1).getAmtPerTime())) 
 					+ iDartProperties.COMP + dosage_1 + iDartProperties.VEZES_DIA;
 			
-		 	/*inputAddPerson = new StringEntity(
+		 	inputAddPerson = new StringEntity(
 		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
 		 					+ "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"encounterProviders\":[{\"provider\":\""+providerUuid+"\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], "
 		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
@@ -111,9 +117,9 @@ public class RestClient {
 		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_0+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
 		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_1+"\"},{\"person\":\""+nidUuid+"\","
 		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
-		 			);*/
+		 			);
 		 	
-		 	inputAddPerson = new StringEntity(
+		 	/*inputAddPerson = new StringEntity(
 		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
 		 			  + "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"provider\":\""+providerUuid+"\", "
 		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
@@ -124,7 +130,7 @@ public class RestClient {
 		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_0+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
 		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_1+"\"},{\"person\":\""+nidUuid+"\","
 		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
-		 			);
+		 			);*/
 		}
 		
 		inputAddPerson.setContentType("application/json");
@@ -188,5 +194,23 @@ public class RestClient {
 			e.printStackTrace();
 		}
 		return resource;
+	}
+	
+	public boolean isPatientInTarv (String personUuid) throws JSONException, Exception {
+		
+		JSONObject jsonObject = new JSONObject(ApiAuthRest.getRequestGet(iDartProperties.REST_PROGRAM_ENROLLMENT+personUuid));
+
+		JSONArray jsonArray = (JSONArray) jsonObject.get("results");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject results = (JSONObject) jsonArray.get(i);
+
+			if ((String.valueOf(results.get("display"))).trim().equals("SERVICO TARV - TRATAMENTO") && 
+					(String.valueOf(results.get("dateCompleted"))).trim().equals("null")) {
+				pacTarv = true; 
+				break;
+			}
+		}
+		return pacTarv;
 	}
 }

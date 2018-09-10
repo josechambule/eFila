@@ -32,7 +32,11 @@ public class iDartProperties {
 	
 	public static final String REST_GET_PERSON = "person?q=";
 	
+	public static final String REST_GET_PERSON_UUID = "?personUuid=";
+	
 	public static final String REST_GET_PROVIDER = "provider?q=";
+	
+	public static final String REST_PROGRAM_ENROLLMENT = "programenrollment?patient=";
 	
 	public static final String REST_GET_LOCATION = "location?q=";
 	
@@ -55,6 +59,8 @@ public class iDartProperties {
 	public static final String CONCEPT_CONFIDENT_TELEPHONE_NUMBER = "e1dcb3ca-1d5f-11e0-b929-000c29ad1d07";
 	
 	public static final String CONCEPT_DATA_INICIO_TARV = "&concept=e1d8f690-1d5f-11e0-b929-000c29ad1d07";
+	
+	public static final String REPORTING_REST = "reportingrest/cohort/";
 	
 	public static final String VISIT_PATIENT = "visit?patient=";
 	
