@@ -1,10 +1,14 @@
 package org.celllife.idart.rest.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.StringEntity;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
@@ -21,22 +25,39 @@ public class RestClient {
 	
 	Properties prop = new Properties();
 	InputStream input = null;
-	
+	File myFile = new File("src/jdbc_auto_generated.properties");
+    Properties prop_dynamic = new Properties();
+  
+    
 	//SET VALUE FOR CONNECT TO OPENMRS
 	public RestClient() {
+		
+		try {
+			prop_dynamic.load(new FileInputStream(myFile));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 		input = getClass().getClassLoader().getResourceAsStream("jdbc.properties");
+		
 		
 		try {
 			prop.load(input);
+
+		    
 			
-			System.out.println(prop.getProperty("password")); 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		ApiAuthRest.setURLBase(prop.getProperty("urlBase"));
-		ApiAuthRest.setUsername(prop.getProperty("userName"));
-		ApiAuthRest.setPassword(prop.getProperty("password"));
+		ApiAuthRest.setUsername(prop_dynamic.getProperty("userName"));
+		ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
 	}
 	
 	public boolean postOpenMRSEncounter(String encounterDatetime, String nidUuid, String encounterType, String strFacilityUuid, 
@@ -76,7 +97,7 @@ public class RestClient {
 		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
 		 			);
 		 	
-		 	System.out.println(inputAddPerson); 
+		 	System.out.println(IOUtils.toString(inputAddPerson.getContent())); 
 		 	
 		 	/*inputAddPerson = new StringEntity(
 		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
