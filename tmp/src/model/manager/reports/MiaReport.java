@@ -11,19 +11,8 @@ import java.util.Map;
 
 import model.manager.excel.conversion.exceptions.ReportException;
 
-
-
-
-
-
-
-
-
-
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.User;
 import org.eclipse.swt.widgets.Shell;
@@ -110,17 +99,17 @@ public class MiaReport extends AbstractJasperReport {
    			System.out.println("Total de pacientes ptv inicia "+ totalpacientesptvinicia);
    			
    			
-   		 int totalpacientesptvalterar =conn.totalPacientesPTVAlterar(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+   			int totalpacientesptvalterar =conn.totalPacientesPTVAlterar(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
 			System.out.println("Total de pacientes ptv alterar"+ totalpacientesptvalterar);
 			
 			
 			int mesesdispensados=conn.mesesDispensados(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
 			System.out.println("Meses dispensados "+ mesesdispensados);
 			
-			ConexaoODBC conn2=new ConexaoODBC();
-			int pacientesEmTarv=conn2.pacientesActivosEmTarv();
+			//ConexaoODBC conn2=new ConexaoODBC();
+			//int pacientesEmTarv=conn2.pacientesActivosEmTarv();
 			
-			System.out.println("Pacientes em tarv  "+ pacientesEmTarv);
+			//System.out.println("Pacientes em tarv  "+ pacientesEmTarv);
 			
 		map.put("stockCenterId", new Integer(stockCenter.getId()));
 		map.put("date", theStartDate);
@@ -150,7 +139,7 @@ public class MiaReport extends AbstractJasperReport {
 		map.put("totalpacientesptvinicia",totalpacientesptvinicia);
 		map.put("totalpacientesptvalterar",totalpacientesptvalterar);		
 		map.put("mesesdispensados",mesesdispensados);
-		map.put("pacientesEmTarv",pacientesEmTarv);
+		//map.put("pacientesEmTarv",pacientesEmTarv);
 		map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date())); 
 		
 		map.put("mes", mesPortugues(theStartDate));

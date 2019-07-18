@@ -5,13 +5,9 @@
  */
 
 package org.celllife.idart.gui.sync.patients;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Vector;
 
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -25,7 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;

@@ -5,13 +5,9 @@
  */
 
 package org.celllife.idart.gui.sync.dispense;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Vector;
 
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -25,7 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -309,9 +304,7 @@ class SyncProgressBar extends ProgressBarDialog {
 	  @Override
 	  public void initGuage() {
 		  
-		  
-	 ;
-		  ConexaoODBC c2=new ConexaoODBC();	
+		  /*ConexaoODBC c2=new ConexaoODBC();	
 		    Vector<SyncLinha> synclinha=jdbc.sync_table_dispense();
 		 
 		    info = new String[synclinha.size()];
@@ -321,7 +314,7 @@ class SyncProgressBar extends ProgressBarDialog {
 		  	 c2.syncdata_dispense(synclinha.get(i));
 		  	 
 		  	info[i] = "A processar  nid  " + synclinha.get(i).getNid();
-		   }
+		   }*/
 		 
 //		   MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_INFORMATION
 //					| SWT.OK);

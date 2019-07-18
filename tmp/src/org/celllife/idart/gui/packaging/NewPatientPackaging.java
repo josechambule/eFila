@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
+import model.manager.OpenmrsErrorLogManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.SearchManager;
@@ -55,13 +56,13 @@ import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.AccumulatedDrugs;
 import org.celllife.idart.database.hibernate.Appointment;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Form;
+import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
 import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
@@ -141,12 +142,12 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  */
-public class NewPatientPackaging extends GenericFormGui implements
-		iDARTChangeListener {
+public class NewPatientPackaging extends GenericFormGui implements iDARTChangeListener {
 
 	private ListViewer lstWaitingPatients;
 	private Button btnDispense;
@@ -169,8 +170,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 	private Button rdBtnDispenseLater;
 	private Button rdBtnNoAppointmentDate;
 	private Button rdBtnYesAppointmentDate;
-	/*private Button rdBtnPrintSummaryLabelNo;
-	private Button rdBtnPrintSummaryLabelYes;*/
+	/*
+	 * private Button rdBtnPrintSummaryLabelNo; private Button
+	 * rdBtnPrintSummaryLabelYes;
+	 */
 	private ProgressBar pbLoading;
 	private Text searchBar;
 	private Table tblPrescriptionInfo;
@@ -194,7 +197,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH); // local
 	private boolean dateAlreadyDispensed;
 	private Patient localPatient;
-	private int dias=0;
+	private int dias = 0;
+	private boolean postOpenMrsEncounterStatus;
 	/**
 	 * Constructor
 	 * 
@@ -224,8 +228,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		dateAlreadyDispensed = false;
 
 		if (p == null) {
-			getLog().error(
-					"Patient number passed to packaging GUI does not belong to a patient");
+			getLog().error("Patient number passed to packaging GUI does not belong to a patient");
 		} else {
 			populatePatientDetails(p.getId());
 		}
@@ -242,11 +245,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 		if (previousPack != null && theDispDate != null) {
 
 			Date lastPickupDate = previousPack.getPickupDate();
-			int numOfDays = iDARTUtil.getDaysBetween(lastPickupDate,
-					theDispDate);
-			lblDateOfLastPickupContents.setText(numOfDays + " dias ("
-					+ sdf.format(lastPickupDate) + ")");
-			dias=numOfDays;
+			int numOfDays = iDARTUtil.getDaysBetween(lastPickupDate, theDispDate);
+			lblDateOfLastPickupContents.setText(numOfDays + " dias (" + sdf.format(lastPickupDate) + ")");
+			dias = numOfDays;
 		} else {
 			lblDateOfLastPickupContents.setText("Levantamento inicial");
 		}
@@ -258,29 +259,24 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	private void attachPharmacyComboListener() {
 		cmbSelectStockCenter.setEditable(false);
-		cmbSelectStockCenter.setBackground(ResourceUtils
-				.getColor(iDartColor.WHITE));
-		cmbSelectStockCenter
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
+		cmbSelectStockCenter.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+		cmbSelectStockCenter.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 
-						localPharmacy = AdministrationManager.getStockCenter(
-								getHSession(), cmbSelectStockCenter.getText());
-						if (localPharmacy != null) {
-							if (newPack.getPrescription() != null) {
-								populateStockDetails();
-								prepopulateQuantities();
-							}
-						} else {
-							getLog().warn(
-									"Tried to populate screen for update of pharmacy '"
-											+ cmbSelectStockCenter.getText()
-											+ "', but no pharmacy with that name was found in the database.");
-						}
+				localPharmacy = AdministrationManager.getStockCenter(getHSession(), cmbSelectStockCenter.getText());
+				if (localPharmacy != null) {
+					if (newPack.getPrescription() != null) {
+						populateStockDetails();
+						prepopulateQuantities();
 					}
+				} else {
+					getLog().warn("Tried to populate screen for update of pharmacy '" + cmbSelectStockCenter.getText()
+					+ "', but no pharmacy with that name was found in the database.");
+				}
+			}
 
-				});
+		});
 	}
 
 	private void attachPrescriptionInfoTableEditor() {
@@ -319,21 +315,17 @@ public class NewPatientPackaging extends GenericFormGui implements
 					if (column == 4) {
 						// Create the Text object for label column
 
-						final Text text = new Text(tblPrescriptionInfo,
-								SWT.NONE);
+						final Text text = new Text(tblPrescriptionInfo, SWT.NONE);
 						text.setForeground(item.getForeground());
-						text.setFont(ResourceUtils
-								.getFont(iDartFont.VERASANS_8));
-						text.setBackground(ResourceUtils
-								.getColor(iDartColor.GRAY));
+						text.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+						text.setBackground(ResourceUtils.getColor(iDartColor.GRAY));
 
 						text.setText(item.getText(column));
 						text.setForeground(item.getForeground());
 						text.selectAll();
 						text.setFocus();
 
-						editorTblPrescriptionInfo.minimumWidth = text
-								.getBounds().width;
+						editorTblPrescriptionInfo.minimumWidth = text.getBounds().width;
 
 						// Set the control into the editor
 						editorTblPrescriptionInfo.setEditor(text, item, column);
@@ -348,24 +340,19 @@ public class NewPatientPackaging extends GenericFormGui implements
 								item.setText(col, text.getText());
 								// check user input
 
-								ArrayList<PackageDrugInfo> list = ((ArrayList<PackageDrugInfo>) item
-										.getData());
+								ArrayList<PackageDrugInfo> list = ((ArrayList<PackageDrugInfo>) item.getData());
 								if (list.size() > 0) {
 									if (!text.getText().trim().equals("")) {
 										try {
-											int labels = Integer.parseInt(text
-													.getText());
-											list.get(0).setNumberOfLabels(
-													labels);
+											int labels = Integer.parseInt(text.getText());
+											list.get(0).setNumberOfLabels(labels);
 										} catch (NumberFormatException e) {
-											java.awt.Toolkit
-													.getDefaultToolkit().beep();
+											java.awt.Toolkit.getDefaultToolkit().beep();
 											text.setText("1");
 											item.setText(col, "1");
 											text.selectAll();
 										} catch (IndexOutOfBoundsException iobex) {
-											getLog().error(
-													"No drugs in list in order to specify a label to print.",
+											getLog().error("No drugs in list in order to specify a label to print.",
 													iobex);
 										}
 
@@ -377,15 +364,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 								} else {
 									if (!text.getText().equals("0")) {
-										java.awt.Toolkit.getDefaultToolkit()
-												.beep();
-										MessageBox msg = new MessageBox(
-												getShell(), SWT.OK
-														| SWT.ICON_ERROR);
+										java.awt.Toolkit.getDefaultToolkit().beep();
+										MessageBox msg = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 										msg.setText("Quantidade de Etiqueta inválido.");
-										msg.setMessage("Você não vai conseguir imprimir uma etiqueta para este medicamento "
-												+ "uma vez que nenhuma quantidade foi especificado. "
-												+ "\n\nPor favor, primeiro defina a quantidade de dispensar.");
+										msg.setMessage(
+												"Você não vai conseguir imprimir uma etiqueta para este medicamento "
+														+ "uma vez que nenhuma quantidade foi especificado. "
+														+ "\n\nPor favor, primeiro defina a quantidade de dispensar.");
 										msg.open();
 										text.setText("0");
 										text.selectAll();
@@ -399,25 +384,20 @@ public class NewPatientPackaging extends GenericFormGui implements
 					else if (column == 5) {
 						// Create the combo box for the in hand column
 
-						final CCombo combo = new CCombo(tblPrescriptionInfo,
-								SWT.NONE);
+						final CCombo combo = new CCombo(tblPrescriptionInfo, SWT.NONE);
 						combo.setForeground(item.getForeground());
-						combo.setFont(ResourceUtils
-								.getFont(iDartFont.VERASANS_8));
-						combo.setBackground(ResourceUtils
-								.getColor(iDartColor.GRAY));
+						combo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+						combo.setBackground(ResourceUtils.getColor(iDartColor.GRAY));
 
 						combo.setText(item.getText(column));
 						combo.setForeground(item.getForeground());
 						combo.setFocus();
 						combo.setEditable(false);
 
-						editorTblPrescriptionInfo.minimumWidth = combo
-								.getBounds().width;
+						editorTblPrescriptionInfo.minimumWidth = combo.getBounds().width;
 
 						// Set the control into the editor
-						editorTblPrescriptionInfo
-								.setEditor(combo, item, column);
+						editorTblPrescriptionInfo.setEditor(combo, item, column);
 
 						final int col = column;
 
@@ -468,8 +448,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				String currentText = searchBar.getText().trim();
 
 				// first, parse the text in txtPatientId
-				String patientId = PatientBarcodeParser
-						.getPatientId(currentText);
+				String patientId = PatientBarcodeParser.getPatientId(currentText);
 				populatePatientDetails(patientId, e.character == SWT.CR);
 			}
 		});
@@ -500,8 +479,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				String msg = "O Paciente \"{0}\" teve sua última dispensa em {1,date,medium}. "
 						+ "\n\nA data para a nova dispensa que está a criar deve estar depois desta data.";
 				showMessage(MessageDialog.ERROR, "Erro da data de dispensa",
-						MessageFormat.format(msg, localPatient.getPatientId(),
-								pickupDate));
+						MessageFormat.format(msg, localPatient.getPatientId(), pickupDate));
 
 				btnCaptureDate.setDate(today);
 				chosenDate = today;
@@ -514,19 +492,14 @@ public class NewPatientPackaging extends GenericFormGui implements
 		}
 
 		if (fieldsEnabled) {
-			String clinicName = localPatient.getClinicAtDate(chosenDate)
-					.getClinicName();
+			String clinicName = localPatient.getClinicAtDate(chosenDate).getClinicName();
 			// Check if clinic has changed. If so, show message
 			if (!lblClinic.getText().equalsIgnoreCase(clinicName)) {
-				MessageBox m = new MessageBox(getShell(), SWT.OK
-						| SWT.ICON_INFORMATION);
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				m.setText("US do paciente mudou");
-				m.setMessage("Note que em "
-						+ sdf.format(btnCaptureDate.getDate()) + ", paciente '"
-						+ localPatient.getPatientId()
-						+ "' foi dispensado seus medicamentos " + clinicName
-						+ ".\n\n Todas dispensas feitas deste paciente"
-						+ "neste dia será destinado para esta US, "
+				m.setMessage("Note que em " + sdf.format(btnCaptureDate.getDate()) + ", paciente '"
+						+ localPatient.getPatientId() + "' foi dispensado seus medicamentos " + clinicName
+						+ ".\n\n Todas dispensas feitas deste paciente" + "neste dia será destinado para esta US, "
 						+ "não na US actual do paciente.");
 				m.open();
 			}
@@ -566,11 +539,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 			try {
 				tx = getHSession().beginTransaction();
 				String dte = iDARTUtil.toString(Date.class, o);
-				newPack.getPrescription().getPatient()
-						.getAttributeByName(PatientAttribute.ARV_START_DATE)
-						.setValue(dte);
-				PatientManager.savePatient(getHSession(), newPack
-						.getPrescription().getPatient());
+				newPack.getPrescription().getPatient().getAttributeByName(PatientAttribute.ARV_START_DATE)
+				.setValue(dte);
+				PatientManager.savePatient(getHSession(), newPack.getPrescription().getPatient());
 				getHSession().flush();
 			} catch (Exception e) {
 				if (tx == null) {
@@ -646,9 +617,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 			}
 
 		} catch (NumberFormatException ne) {
-			getLog().warn(
-					"NumberFormatException while trying to get weeks supply from combo",
-					ne);
+			getLog().warn("NumberFormatException while trying to get weeks supply from combo", ne);
 			numPeriods = 4;
 		}
 		if (newPack != null) {
@@ -662,12 +631,33 @@ public class NewPatientPackaging extends GenericFormGui implements
 			if (rdBtnDispenseNow.getSelection()) {
 				Calendar theCal = Calendar.getInstance();
 
-				newPack.setPackDate(btnCaptureDate.getDate() == null ? new Date()
-						: btnCaptureDate.getDate());
+				newPack.setPackDate(btnCaptureDate.getDate() == null ? new Date() : btnCaptureDate.getDate());
 
 				theCal.setTime(newPack.getPackDate());
-				theCal.add(Calendar.DATE, newPack.getWeekssupply() * 7);
-				adjustForNewAppointmentDate(theCal.getTime());
+
+				if (newPack.getWeekssupply() == 1 || newPack.getWeekssupply() == 2) {
+					theCal.add(Calendar.DATE, newPack.getWeekssupply() * 7);
+					adjustForNewAppointmentDate(theCal.getTime());
+				}
+
+				else if (newPack.getWeekssupply() == 4) {
+
+					theCal.add(Calendar.MONTH, 1);
+					adjustForNewAppointmentDate(theCal.getTime());
+				}
+
+				else if (newPack.getWeekssupply() == 8) {
+
+					theCal.add(Calendar.MONTH, 2);
+					adjustForNewAppointmentDate(theCal.getTime());
+				}
+
+				else if (newPack.getWeekssupply() == 12) {
+
+					theCal.add(Calendar.MONTH, 3);
+					adjustForNewAppointmentDate(theCal.getTime());
+				}
+
 			}
 		}
 
@@ -685,17 +675,16 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 * Method cmdDispenseDrugsSelected.
 	 * 
 	 * @param dispenseNow
-	 *            boolean
-	 *Quando o botao create package for clicadoo
-	 * @throws Exception 
+	 *            boolean Quando o botao create package for clicadoo
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void cmdDispenseDrugsSelected(boolean dispenseNow) throws Exception {
 		java.util.List<PackageDrugInfo> allPackagedDrugsList = new ArrayList<PackageDrugInfo>();
 		// remove pdis with none dispensed
 		for (int i = 0; i < tblPrescriptionInfo.getItemCount(); i++) {
-			java.util.List<PackageDrugInfo> pdiList = (java.util.List<PackageDrugInfo>) tblPrescriptionInfo
-					.getItem(i).getData();
+			java.util.List<PackageDrugInfo> pdiList = (java.util.List<PackageDrugInfo>) tblPrescriptionInfo.getItem(i)
+					.getData();
 			Iterator<PackageDrugInfo> it = pdiList.iterator();
 			while (it.hasNext()) {
 				PackageDrugInfo pdi = it.next();
@@ -709,8 +698,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 			}
 		}
 		Set<AccumulatedDrugs> accumDrugSet = getAccumDrugsToSave();
-		if (fieldsOkay(allPackagedDrugsList)
-				&& ((allPackagedDrugsList.size() > 0) || (accumDrugSet.size() > 0))) {
+		if (fieldsOkay(allPackagedDrugsList) && ((allPackagedDrugsList.size() > 0) || (accumDrugSet.size() > 0))) {
 			submitForm(dispenseNow, allPackagedDrugsList);
 			getLog().info("submitForm() called");
 			initialiseSearchList();
@@ -720,8 +708,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	private void initialiseSearchList() {
 		java.util.List<PatientIdAndName> patients = null;
-		patients = SearchManager
-				.getActivePatientWithValidPrescriptionIDsAndNames(getHSession());
+		patients = SearchManager.getActivePatientWithValidPrescriptionIDsAndNames(getHSession());
 
 		lstWaitingPatients.setInput(patients);
 	}
@@ -732,12 +719,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 */
 	private void cmdPatientHistoryWidgetSelected() {
 
-		getLog().info(
-				"New Patient Packaging: User chose 'Patient History Report'");
+		getLog().info("New Patient Packaging: User chose 'Patient History Report'");
 
 		if (localPatient != null) {
-			PatientHistoryReport report = new PatientHistoryReport(getShell(),
-					localPatient);
+			PatientHistoryReport report = new PatientHistoryReport(getShell(), localPatient);
 			viewReport(report);
 		} else {
 			PatientHistory patHistory = new PatientHistory(getShell(), true);
@@ -763,12 +748,11 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	private void cmdRedoPackageSelected() {
 		closeAndReopenSession();
-		if ((newPack.getPrescription() != null)
-				&& !(txtPatientId.getText().trim().equals(""))) {
+		if ((newPack.getPrescription() != null) && !(txtPatientId.getText().trim().equals(""))) {
 
 			final Patient patient = newPack.getPrescription().getPatient();
-			final DeleteStockPrescriptionsPackages myRedoPackage = new DeleteStockPrescriptionsPackages(
-					getShell(),patient);
+			final DeleteStockPrescriptionsPackages myRedoPackage = new DeleteStockPrescriptionsPackages(getShell(),
+					patient);
 			myRedoPackage.getShell().addDisposeListener(new DisposeListener() {
 				@Override
 				public void widgetDisposed(DisposeEvent e) {
@@ -779,8 +763,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 			});
 		} else {
 
-			final DeleteStockPrescriptionsPackages myRedoPackage = new DeleteStockPrescriptionsPackages(
-					getShell());
+			final DeleteStockPrescriptionsPackages myRedoPackage = new DeleteStockPrescriptionsPackages(getShell());
 			myRedoPackage.getShell().addDisposeListener(new DisposeListener() {
 				@Override
 				public void widgetDisposed(DisposeEvent e) {
@@ -812,24 +795,19 @@ public class NewPatientPackaging extends GenericFormGui implements
 		final java.util.List<PackageDrugInfo> finalPdisForThisDrug = (java.util.List<PackageDrugInfo>) tblPrescriptionInfo
 				.getSelection()[0].getData();
 
-		Drug drug = DrugManager.getDrug(getHSession(),
-				tblPrescriptionInfo.getSelection()[0].getText(0));
+		Drug drug = DrugManager.getDrug(getHSession(), tblPrescriptionInfo.getSelection()[0].getText(0));
 
-		final BatchInformation myBatchInformation = new BatchInformation(
-				getHSession(), getShell(), localPharmacy, drug, newPack,
-				finalPdisForThisDrug);
+		final BatchInformation myBatchInformation = new BatchInformation(getHSession(), getShell(), localPharmacy, drug,
+				newPack, finalPdisForThisDrug);
 		myBatchInformation.getShell().addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (myBatchInformation.infoChanged) {
 					// update the weekssupply
-					tblPrescriptionInfo.getSelection()[0]
-							.setData(myBatchInformation.getPdiList());
-					getDispensedQuantity(myBatchInformation.getStockList(),
-							tblPrescriptionInfo.getSelection()[0]);
+					tblPrescriptionInfo.getSelection()[0].setData(myBatchInformation.getPdiList());
+					getDispensedQuantity(myBatchInformation.getStockList(), tblPrescriptionInfo.getSelection()[0]);
 				} else {
-					tblPrescriptionInfo.getSelection()[0]
-							.setData(finalPdisForThisDrug);
+					tblPrescriptionInfo.getSelection()[0].setData(finalPdisForThisDrug);
 				}
 			}
 		});
@@ -838,17 +816,14 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	private void cmdUpdatePrescriptionWidgetSelected() {
 
-		final AddPrescription myPrescription = new AddPrescription(
-				localPatient, getShell(), true);
+		final AddPrescription myPrescription = new AddPrescription(localPatient, getShell(), true);
 		myPrescription.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				Patient patient = myPrescription.getPatient();
 				closeAndReopenSession();
 				patient = PatientManager.getPatient(getHSession(), patient.getId());
-				if ((patient != null)
-						&& (patient
-								.getCurrentPrescription() != null)) {
+				if ((patient != null) && (patient.getCurrentPrescription() != null)) {
 					populatePatientDetails(patient.getId());
 				} else {
 					clearForm();
@@ -869,13 +844,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 		compShowAppointmentOnLabels.setLayout(null);
 		compShowAppointmentOnLabels.setBounds(new Rectangle(400, 173, 95, 22));
 
-		rdBtnYesAppointmentDate = new Button(compShowAppointmentOnLabels,SWT.RADIO);
+		rdBtnYesAppointmentDate = new Button(compShowAppointmentOnLabels, SWT.RADIO);
 		rdBtnYesAppointmentDate.setBounds(new Rectangle(5, 1, 45, 20));
 		rdBtnYesAppointmentDate.setText("Não");
 		rdBtnYesAppointmentDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnYesAppointmentDate.setVisible(Boolean.FALSE); 
+		rdBtnYesAppointmentDate.setVisible(Boolean.FALSE);
 
-		rdBtnNoAppointmentDate = new Button(compShowAppointmentOnLabels,SWT.RADIO);
+		rdBtnNoAppointmentDate = new Button(compShowAppointmentOnLabels, SWT.RADIO);
 		rdBtnNoAppointmentDate.setBounds(new Rectangle(55, 1, 38, 19));
 		rdBtnNoAppointmentDate.setText("Não");
 		rdBtnNoAppointmentDate.setVisible(Boolean.FALSE);
@@ -906,59 +881,51 @@ public class NewPatientPackaging extends GenericFormGui implements
 		Button btnRerrintLabels = new Button(getCompButtons(), SWT.NONE);
 		btnRerrintLabels.setBounds(new Rectangle(0, 2, 120, 30));
 		btnRerrintLabels.setText("Reimprir Etiqueta");
-		btnRerrintLabels
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdReprintLabelsSelected();
-					}
-				});
+		btnRerrintLabels.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				cmdReprintLabelsSelected();
+			}
+		});
 
 		// btnRePrintLabel
 		Button btnPrintCustomLabel = new Button(getCompButtons(), SWT.NONE);
 		btnPrintCustomLabel.setBounds(new Rectangle(130, 2, 120, 30));
 		btnPrintCustomLabel.setText("Etiqueta personalizada");
-		btnPrintCustomLabel
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdPrintEmergencyLabelSelected();
-					}
-				});
+		btnPrintCustomLabel.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				cmdPrintEmergencyLabelSelected();
+			}
+		});
 
 		btnRerrintLabels.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblPicDispense = new Label(getCompButtons(), SWT.NONE);
 		lblPicDispense.setBounds(new Rectangle(508, 0, 40, 34));
 
-		lblPicDispense.setImage(ResourceUtils
-				.getImage(iDartImage.DISPENSEPACKAGENOW_40X34));
+		lblPicDispense.setImage(ResourceUtils.getImage(iDartImage.DISPENSEPACKAGENOW_40X34));
 
 		btnDispense = new Button(getCompButtons(), SWT.NONE);
 		btnDispense.setBounds(new Rectangle(554, 2, 146, 30));
 		btnDispense.setText("Dispensar Frascos");
-		btnDispense
-				.setToolTipText("Pressione este botão para dispensar esses medicamentos. \nA tela da impressora aparece para impressão de etiquetas de medicamento e etiqueta do frasco.");
-		btnDispense
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						try {
-							cmdDispenseDrugsSelected(rdBtnDispenseNow
-									.getSelection());
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						getLog().info("cmdDispenseDrugsSelected() called");
-					}
-				});
+		btnDispense.setToolTipText(
+				"Pressione este botão para dispensar esses medicamentos. \nA tela da impressora aparece para impressão de etiquetas de medicamento e etiqueta do frasco.");
+		btnDispense.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				try {
+					cmdDispenseDrugsSelected(rdBtnDispenseNow.getSelection());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				getLog().info("cmdDispenseDrugsSelected() called");
+			}
+		});
 		btnDispense.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnDispense.setEnabled(false);
 
@@ -977,21 +944,18 @@ public class NewPatientPackaging extends GenericFormGui implements
 		Label lblPicRedoPackage = new Label(getCompButtons(), SWT.NONE);
 		lblPicRedoPackage.setBounds(new Rectangle(274, 0, 40, 34));
 
-		lblPicRedoPackage.setImage(ResourceUtils
-				.getImage(iDartImage.REDOPACKAGE_40X34));
+		lblPicRedoPackage.setImage(ResourceUtils.getImage(iDartImage.REDOPACKAGE_40X34));
 
 		// btnRedoPackage
 		Button btnRedoPackage = new Button(getCompButtons(), SWT.NONE);
 		btnRedoPackage.setBounds(new Rectangle(318, 2, 155, 30));
 		btnRedoPackage.setText("Refazer Frascos dispesados");
-		btnRedoPackage
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdRedoPackageSelected();
-					}
-				});
+		btnRedoPackage.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				cmdRedoPackageSelected();
+			}
+		});
 		btnRedoPackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 	}
@@ -1001,72 +965,60 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 */
 	private void createCompDispensingTypeSelection() {
 
-		Composite compDispensingTypeSelection = new Composite(getShell(),
-				SWT.BORDER);
+		Composite compDispensingTypeSelection = new Composite(getShell(), SWT.BORDER);
 		compDispensingTypeSelection.setBounds(new Rectangle(242, 56, 643, 67));
 
 		// lblPicDispenseNow
-		Label lblPicDispenseNow = new Label(compDispensingTypeSelection,
-				SWT.NONE);
+		Label lblPicDispenseNow = new Label(compDispensingTypeSelection, SWT.NONE);
 		lblPicDispenseNow.setBounds(new Rectangle(13, 4, 40, 34));
-		lblPicDispenseNow.setImage(ResourceUtils
-				.getImage(iDartImage.DISPENSEPACKAGENOW_40X34));
+		lblPicDispenseNow.setImage(ResourceUtils.getImage(iDartImage.DISPENSEPACKAGENOW_40X34));
 
 		// btnDispenseNow
 		rdBtnDispenseNow = new Button(compDispensingTypeSelection, SWT.RADIO);
 		rdBtnDispenseNow.setBounds(new Rectangle(58, 9, 244, 30));
 		rdBtnDispenseNow.setText("Dispensar directamente para pacientes");
 
-		rdBtnDispenseNow
-				.setToolTipText("Pressione este botão para imprimir etiquetas para todos medicamentos "
-						+ "nesta prescrição. \nEstas etiquetas devem ser colocadas no "
-						+ "Frasco dos medicamentos.");
-		rdBtnDispenseNow
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						// cmdDispenseDrugsSelected(true);
+		rdBtnDispenseNow.setToolTipText("Pressione este botão para imprimir etiquetas para todos medicamentos "
+				+ "nesta prescrição. \nEstas etiquetas devem ser colocadas no " + "Frasco dos medicamentos.");
+		rdBtnDispenseNow.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				// cmdDispenseDrugsSelected(true);
 
-						if (fieldsEnabled) {
-							resetGUIforDispensingType();
-						} else {
-							lblNextAppointment.setText("Próximo Levantamento:");
-						}
+				if (fieldsEnabled) {
+					resetGUIforDispensingType();
+				} else {
+					lblNextAppointment.setText("Próximo Levantamento:");
+				}
 
-					}
-				});
+			}
+		});
 		rdBtnDispenseNow.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		// lblPicDispenseLater
-		Label lblPicDispenseLater = new Label(compDispensingTypeSelection,
-				SWT.NONE);
+		Label lblPicDispenseLater = new Label(compDispensingTypeSelection, SWT.NONE);
 		lblPicDispenseLater.setBounds(new Rectangle(345, 3, 40, 34));
-		lblPicDispenseLater.setImage(ResourceUtils
-				.getImage(iDartImage.PACKAGESAWAITINGPICKUP_40X34));
+		lblPicDispenseLater.setImage(ResourceUtils.getImage(iDartImage.PACKAGESAWAITINGPICKUP_40X34));
 
 		// btnDispenseLater
 		rdBtnDispenseLater = new Button(compDispensingTypeSelection, SWT.RADIO);
 		rdBtnDispenseLater.setBounds(new Rectangle(390, 8, 251, 30));
 		rdBtnDispenseLater.setText("Para dispensa Posterior");
-		rdBtnDispenseLater
-				.setToolTipText("Pressione este botão para imprimir as etiquetas dos frascos para o "
-						+ "paciente.\nHaverá uma etiqueta para cada um dos medicamento nesta "
-						+ "prescrição,\n e a etiqueta para o frasco.");
-		rdBtnDispenseLater
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						if (fieldsEnabled) {
-							// change in hand values
-							clearInHandOnExit();
-							resetGUIforDispensingType();
-						} else {
-							lblNextAppointment.setText("Levantamento Actual:");
-						}
-					}
-				});
+		rdBtnDispenseLater.setToolTipText("Pressione este botão para imprimir as etiquetas dos frascos para o "
+				+ "paciente.\nHaverá uma etiqueta para cada um dos medicamento nesta "
+				+ "prescrição,\n e a etiqueta para o frasco.");
+		rdBtnDispenseLater.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+				if (fieldsEnabled) {
+					// change in hand values
+					clearInHandOnExit();
+					resetGUIforDispensingType();
+				} else {
+					lblNextAppointment.setText("Levantamento Actual:");
+				}
+			}
+		});
 		rdBtnDispenseLater.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		if (iDartProperties.dispenseDirectlyDefault) {
@@ -1078,23 +1030,18 @@ public class NewPatientPackaging extends GenericFormGui implements
 			rdBtnDispenseLater.setSelection(true);
 		}
 
-		final Label lblSelectPharmacy = new Label(compDispensingTypeSelection,
-				SWT.NONE);
+		final Label lblSelectPharmacy = new Label(compDispensingTypeSelection, SWT.NONE);
 		lblSelectPharmacy.setBounds(new Rectangle(51, 41, 200, 20));
-		lblSelectPharmacy.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8_ITALIC));
+		lblSelectPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		lblSelectPharmacy.setAlignment(SWT.RIGHT);
 		lblSelectPharmacy.setText("Farmácia:");
 
-		cmbSelectStockCenter = new CCombo(compDispensingTypeSelection,
-				SWT.BORDER);
+		cmbSelectStockCenter = new CCombo(compDispensingTypeSelection, SWT.BORDER);
 		cmbSelectStockCenter.setBounds(new Rectangle(255, 40, 300, 20));
-		cmbSelectStockCenter.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8_ITALIC));
+		cmbSelectStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 
 		CommonObjects.populateStockCenters(getHSession(), cmbSelectStockCenter);
-		localPharmacy = AdministrationManager.getStockCenter(getHSession(),
-				cmbSelectStockCenter.getText());
+		localPharmacy = AdministrationManager.getStockCenter(getHSession(), cmbSelectStockCenter.getText());
 
 		attachPharmacyComboListener();
 
@@ -1122,15 +1069,19 @@ public class NewPatientPackaging extends GenericFormGui implements
 		createLastPackageTable(compLastPackage);
 		createPrescriptionInfoTable(compLastPackage);
 
-		/*Label lblSummaryLabel = new Label(compLastPackage, SWT.NONE);
-		lblSummaryLabel.setBounds(new Rectangle(550, 177, 180, 18));
-		lblSummaryLabel.setText("Imprimir uma etiqueta de instru��es?");
-		lblSummaryLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		Label lblAppointmentDate = new Label(compLastPackage, SWT.NONE);
-		lblAppointmentDate.setBounds(new Rectangle(150, 177, 250, 15));
-		lblAppointmentDate.setText("Imprimir etiqueta da data do Pr�ximo Levantamento?");
-		lblAppointmentDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));*/
+		/*
+		 * Label lblSummaryLabel = new Label(compLastPackage, SWT.NONE);
+		 * lblSummaryLabel.setBounds(new Rectangle(550, 177, 180, 18));
+		 * lblSummaryLabel.setText("Imprimir uma etiqueta de instru��es?");
+		 * lblSummaryLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		 * 
+		 * Label lblAppointmentDate = new Label(compLastPackage, SWT.NONE);
+		 * lblAppointmentDate.setBounds(new Rectangle(150, 177, 250, 15));
+		 * lblAppointmentDate.setText(
+		 * "Imprimir etiqueta da data do Pr�ximo Levantamento?");
+		 * lblAppointmentDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8
+		 * ));
+		 */
 
 		createCompShowAppointmentOnLabels(compLastPackage);
 		createCompSummaryLabel(compLastPackage);
@@ -1161,9 +1112,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 		lblWaitingPatients.setBounds(new Rectangle(10, 58, 186, 20));
 		lblWaitingPatients.setAlignment(SWT.CENTER);
 		lblWaitingPatients.setText("1. Resultados da Pesquisa");
-		lblWaitingPatients.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8_BOLD));
-		
+		lblWaitingPatients.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_BOLD));
+
 		lstWaitingPatients = new ListViewer(compPatientsWaiting);
 		lstWaitingPatients.getList().setBounds(new Rectangle(9, 77, 187, 199));
 		lstWaitingPatients.getList().setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -1175,10 +1125,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 					pbLoading.setSelection(0);
 					lstWaitingPatientsWidgetSelected();
 				}
-				
+
 			}
 		});
-		
+
 		Label lblClinicName = new Label(compPatientsWaiting, SWT.BORDER);
 		lblClinicName.setBounds(new Rectangle(9, 280, 187, 15));
 		lblClinicName.setAlignment(SWT.CENTER);
@@ -1188,8 +1138,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		lblClinic = new Label(compPatientsWaiting, SWT.BORDER);
 		lblClinic.setBounds(new Rectangle(9, 299, 187, 20));
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblClinic.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_BACKGROUND));
+		lblClinic.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
 
 		pbLoading = new ProgressBar(compPatientsWaiting, SWT.SMOOTH);
 		pbLoading.setBounds(new Rectangle(10, 322, 185, 20));
@@ -1210,26 +1159,26 @@ public class NewPatientPackaging extends GenericFormGui implements
 		compSummaryLabel.setLayout(null);
 		compSummaryLabel.setBounds(new Rectangle(730, 173, 98, 21));
 
-		/*rdBtnPrintSummaryLabelYes = new Button(compSummaryLabel, SWT.RADIO);
-		rdBtnPrintSummaryLabelYes.setBounds(new Rectangle(5, 1, 49, 20));
-		rdBtnPrintSummaryLabelYes.setText("Sim");
-		rdBtnPrintSummaryLabelYes.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
-
-		rdBtnPrintSummaryLabelNo = new Button(compSummaryLabel, SWT.RADIO);
-		rdBtnPrintSummaryLabelNo.setBounds(new Rectangle(57, 1, 45, 19));
-		rdBtnPrintSummaryLabelNo.setText("N�o");
-		rdBtnPrintSummaryLabelNo.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
-
-		if (iDartProperties.summaryLabelDefault) {
-			rdBtnPrintSummaryLabelYes.setSelection(false);
-			rdBtnPrintSummaryLabelNo.setSelection(true);
-		} else {
-
-			rdBtnPrintSummaryLabelYes.setSelection(false);
-			rdBtnPrintSummaryLabelNo.setSelection(true);
-		}*/
+		/*
+		 * rdBtnPrintSummaryLabelYes = new Button(compSummaryLabel, SWT.RADIO);
+		 * rdBtnPrintSummaryLabelYes.setBounds(new Rectangle(5, 1, 49, 20));
+		 * rdBtnPrintSummaryLabelYes.setText("Sim");
+		 * rdBtnPrintSummaryLabelYes.setFont(ResourceUtils
+		 * .getFont(iDartFont.VERASANS_8));
+		 * 
+		 * rdBtnPrintSummaryLabelNo = new Button(compSummaryLabel, SWT.RADIO);
+		 * rdBtnPrintSummaryLabelNo.setBounds(new Rectangle(57, 1, 45, 19));
+		 * rdBtnPrintSummaryLabelNo.setText("N�o");
+		 * rdBtnPrintSummaryLabelNo.setFont(ResourceUtils
+		 * .getFont(iDartFont.VERASANS_8));
+		 * 
+		 * if (iDartProperties.summaryLabelDefault) {
+		 * rdBtnPrintSummaryLabelYes.setSelection(false);
+		 * rdBtnPrintSummaryLabelNo.setSelection(true); } else {
+		 * 
+		 * rdBtnPrintSummaryLabelYes.setSelection(false);
+		 * rdBtnPrintSummaryLabelNo.setSelection(true); }
+		 */
 
 	}
 
@@ -1275,8 +1224,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		grpPackageInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblPicLeftArrow = new Label(grpPackageInfo, SWT.NONE);
 		lblPicLeftArrow.setBounds(new Rectangle(21, 20, 40, 34));
-		lblPicLeftArrow.setImage(ResourceUtils
-				.getImage(iDartImage.ARROWRIGHT_40X34));
+		lblPicLeftArrow.setImage(ResourceUtils.getImage(iDartImage.ARROWRIGHT_40X34));
 		lblPicLeftArrow.setVisible(false);
 
 		lblPackageInfo1 = new Label(grpPackageInfo, SWT.CENTER);
@@ -1286,8 +1234,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 		lblPicRightArrow = new Label(grpPackageInfo, SWT.NONE);
 		lblPicRightArrow.setBounds(new Rectangle(231, 20, 40, 34));
-		lblPicRightArrow.setImage(ResourceUtils
-				.getImage(iDartImage.ARROWLEFT_40X34));
+		lblPicRightArrow.setImage(ResourceUtils.getImage(iDartImage.ARROWLEFT_40X34));
 		lblPicRightArrow.setVisible(false);
 		// txtPrescriptionDate.setText("Initial Pickup");
 		lblIndex = new Label(grpPackageInfo, SWT.RIGHT);
@@ -1342,9 +1289,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		lblCaptureDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblCaptureDate.setText("Data Dispensa:");
 
-		btnCaptureDate = new DateButton(
-				grpPackageInfo,
-				DateButton.NONE,
+		btnCaptureDate = new DateButton(grpPackageInfo, DateButton.NONE,
 				new DateInputValidator(DateRuleFactory.beforeNowInclusive(true)));
 		btnCaptureDate.setBounds(new Rectangle(110, 100, 155, 25));
 		btnCaptureDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -1368,7 +1313,6 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	}
 
-	
 	/**
 	 * This method initializes grpPatientInfo
 	 */
@@ -1380,8 +1324,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		grpPatientInfo.setBounds(new Rectangle(242, 129, 339, 137));
 
 		Label lblPatientId = new Label(grpPatientInfo, SWT.NONE);
-		lblPatientId.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 30,
-				110, 20));
+		lblPatientId.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 30, 110, 20));
 		lblPatientId.setText(Messages.getString("patient.label.patientid")); //$NON-NLS-1$
 		lblPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -1391,8 +1334,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		txtPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblPatientName = new Label(grpPatientInfo, SWT.NONE);
-		lblPatientName.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 55,
-				110, 20));
+		lblPatientName.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 55, 110, 20));
 		lblPatientName.setText("Nome:");
 		lblPatientName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -1402,8 +1344,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		txtPatientName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblPatientAge = new Label(grpPatientInfo, SWT.NONE);
-		lblPatientAge.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 80,
-				110, 20));
+		lblPatientAge.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 80, 110, 20));
 		lblPatientAge.setText("Idade:");
 		lblPatientAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -1413,8 +1354,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		txtPatientAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPatientDOB = new Text(grpPatientInfo, SWT.BORDER);
-		txtPatientDOB.setBounds(new org.eclipse.swt.graphics.Rectangle(180, 80,
-				114, 20));
+		txtPatientDOB.setBounds(new org.eclipse.swt.graphics.Rectangle(180, 80, 114, 20));
 		txtPatientDOB.setEnabled(false);
 		txtPatientDOB.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -1426,9 +1366,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 		// next appointment date
 		lblNextAppointment = new Label(grpPatientInfo, SWT.NONE);
 		lblNextAppointment.setBounds(new Rectangle(10, 107, 120, 20));
-		lblNextAppointment
-				.setText(iDartProperties.dispenseDirectlyDefault == true ? "Próximo Levantamento:"
-						: "Levantamento Actual:");
+		lblNextAppointment.setText(
+				iDartProperties.dispenseDirectlyDefault == true ? "Próximo Levantamento:" : "Levantamento Actual:");
 		lblNextAppointment.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtNextAppDate = new Text(grpPatientInfo, SWT.BORDER);
@@ -1437,8 +1376,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		txtNextAppDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		txtNextAppDate.setVisible(false);
 
-		btnNextAppDate = new DateButton(grpPatientInfo,
-				DateButton.ZERO_TIMESTAMP, null);
+		btnNextAppDate = new DateButton(grpPatientInfo, DateButton.ZERO_TIMESTAMP, null);
 		btnNextAppDate.snapToControl(false);
 		btnNextAppDate.setBounds(new Rectangle(135, 105, 160, 25));
 		btnNextAppDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -1452,8 +1390,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 		Group grpPrescriptionInfo = new Group(getShell(), SWT.NONE);
 		grpPrescriptionInfo.setBounds(new Rectangle(242, 277, 642, 128));
-		grpPrescriptionInfo
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		grpPrescriptionInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpPrescriptionInfo.setText("Informação da Prescrição");
 
 		Label lblPrescriptionId = new Label(grpPrescriptionInfo, SWT.NONE);
@@ -1478,23 +1415,19 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 		Label lblDateOfLastPickup = new Label(grpPrescriptionInfo, SWT.NONE);
 		lblDateOfLastPickup.setBounds(new Rectangle(10, 72, 114, 20));
-		lblDateOfLastPickup
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		lblDateOfLastPickup.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblDateOfLastPickup.setText("Último Levantamento:");
 
 		lblDateOfLastPickupContents = new Label(grpPrescriptionInfo, SWT.BORDER);
 		lblDateOfLastPickupContents.setBounds(new Rectangle(126, 72, 150, 20));
-		lblDateOfLastPickupContents.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
+		lblDateOfLastPickupContents.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		// lblPicPatientHistoryReport
-		Button btnPatientHistoryReport = new Button(grpPrescriptionInfo,
-				SWT.NONE);
+		Button btnPatientHistoryReport = new Button(grpPrescriptionInfo, SWT.NONE);
 		btnPatientHistoryReport.setBounds(new Rectangle(294, 73, 40, 40));
-		btnPatientHistoryReport
-				.setToolTipText("Pressione este botão para visualizar e / ou imprimir relatórios \ndo Histórico da Prescrição do Paciente.");
-		btnPatientHistoryReport.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_PATIENTHISTORY_30X26));
+		btnPatientHistoryReport.setToolTipText(
+				"Pressione este botão para visualizar e / ou imprimir relatórios \ndo Histórico da Prescrição do Paciente.");
+		btnPatientHistoryReport.setImage(ResourceUtils.getImage(iDartImage.REPORT_PATIENTHISTORY_30X26));
 
 		btnPatientHistoryReport.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1506,10 +1439,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 		// lblPicUpdatePrescription
 		Button btnUpdatePrescription = new Button(grpPrescriptionInfo, SWT.NONE);
 		btnUpdatePrescription.setBounds(new Rectangle(293, 23, 40, 40));
-		btnUpdatePrescription
-				.setToolTipText("Pressione este botão para actualizar a prescrição do paciente");
-		btnUpdatePrescription.setImage(ResourceUtils
-				.getImage(iDartImage.PRESCRIPTIONNEW_30X26));
+		btnUpdatePrescription.setToolTipText("Pressione este botão para actualizar a prescrição do paciente");
+		btnUpdatePrescription.setImage(ResourceUtils.getImage(iDartImage.PRESCRIPTIONNEW_30X26));
 		btnUpdatePrescription.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
@@ -1520,21 +1451,18 @@ public class NewPatientPackaging extends GenericFormGui implements
 		Label lblPrescriptionDate = new Label(grpPrescriptionInfo, SWT.NONE);
 		lblPrescriptionDate.setBounds(new Rectangle(10, 97, 113, 20));
 		lblPrescriptionDate.setText("Data da Prescrição:");
-		lblPrescriptionDate
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		lblPrescriptionDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPrescriptionDate = new Text(grpPrescriptionInfo, SWT.BORDER);
 		txtPrescriptionDate.setBounds(new Rectangle(126, 97, 150, 20));
-		txtPrescriptionDate
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		txtPrescriptionDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		txtPrescriptionDate.setEnabled(false);
 
 		createGrpNotes(grpPrescriptionInfo);
 	}
 
 	private void createLastPackageTable(Composite parent) {
-		pillCountTable = new PillCountTable(parent, SWT.NONE, getHSession(),
-				new Rectangle(8, 11, 245, 160));
+		pillCountTable = new PillCountTable(parent, SWT.NONE, getHSession(), new Rectangle(8, 11, 245, 160));
 		pillCountTable.getTable().setBounds(new Rectangle(0, 19, 244, 140));
 		pillCountTable.setHeading("2. Contagem de Comprimidos");
 		pillCountTable.setPillCountGroupHeading("");
@@ -1551,12 +1479,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 		lnkStockOnHand = new Link(parent, SWT.BORDER);
 		lnkStockOnHand.setBounds(new Rectangle(274, 11, 596, 21));
-		lnkStockOnHand
-				.setText("3. Medicamentos a dispensar:        "
-						+ "                                            "
-						+ "                                       <A>Stock Disponível</A>");
-		lnkStockOnHand
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_BOLD));
+		lnkStockOnHand.setText("3. Medicamentos a dispensar:        " + "                                            "
+				+ "                                       <A>Stock Disponível</A>");
+		lnkStockOnHand.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_BOLD));
 		lnkStockOnHand.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -1568,11 +1493,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 		tblPrescriptionInfo.setBounds(new Rectangle(274, 31, 596, 140));
 		tblPrescriptionInfo.setHeaderVisible(true);
 		tblPrescriptionInfo.setLinesVisible(true);
-		tblPrescriptionInfo
-				.setToolTipText("clique em uma linha para visualizar as informações adicionais da dispensa");
+		tblPrescriptionInfo.setToolTipText("clique em uma linha para visualizar as informações adicionais da dispensa");
 
-		tblPrescriptionInfo
-				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		tblPrescriptionInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		TableColumn column = new TableColumn(tblPrescriptionInfo, SWT.NONE);
 		column.setText("Nome do Medicamento");
@@ -1685,56 +1608,41 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 */
 	private boolean fieldsOkay(java.util.List<PackageDrugInfo> allPackagedDrugsList) {
 		Patient patient = PatientManager.getPatient(getHSession(), localPatient.getId());
-		
+
 		if (patient == null || txtPatientId.getText().equals("")) {
 			showMessage(MessageDialog.ERROR, "Nenhum Paciente Seleccionado",
 					"Nenhum Paciente foi Seleccionado. Precisa de seleccionar um.");
 			return false;
-		} 
-		
+		}
+
 		if (!drugQuantitiesOkay()) {
 			showMessage(MessageDialog.ERROR, "Nenhuma quantidade de medicamento foi Dispensado",
 					"Você não inseriu quantidades para qualquer um dos medicamentos.");
 			return false;
-		} 
-		
-		if (btnCaptureDate.getDate().before(
-				newPack.getPrescription().getDate())
-				&& !(sdf.format(btnCaptureDate.getDate()).equals(sdf
-						.format(newPack.getPrescription().getDate())))) {
+		}
+
+		if (btnCaptureDate.getDate().before(newPack.getPrescription().getDate())
+				&& !(sdf.format(btnCaptureDate.getDate()).equals(sdf.format(newPack.getPrescription().getDate())))) {
 			showMessage(MessageDialog.ERROR, "Data de Dispensa Inválida!",
 					"A Data de dispensa não pode estar antes da data da prescrição "
-							+ sdf.format(newPack.getPrescription().getDate())
-							+ " ");
+							+ sdf.format(newPack.getPrescription().getDate()) + " ");
 			return false;
-		} 
-		
-		if (btnNextAppDate.getDate() != null
-				&& btnNextAppDate.getDate().before(btnCaptureDate.getDate())
-				&& !(sdf.format(btnCaptureDate.getDate()).equals(sdf
-						.format(btnNextAppDate.getDate())))) {
-			showMessage(MessageDialog.ERROR,
-					"A data do proximo levantamento esta antes da data deste levantamento",
+		}
+
+		if (btnNextAppDate.getDate() != null && btnNextAppDate.getDate().before(btnCaptureDate.getDate())
+				&& !(sdf.format(btnCaptureDate.getDate()).equals(sdf.format(btnNextAppDate.getDate())))) {
+			showMessage(MessageDialog.ERROR, "A data do proximo levantamento esta antes da data deste levantamento",
 					"A data do próximo levantamento não pode ser antes da data deste levantamento.");
 			return false;
-		} 
+		}
 
-		if (PackageManager
-				.patientHasUncollectedPackages(
-						getHSession(), patient)) {
+		if (PackageManager.patientHasUncollectedPackages(getHSession(), patient)) {
 
-			Date oldPackDate = PackageManager.getPackDateForUncollectedPackage(
-					getHSession(),
-					PatientManager.getPatient(getHSession(),
-							txtPatientId.getText()));
-			showMessage(
-					MessageDialog.ERROR,
-					"Frasco de medicamento já foi criado para Patient",
-					"O Frasco já foi criado para este paciente'"
-							+ txtPatientId.getText()
-							+ "' em "
-							+ sdf.format(oldPackDate)
-							+ " e ainda não foi entregue ao paciente. "
+			Date oldPackDate = PackageManager.getPackDateForUncollectedPackage(getHSession(),
+					PatientManager.getPatient(getHSession(), txtPatientId.getText()));
+			showMessage(MessageDialog.ERROR, "Frasco de medicamento já foi criado para Patient",
+					"O Frasco já foi criado para este paciente'" + txtPatientId.getText() + "' em "
+							+ sdf.format(oldPackDate) + " e ainda não foi entregue ao paciente. "
 							+ "\n\nSó podes criar outro frasco para este paciente "
 							+ "Quando o frasco anterior for entregue ao paciente ou "
 							+ "devolvido a farmácia (usando a tela 'Devolver Frascos não Entregues ao Paciente').");
@@ -1742,20 +1650,15 @@ public class NewPatientPackaging extends GenericFormGui implements
 		}
 
 		if (dateAlreadyDispensed) {
-			Packages lastPackageMade = PackageManager.getLastPackageMade(
-					getHSession(), patient);
+			Packages lastPackageMade = PackageManager.getLastPackageMade(getHSession(), patient);
 			// if package hasn't been collected yet or date is not today
 			// http://dev.cell-life.org/jira/browse/IDART-14
 			Date pickupDate = lastPackageMade.getPickupDate();
 			if (pickupDate == null || iDARTUtil.hasZeroTimestamp(pickupDate)) {
 				Date oldPackDate = lastPackageMade.getPackDate();
 
-				showMessage(
-						MessageDialog.ERROR,
-						"Frasco já foi criado neste dia",
-						"O Frasco já foi criado para o paciente '"
-								+ txtPatientId.getText()
-								+ "' em "
+				showMessage(MessageDialog.ERROR, "Frasco já foi criado neste dia",
+						"O Frasco já foi criado para o paciente '" + txtPatientId.getText() + "' em "
 								+ sdf.format(oldPackDate)
 								+ ".\n\niDART não aceita criar outro frasco para este paciente no mesmo dia, "
 								+ "assim como o tempo em que eles foram criados será o mesmo. "
@@ -1763,17 +1666,14 @@ public class NewPatientPackaging extends GenericFormGui implements
 				return false;
 			}
 		}
-		
+
 		// open temporary session
 		Session sess = HibernateUtil.getNewSession();
 		for (PackageDrugInfo pdi : allPackagedDrugsList) {
 			if (!checkStockStillAvailable(sess, pdi)) {
-				showMessage(
-						MessageDialog.ERROR,
-						"O Stock seleccionado está vazio.",
-						"O lote do stock seleccionado para "
-								+ pdi.getDrugName()
-								+ " não contém mais stock.\n\nSeleccione outro lote.");
+				showMessage(MessageDialog.ERROR, "O Stock seleccionado está vazio.",
+						"O lote do stock seleccionado para " + pdi.getDrugName()
+						+ " não contém mais stock.\n\nSeleccione outro lote.");
 				return false;
 			}
 		}
@@ -1786,7 +1686,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -1801,11 +1701,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 		Stock stock = StockManager.getStock(sess, pdi.getStockId());
 		if ('T' == stock.getHasUnitsRemaining()) {
 			StockLevel sl = StockManager.getCurrentStockLevel(sess, stock);
-			if (sl == null){
+			if (sl == null) {
 				return false;
 			}
-			int unitsRemaining = sl.getFullContainersRemaining()
-					* stock.getDrug().getPackSize()
+			int unitsRemaining = sl.getFullContainersRemaining() * stock.getDrug().getPackSize()
 					+ sl.getLoosePillsRemaining();
 			if (unitsRemaining >= pdi.getDispensedQty())
 				return true;
@@ -1815,14 +1714,11 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	private boolean checkForBreakingPacks(PackageDrugInfo pdi) {
 		boolean fieldsOk = true;
-		if ((pdi.getFormLanguage1().toUpperCase().startsWith("ML"))
-				&& ((pdi.getDispensedQty() % DrugManager.getDrug(getHSession(),
-						pdi.getDrugName()).getPackSize()) != 0)) {
-			MessageBox m = new MessageBox(getShell(), SWT.YES | SWT.NO
-					| SWT.ICON_QUESTION);
-			m.setMessage("Você está prestes a dispensar medicamentos " + pdi.getDispensedQty()
-					+ " ml de " + pdi.getDrugName()
-					+ ". Note que isto significa que um frasco está incompleto. "
+		if ((pdi.getFormLanguage1().toUpperCase().startsWith("ML")) && ((pdi.getDispensedQty()
+				% DrugManager.getDrug(getHSession(), pdi.getDrugName()).getPackSize()) != 0)) {
+			MessageBox m = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+			m.setMessage("Você está prestes a dispensar medicamentos " + pdi.getDispensedQty() + " ml de "
+					+ pdi.getDrugName() + ". Note que isto significa que um frasco está incompleto. "
 					+ "\n\nTem certeza de que quer quebrar um pacote?");
 			m.setText("Dispensa de Frasco Incompleto");
 
@@ -1869,17 +1765,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 						}
 					}
 					if (ad.getPillCount() == null) {
-						getLog().error(
-								"Did not save accumulated drug " + drugName
-										+ " because it had no pillcount");
+						getLog().error("Did not save accumulated drug " + drugName + " because it had no pillcount");
 					} else {
 						adsToSave.add(ad);
 					}
 				}
 			} catch (NumberFormatException p) {
-				getLog().error(
-						"NumberFormatError saving accumulated drug for "
-								+ item.getText(0));
+				getLog().error("NumberFormatError saving accumulated drug for " + item.getText(0));
 			}
 
 		}
@@ -1894,8 +1786,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 * @param ti
 	 *            TableItem
 	 */
-	private void getDispensedQuantity(
-			java.util.List<PackageDrugInfo> theStockList, TableItem ti) {
+	
+	
+	private void getDispensedQuantity(java.util.List<PackageDrugInfo> theStockList, TableItem ti) {
 
 		int totalDispensedQty = 0;
 		int totalNumberOfLabels = 0;
@@ -1913,12 +1806,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 			}
 
 		}
-		ti.setText(2, String.valueOf(totalDispensedQty));
+    	ti.setText(2, String.valueOf(totalDispensedQty));
 		ti.setText(4, String.valueOf(totalNumberOfLabels));
-		ti.setText(
-				5,
-				String.valueOf(totalDispensedQty
-						+ (previousInHand - previousDispensedQuantity)));
+		ti.setText(5, String.valueOf(totalDispensedQty + (previousInHand - previousDispensedQuantity)));
 
 		/*
 		 * set the foreground colour to ResourceUtils.getColor(iDartColor.BLACK)
@@ -1948,7 +1838,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				pc.setDateOfCount(btnCaptureDate.getDate());
 			}
 			pillFacade.save(pcnts);
-	
+
 		}
 
 	}
@@ -2009,7 +1899,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 			public void run() {
 				StructuredSelection selection = (StructuredSelection) lstWaitingPatients.getSelection();
 				if (selection != null && !selection.isEmpty()) {
-					populatePatientDetails(((PatientIdAndName)selection.getFirstElement()).getId());
+					populatePatientDetails(((PatientIdAndName) selection.getFirstElement()).getId());
 					cmbWeeksSupplyChanged();
 				}
 			}
@@ -2020,15 +1910,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 	protected void populatePatientDetails(String patientID, boolean forceSelect) {
 		java.util.List<PatientIdAndName> patients = null;
 		if (patientID == null || patientID.trim().isEmpty()) {
-			patients = SearchManager
-					.getActivePatientWithValidPrescriptionIDsAndNames(getHSession());
+			patients = SearchManager.getActivePatientWithValidPrescriptionIDsAndNames(getHSession());
 		} else {
-			patients = SearchManager.findPatientsWithIdLike(getHSession(),
-					patientID);
+			patients = SearchManager.findPatientsWithIdLike(getHSession(), patientID);
 		}
-		
+
 		lstWaitingPatients.setInput(patients);
-		
+
 		// Only try to load the patient if the user pressed enter.
 		if (forceSelect) {
 			if (patients.size() == 1) {
@@ -2040,7 +1928,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				searchBar.setText(tmp);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -2073,14 +1961,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 		previousPack = null;
 		searchBar.setText(localPatient.getPatientId());
 		searchBar.setSelection(0, localPatient.getPatientId().length());
-		lstWaitingPatients.setSelection(new StructuredSelection(
-				new PatientIdAndName(localPatient.getId(), localPatient
-						.getPatientId(), localPatient.getFirstNames() + ","
-						+ localPatient.getLastname())));
-		if (!localPatient.getAccountStatusWithCheck()
-				|| localPatient.getCurrentPrescription() == null) {
-			showMessage(MessageDialog.ERROR,
-					"O Paciente não pode ser dispensado.",
+		lstWaitingPatients.setSelection(new StructuredSelection(new PatientIdAndName(localPatient.getId(),
+				localPatient.getPatientId(), localPatient.getFirstNames() + "," + localPatient.getLastname())));
+		if (!localPatient.getAccountStatusWithCheck() || localPatient.getCurrentPrescription() == null) {
+			showMessage(MessageDialog.ERROR, "O Paciente não pode ser dispensado.",
 					"Paciente está inativo ou não tem uma prescrição válida.");
 			initialiseSearchList();
 			clearForm();
@@ -2091,13 +1975,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 		setDispenseTypeFromClinic();
 		lblClinic.setText(clinic.getClinicName());
 		txtPatientId.setText(localPatient.getPatientId());
-		txtPatientName.setText(localPatient.getFirstNames() + " "
-				+ localPatient.getLastname());
+		txtPatientName.setText(localPatient.getFirstNames() + " " + localPatient.getLastname());
 		txtPatientAge.setText("" + localPatient.getAge());
 		if (localPatient.getDateOfBirth() != null) {
-			txtPatientDOB.setText(new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(localPatient.getDateOfBirth()));	
+			txtPatientDOB
+			.setText(new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(localPatient.getDateOfBirth()));
 		}
-		
+
 		if (localPatient.getAge() < 15) {
 			lblPicChild.setVisible(true);
 
@@ -2106,22 +1990,20 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 		}
 
-		/*if (!iDartProperties.summaryLabelDefault) {
-			rdBtnPrintSummaryLabelYes.setSelection(false);
-			rdBtnPrintSummaryLabelNo.setSelection(true);
-		} else {
-			rdBtnPrintSummaryLabelYes.setSelection(false);
-			rdBtnPrintSummaryLabelNo.setSelection(true);
-		}*/
+		/*
+		 * if (!iDartProperties.summaryLabelDefault) {
+		 * rdBtnPrintSummaryLabelYes.setSelection(false);
+		 * rdBtnPrintSummaryLabelNo.setSelection(true); } else {
+		 * rdBtnPrintSummaryLabelYes.setSelection(false);
+		 * rdBtnPrintSummaryLabelNo.setSelection(true); }
+		 */
 
 		Prescription pre = localPatient.getCurrentPrescription();
 		if (pre == null) {
-			MessageBox noScript = new MessageBox(getShell(), SWT.OK
-					| SWT.ICON_INFORMATION);
+			MessageBox noScript = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
 			noScript.setText("O Paciente não tem uma prescrição válida");
-			noScript.setMessage("Patient '".concat(
-					localPatient.getPatientId()).concat(
-					"' não tem uma prescrição válida."));
+			noScript.setMessage(
+					"Patient '".concat(localPatient.getPatientId()).concat("' não tem uma prescrição válida."));
 			noScript.open();
 			initialiseSearchList();
 			clearForm();
@@ -2140,31 +2022,24 @@ public class NewPatientPackaging extends GenericFormGui implements
 			// }
 
 			// weeks supply = script duration
-			int numPeriods = pre.getDuration() >= 4 ? 4 : pre
-					.getDuration();
+			int numPeriods = pre.getDuration() >= 4 ? 4 : pre.getDuration();
 			newPack.setWeekssupply(numPeriods);
 
 			btnCaptureDate.setDate(new Date());
 			newPack.setPackDate(btnCaptureDate.getDate());
 
-			previousPack = PackageManager.getLastPackagePickedUp(
-					getHSession(), localPatient);
+			previousPack = PackageManager.getLastPackagePickedUp(getHSession(), localPatient);
 
 			if (patientHasPackageAwaitingPickup()) {
-				MessageBox m = new MessageBox(getShell(), SWT.OK
-						| SWT.ICON_INFORMATION);
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				m.setText("O Paciente não pode ser dispensado");
-				m.setMessage("Não pode dispensar medicamento para "
-						+ txtPatientId.getText()
-						+ " uma vez que um frasco já foi criado em "
-						+ sdf.format(previousPack.getPackDate())
-						+ " para este paciente. "
-						+ "\nEste frasco ainda não foi colectado pelo paciente. "
-						+ "\n\n Se o frasco está correcto, porfavor de scanar "
-						+ "para e entrega o paciente usando a tela 'Scanar frascos para os pacientes.' "
-						+ "\n\nSe o frasco não está correcto, "
-						+ "por favor apague-o usando a tela 'Apagar Stock, Prescription & Frascos' "
-						+ "");
+				m.setMessage("Não pode dispensar medicamento para " + txtPatientId.getText()
+				+ " uma vez que um frasco já foi criado em " + sdf.format(previousPack.getPackDate())
+				+ " para este paciente. " + "\nEste frasco ainda não foi colectado pelo paciente. "
+				+ "\n\n Se o frasco está correcto, porfavor de scanar "
+				+ "para e entrega o paciente usando a tela 'Scanar frascos para os pacientes.' "
+				+ "\n\nSe o frasco não está correcto, "
+				+ "por favor apague-o usando a tela 'Apagar Stock, Prescription & Frascos' " + "");
 
 				m.open();
 				clearForm();
@@ -2182,47 +2057,66 @@ public class NewPatientPackaging extends GenericFormGui implements
 			pillFacade = new PillCountFacade(getHSession());
 
 			if (previousPack != null && rdBtnDispenseNow.getSelection()) {
-				pillCountTable.populateLastPackageDetails(previousPack,
-						newPack.getPackDate());
+				pillCountTable.populateLastPackageDetails(previousPack, newPack.getPackDate());
 			}
 
 			if (rdBtnDispenseNow.getSelection()) {
 				// Display the next appointment date if there is one,
 				// or else base next appointment on todays date.
-				Appointment nextApp = PatientManager
-						.getLatestAppointmentForPatient(localPatient, true);
+				Appointment nextApp = PatientManager.getLatestAppointmentForPatient(localPatient, true);
 				if (nextApp == null) {
 					Calendar theCal = Calendar.getInstance();
 					attemptCaptureDateReset();
 					theCal.setTime(newPack.getPackDate());
-					theCal.add(Calendar.DATE, numPeriods * 7);
-					adjustForNewDispDate(btnCaptureDate.getDate());
-					adjustForNewAppointmentDate(theCal.getTime());
+
+					if (numPeriods <= 2) {
+						theCal.add(Calendar.DATE, numPeriods * 7);
+						adjustForNewDispDate(btnCaptureDate.getDate());
+						adjustForNewAppointmentDate(theCal.getTime());
+					}
+
+					else if (numPeriods == 4) {
+
+						theCal.add(Calendar.MONTH, 1);
+						adjustForNewDispDate(btnCaptureDate.getDate());
+						adjustForNewAppointmentDate(theCal.getTime());
+					}
+
+					else if (numPeriods == 8) {
+
+						theCal.add(Calendar.MONTH, 2);
+						adjustForNewDispDate(btnCaptureDate.getDate());
+						adjustForNewAppointmentDate(theCal.getTime());
+					}
+
+					else if (numPeriods == 12) {
+
+						theCal.add(Calendar.MONTH, 3);
+						adjustForNewDispDate(btnCaptureDate.getDate());
+						adjustForNewAppointmentDate(theCal.getTime());
+					}
+
 				}
+
 			}
 		}
 	}
 
 	private void setDispenseTypeFromClinic() {
 		Clinic clinic = localPatient
-				.getClinicAtDate(btnCaptureDate.getDate() != null ? btnCaptureDate
-						.getDate() : new Date());
+				.getClinicAtDate(btnCaptureDate.getDate() != null ? btnCaptureDate.getDate() : new Date());
 		if (clinic == null) {
-			showMessage(
-					MessageDialog.ERROR,
-					"Paciente não activo na data seleccionada ",
+			showMessage(MessageDialog.ERROR, "Paciente não activo na data seleccionada ",
 					"O paciente não tem um episódio em aberto na data que você especificou então você não é capaz de dispensar a eles nesta data.\n\n "
 							+ "Por favor, seleccione uma data em que o paciente foi ativo.\n\n "
 							+ "Para ver quando o paciente esteve ativo, olhar para os seus episódios na tela 'Relatório do Histórico do Paciente' (pressione o botão no meio da tela para carregar este relatório).");
 			btnCaptureDate.setDate(new Date());
 		} else {
 			boolean isMainClinic = clinic.isMainClinic();
-			
-			rdBtnDispenseNow.setSelection(isMainClinic
-					& iDartProperties.dispenseDirectlyDefault);
-			rdBtnDispenseLater
-					.setSelection(!(isMainClinic & iDartProperties.dispenseDirectlyDefault));
-			
+
+			rdBtnDispenseNow.setSelection(isMainClinic & iDartProperties.dispenseDirectlyDefault);
+			rdBtnDispenseLater.setSelection(!(isMainClinic & iDartProperties.dispenseDirectlyDefault));
+
 			resetGUIforDispensingType();
 		}
 	}
@@ -2235,29 +2129,24 @@ public class NewPatientPackaging extends GenericFormGui implements
 	private void populatePrescriptionDetails() {
 
 		if (localPharmacy == null) {
-			getLog().error(
-					"Tried to populate prescription details, but localPharmacy is null");
+			getLog().error("Tried to populate prescription details, but localPharmacy is null");
 			return;
 		}
 		if (newPack == null) {
-			getLog().error(
-					"Tried to populate prescription details, but pack is null");
+			getLog().error("Tried to populate prescription details, but pack is null");
 			return;
 		}
 		if (newPack.getPrescription() == null) {
-			getLog().error(
-					"Tried to populate prescription details, but pack.prescription is null");
+			getLog().error("Tried to populate prescription details, but pack.prescription is null");
 			return;
 		}
 
-		txtPrescriptionId
-				.setText(newPack.getPrescription().getPrescriptionId());
+		txtPrescriptionId.setText(newPack.getPrescription().getPrescriptionId());
 
-		txtDoctor.setText(newPack.getPrescription().getDoctor().getFirstname()
-				+ " " + newPack.getPrescription().getDoctor().getLastname());
+		txtDoctor.setText(newPack.getPrescription().getDoctor().getFirstname() + " "
+				+ newPack.getPrescription().getDoctor().getLastname());
 
-		txtPrescriptionDate.setText(sdf.format(newPack.getPrescription()
-				.getDate()));
+		txtPrescriptionDate.setText(sdf.format(newPack.getPrescription().getDate()));
 
 		updateDateOfLastPickup();
 
@@ -2265,12 +2154,12 @@ public class NewPatientPackaging extends GenericFormGui implements
 			txtAreaNotes.setText(newPack.getPrescription().getNotes());
 		}
 		int dur = newPack.getPrescription().getDuration();
-		
-		// Set the default index to 1 
+
+		// Set the default index to 1
 		int index = 1;
-		
+
 		// Make sure that it is not a new prescription.
-		if(previousPack != null && (previousPack.getPrescription().getId() == newPack.getPrescription().getId()))
+		if (previousPack != null && (previousPack.getPrescription().getId() == newPack.getPrescription().getId()))
 			index = (previousPack.getNextIssueNo());
 
 		// if the prescription is valid less than one month
@@ -2323,37 +2212,27 @@ public class NewPatientPackaging extends GenericFormGui implements
 			Date myPackDate = btnCaptureDate.getDate();
 
 			// Test for pack date consistency.
-			if (myPackDate != null && lastPickupDate != null
-					&& iDARTUtil.before(myPackDate, lastPickupDate))
+			if (myPackDate != null && lastPickupDate != null && iDARTUtil.before(myPackDate, lastPickupDate))
 				// do not perform this procedure, just break,
 				// since an earlier pack date is not allowed
 				// pack date must be greater then last pickup date.
 				return;
 
-			int numOfDays = iDARTUtil.getDaysBetween(lastPickupDate,
-					(myPackDate == null ? new Date() : myPackDate));
+			int numOfDays = iDARTUtil.getDaysBetween(lastPickupDate, (myPackDate == null ? new Date() : myPackDate));
 
-			lblDateOfLastPickupContents.setText(numOfDays
-					+ " dias ("
-					+ new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
-							.format(lastPickupDate) + ")");
+			lblDateOfLastPickupContents.setText(numOfDays + " dias ("
+					+ new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(lastPickupDate) + ")");
 
 			if (numOfDays > ((previousPack.getWeekssupply() * 7) + 3)) {
-				lblDateOfLastPickupContents.setForeground(ResourceUtils
-						.getColor(iDartColor.RED));
-				lblDateOfLastPickupContents.setBackground(ResourceUtils
-						.getColor(iDartColor.WIDGET_BACKGROUND));
+				lblDateOfLastPickupContents.setForeground(ResourceUtils.getColor(iDartColor.RED));
+				lblDateOfLastPickupContents.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
 			} else if (numOfDays == 0) {
-				lblDateOfLastPickupContents.setForeground(ResourceUtils
-						.getColor(iDartColor.BLACK));
-				lblDateOfLastPickupContents.setBackground(ResourceUtils
-						.getColor(iDartColor.YELLOW));
+				lblDateOfLastPickupContents.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
+				lblDateOfLastPickupContents.setBackground(ResourceUtils.getColor(iDartColor.YELLOW));
 				dateAlreadyDispensed = true;
 			} else {
-				lblDateOfLastPickupContents.setForeground(ResourceUtils
-						.getColor(iDartColor.BLACK));
-				lblDateOfLastPickupContents.setBackground(ResourceUtils
-						.getColor(iDartColor.WIDGET_BACKGROUND));
+				lblDateOfLastPickupContents.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
+				lblDateOfLastPickupContents.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
 			}
 
 		}
@@ -2361,10 +2240,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 		else {
 
 			lblDateOfLastPickupContents.setText("Levantamento inicial");
-			lblDateOfLastPickupContents.setForeground(ResourceUtils
-					.getColor(iDartColor.BLACK));
-			lblDateOfLastPickupContents.setBackground(ResourceUtils
-					.getColor(iDartColor.WIDGET_BACKGROUND));
+			lblDateOfLastPickupContents.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
+			lblDateOfLastPickupContents.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
 
 		}
 
@@ -2377,13 +2254,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 		tblPrescriptionInfo.removeAll();
 		String tempAmtPerTime = "";
 
-		for (PrescribedDrugs pd : newPack.getPrescription()
-				.getPrescribedDrugs()) {
+		for (PrescribedDrugs pd : newPack.getPrescription().getPrescribedDrugs()) {
 
 			if (new BigDecimal(pd.getAmtPerTime()).scale() == 0) {
-				tempAmtPerTime = ""
-						+ new BigDecimal(pd.getAmtPerTime()).unscaledValue()
-								.intValue();
+				tempAmtPerTime = "" + new BigDecimal(pd.getAmtPerTime()).unscaledValue().intValue();
 			} else {
 				tempAmtPerTime = "" + pd.getAmtPerTime();
 			}
@@ -2396,14 +2270,12 @@ public class NewPatientPackaging extends GenericFormGui implements
 			tableEntry[0] = pd.getDrug().getName();
 
 			if (theForm.getFormLanguage1().equals("")) // is a cream, no amount
-			// per time
+				// per time
 			{
-				tableEntry[1] = theForm.getActionLanguage1() + " "
-						+ pd.getTimesPerDay() + " vezes por dia.";
+				tableEntry[1] = theForm.getActionLanguage1() + " " + pd.getTimesPerDay() + " vezes por dia.";
 			} else {
-				tableEntry[1] = theForm.getActionLanguage1() + " "
-						+ tempAmtPerTime + " " + theForm.getFormLanguage1()
-						+ " " + pd.getTimesPerDay() + " vezes por dia.";
+				tableEntry[1] = theForm.getActionLanguage1() + " " + tempAmtPerTime + " " + theForm.getFormLanguage1()
+				+ " " + pd.getTimesPerDay() + " vezes por dia.";
 			}
 			tableEntry[2] = "0";
 			tableEntry[4] = "0";
@@ -2429,8 +2301,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 */
 	private void populateStockDetails() {
 		if (localPharmacy == null) {
-			getLog().error(
-					"Tried to populate stock details, but localPharmacy is null");
+			getLog().error("Tried to populate stock details, but localPharmacy is null");
 			return;
 		}
 		if (newPack == null) {
@@ -2438,22 +2309,17 @@ public class NewPatientPackaging extends GenericFormGui implements
 			return;
 		}
 		if (newPack.getPrescription() == null) {
-			getLog().error(
-					"Tried to populate stock details, but pack.prescription is null");
+			getLog().error("Tried to populate stock details, but pack.prescription is null");
 			return;
 		}
 
 		int count = 0;
 
-		for (PrescribedDrugs pd : newPack.getPrescription()
-				.getPrescribedDrugs()) {
+		for (PrescribedDrugs pd : newPack.getPrescription().getPrescribedDrugs()) {
 
 			TableItem ti = tblPrescriptionInfo.getItem(count);
-			int[] unitsInStock = StockManager.getTotalStockLevelsForDrug(
-					getHSession(), pd.getDrug(), localPharmacy);
-			ti.setText(3, unitsInStock[0]
-					+ (unitsInStock[1] > 0 ? " (" + unitsInStock[1] + " loose)"
-							: ""));
+			int[] unitsInStock = StockManager.getTotalStockLevelsForDrug(getHSession(), pd.getDrug(), localPharmacy);
+			ti.setText(3, unitsInStock[0] + (unitsInStock[1] > 0 ? " (" + unitsInStock[1] + " loose)" : ""));
 			count++;
 		}
 
@@ -2467,8 +2333,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 */
 	private void prepopulateQuantities() {
 		if (localPharmacy == null) {
-			getLog().warn(
-					"Tried to prepopulate quantities, but localPharmacy is null");
+			getLog().warn("Tried to prepopulate quantities, but localPharmacy is null");
 			return;
 		}
 
@@ -2478,27 +2343,22 @@ public class NewPatientPackaging extends GenericFormGui implements
 		}
 
 		if (newPack.getPrescription() == null) {
-			getLog().warn(
-					"Tried to prepopulate quantities, but prescription is null");
+			getLog().warn("Tried to prepopulate quantities, but prescription is null");
 			return;
 		}
 
-		Clinic theClinic = newPack.getPrescription().getPatient()
-				.getCurrentClinic();
+		Clinic theClinic = newPack.getPrescription().getPatient().getCurrentClinic();
 
 		int count = 0;
 
 		pbLoading.setMinimum(0);
-		pbLoading.setMaximum(newPack.getPrescription().getPrescribedDrugs()
-				.size());
+		pbLoading.setMaximum(newPack.getPrescription().getPrescribedDrugs().size());
 
-		for (PrescribedDrugs pd : newPack.getPrescription()
-				.getPrescribedDrugs()) {
+		for (PrescribedDrugs pd : newPack.getPrescription().getPrescribedDrugs()) {
 
 			Drug theDrug = pd.getDrug();
 
-			int repeatNumber = Integer.parseInt(lblIndex.getText()
-					.equalsIgnoreCase("") ? "0" : lblIndex.getText());
+			int repeatNumber = Integer.parseInt(lblIndex.getText().equalsIgnoreCase("") ? "0" : lblIndex.getText());
 
 			int units = 0;
 			int numlabels = 1;
@@ -2510,81 +2370,78 @@ public class NewPatientPackaging extends GenericFormGui implements
 			int packSize = theDrug.getPackSize();
 			if (pd.getAmtPerTime() != 0) {
 				if ((packSize % 28) == 0) {
-					unitsPerMonth = pd.getAmtPerTime() * pd.getTimesPerDay()
-							* 28;
+					unitsPerMonth = pd.getAmtPerTime() * pd.getTimesPerDay() * 28;
 				} else {
-					unitsPerMonth = pd.getAmtPerTime() * pd.getTimesPerDay()
-							* 30;
+					unitsPerMonth = pd.getAmtPerTime() * pd.getTimesPerDay() * 30;
 				}
 
 				// round units up to multiple of packSize
-				if (iDartProperties.roundUpForms.contains(theDrug.getForm()
-						.getForm()) && unitsPerMonth % packSize != 0) {
-					unitsPerMonth = (Math.floor(unitsPerMonth / packSize) + 1)
-							* packSize;
+				if (iDartProperties.roundUpForms.contains(theDrug.getForm().getForm())
+						&& unitsPerMonth % packSize != 0) {
+					unitsPerMonth = (Math.floor(unitsPerMonth / packSize) + 1) * packSize;
 				}
 
 				switch (newPack.getWeekssupply()) {
 
 				case 1: // 1 week supply
-					
-					// First, calculate the number of units required for the total supply
+
+					// First, calculate the number of units required for the
+					// total supply
 					units = (int) (pd.getAmtPerTime() * pd.getTimesPerDay() * 7);
-					
+
 					// round units up to multiple of packSize
-					if (iDartProperties.roundUpForms.contains(theDrug.getForm()
-							.getForm())) {
-						
-						if(units % packSize != 0) {
+					if (iDartProperties.roundUpForms.contains(theDrug.getForm().getForm())) {
+
+						if (units % packSize != 0) {
 							int noOfPacks = units / packSize;
-							units = (noOfPacks + 1 ) * packSize;
-							
+							units = (noOfPacks + 1) * packSize;
+
 						}
 					}
-						
+
 					break;
 
 				case 2: // half a month (14 or 15 days) supply
-					
-					// First, calculate the number of units required for the total supply
+
+					// First, calculate the number of units required for the
+					// total supply
 					units = (int) Math.ceil(unitsPerMonth / 2);
-					
+
 					// round units up to multiple of packSize
-					if (iDartProperties.roundUpForms.contains(theDrug.getForm()
-							.getForm())) {
-						if(units % packSize != 0) {
+					if (iDartProperties.roundUpForms.contains(theDrug.getForm().getForm())) {
+						if (units % packSize != 0) {
 							int noOfPacks = units / packSize;
-							units = (noOfPacks + 1 ) * packSize;
-							
+							units = (noOfPacks + 1) * packSize;
+
 						}
 					}
-					
+
 					break;
 
 				default:
-					// First, calculate the number of units required for the total supply
+					// First, calculate the number of units required for the
+					// total supply
 					if ((packSize % 28) == 0) {
-						units = (int) ((newPack.getWeekssupply() / 4) * (pd.getAmtPerTime() * pd.getTimesPerDay()
-								* 28));
+						units = (int) ((newPack.getWeekssupply() / 4)
+								* (pd.getAmtPerTime() * pd.getTimesPerDay() * 28));
 					} else {
-						units = (int) ((newPack.getWeekssupply() / 4) * (pd.getAmtPerTime() * pd.getTimesPerDay()
-								* 30));
+						units = (int) ((newPack.getWeekssupply() / 4)
+								* (pd.getAmtPerTime() * pd.getTimesPerDay() * 30));
 					}
 					// Next round up syrup if required.
-					if (iDartProperties.roundUpForms.contains(theDrug.getForm()
-							.getForm())) {
-						
-						if(units % packSize != 0) {
+					if (iDartProperties.roundUpForms.contains(theDrug.getForm().getForm())) {
+
+						if (units % packSize != 0) {
 							int noOfPacks = units / packSize;
-							units = (noOfPacks + 1 ) * packSize;
-							
+							units = (noOfPacks + 1) * packSize;
+
 						}
 					}
-					
+
 				}
-				
+
 				numlabels = (int) Math.ceil(((double) units / packSize));
-				
+
 			} else { // for side treatment items that don't have an
 				// amountpertime e.g. creams (Apply 3 times a day), set
 				// to 1 pack and 1 label
@@ -2592,8 +2449,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 				numlabels = 1;
 			}
 
-			Stock theSock = StockManager.getSoonestExpiringStock(getHSession(),
-					theDrug, units, localPharmacy);
+			Stock theSock = StockManager.getSoonestExpiringStock(getHSession(), theDrug, units, localPharmacy);
 			TableItem ti = tblPrescriptionInfo.getItem(count);
 
 			if (theSock != null) {
@@ -2601,44 +2457,21 @@ public class NewPatientPackaging extends GenericFormGui implements
 				df.setDecimalSeparatorAlwaysShown(false);
 				String amtPerTimeString = df.format(pd.getAmtPerTime());
 
-				PackageDrugInfo pdi = new PackageDrugInfo(
-						amtPerTimeString,
-						theSock.getBatchNumber(),
-						theClinic.getClinicName(),
-						units,
-						theDrug.getForm().getFormLanguage1(),
-						theDrug.getForm().getFormLanguage2(),
-						theDrug.getForm().getFormLanguage3(),
-						theDrug.getName(),
-						theSock.getExpiryDate(),
-						theClinic.getNotes(),
-						txtPatientId.getText(),
-						localPatient.getFirstNames(),
-						localPatient.getLastname(),
-						theDrug.getDispensingInstructions1(),
-						theDrug.getDispensingInstructions2(),
-						theSock.getId(),
-						pd.getTimesPerDay(),
-						numlabels,
-						theDrug.getSideTreatment() == 'T' ? true : false,
-						LocalObjects.getUser(getHSession()),
-						new Date(),
-						repeatNumber,
-						newPack.getWeekssupply(),
-						null,
-						PackageManager.getQuantityDispensedForLabel(newPack
-								.getAccumulatedDrugs(), units, theSock
-								.getDrug().getName(), theSock.getDrug()
-								.getPackSize(), false, true),
-						PackageManager.getQuantityDispensedForLabel(newPack
-								.getAccumulatedDrugs(), units, theSock
-								.getDrug().getName(), units, false, true),
-						PackageManager.getQuantityDispensedForLabel(newPack
-								.getAccumulatedDrugs(), units, theSock
-								.getDrug().getName(), theSock.getDrug()
-								.getPackSize(), true, true),
-						newPack.getPrescription().getDuration(),
-						txtNextAppDate.getText(), newPack.getPackageId());
+				PackageDrugInfo pdi = new PackageDrugInfo(amtPerTimeString, theSock.getBatchNumber(),
+						theClinic.getClinicName(), units, theDrug.getForm().getFormLanguage1(),
+						theDrug.getForm().getFormLanguage2(), theDrug.getForm().getFormLanguage3(), theDrug.getName(),
+						theSock.getExpiryDate(), theClinic.getNotes(), txtPatientId.getText(),
+						localPatient.getFirstNames(), localPatient.getLastname(), theDrug.getDispensingInstructions1(),
+						theDrug.getDispensingInstructions2(), theSock.getId(), pd.getTimesPerDay(), numlabels,
+						theDrug.getSideTreatment() == 'T' ? true : false, LocalObjects.getUser(getHSession()),
+								new Date(), repeatNumber, newPack.getWeekssupply(), null,
+								PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(), units,
+										theSock.getDrug().getName(), theSock.getDrug().getPackSize(), false, true),
+								PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(), units,
+										theSock.getDrug().getName(), units, false, true),
+								PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(), units,
+										theSock.getDrug().getName(), theSock.getDrug().getPackSize(), true, true),
+								newPack.getPrescription().getDuration(), txtNextAppDate.getText(), newPack.getPackageId());
 
 				ti.setText(2, (new Integer(units)).toString());
 
@@ -2692,23 +2525,21 @@ public class NewPatientPackaging extends GenericFormGui implements
 		} else {
 			if (previousPack != null) {
 				pillCountTable.getTable().setEnabled(true);
-				pillCountTable.populateLastPackageDetails(previousPack,
-						newPack.getPackDate());
+				pillCountTable.populateLastPackageDetails(previousPack, newPack.getPackDate());
 			}
 			// Re-enabling the printing of the next appointment date.
-			if(iDartProperties.nextAppointmentDateOnLabels) {
+			if (iDartProperties.nextAppointmentDateOnLabels) {
 				rdBtnYesAppointmentDate.setEnabled(true);
 				rdBtnYesAppointmentDate.setSelection(true);
 				rdBtnNoAppointmentDate.setEnabled(true);
 				rdBtnNoAppointmentDate.setSelection(false);
-			}
-			else {
+			} else {
 				rdBtnYesAppointmentDate.setEnabled(true);
 				rdBtnYesAppointmentDate.setSelection(false);
 				rdBtnNoAppointmentDate.setEnabled(true);
 				rdBtnNoAppointmentDate.setSelection(true);
 			}
-			
+
 		}
 		setDateExpectedFields();
 	}
@@ -2722,8 +2553,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 *            java.util.List<PackageDrugInfo>
 	 * @throws Exception
 	 */
-	private void savePackageAndPackagedDrugs(boolean dispenseNow,
-			java.util.List<PackageDrugInfo> allPackageDrugsList) throws Exception {
+	private void savePackageAndPackagedDrugs(boolean dispenseNow, java.util.List<PackageDrugInfo> allPackageDrugsList)
+			throws Exception {
 
 		// if pack date is today, store the time too, else store 12am
 		Date today = new Date();
@@ -2734,10 +2565,9 @@ public class NewPatientPackaging extends GenericFormGui implements
 			newPack.setPickupDate(new Date());
 		}
 
-		newPack.setPackageId(newPack.getPrescription().getPrescriptionId()
-				+ "-" + lblIndex.getText());
+		newPack.setPackageId(newPack.getPrescription().getPrescriptionId() + "-" + lblIndex.getText());
 		newPack.setModified('T');
-		
+
 		int numPeriods = getSelectedWeekSupply();
 		getLog().info("getSelectedWeekSupply() called");
 		newPack.setWeekssupply(numPeriods);
@@ -2753,8 +2583,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 			newPack.setDateReceived(newPack.getPackDate());
 			newPack.setPickupDate(newPack.getPackDate());
 		} else {
-			if (iDartProperties.downReferralMode
-					.equalsIgnoreCase(iDartProperties.OFFLINE_DOWNREFERRAL_MODE)) {
+			if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.OFFLINE_DOWNREFERRAL_MODE)) {
 				newPack.setDateLeft(newPack.getPackDate());
 				newPack.setDateReceived(newPack.getPackDate());
 				newPack.setPickupDate(null);
@@ -2780,12 +2609,10 @@ public class NewPatientPackaging extends GenericFormGui implements
 			if (rdBtnDispenseNow.getSelection()) {
 				pdi.setDateExpectedString(sdf.format(btnNextAppDate.getDate()));
 			} else {
-				
-				Appointment nextApp = PatientManager
-				.getLatestAppointmentForPatient(newPack
-						.getPrescription().getPatient(), true);
-				
-				if(nextApp != null)
+
+				Appointment nextApp = PatientManager.getLatestAppointmentForPatient(newPack.getPrescription().getPatient(), true);
+
+				if (nextApp != null)
 					pdi.setDateExpectedString(sdf.format(nextApp.getAppointmentDate()));
 			}
 			pdi.setPackagedDrug(pd);
@@ -2797,88 +2624,128 @@ public class NewPatientPackaging extends GenericFormGui implements
 		newPack.setPackagedDrugs(packagedDrugsList);
 		newPack.setAccumulatedDrugs(getAccumDrugsToSave());
 
-		// de-normalise table to speed up reports 
-		if(newPack.hasARVDrug()) 
+		// de-normalise table to speed up reports
+		if (newPack.hasARVDrug())
 			newPack.setDrugTypes("ARV");
-		
-		PackageManager.savePackage(getHSession(), newPack);
-		
-		
+
+		//PackageManager.savePackage(getHSession(), newPack);
+
 		//
 		int patientId = newPack.getPrescription().getPatient().getId();
-		
+
 		Set<Episode> episodes = newPack.getClinic().getEpisodes();
-		
-		Episode patientEpisode = null; 
-		
-		for (Episode episode : episodes) { 
+
+		Episode patientEpisode = null;
+
+		for (Episode episode : episodes) {
 			if (episode.getPatient().getId() == patientId) {
 				patientEpisode = episode;
-				System.out.println(episode.getStartReason()); 
-			}
-		}
-		
-		if (!patientEpisode.getStartReason().equalsIgnoreCase(Episode.REASON_TRANSIT)) {  
-			
-			//Add interoperability with OpenMRS through Rest Web Services
-			RestClient restClient = new RestClient();
-			
-			Date dtPickUp = newPack.getPickupDate();
-			
-			//EncounterDatetime
-			String strPickUp = RestUtils.castDateToString(dtPickUp);
-			
-			//Patient NID 
-			String nid = newPack.getPrescription().getPatient().getPatientId().trim();
-			
-			String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(nid, " ", "%20"));
-			
-			//Patient NID uuid 
-			String nidUuid = nidRest.substring(21, 57);
-			
-			String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " " + newPack.getPrescription().getDoctor().getLastname().trim();
-			
-			String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
-			
-			String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER+StringUtils.replace(providerWithNoAccents, " ", "%20"));
-			
-			//Provider
-			String providerUuid = response.substring(21, 57);
-			
-			String facility = newPack.getClinic().getClinicName().trim();
-			
-			//Location
-			String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION+StringUtils.replace(facility, " ", "%20"));
-			
-			//Health Facility
-			String strFacilityUuid = strFacility.substring(21, 57);
-			
-			//Regimen
-			String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
-			
-			//String strRegimenAnswer = restClient.getOpenMRSResource("concept?q="+StringUtils.replace(regimenAnswer, " ", "%20"));
-			
-			//Regimen answer Uuid
-			//String strRegimenAnswerUuid = strRegimenAnswer.substring(21, 57);
-			
-			List<PrescribedDrugs> prescribedDrugs = newPack.getPrescription().getPrescribedDrugs();
-			
-			List<PackagedDrugs> packagedDrugs = newPack.getPackagedDrugs();
-			
-			//Next pick up date
-			Date dtNextPickUp = btnNextAppDate.getDate();
-			
-			String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
-			
-			try {
-				restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY, 
-						strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer, 
-						iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
-			} catch (Exception e) {
-				getLog().info(e.getMessage());
+				System.out.println(episode.getStartReason());
 			}
 		}
 
+		if (!patientEpisode.getStartReason().equalsIgnoreCase(Episode.REASON_TRANSIT)) {
+
+			// Add interoperability with OpenMRS through Rest Web Services
+			RestClient restClient = new RestClient();
+
+			Date dtPickUp = newPack.getPickupDate();
+
+			// EncounterDatetime
+			String strPickUp = RestUtils.castDateToString(dtPickUp);
+
+			// Patient NID
+			String nid = newPack.getPrescription().getPatient().getPatientId().trim();
+
+			String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+			
+			JSONObject jsonObject = new JSONObject(nidRest);
+			JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
+			String nidUuid = null;
+			
+			for (int i = 0; i < _jsonArray.length(); i++) {
+				JSONObject results = (JSONObject) _jsonArray.get(i);
+				nidUuid = (String) results.get("uuid");
+			}
+			
+			if (nidUuid==null) { 
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Problema dispensando o pacote de medicamentos");
+				m.setMessage("O NID deste paciente foi alterado no OpenMRS. Por favor contacte o SIS.");
+				m.open();
+				
+				return;
+			}
+
+			String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " "
+					+ newPack.getPrescription().getDoctor().getLastname().trim();
+
+			String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
+
+			String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+
+			// Provider
+			String providerUuid = response.substring(21, 57);
+
+			String facility = newPack.getClinic().getClinicName().trim();
+
+			// Location
+			String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
+
+			// Health Facility
+			String strFacilityUuid = strFacility.substring(21, 57);
+
+			// Regimen
+			String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
+
+			// String strRegimenAnswer =
+			// restClient.getOpenMRSResource("concept?q="+StringUtils.replace(regimenAnswer,
+			// " ", "%20"));
+
+			// Regimen answer Uuid
+			// String strRegimenAnswerUuid = strRegimenAnswer.substring(21, 57);
+
+			List<PrescribedDrugs> prescribedDrugs = newPack.getPrescription().getPrescribedDrugs();
+
+			List<PackagedDrugs> packagedDrugs = newPack.getPackagedDrugs();
+
+			// Next pick up date
+			Date dtNextPickUp = btnNextAppDate.getDate();
+
+			String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
+
+			try {
+				postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+					strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
+					iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
+					iDartProperties.VISIT_UUID, strNextPickUp);
+				
+					System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
+					
+					if (postOpenMrsEncounterStatus)
+						PackageManager.savePackage(getHSession(), newPack);
+				
+			} catch (Exception e) {
+				System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
+				getLog().info(e.getMessage());
+				OpenmrsErrorLog errorLog = new OpenmrsErrorLog();
+				errorLog.setPatient(patientId);
+				errorLog.setPrescription(newPack.getPrescription().getId());
+				errorLog.setPickupdate(newPack.getPickupDate());
+				errorLog.setReturnpickupdate(dtNextPickUp);
+				errorLog.setErrordescription(e.getMessage());
+				errorLog.setDatacreated(new Date());
+				OpenmrsErrorLogManager.saveOpenmrsRestLog(getHSession(), errorLog);
+				
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+				m.setText("Problema salvando o pacote de medicamentos");
+				m.setMessage("Houve um problema ao salvar o pacote de medicamentos para o paciente " + nid + ". " + "Por favor contacte o SIS.");
+				
+				m.open();
+			}
+		} else {
+			PackageManager.savePackage(getHSession(), newPack);
+		}
 	}
 
 	/**
@@ -2895,8 +2762,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		if (pa == null) {
 
 			pa = new PatientAttribute();
-			pa.setType(PatientManager.getAttributeTypeObject(getHSession(),
-					PatientAttribute.ARV_START_DATE));
+			pa.setType(PatientManager.getAttributeTypeObject(getHSession(), PatientAttribute.ARV_START_DATE));
 			pa.setPatient(newPack.getPrescription().getPatient());
 
 		}
@@ -2920,9 +2786,41 @@ public class NewPatientPackaging extends GenericFormGui implements
 				Calendar theCal = Calendar.getInstance();
 
 				theCal.setTime(btnCaptureDate.getDate());
-				theCal.add(Calendar.DATE, numPeriods * 7);
-				adjustForNewAppointmentDate(theCal.getTime());
-				adjustForNewDispDate(btnCaptureDate.getDate());
+				//theCal.add(Calendar.DATE, numPeriods * 7);
+			//	adjustForNewAppointmentDate(theCal.getTime());
+				//adjustForNewDispDate(btnCaptureDate.getDate());
+				
+
+                if (numPeriods == 1 || numPeriods == 2) {
+                    theCal.add(Calendar.DATE, numPeriods * 7);
+                    adjustForNewAppointmentDate(theCal.getTime());
+                    adjustForNewDispDate(btnCaptureDate.getDate());
+                }
+
+                else if (numPeriods == 4) {
+
+                    theCal.add(Calendar.MONTH, 1);
+                    adjustForNewAppointmentDate(theCal.getTime());
+                    adjustForNewDispDate(btnCaptureDate.getDate());
+                }
+
+                else if (numPeriods == 8) {
+
+                    theCal.add(Calendar.MONTH, 2);
+                    adjustForNewAppointmentDate(theCal.getTime());
+                    adjustForNewDispDate(btnCaptureDate.getDate());
+                }
+
+                else if (numPeriods == 12) {
+
+                    theCal.add(Calendar.MONTH, 3);
+                    adjustForNewAppointmentDate(theCal.getTime());
+                    adjustForNewDispDate(btnCaptureDate.getDate());
+                }
+                
+                
+                adjustForNewDispDate(btnCaptureDate.getDate());
+                
 			}
 		}
 
@@ -2934,7 +2832,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 			txtNextAppDate.setVisible(true);
 
 			if ((newPack != null) && (newPack.getPrescription() != null)) {
-				Appointment nextApp = PatientManager.getLatestAppointmentForPatient(newPack.getPrescription().getPatient(), true);
+				Appointment nextApp = PatientManager
+						.getLatestAppointmentForPatient(newPack.getPrescription().getPatient(), true);
 
 				if (nextApp != null) {
 					adjustForNewDispDate(btnCaptureDate.getDate());
@@ -2972,16 +2871,14 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 			if (drugName.equals(theDrug.getName())) {
 				try {
-					int qty = Integer.parseInt(tblPrescriptionInfo.getItem(i)
-							.getText(2));
+					int qty = Integer.parseInt(tblPrescriptionInfo.getItem(i).getText(2));
 
 					if (pc.getAccum() == -1) {
 						tblPrescriptionInfo.getItem(i).setText(5, "" + qty);
 
 					} else {
 						if (iDartProperties.accumByDefault) {
-							tblPrescriptionInfo.getItem(i).setText(5,
-									"" + (pc.getAccum() + qty));
+							tblPrescriptionInfo.getItem(i).setText(5, "" + (pc.getAccum() + qty));
 						} else {
 							tblPrescriptionInfo.getItem(i).setText(5, "" + qty);
 						}
@@ -2989,8 +2886,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 					}
 
 				} catch (NumberFormatException e) {
-					getLog().error(
-							"NumberFormatException parsing qty to dispense");
+					getLog().error("NumberFormatException parsing qty to dispense");
 					tblPrescriptionInfo.getItem(i).setText(5, "");
 				}
 
@@ -3010,8 +2906,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		for (int i = 0; i < tblPrescriptionInfo.getItemCount(); i++) {
 
 			try {
-				int qty = Integer.parseInt(tblPrescriptionInfo.getItem(i)
-						.getText(2));
+				int qty = Integer.parseInt(tblPrescriptionInfo.getItem(i).getText(2));
 				tblPrescriptionInfo.getItem(i).setText(5, "" + qty);
 
 			} catch (NumberFormatException e) {
@@ -3032,7 +2927,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		Date captureDate = btnCaptureDate.getDate();
 
 		Patient pat = newPack.getPrescription().getPatient();
-		
+
 		/*
 		 * NOTE: we only get the current appointment date if the package is
 		 * created for late pickup. If the package is dispensed directly, we
@@ -3040,8 +2935,7 @@ public class NewPatientPackaging extends GenericFormGui implements
 		 */
 		if (rdBtnDispenseNow.getSelection()) {
 			// if the next appointment is in the future, set it to the disp date
-			PatientManager.setNextAppointmentDateAtVisit(getHSession(), pat,
-					captureDate, theNextAppDate);
+			PatientManager.setNextAppointmentDateAtVisit(getHSession(), pat, captureDate, theNextAppDate);
 		}
 	}
 
@@ -3050,10 +2944,8 @@ public class NewPatientPackaging extends GenericFormGui implements
 		newPack.setPackDate(new Date());
 		btnCaptureDate.setDate(new Date());
 		btnNextAppDate.setDate(new Date());
-		lblDateOfLastPickupContents.setForeground(ResourceUtils
-				.getColor(iDartColor.BLACK));
-		lblDateOfLastPickupContents.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_BACKGROUND));
+		lblDateOfLastPickupContents.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
+		lblDateOfLastPickupContents.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
 	}
 
 	/**
@@ -3074,41 +2966,42 @@ public class NewPatientPackaging extends GenericFormGui implements
 	 *            boolean
 	 * @param allPackagedDrugsList
 	 *            java.util.List<PackageDrugInfo>
-	 * @throws Exception 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
+	 * @throws Exception
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
-	private void submitForm(boolean dispenseNow, java.util.List<PackageDrugInfo> allPackagedDrugsList) throws Exception {
+	private void submitForm(boolean dispenseNow, java.util.List<PackageDrugInfo> allPackagedDrugsList)
+			throws Exception {
 
 		Transaction tx = null;
 		Map<Object, Integer> labelQuantities = new HashMap<Object, Integer>();
 		try {
-			ConexaoJDBC conn=new ConexaoJDBC();
-			if(conn.dispensadonoperiodo(allPackagedDrugsList.get(0).getPatientId()))
+			ConexaoJDBC conn = new ConexaoJDBC();
+			if (conn.dispensadonoperiodo(allPackagedDrugsList.get(0).getPatientId()))
 
-	      {
-				System.out.println("Num of Days: "+dias);
-				MessageBox mbox = new MessageBox(new Shell(), SWT.YES | SWT.NO
-						| SWT.ICON_WARNING);
+			{
+				System.out.println("Num of Days: " + dias);
+				MessageBox mbox = new MessageBox(new Shell(), SWT.YES | SWT.NO | SWT.ICON_WARNING);
 				mbox.setText("Levantamento de ARVs");
-				
-				mbox.setMessage("ATENÇÃO:\nO PACIENTE "+txtPatientId.getText()+" JÁ FORAM DISPENSADOS MEDICAMENTOS NESTE PERÍODO!\n \nA ÚLTIMA DISPENSA FOI HÁ "+dias+" DIA(s)\n \nQUER DISPENSAR DE NOVO?");
-	
+
+				mbox.setMessage("ATENÇÃO:\nO PACIENTE " + txtPatientId.getText()
+				+ " JÁ FORAM DISPENSADOS MEDICAMENTOS NESTE PERÍODO!\n \nA ÚLTIMA DISPENSA FOI HÁ " + dias
+				+ " DIA(s)\n \nQUER DISPENSAR DE NOVO?");
+
 				switch (mbox.open()) {
-				
-				case SWT.YES:
-				{
-					//***************Ainda a configurar a informacao mais correcta 
-					ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-							getShell(), getHSession());
-					passwordDialog
-					.setMessage("Por favor inserir a Password");
+
+				case SWT.YES: {
+					// ***************Ainda a configurar a informacao mais
+					// correcta
+					ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(),
+							getHSession());
+					passwordDialog.setMessage("Por favor inserir a Password");
 					// if password verified
 					String messg = passwordDialog.open();
 					if (messg.equalsIgnoreCase("verified")) {
-						 
+
 					}
-					
+
 					tx = getHSession().beginTransaction();
 					if (newPack.getPrescription() != null) {
 						if (previousPack != null) {
@@ -3133,6 +3026,342 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 						if (allPackagedDrugsList.size() > 0) {
 
+							// This map keeps a track of drugs dispensed in
+							// separate
+							// batches
+							Map<String, String> drugNames = new HashMap<String, String>();
+
+							// Update pdi's to include accum drugs
+							for (PackageDrugInfo info : allPackagedDrugsList) {
+
+								info.setQtyInHand(PackageManager.getQuantityDispensedForLabel(
+										newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+										info.getPackagedDrug().getStock().getDrug().getPackSize(), false, true));
+
+								labelQuantities.put(info, 1);
+								// set the String that will print out on each
+								// drug label
+								// to indicate
+								// (<amount dispensed> + <accumulated amount>)
+
+								if (drugNames.containsKey(info.getDrugName())) {
+									// not first batch, exclude pillcount value
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, false));
+								} else {
+
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, true));
+								}
+								drugNames.put(info.getDrugName(), "test");
+								// set the String that will print out on the
+								// prescription summary label to indicate
+								// for each drug the (<total amount dispensed> +
+								// <total
+								// accumulated amount>)
+
+								// before printing the labels, save pdi List
+								if (postOpenMrsEncounterStatus) {
+									TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+									getHSession().flush();
+								}
+
+							}
+						}
+
+						// Add interoperability with OpenMRS through Rest Web
+						// Services
+						/*
+						 * RestClient restClient = new RestClient();
+						 * 
+						 * Date dtPickUp = newPack.getPickupDate();
+						 * 
+						 * //EncounterDatetime String strPickUp =
+						 * RestUtils.castDateToString(dtPickUp);
+						 * 
+						 * //Patient NID String nid =
+						 * newPack.getPrescription().getPatient().getPatientId()
+						 * .trim();
+						 * 
+						 * String nidRest =
+						 * restClient.getOpenMRSResource(iDartProperties.
+						 * REST_GET_PATIENT+StringUtils.replace(nid, " ",
+						 * "%20"));
+						 * 
+						 * //Patient NID uuid String nidUuid =
+						 * nidRest.substring(21, 57);
+						 * 
+						 * String strProvider =
+						 * newPack.getPrescription().getDoctor().getFirstname().
+						 * trim() + " " +
+						 * newPack.getPrescription().getDoctor().getLastname().
+						 * trim();
+						 * 
+						 * String providerWithNoAccents =
+						 * org.apache.commons.lang3.StringUtils.stripAccents(
+						 * strProvider);
+						 * 
+						 * String response =
+						 * restClient.getOpenMRSResource(iDartProperties.
+						 * REST_GET_PERSON+StringUtils.replace(
+						 * providerWithNoAccents, " ", "%20"));
+						 * 
+						 * //Provider String providerUuid =
+						 * response.substring(21, 57);
+						 * 
+						 * String facility =
+						 * newPack.getClinic().getClinicName().trim();
+						 * 
+						 * //Location String strFacility =
+						 * restClient.getOpenMRSResource(iDartProperties.
+						 * REST_GET_LOCATION+StringUtils.replace(facility, " ",
+						 * "%20"));
+						 * 
+						 * //Health Facility String strFacilityUuid =
+						 * strFacility.substring(21, 57);
+						 * 
+						 * //Regimen String regimenAnswer =
+						 * newPack.getPrescription().getRegimeTerapeutico().
+						 * getRegimenomeespecificado().trim();
+						 * 
+						 * String strRegimenAnswer =
+						 * restClient.getOpenMRSResource("concept?q="+
+						 * StringUtils.replace(regimenAnswer, " ", "%20"));
+						 * 
+						 * //Regimen answer Uuid String strRegimenAnswerUuid =
+						 * strRegimenAnswer.substring(21, 57);
+						 * 
+						 * List<PrescribedDrugs> prescribedDrugs =
+						 * newPack.getPrescription().getPrescribedDrugs();
+						 * 
+						 * //Next pick up date Date dtNextPickUp =
+						 * btnNextAppDate.getDate();
+						 * 
+						 * String strNextPickUp =
+						 * RestUtils.castDateToString(dtNextPickUp);
+						 * 
+						 * restClient.postOpenMRSEncounter(strPickUp, nidUuid,
+						 * iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+						 * strFacilityUuid, iDartProperties.FORM_FILA,
+						 * providerUuid, iDartProperties.REGIME,
+						 * strRegimenAnswerUuid,
+						 * iDartProperties.DISPENSED_AMOUNT, prescribedDrugs,
+						 * iDartProperties.DOSAGE, iDartProperties.VISIT_UUID,
+						 * strNextPickUp);
+						 */
+
+						tx.commit();
+
+						/*
+						 * if (iDartProperties.printDrugLabels) { // Add the qty
+						 * for the summary label
+						 * labelQuantities.put(ScriptSummaryLabel.KEY,
+						 * rdBtnPrintSummaryLabelYes.getSelection() ? 1 : 0);
+						 * //Add the qty for the next appointment
+						 * labelQuantities.put(CommonObjects.
+						 * NEXT_APPOINTMENT_KEY, (
+						 * (rdBtnDispenseLater.getSelection() ||
+						 * rdBtnYesAppointmentDate.getSelection()) ? 1 : 0)); //
+						 * Add the qty for the package label
+						 * labelQuantities.put(PackageCoverLabel.KEY,
+						 * rdBtnDispenseLater.getSelection() ? 1 : 0); // print
+						 * labels PackageManager.printLabels(getHSession(),
+						 * allPackagedDrugsList, labelQuantities); }
+						 */
+					}
+
+					/*
+					 * 
+					 * 
+					 * Leitura da dispensa de ARV no formulario pelo botao
+					 * create package, e a posterior insercao na tabela t_tarv
+					 * do MS ACCESS
+					 * 
+					 */
+					Vector<String> vMedicamentos = new Vector<String>();
+					// ConexaoJDBC conn=new ConexaoJDBC();
+					//ConexaoODBC conn2 = new ConexaoODBC();
+
+					// Inicializa as variaveis para a insercao n acess
+					int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
+					String notes = allPackagedDrugsList.get(0).getNotes();
+					String patientId = allPackagedDrugsList.get(0).getPatientId();
+					String specialInstructions1 = allPackagedDrugsList.get(0).getSpecialInstructions1();
+					String specialInstructions2 = allPackagedDrugsList.get(0).getSpecialInstructions2();
+					Date dispenseDate = allPackagedDrugsList.get(0).getDispenseDate();
+					int weeksSupply = allPackagedDrugsList.get(0).getWeeksSupply();
+					int prescriptionDuration = allPackagedDrugsList.get(0).getPrescriptionDuration();
+					String dateExpectedString = allPackagedDrugsList.get(0).getDateExpectedString();
+
+					List<PrescriptionToPatient> lp = conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
+					String reasonforupdate = lp.get(0).getReasonforupdate();
+					String regime = lp.get(0).getRegimeesquema();
+					int idade = lp.get(0).getIdade();
+					Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
+					String motivomudanca = lp.get(0).getMotivomudanca();
+
+					for (int i = 0; i < allPackagedDrugsList.size(); i++) {
+						// adiciona os medicantos no vector
+						vMedicamentos.add(new String(allPackagedDrugsList.get(i).getDrugName()));
+
+						/*
+						 * vMedicamentos.add( new
+						 * String(allPackagedDrugsList.get(i).getDrugName()));
+						 * System.out.println(
+						 * "\n\n\n********************************** leitua de dados gui criacao de package"
+						 * ); System.out.println("amountPerTime = "
+						 * +allPackagedDrugsList.get(i).getAmountPerTime());
+						 * System.out.println("this.batchNumber = "
+						 * +allPackagedDrugsList.get(i).getBatchNumber());
+						 * System.out.println("this.clinic = "
+						 * +allPackagedDrugsList.get(i).getClinic());
+						 * System.out.println("this.dispensedQty ="+
+						 * allPackagedDrugsList.get(i).getDispensedQty());
+						 * System.out.println("this.formLanguage1 ="+
+						 * allPackagedDrugsList.get(i).getFormLanguage1());
+						 * System.out.println("this.formLanguage2 ="+
+						 * allPackagedDrugsList.get(i).getFormLanguage2());
+						 * System.out.println("this.formLanguage3 = "
+						 * +allPackagedDrugsList.get(i).getFormLanguage3());
+						 * System.out.println("this.drugName ="+
+						 * allPackagedDrugsList.get(i).getDrugName());
+						 * System.out.println("this.expiryDate ="+
+						 * allPackagedDrugsList.get(i).getExpiryDate());
+						 * System.out.println("this.notes = "
+						 * +allPackagedDrugsList.get(i).getNotes());
+						 * System.out.println("this.patientId ="+
+						 * allPackagedDrugsList.get(i).getPatientId());
+						 * System.out.println("this.patientFirstName ="+
+						 * allPackagedDrugsList.get(i).getPatientFirstName());
+						 * System.out.println("this.patientLastName = "
+						 * +allPackagedDrugsList.get(i).getPatientLastName());
+						 * System.out.println("this.specialInstructions1 ="+
+						 * allPackagedDrugsList.get(i).getSpecialInstructions1()
+						 * ); System.out.println("this.specialInstructions2 ="+
+						 * allPackagedDrugsList.get(i).getSpecialInstructions2()
+						 * ); System.out.println("this.stockId = "
+						 * +allPackagedDrugsList.get(i).getStockId());
+						 * System.out.println("this.timesPerDay = "
+						 * +allPackagedDrugsList.get(i).getTimesPerDay());
+						 * System.out.println("this.numberOfLabels ="+
+						 * allPackagedDrugsList.get(i).getNumberOfLabels());
+						 * System.out.println("this.sideTreatment ="+
+						 * allPackagedDrugsList.get(i).isSideTreatment());
+						 * System.out.println("this.cluser = "
+						 * +allPackagedDrugsList.get(i).getCluser());
+						 * System.out.println("this.dispenseDate ="+
+						 * allPackagedDrugsList.get(i).getDispenseDate());
+						 * System.out.println("this.packageIndex ="+
+						 * allPackagedDrugsList.get(i).getPackageIndex());
+						 * System.out.println("this.weeksSupply = "
+						 * +allPackagedDrugsList.get(i).getWeeksSupply());
+						 * System.out.println("this.packagedDrug = "
+						 * +allPackagedDrugsList.get(i).getPackagedDrug());
+						 * System.out.println("this.qtyInHand = "
+						 * +allPackagedDrugsList.get(i).getQtyInHand());
+						 * System.out.println("this.summaryQtyInHand = "
+						 * +allPackagedDrugsList.get(i).getSummaryQtyInHand());
+						 * System.out.println("this.qtyInLastBatch = "
+						 * +allPackagedDrugsList.get(i).getQtyInLastBatch());
+						 * System.out.println("this.prescriptionDuration = "
+						 * +allPackagedDrugsList.get(i).getPrescriptionDuration(
+						 * )); System.out.println("this.dateExpectedString = "
+						 * +allPackagedDrugsList.get(i).getDateExpectedString())
+						 * ; System.out.println("this.packageId = "
+						 * +allPackagedDrugsList.get(i).getPackageId());
+						 */ }
+
+					if (vMedicamentos != null)
+						for (int i = 0; i < vMedicamentos.size(); i++)
+							System.out.println("Medicamento " + i + " " + vMedicamentos.get(i));
+
+					System.out.println(" Quantidade: " + allPackagedDrugsList.get(0).getDispensedQty());
+					System.out.println(" Notes: " + allPackagedDrugsList.get(0).getNotes());
+					System.out.println(" NID: " + allPackagedDrugsList.get(0).getPatientId());
+					System.out.println(" Instucaao1: " + allPackagedDrugsList.get(0).getSpecialInstructions1());
+					System.out.println(" Instruncao2: " + allPackagedDrugsList.get(0).getSpecialInstructions2());
+					System.out.println(" Data de dispensa: " + allPackagedDrugsList.get(0).getDispenseDate());
+					System.out.println(" Semanas: " + allPackagedDrugsList.get(0).getWeeksSupply());
+					System.out.println(
+							" duracao da prescricao semanas: " + allPackagedDrugsList.get(0).getPrescriptionDuration());
+					System.out.println(" data proxima visita: " + allPackagedDrugsList.get(0).getDateExpectedString());
+					System.out.println(" tipotarv: " + lp.get(0).getReasonforupdate());
+					System.out.println(" Regime: " + lp.get(0).getRegimeesquema());
+					System.out.println(" Idade: " + lp.get(0).getIdade());
+
+					System.out.println(" DAta inicio noutro servico: " + dataInicioNoutroServico);
+					System.out.println(" Motivo da mudanca: " + motivomudanca);
+
+					// convertendo a data para adequar com a coluna datatarv do
+					// ms access - t_tarv
+					SimpleDateFormat parseFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+					Date datatarv = parseFormat.parse(dispenseDate.toString());
+					SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+					String resultdatatarv = format.format(datatarv);
+
+					// Convertendo a data de String para Date. proxima visita
+					Date dateproximavisita = conn.converteData(dateExpectedString);
+					System.out.println(" Date proxima: " + dateproximavisita);
+
+					SimpleDateFormat parseFormat2 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+					Date dateproxima = parseFormat2.parse(dateproximavisita.toString());
+					SimpleDateFormat format2 = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+					String resultdataproximaconsulta = format2.format(dateproxima);
+
+					String dataNoutroServico = "";
+					if (dataInicioNoutroServico != null)
+						dataNoutroServico = format2.format(dataInicioNoutroServico);
+
+					/*if (motivomudanca != null && motivomudanca.length() > 0)
+						// quando ha motivo de mudanca
+						conn2.insereT_tarvMotivo(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
+								weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, motivomudanca, linha);
+
+					else if (dataInicioNoutroServico != null)
+
+						// Quando � transferido de
+						conn2.insereT_tarvTransferidoDE(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
+								weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, dataNoutroServico,
+								linha);
+
+					else
+						// metodo invocado para a insercao em t_tarv no ms
+						// access
+						conn2.insereT_tarv(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime, weeksSupply,
+								reasonforupdate, resultdataproximaconsulta, idade, linha);*/
+
+				}
+
+				break;
+				}
+
+			} else {
+				tx = getHSession().beginTransaction();
+				if (newPack.getPrescription() != null) {
+					if (previousPack != null) {
+						savePillCounts();
+					}
+
+					// Check if package contains ARV, and
+					// do ARV Start date check.
+					// Should be moved to a facade or manager class
+					for (PackageDrugInfo info : allPackagedDrugsList) {
+						if (!info.isSideTreatment()) {
+							// Check the ARV Start Date if an
+							// ARV package is present.
+							checkARVStartDate();
+							break;
+						}
+					}
+
+						savePackageAndPackagedDrugs(dispenseNow, allPackagedDrugsList);
+						getLog().info("savePackageAndPackagedDrugs() called");
+						setNextAppointmentDate();
+
+						if (allPackagedDrugsList.size() > 0) {
+
 							// This map keeps a track of drugs dispensed in separate
 							// batches
 							Map<String, String> drugNames = new HashMap<String, String>();
@@ -3140,559 +3369,309 @@ public class NewPatientPackaging extends GenericFormGui implements
 							// Update pdi's to include accum drugs
 							for (PackageDrugInfo info : allPackagedDrugsList) {
 
-								info.setQtyInHand(PackageManager
-										.getQuantityDispensedForLabel(
-												newPack.getAccumulatedDrugs(),
-												info.getDispensedQty(),
-												info.getDrugName(), info
-														.getPackagedDrug().getStock()
-														.getDrug().getPackSize(),
-												false, true));
+								info.setQtyInHand(PackageManager.getQuantityDispensedForLabel(newPack.getAccumulatedDrugs(),
+										info.getDispensedQty(), info.getDrugName(),
+										info.getPackagedDrug().getStock().getDrug().getPackSize(), false, true));
 
 								labelQuantities.put(info, 1);
-								// set the String that will print out on each drug label
+								// set the String that will print out on each drug
+								// label
 								// to indicate
 								// (<amount dispensed> + <accumulated amount>)
 
 								if (drugNames.containsKey(info.getDrugName())) {
 									// not first batch, exclude pillcount value
-									info.setSummaryQtyInHand(PackageManager
-											.getQuantityDispensedForLabel(
-													newPack.getAccumulatedDrugs(),
-													info.getDispensedQty(),
-													info.getDrugName(),
-													info.getDispensedQty(), false,
-													false));
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, false));
 								} else {
 
-									info.setSummaryQtyInHand(PackageManager
-											.getQuantityDispensedForLabel(
-													newPack.getAccumulatedDrugs(),
-													info.getDispensedQty(),
-													info.getDrugName(),
-													info.getDispensedQty(), false, true));
+									info.setSummaryQtyInHand(PackageManager.getQuantityDispensedForLabel(
+											newPack.getAccumulatedDrugs(), info.getDispensedQty(), info.getDrugName(),
+											info.getDispensedQty(), false, true));
 								}
 								drugNames.put(info.getDrugName(), "test");
 								// set the String that will print out on the
 								// prescription summary label to indicate
-								// for each drug the (<total amount dispensed> + <total
+								// for each drug the (<total amount dispensed> +
+								// <total
 								// accumulated amount>)
 
 								// before printing the labels, save pdi List
-								TemporaryRecordsManager.savePackageDrugInfosToDB(
-										getHSession(), allPackagedDrugsList);
-								getHSession().flush();
+								if (postOpenMrsEncounterStatus) {
+									TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+									getHSession().flush();
+								}
 
 							}
 						}
-						
-						//Add interoperability with OpenMRS through Rest Web Services
-						/*RestClient restClient = new RestClient();
-						
-						Date dtPickUp = newPack.getPickupDate();
-						
-						//EncounterDatetime
-						String strPickUp = RestUtils.castDateToString(dtPickUp);
-						
-						//Patient NID 
-						String nid = newPack.getPrescription().getPatient().getPatientId().trim();
-						
-						String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(nid, " ", "%20"));
-						
-						//Patient NID uuid 
-						String nidUuid = nidRest.substring(21, 57);
-						
-						String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " " + newPack.getPrescription().getDoctor().getLastname().trim();
-						
-						String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
-						
-						String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PERSON+StringUtils.replace(providerWithNoAccents, " ", "%20"));
-						
-						//Provider
-						String providerUuid = response.substring(21, 57);
-						
-						String facility = newPack.getClinic().getClinicName().trim();
-						
-						//Location
-						String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION+StringUtils.replace(facility, " ", "%20"));
-						
-						//Health Facility
-						String strFacilityUuid = strFacility.substring(21, 57);
-						
-						//Regimen
-						String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
-						
-						String strRegimenAnswer = restClient.getOpenMRSResource("concept?q="+StringUtils.replace(regimenAnswer, " ", "%20"));
-						
-						//Regimen answer Uuid
-						String strRegimenAnswerUuid = strRegimenAnswer.substring(21, 57);
-						
-						List<PrescribedDrugs> prescribedDrugs = newPack.getPrescription().getPrescribedDrugs();
-								
-						//Next pick up date
-						Date dtNextPickUp = btnNextAppDate.getDate();
-						
-						String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
-					 		
-						restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY, 
-						strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, strRegimenAnswerUuid, 
-						iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);*/
-						
-						tx.commit();
-						
-			
-						
-						/*if (iDartProperties.printDrugLabels) {
-							// Add the qty for the summary label
-							labelQuantities.put(ScriptSummaryLabel.KEY,
-									rdBtnPrintSummaryLabelYes.getSelection() ? 1 : 0);
-							//Add the qty for the next appointment
-							labelQuantities.put(CommonObjects.NEXT_APPOINTMENT_KEY, ( (rdBtnDispenseLater.getSelection()  ||  rdBtnYesAppointmentDate.getSelection()) ? 1 : 0));
-							// Add the qty for the package label
-							labelQuantities.put(PackageCoverLabel.KEY,
-							 rdBtnDispenseLater.getSelection() ? 1 : 0);
-							// print labels
-							PackageManager.printLabels(getHSession(),
-									allPackagedDrugsList, labelQuantities);
-						}*/
-					}
 					
-					
+					// Add interoperability with OpenMRS through Rest Web
+					// Services
 					/*
+					 * RestClient restClient = new RestClient();
 					 * 
+					 * Date dtPickUp = newPack.getPickupDate();
 					 * 
-					 * Leitura da dispensa de ARV no formulario pelo botao create package, e a posterior insercao na tabela t_tarv do MS ACCESS
+					 * //EncounterDatetime String strPickUp =
+					 * RestUtils.castDateToString(dtPickUp);
 					 * 
+					 * //Patient NID String nid =
+					 * newPack.getPrescription().getPatient().getPatientId().
+					 * trim();
+					 * 
+					 * String nidRest =
+					 * restClient.getOpenMRSResource(iDartProperties.
+					 * REST_GET_PATIENT+StringUtils.replace(nid, " ", "%20"));
+					 * 
+					 * //Patient NID uuid String nidUuid = nidRest.substring(21,
+					 * 57);
+					 * 
+					 * String strProvider =
+					 * newPack.getPrescription().getDoctor().getFirstname().trim
+					 * () + " " +
+					 * newPack.getPrescription().getDoctor().getLastname().trim(
+					 * );
+					 * 
+					 * String providerWithNoAccents =
+					 * org.apache.commons.lang3.StringUtils.stripAccents(
+					 * strProvider);
+					 * 
+					 * String response =
+					 * restClient.getOpenMRSResource(iDartProperties.
+					 * REST_GET_PERSON+StringUtils.replace(
+					 * providerWithNoAccents, " ", "%20"));
+					 * 
+					 * //Provider String providerUuid = response.substring(21,
+					 * 57);
+					 * 
+					 * String facility =
+					 * newPack.getClinic().getClinicName().trim();
+					 * 
+					 * //Location String strFacility =
+					 * restClient.getOpenMRSResource(iDartProperties.
+					 * REST_GET_LOCATION+StringUtils.replace(facility, " ",
+					 * "%20"));
+					 * 
+					 * //Health Facility String strFacilityUuid =
+					 * strFacility.substring(21, 57);
+					 * 
+					 * //Regimen String regimenAnswer =
+					 * newPack.getPrescription().getRegimeTerapeutico().
+					 * getRegimenomeespecificado().trim();
+					 * 
+					 * String strRegimenAnswer =
+					 * restClient.getOpenMRSResource("concept?q="+StringUtils.
+					 * replace(regimenAnswer, " ", "%20"));
+					 * 
+					 * //Regimen answer Uuid String strRegimenAnswerUuid =
+					 * strRegimenAnswer.substring(21, 57);
+					 * 
+					 * List<PrescribedDrugs> prescribedDrugs =
+					 * newPack.getPrescription().getPrescribedDrugs();
+					 * 
+					 * //Next pick up date Date dtNextPickUp =
+					 * btnNextAppDate.getDate();
+					 * 
+					 * String strNextPickUp =
+					 * RestUtils.castDateToString(dtNextPickUp);
+					 * 
+					 * restClient.postOpenMRSEncounter(strPickUp, nidUuid,
+					 * iDartProperties.ENCOUNTER_TYPE_PHARMACY, strFacilityUuid,
+					 * iDartProperties.FORM_FILA, providerUuid,
+					 * iDartProperties.REGIME, strRegimenAnswerUuid,
+					 * iDartProperties.DISPENSED_AMOUNT, prescribedDrugs,
+					 * iDartProperties.DOSAGE, iDartProperties.VISIT_UUID,
+					 * strNextPickUp);
 					 */
-					Vector<String> vMedicamentos=new Vector<String>();
-					//ConexaoJDBC conn=new ConexaoJDBC();
-					ConexaoODBC conn2=new ConexaoODBC();
-					
-					
-					//Inicializa as variaveis para a insercao n acess
-					int dispensedQty=allPackagedDrugsList.get(0).getDispensedQty();
-					String notes=allPackagedDrugsList.get(0).getNotes();
-					String patientId =allPackagedDrugsList.get(0).getPatientId();
-					String specialInstructions1 =allPackagedDrugsList.get(0).getSpecialInstructions1();
-					String specialInstructions2=allPackagedDrugsList.get(0).getSpecialInstructions2();
-					Date dispenseDate =allPackagedDrugsList.get(0).getDispenseDate();
-					int weeksSupply =allPackagedDrugsList.get(0).getWeeksSupply();
-					int prescriptionDuration=allPackagedDrugsList.get(0).getPrescriptionDuration();
-					String dateExpectedString=allPackagedDrugsList.get(0).getDateExpectedString();
-					
-					 List<PrescriptionToPatient> lp=conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
-					 String reasonforupdate = lp.get(0).getReasonforupdate();
-					 String regime= lp.get(0).getRegimeesquema();
-					 int idade=lp.get(0).getIdade();
-					 Date dataInicioNoutroServico=lp.get(0).getDataInicionoutroservico();
-					 String motivomudanca=lp.get(0).getMotivomudanca();
-					 String linha=lp.get(0).getLinha();
-					 
-					 
-					 
-					
-					for (int i=0;i<allPackagedDrugsList.size();i++)
-					{
-						//adiciona os medicantos no vector
-						  vMedicamentos.add( new String(allPackagedDrugsList.get(i).getDrugName()));
-						
-		/*
-		 *   vMedicamentos.add( new String(allPackagedDrugsList.get(i).getDrugName()));
-		 * System.out.println("\n\n\n********************************** leitua de dados gui criacao de package");
-					System.out.println("amountPerTime = "+allPackagedDrugsList.get(i).getAmountPerTime());
-				    System.out.println("this.batchNumber = "+allPackagedDrugsList.get(i).getBatchNumber());
-				    System.out.println("this.clinic = "+allPackagedDrugsList.get(i).getClinic());
-				    System.out.println("this.dispensedQty ="+ allPackagedDrugsList.get(i).getDispensedQty());
-				    System.out.println("this.formLanguage1 ="+ allPackagedDrugsList.get(i).getFormLanguage1());
-				    System.out.println("this.formLanguage2 ="+ allPackagedDrugsList.get(i).getFormLanguage2());
-					System.out.println("this.formLanguage3 = "+allPackagedDrugsList.get(i).getFormLanguage3());
-					System.out.println("this.drugName ="+ allPackagedDrugsList.get(i).getDrugName());
-					System.out.println("this.expiryDate ="+ allPackagedDrugsList.get(i).getExpiryDate());
-					System.out.println("this.notes = "+allPackagedDrugsList.get(i).getNotes());
-					System.out.println("this.patientId ="+ allPackagedDrugsList.get(i).getPatientId());
-					System.out.println("this.patientFirstName ="+ allPackagedDrugsList.get(i).getPatientFirstName());
-					System.out.println("this.patientLastName = "+allPackagedDrugsList.get(i).getPatientLastName());
-					System.out.println("this.specialInstructions1 ="+ allPackagedDrugsList.get(i).getSpecialInstructions1());
-					System.out.println("this.specialInstructions2 ="+ allPackagedDrugsList.get(i).getSpecialInstructions2());
-					System.out.println("this.stockId = "+allPackagedDrugsList.get(i).getStockId());
-					System.out.println("this.timesPerDay = "+allPackagedDrugsList.get(i).getTimesPerDay());
-					System.out.println("this.numberOfLabels ="+ allPackagedDrugsList.get(i).getNumberOfLabels());
-					System.out.println("this.sideTreatment ="+ allPackagedDrugsList.get(i).isSideTreatment());
-					System.out.println("this.cluser = "+allPackagedDrugsList.get(i).getCluser());
-					System.out.println("this.dispenseDate ="+ allPackagedDrugsList.get(i).getDispenseDate());
-					System.out.println("this.packageIndex ="+ allPackagedDrugsList.get(i).getPackageIndex());
-					System.out.println("this.weeksSupply = "+allPackagedDrugsList.get(i).getWeeksSupply());
-					System.out.println("this.packagedDrug = "+allPackagedDrugsList.get(i).getPackagedDrug());
-					System.out.println("this.qtyInHand = "+allPackagedDrugsList.get(i).getQtyInHand());
-					System.out.println("this.summaryQtyInHand = "+allPackagedDrugsList.get(i).getSummaryQtyInHand());
-					System.out.println("this.qtyInLastBatch = "+allPackagedDrugsList.get(i).getQtyInLastBatch());
-					System.out.println("this.prescriptionDuration = "+allPackagedDrugsList.get(i).getPrescriptionDuration());
-					System.out.println("this.dateExpectedString = "+allPackagedDrugsList.get(i).getDateExpectedString());
-					System.out.println("this.packageId = "+allPackagedDrugsList.get(i).getPackageId());
-		 */			}
-					
-				if(vMedicamentos!=null)
-					for(int i=0; i<vMedicamentos.size();i++ )
-						System.out.println("Medicamento "+i+" " +vMedicamentos.get(i));
-					
-				System.out.println(" Quantidade: "+allPackagedDrugsList.get(0).getDispensedQty());
-				System.out.println(" Notes: "+allPackagedDrugsList.get(0).getNotes());
-				System.out.println(" NID: "+allPackagedDrugsList.get(0).getPatientId());
-				System.out.println(" Instucaao1: "+allPackagedDrugsList.get(0).getSpecialInstructions1());
-				System.out.println(" Instruncao2: "+allPackagedDrugsList.get(0).getSpecialInstructions2());
-				System.out.println(" Data de dispensa: "+allPackagedDrugsList.get(0).getDispenseDate());
-				System.out.println(" Semanas: "+allPackagedDrugsList.get(0).getWeeksSupply());
-				System.out.println(" duracao da prescricao semanas: "+allPackagedDrugsList.get(0).getPrescriptionDuration());
-				System.out.println(" data proxima visita: "+allPackagedDrugsList.get(0).getDateExpectedString());
-				System.out.println(" tipotarv: "+lp.get(0).getReasonforupdate());
-				System.out.println(" Regime: "+lp.get(0).getRegimeesquema());
-				System.out.println(" Idade: "+lp.get(0).getIdade());
-				 
-				System.out.println(" DAta inicio noutro servico: "+dataInicioNoutroServico);
-				System.out.println(" Motivo da mudanca: "+ motivomudanca);
-				System.out.println(" Linha Terapeutica: "+ linha);
-				  
-				 //convertendo a data para adequar com a coluna datatarv do ms access - t_tarv 
-				 SimpleDateFormat parseFormat = 
-						    new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-						Date datatarv = parseFormat.parse(dispenseDate.toString());
-						SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-						String resultdatatarv = format.format(datatarv);
-						
-						
-				//Convertendo a data de String para Date. proxima visita
-						Date dateproximavisita=conn.converteData(dateExpectedString);
-				 System.out.println(" Date proxima: "+dateproximavisita);
-				 
-				 SimpleDateFormat parseFormat2 = 
-						    new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-						Date dateproxima = parseFormat2.parse( dateproximavisita.toString());
-						SimpleDateFormat format2 = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-						String resultdataproximaconsulta = format2.format(dateproxima);
-						
-				       String dataNoutroServico="";
-				       if(dataInicioNoutroServico!=null)
-				    	   dataNoutroServico=format2.format(dataInicioNoutroServico);
-				    	   
-				   
-				if(motivomudanca!=null && motivomudanca.length()>0)
-					//quando ha motivo de mudanca
-					conn2.insereT_tarvMotivo(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,motivomudanca,linha);
-					
-				else  if(dataInicioNoutroServico!=null)
-					
-					//Quando � transferido de 
-					conn2.insereT_tarvTransferidoDE(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,dataNoutroServico,linha);
-					
-				else
-				       //metodo invocado para a insercao em t_tarv no ms access	
-				conn2.insereT_tarv(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,linha);
-				
-					
-					
-					
-					
-					
-					
+
+					tx.commit();
+
+					/*
+					 * if (iDartProperties.printDrugLabels) { // Add the qty for
+					 * the summary label
+					 * labelQuantities.put(ScriptSummaryLabel.KEY,
+					 * rdBtnPrintSummaryLabelYes.getSelection() ? 1 : 0); //Add
+					 * the qty for the next appointment
+					 * labelQuantities.put(CommonObjects.NEXT_APPOINTMENT_KEY, (
+					 * (rdBtnDispenseLater.getSelection() ||
+					 * rdBtnYesAppointmentDate.getSelection()) ? 1 : 0)); // Add
+					 * the qty for the package label
+					 * labelQuantities.put(PackageCoverLabel.KEY,
+					 * rdBtnDispenseLater.getSelection() ? 1 : 0); // print
+					 * labels PackageManager.printLabels(getHSession(),
+					 * allPackagedDrugsList, labelQuantities); }
+					 */
 				}
 
+				/*
+				 * 
+				 * 
+				 * Leitura da dispensa de ARV no formulario pelo botao create
+				 * package, e a posterior insercao na tabela t_tarv do MS ACCESS
+				 * 
+				 */
+				Vector<String> vMedicamentos = new Vector<String>();
+				// ConexaoJDBC conn=new ConexaoJDBC();
+				//ConexaoODBC conn2 = new ConexaoODBC();
 
-					break;
-				}
-				
-		  }
-			else {
-			tx = getHSession().beginTransaction();
-			if (newPack.getPrescription() != null) {
-				if (previousPack != null) {
-					savePillCounts();
-				}
+				// Inicializa as variaveis para a insercao n acess
+				int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
+				String notes = allPackagedDrugsList.get(0).getNotes();
+				String patientId = allPackagedDrugsList.get(0).getPatientId();
+				String specialInstructions1 = allPackagedDrugsList.get(0).getSpecialInstructions1();
+				String specialInstructions2 = allPackagedDrugsList.get(0).getSpecialInstructions2();
+				Date dispenseDate = allPackagedDrugsList.get(0).getDispenseDate();
+				int weeksSupply = allPackagedDrugsList.get(0).getWeeksSupply();
+				int prescriptionDuration = allPackagedDrugsList.get(0).getPrescriptionDuration();
+				String dateExpectedString = allPackagedDrugsList.get(0).getDateExpectedString();
 
-				// Check if package contains ARV, and
-				// do ARV Start date check.
-				// Should be moved to a facade or manager class
-				for (PackageDrugInfo info : allPackagedDrugsList) {
-					if (!info.isSideTreatment()) {
-						// Check the ARV Start Date if an
-						// ARV package is present.
-						checkARVStartDate();
-						break;
-					}
-				}
+				List<PrescriptionToPatient> lp = conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
+				String reasonforupdate = lp.get(0).getReasonforupdate();
+				String regime = lp.get(0).getRegimeesquema();
+				int idade = lp.get(0).getIdade();
+				Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
+				String motivomudanca = lp.get(0).getMotivomudanca();
 
-				savePackageAndPackagedDrugs(dispenseNow, allPackagedDrugsList);
-				getLog().info("savePackageAndPackagedDrugs() called");
-				setNextAppointmentDate();
+				for (int i = 0; i < allPackagedDrugsList.size(); i++) {
+					// adiciona os medicantos no vector
+					vMedicamentos.add(new String(allPackagedDrugsList.get(i).getDrugName()));
 
-				if (allPackagedDrugsList.size() > 0) {
+					/*
+					 * vMedicamentos.add( new
+					 * String(allPackagedDrugsList.get(i).getDrugName()));
+					 * System.out.println(
+					 * "\n\n\n********************************** leitua de dados gui criacao de package"
+					 * ); System.out.println("amountPerTime = "
+					 * +allPackagedDrugsList.get(i).getAmountPerTime());
+					 * System.out.println("this.batchNumber = "
+					 * +allPackagedDrugsList.get(i).getBatchNumber());
+					 * System.out.println("this.clinic = "
+					 * +allPackagedDrugsList.get(i).getClinic());
+					 * System.out.println("this.dispensedQty ="+
+					 * allPackagedDrugsList.get(i).getDispensedQty());
+					 * System.out.println("this.formLanguage1 ="+
+					 * allPackagedDrugsList.get(i).getFormLanguage1());
+					 * System.out.println("this.formLanguage2 ="+
+					 * allPackagedDrugsList.get(i).getFormLanguage2());
+					 * System.out.println("this.formLanguage3 = "
+					 * +allPackagedDrugsList.get(i).getFormLanguage3());
+					 * System.out.println("this.drugName ="+
+					 * allPackagedDrugsList.get(i).getDrugName());
+					 * System.out.println("this.expiryDate ="+
+					 * allPackagedDrugsList.get(i).getExpiryDate());
+					 * System.out.println("this.notes = "
+					 * +allPackagedDrugsList.get(i).getNotes());
+					 * System.out.println("this.patientId ="+
+					 * allPackagedDrugsList.get(i).getPatientId());
+					 * System.out.println("this.patientFirstName ="+
+					 * allPackagedDrugsList.get(i).getPatientFirstName());
+					 * System.out.println("this.patientLastName = "
+					 * +allPackagedDrugsList.get(i).getPatientLastName());
+					 * System.out.println("this.specialInstructions1 ="+
+					 * allPackagedDrugsList.get(i).getSpecialInstructions1());
+					 * System.out.println("this.specialInstructions2 ="+
+					 * allPackagedDrugsList.get(i).getSpecialInstructions2());
+					 * System.out.println("this.stockId = "
+					 * +allPackagedDrugsList.get(i).getStockId());
+					 * System.out.println("this.timesPerDay = "
+					 * +allPackagedDrugsList.get(i).getTimesPerDay());
+					 * System.out.println("this.numberOfLabels ="+
+					 * allPackagedDrugsList.get(i).getNumberOfLabels());
+					 * System.out.println("this.sideTreatment ="+
+					 * allPackagedDrugsList.get(i).isSideTreatment());
+					 * System.out.println("this.cluser = "
+					 * +allPackagedDrugsList.get(i).getCluser());
+					 * System.out.println("this.dispenseDate ="+
+					 * allPackagedDrugsList.get(i).getDispenseDate());
+					 * System.out.println("this.packageIndex ="+
+					 * allPackagedDrugsList.get(i).getPackageIndex());
+					 * System.out.println("this.weeksSupply = "
+					 * +allPackagedDrugsList.get(i).getWeeksSupply());
+					 * System.out.println("this.packagedDrug = "
+					 * +allPackagedDrugsList.get(i).getPackagedDrug());
+					 * System.out.println("this.qtyInHand = "
+					 * +allPackagedDrugsList.get(i).getQtyInHand());
+					 * System.out.println("this.summaryQtyInHand = "
+					 * +allPackagedDrugsList.get(i).getSummaryQtyInHand());
+					 * System.out.println("this.qtyInLastBatch = "
+					 * +allPackagedDrugsList.get(i).getQtyInLastBatch());
+					 * System.out.println("this.prescriptionDuration = "
+					 * +allPackagedDrugsList.get(i).getPrescriptionDuration());
+					 * System.out.println("this.dateExpectedString = "
+					 * +allPackagedDrugsList.get(i).getDateExpectedString());
+					 * System.out.println("this.packageId = "
+					 * +allPackagedDrugsList.get(i).getPackageId());
+					 */ }
 
-					// This map keeps a track of drugs dispensed in separate
-					// batches
-					Map<String, String> drugNames = new HashMap<String, String>();
+				if (vMedicamentos != null)
+					for (int i = 0; i < vMedicamentos.size(); i++)
+						System.out.println("Medicamento " + i + " " + vMedicamentos.get(i));
 
-					// Update pdi's to include accum drugs
-					for (PackageDrugInfo info : allPackagedDrugsList) {
+				System.out.println(" Quantidade: " + allPackagedDrugsList.get(0).getDispensedQty());
+				System.out.println(" Notes: " + allPackagedDrugsList.get(0).getNotes());
+				System.out.println(" NID: " + allPackagedDrugsList.get(0).getPatientId());
+				System.out.println(" Instucaao1: " + allPackagedDrugsList.get(0).getSpecialInstructions1());
+				System.out.println(" Instruncao2: " + allPackagedDrugsList.get(0).getSpecialInstructions2());
+				System.out.println(" Data de dispensa: " + allPackagedDrugsList.get(0).getDispenseDate());
+				System.out.println(" Semanas: " + allPackagedDrugsList.get(0).getWeeksSupply());
+				System.out.println(
+						" duracao da prescricao semanas: " + allPackagedDrugsList.get(0).getPrescriptionDuration());
+				System.out.println(" data proxima visita: " + allPackagedDrugsList.get(0).getDateExpectedString());
+				System.out.println(" tipotarv: " + lp.get(0).getReasonforupdate());
+				System.out.println(" Regime: " + lp.get(0).getRegimeesquema());
+				System.out.println(" Idade: " + lp.get(0).getIdade());
 
-						info.setQtyInHand(PackageManager
-								.getQuantityDispensedForLabel(
-										newPack.getAccumulatedDrugs(),
-										info.getDispensedQty(),
-										info.getDrugName(), info
-												.getPackagedDrug().getStock()
-												.getDrug().getPackSize(),
-										false, true));
+				System.out.println(" DAta inicio noutro servico: " + dataInicioNoutroServico);
+				System.out.println(" Motivo da mudanca: " + motivomudanca);
 
-						labelQuantities.put(info, 1);
-						// set the String that will print out on each drug label
-						// to indicate
-						// (<amount dispensed> + <accumulated amount>)
-
-						if (drugNames.containsKey(info.getDrugName())) {
-							// not first batch, exclude pillcount value
-							info.setSummaryQtyInHand(PackageManager
-									.getQuantityDispensedForLabel(
-											newPack.getAccumulatedDrugs(),
-											info.getDispensedQty(),
-											info.getDrugName(),
-											info.getDispensedQty(), false,
-											false));
-						} else {
-
-							info.setSummaryQtyInHand(PackageManager
-									.getQuantityDispensedForLabel(
-											newPack.getAccumulatedDrugs(),
-											info.getDispensedQty(),
-											info.getDrugName(),
-											info.getDispensedQty(), false, true));
-						}
-						drugNames.put(info.getDrugName(), "test");
-						// set the String that will print out on the
-						// prescription summary label to indicate
-						// for each drug the (<total amount dispensed> + <total
-						// accumulated amount>)
-
-						// before printing the labels, save pdi List
-						TemporaryRecordsManager.savePackageDrugInfosToDB(
-								getHSession(), allPackagedDrugsList);
-						getHSession().flush();
-
-					}
-				}
-				
-				//Add interoperability with OpenMRS through Rest Web Services
-				/*RestClient restClient = new RestClient();
-				
-				Date dtPickUp = newPack.getPickupDate();
-				
-				//EncounterDatetime
-				String strPickUp = RestUtils.castDateToString(dtPickUp);
-				
-				//Patient NID 
-				String nid = newPack.getPrescription().getPatient().getPatientId().trim();
-				
-				String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(nid, " ", "%20"));
-				
-				//Patient NID uuid 
-				String nidUuid = nidRest.substring(21, 57);
-				
-				String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " " + newPack.getPrescription().getDoctor().getLastname().trim();
-				
-				String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
-				
-				String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PERSON+StringUtils.replace(providerWithNoAccents, " ", "%20"));
-				
-				//Provider
-				String providerUuid = response.substring(21, 57);
-				
-				String facility = newPack.getClinic().getClinicName().trim();
-				
-				//Location
-				String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION+StringUtils.replace(facility, " ", "%20"));
-				
-				//Health Facility
-				String strFacilityUuid = strFacility.substring(21, 57);
-				
-				//Regimen
-				String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
-				
-				String strRegimenAnswer = restClient.getOpenMRSResource("concept?q="+StringUtils.replace(regimenAnswer, " ", "%20"));
-				
-				//Regimen answer Uuid
-				String strRegimenAnswerUuid = strRegimenAnswer.substring(21, 57);
-				
-				List<PrescribedDrugs> prescribedDrugs = newPack.getPrescription().getPrescribedDrugs();
-						
-				//Next pick up date
-				Date dtNextPickUp = btnNextAppDate.getDate();
-				
-				String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
-			 		
-				restClient.postOpenMRSEncounter(strPickUp, nidUuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY, 
-				strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, strRegimenAnswerUuid, 
-				iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);*/
-				
-				tx.commit();
-				
-	
-				
-				/*if (iDartProperties.printDrugLabels) {
-					// Add the qty for the summary label
-					labelQuantities.put(ScriptSummaryLabel.KEY,
-							rdBtnPrintSummaryLabelYes.getSelection() ? 1 : 0);
-					//Add the qty for the next appointment
-					labelQuantities.put(CommonObjects.NEXT_APPOINTMENT_KEY, ( (rdBtnDispenseLater.getSelection()  ||  rdBtnYesAppointmentDate.getSelection()) ? 1 : 0));
-					// Add the qty for the package label
-					labelQuantities.put(PackageCoverLabel.KEY,
-					 rdBtnDispenseLater.getSelection() ? 1 : 0);
-					// print labels
-					PackageManager.printLabels(getHSession(),
-							allPackagedDrugsList, labelQuantities);
-				}*/
-			}
-			
-			
-			/*
-			 * 
-			 * 
-			 * Leitura da dispensa de ARV no formulario pelo botao create package, e a posterior insercao na tabela t_tarv do MS ACCESS
-			 * 
-			 */
-			Vector<String> vMedicamentos=new Vector<String>();
-			//ConexaoJDBC conn=new ConexaoJDBC();
-			ConexaoODBC conn2=new ConexaoODBC();
-			
-			
-			//Inicializa as variaveis para a insercao n acess
-			int dispensedQty=allPackagedDrugsList.get(0).getDispensedQty();
-			String notes=allPackagedDrugsList.get(0).getNotes();
-			String patientId =allPackagedDrugsList.get(0).getPatientId();
-			String specialInstructions1 =allPackagedDrugsList.get(0).getSpecialInstructions1();
-			String specialInstructions2=allPackagedDrugsList.get(0).getSpecialInstructions2();
-			Date dispenseDate =allPackagedDrugsList.get(0).getDispenseDate();
-			int weeksSupply =allPackagedDrugsList.get(0).getWeeksSupply();
-			int prescriptionDuration=allPackagedDrugsList.get(0).getPrescriptionDuration();
-			String dateExpectedString=allPackagedDrugsList.get(0).getDateExpectedString();
-			
-			 List<PrescriptionToPatient> lp=conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
-			 String reasonforupdate = lp.get(0).getReasonforupdate();
-			 String regime= lp.get(0).getRegimeesquema();
-			 int idade=lp.get(0).getIdade();
-			 Date dataInicioNoutroServico=lp.get(0).getDataInicionoutroservico();
-			 String motivomudanca=lp.get(0).getMotivomudanca();
-			 String linha=lp.get(0).getLinha();
-			 
-			 
-			 
-			
-			for (int i=0;i<allPackagedDrugsList.size();i++)
-			{
-				//adiciona os medicantos no vector
-				  vMedicamentos.add( new String(allPackagedDrugsList.get(i).getDrugName()));
-				
-/*
- *   vMedicamentos.add( new String(allPackagedDrugsList.get(i).getDrugName()));
- * System.out.println("\n\n\n********************************** leitua de dados gui criacao de package");
-			System.out.println("amountPerTime = "+allPackagedDrugsList.get(i).getAmountPerTime());
-		    System.out.println("this.batchNumber = "+allPackagedDrugsList.get(i).getBatchNumber());
-		    System.out.println("this.clinic = "+allPackagedDrugsList.get(i).getClinic());
-		    System.out.println("this.dispensedQty ="+ allPackagedDrugsList.get(i).getDispensedQty());
-		    System.out.println("this.formLanguage1 ="+ allPackagedDrugsList.get(i).getFormLanguage1());
-		    System.out.println("this.formLanguage2 ="+ allPackagedDrugsList.get(i).getFormLanguage2());
-			System.out.println("this.formLanguage3 = "+allPackagedDrugsList.get(i).getFormLanguage3());
-			System.out.println("this.drugName ="+ allPackagedDrugsList.get(i).getDrugName());
-			System.out.println("this.expiryDate ="+ allPackagedDrugsList.get(i).getExpiryDate());
-			System.out.println("this.notes = "+allPackagedDrugsList.get(i).getNotes());
-			System.out.println("this.patientId ="+ allPackagedDrugsList.get(i).getPatientId());
-			System.out.println("this.patientFirstName ="+ allPackagedDrugsList.get(i).getPatientFirstName());
-			System.out.println("this.patientLastName = "+allPackagedDrugsList.get(i).getPatientLastName());
-			System.out.println("this.specialInstructions1 ="+ allPackagedDrugsList.get(i).getSpecialInstructions1());
-			System.out.println("this.specialInstructions2 ="+ allPackagedDrugsList.get(i).getSpecialInstructions2());
-			System.out.println("this.stockId = "+allPackagedDrugsList.get(i).getStockId());
-			System.out.println("this.timesPerDay = "+allPackagedDrugsList.get(i).getTimesPerDay());
-			System.out.println("this.numberOfLabels ="+ allPackagedDrugsList.get(i).getNumberOfLabels());
-			System.out.println("this.sideTreatment ="+ allPackagedDrugsList.get(i).isSideTreatment());
-			System.out.println("this.cluser = "+allPackagedDrugsList.get(i).getCluser());
-			System.out.println("this.dispenseDate ="+ allPackagedDrugsList.get(i).getDispenseDate());
-			System.out.println("this.packageIndex ="+ allPackagedDrugsList.get(i).getPackageIndex());
-			System.out.println("this.weeksSupply = "+allPackagedDrugsList.get(i).getWeeksSupply());
-			System.out.println("this.packagedDrug = "+allPackagedDrugsList.get(i).getPackagedDrug());
-			System.out.println("this.qtyInHand = "+allPackagedDrugsList.get(i).getQtyInHand());
-			System.out.println("this.summaryQtyInHand = "+allPackagedDrugsList.get(i).getSummaryQtyInHand());
-			System.out.println("this.qtyInLastBatch = "+allPackagedDrugsList.get(i).getQtyInLastBatch());
-			System.out.println("this.prescriptionDuration = "+allPackagedDrugsList.get(i).getPrescriptionDuration());
-			System.out.println("this.dateExpectedString = "+allPackagedDrugsList.get(i).getDateExpectedString());
-			System.out.println("this.packageId = "+allPackagedDrugsList.get(i).getPackageId());
- */			}
-			
-		if(vMedicamentos!=null)
-			for(int i=0; i<vMedicamentos.size();i++ )
-				System.out.println("Medicamento "+i+" " +vMedicamentos.get(i));
-			
-		System.out.println(" Quantidade: "+allPackagedDrugsList.get(0).getDispensedQty());
-		System.out.println(" Notes: "+allPackagedDrugsList.get(0).getNotes());
-		System.out.println(" NID: "+allPackagedDrugsList.get(0).getPatientId());
-		System.out.println(" Instucaao1: "+allPackagedDrugsList.get(0).getSpecialInstructions1());
-		System.out.println(" Instruncao2: "+allPackagedDrugsList.get(0).getSpecialInstructions2());
-		System.out.println(" Data de dispensa: "+allPackagedDrugsList.get(0).getDispenseDate());
-		System.out.println(" Semanas: "+allPackagedDrugsList.get(0).getWeeksSupply());
-		System.out.println(" duracao da prescricao semanas: "+allPackagedDrugsList.get(0).getPrescriptionDuration());
-		System.out.println(" data proxima visita: "+allPackagedDrugsList.get(0).getDateExpectedString());
-		System.out.println(" tipotarv: "+lp.get(0).getReasonforupdate());
-		System.out.println(" Regime: "+lp.get(0).getRegimeesquema());
-		System.out.println(" Idade: "+lp.get(0).getIdade());
-		 
-		System.out.println(" DAta inicio noutro servico: "+dataInicioNoutroServico);
-		System.out.println(" Motivo da mudanca: "+ motivomudanca);
-		System.out.println(" Linha Terapeutica: "+ linha);
-		 
-		 //convertendo a data para adequar com a coluna datatarv do ms access - t_tarv 
-		 SimpleDateFormat parseFormat = 
-				    new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+				// convertendo a data para adequar com a coluna datatarv do ms
+				// access - t_tarv
+				SimpleDateFormat parseFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
 				Date datatarv = parseFormat.parse(dispenseDate.toString());
 				SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 				String resultdatatarv = format.format(datatarv);
-				
-				
-		//Convertendo a data de String para Date. proxima visita
-				Date dateproximavisita=conn.converteData(dateExpectedString);
-		 System.out.println(" Date proxima: "+dateproximavisita);
-		 
-		 SimpleDateFormat parseFormat2 = 
-				    new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-				Date dateproxima = parseFormat2.parse( dateproximavisita.toString());
+
+				// Convertendo a data de String para Date. proxima visita
+				Date dateproximavisita = conn.converteData(dateExpectedString);
+				System.out.println(" Date proxima: " + dateproximavisita);
+
+				SimpleDateFormat parseFormat2 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+				Date dateproxima = parseFormat2.parse(dateproximavisita.toString());
 				SimpleDateFormat format2 = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 				String resultdataproximaconsulta = format2.format(dateproxima);
-				
-		       String dataNoutroServico="";
-		       if(dataInicioNoutroServico!=null)
-		    	   dataNoutroServico=format2.format(dataInicioNoutroServico);
-		    	   
-		   
-		if(motivomudanca!=null && motivomudanca.length()>0)
-			//quando ha motivo de mudanca
-			conn2.insereT_tarvMotivo(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,motivomudanca,linha);
-			
-		else  if(dataInicioNoutroServico!=null)
-			
-			//Quando � transferido de 
-			conn2.insereT_tarvTransferidoDE(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,dataNoutroServico,linha);
-			
-		else
-		       //metodo invocado para a insercao em t_tarv no ms access	
-		conn2.insereT_tarv(vMedicamentos,patientId, resultdatatarv,dispensedQty,regime,weeksSupply,reasonforupdate,resultdataproximaconsulta,idade,linha);
-		
+
+				String dataNoutroServico = "";
+				if (dataInicioNoutroServico != null)
+					dataNoutroServico = format2.format(dataInicioNoutroServico);
+
+				/*if (motivomudanca != null && motivomudanca.length() > 0)
+					// quando ha motivo de mudanca
+					conn2.insereT_tarvMotivo(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
+							weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, motivomudanca, linha);
+
+				else if (dataInicioNoutroServico != null)
+
+					// Quando � transferido de
+					conn2.insereT_tarvTransferidoDE(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime,
+							weeksSupply, reasonforupdate, resultdataproximaconsulta, idade, dataNoutroServico, linha);
+
+				else
+					// metodo invocado para a insercao em t_tarv no ms access
+					conn2.insereT_tarv(vMedicamentos, patientId, resultdatatarv, dispensedQty, regime, weeksSupply,
+							reasonforupdate, resultdataproximaconsulta, idade, linha);*/
+
 			}
-		
-		} catch (HibernateException he) {//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+		} catch (HibernateException he) {// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			getLog().error("Problem with Saving this package", he);
 			if (tx != null) {
 				tx.rollback();
 			}
 
-			MessageBox m = new MessageBox(getShell(), SWT.OK
-					| SWT.ICON_INFORMATION);
-			m.setText("Problem Saving Package");
-			m.setMessage("There was a problem saving this package of drugs.");
+			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+			m.setText("Problema salvando o pacote de medicamentos");
+			m.setMessage("Houve um problema ao salvar este pacote de medicamentos");
 
 			m.open();
 		}
@@ -3704,14 +3683,12 @@ public class NewPatientPackaging extends GenericFormGui implements
 
 	}
 
-
-
-
 	/**
 	 * If the patient meets the following requirements the user is prompted
 	 * whether or not to add an ARVstartDate to the patient.
 	 * <ul>
-	 * <li>Patient does not have any previous packages that contain ARV drugs.</li>
+	 * <li>Patient does not have any previous packages that contain ARV drugs.
+	 * </li>
 	 * <li>Patient does not already have an ARVStartDate attribute.</li>
 	 * <li>Pharmacist is dispesing for direct pickup.</li>
 	 * <li>The start reason for the patient's most recent episode is 'New
@@ -3723,16 +3700,13 @@ public class NewPatientPackaging extends GenericFormGui implements
 	private void checkARVStartDate() throws HibernateException {
 		Patient pat = newPack.getPrescription().getPatient();
 		if (PackageManager.getMostRecentARVPackage(getHSession(), pat) == null
-				&& (pat.getAttributeByName(PatientAttribute.ARV_START_DATE)) == null
-				&& rdBtnDispenseNow.getSelection()
-				&& (Episode.REASON_NEW_PATIENT.equalsIgnoreCase(PatientManager
-						.getMostRecentEpisode(pat).getStartReason()))) {
+				&& (pat.getAttributeByName(PatientAttribute.ARV_START_DATE)) == null && rdBtnDispenseNow.getSelection()
+				&& (Episode.REASON_NEW_PATIENT
+						.equalsIgnoreCase(PatientManager.getMostRecentEpisode(pat).getStartReason()))) {
 
-			getLog().info(
-					"ARV start date not set, asking user if it should be set to this package's pack date");
+			getLog().info("ARV start date not set, asking user if it should be set to this package's pack date");
 
-			MessageBox mbox = new MessageBox(getShell(), SWT.YES | SWT.NO
-					| SWT.ICON_QUESTION);
+			MessageBox mbox = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 			mbox.setText("A data de início TARV não foi especificada");
 			mbox.setMessage("A data de início TARV não foi especificada e esta é a primeira vez que o paciente '"
 					+ txtPatientId.getText()
@@ -3748,8 +3722,5 @@ public class NewPatientPackaging extends GenericFormGui implements
 			}
 		}
 	}
-	
 
-
-	
 }

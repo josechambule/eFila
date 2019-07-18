@@ -96,16 +96,13 @@ public class Prescription {
 
 	@Transient
 	private HashSet<Drug> arvDrugSet;
-
-	@ManyToOne
-	@JoinColumn(name = "linhaid")
-	private LinhaT linha;
 	
 	private char ppe;
 	private char ptv;
 	private char tb;
 	private char tpc;
 	private char tpi;
+	private char saaj;
 
 	/**
 	 * @param clinicalStage
@@ -135,7 +132,7 @@ public class Prescription {
 			Doctor doctor, int duration, int id, char modified,
 			Set<Packages> packages, Patient patient,
 			List<PrescribedDrugs> prescribedDrugs, String prescriptionId,
-			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, char tpi) {
+			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, char tpi, char saaj) {
 		super();
 		this.clinicalStage = clinicalStage;
 		this.current = current;
@@ -158,7 +155,7 @@ public class Prescription {
 		this.tb=tb;
 		this.tpc=tpc;
 		this.tpi=tpi;
-
+		this.saaj=saaj;
 	}
 
 	public Prescription() {
@@ -510,16 +507,6 @@ public class Prescription {
 		this.motivoMudanca = motivoMudanca;
 	}
 
-	public void setLinha(LinhaT linha) {
-		this.linha=linha;
-		
-	}
-
-	public LinhaT getLinha() {
-		return this.linha;
-		
-	}
-
 	public char getPpe() {
 		return ppe;
 	}
@@ -536,6 +523,13 @@ public class Prescription {
 		this.ptv = ptv;
 	}
 	
+	public char getSaaj() {
+		return saaj;
+	}
+	
+	public void setSaaj(char saaj) {
+		this.saaj = saaj;
+	}
 	
 	public char getTb() {
 		return tb;

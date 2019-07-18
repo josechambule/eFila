@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
 import org.celllife.idart.gui.doctor.AddDoctor;
@@ -644,7 +643,7 @@ public char getUserPermission(){
 
 		
 		
-		ConexaoODBC odbc=new ConexaoODBC();
+		//ConexaoODBC odbc=new ConexaoODBC();
 		Connection c=null;
 		
 		ConexaoJDBC jdbc=new ConexaoJDBC();
@@ -652,7 +651,7 @@ public char getUserPermission(){
 		jdbc.insere_sync_temp_patients();
 		try {
 			
-		 c=odbc.getConnection();
+		 //c=odbc.getConnection();
 			 
 		} catch (Exception e) {
 		

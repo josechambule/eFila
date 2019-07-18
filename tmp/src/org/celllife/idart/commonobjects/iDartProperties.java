@@ -18,6 +18,8 @@ public class iDartProperties {
 	
 	public static final String ENCOUNTER_TYPE_PHARMACY = "e279133c-1d5f-11e0-b929-000c29ad1d07";
 	
+	public static final String REST_GET_SESSION = "session";
+	
 	public static final String REST_GET_PATIENT = "patient?q=";
 	
 	public static final String REST_GET_PATIENT_GENERIC = "patient/";

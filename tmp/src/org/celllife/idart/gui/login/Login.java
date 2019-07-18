@@ -20,15 +20,25 @@
 // PHARMACY //
 package org.celllife.idart.gui.login;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import model.manager.AdministrationManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -43,6 +53,7 @@ import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
+import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -62,6 +73,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.json.JSONObject;
+
 
 /**
  */
@@ -89,6 +102,8 @@ public class Login implements GenericGuiInterface {
 	private boolean successfulLogin;
 
 	private Session hSession;
+	
+	private RestClient restClient;
 
 	private final boolean limitClinic;
 
@@ -496,10 +511,60 @@ public class Login implements GenericGuiInterface {
 				txtPassword.setText(""); //$NON-NLS-1$
 			} else {
 				
-			 
-
+				File myFile = new File("src/jdbc_auto_generated.properties");
+	            Properties properties = new Properties();
+	          
+	            	
+					try {
+						
+						properties.load(new FileInputStream(myFile));
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			
+				if(!properties.isEmpty()){
+	            properties.remove("password");
+	            properties.remove("userName");}
+	            OutputStream out = null;
+				try {
+					properties.setProperty("password", txtPassword.getText());
+					properties.setProperty("userName", cmbUsers.getText());
+					
+					out = new FileOutputStream(myFile);
+				
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            try {
+					properties.store(out, null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            
+	        	restClient = new RestClient();
+	            String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_SESSION);
+	            JSONObject json = new JSONObject(openMrsResource);
+	          
+	           
+	            boolean resultado = false;
+	           
+	            resultado  = json.getBoolean("authenticated");
+               
+	            if(resultado==false){
+	            MessageDialog.openInformation(loginShell,"Atenção", //$NON-NLS-1$
+						"O Usuario Logado não será capaz de realizar nenhuma despensa! Por favor entre em contacto com o SIS.");
+	            }
 				successfulLogin = true;
-
+			
+                
+             
+				
 				LocalObjects.setUser(theUser);
 				LocalObjects.currentClinic = theClinic.getClinicName()
 				.equalsIgnoreCase(

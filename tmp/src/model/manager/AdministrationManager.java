@@ -252,6 +252,16 @@ return conn.carregaTb(idPatient);
 
 }
 
+//Previous TB
+
+public static String loadSAAJ(int idPatient)throws ClassNotFoundException, SQLException
+
+{ ConexaoJDBC conn=new ConexaoJDBC();
+
+return conn.carregaSAAJ(idPatient);
+
+}
+
 //Previous Pediatric or Adult ARV
 
 public static String loadPediatric(int iddrug)throws ClassNotFoundException, SQLException

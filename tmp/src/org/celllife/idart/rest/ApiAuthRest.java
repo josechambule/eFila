@@ -34,14 +34,14 @@ public class ApiAuthRest {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
         	HttpPost httpPost = new HttpPost(URL);
-        	System.out.println(URL);
+        	System.out.println("YEEEEEEEEEEEEEEEEEEEEEE"+URL);
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
             BasicScheme scheme = new BasicScheme();
             Header authorizationHeader = scheme.authenticate(credentials, httpPost);
             httpPost.setHeader(authorizationHeader);
             httpPost.setEntity(input);
             //System.out.println("Executing request: " + httpGet.getRequestLine());
-            //System.out.println(response);
+            System.out.println("SACUR"+response);
 //            response = httpclient.execute(httpGet,responseHandler);
             HttpResponse responseRequest = httpclient.execute(httpPost);
             
