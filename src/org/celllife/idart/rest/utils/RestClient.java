@@ -15,6 +15,8 @@ import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.rest.ApiAuthRest;
 
+import model.nonPersistent.Autenticacao;
+
 
 /**
  * 
@@ -54,10 +56,11 @@ public class RestClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+	
 		ApiAuthRest.setURLBase(prop.getProperty("urlBase"));
 		ApiAuthRest.setUsername(prop_dynamic.getProperty("userName"));
-		ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
+	//	ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
+		ApiAuthRest.setPassword(Autenticacao.senhaTemporaria);
 	}
 	
 	public boolean postOpenMRSEncounter(String encounterDatetime, String nidUuid, String encounterType, String strFacilityUuid, 
@@ -90,11 +93,11 @@ public class RestClient {
 		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
 		 			  + "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"encounterProviders\":[{\"provider\":\""+providerUuid+"\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], "
 		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\"},{\"person\":"
+		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\", \"comment\":\"IDART\"},{\"person\":"
 		 			  + "\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+packSize+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage+"\"},{\"person\":\""+nidUuid+"\","
-		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
+		 			  + "\"value\":\""+packSize+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
+		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\","
+		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\",\"comment\":\"IDART\"}]}"
 		 			);
 		 	
 		 	System.out.println(IOUtils.toString(inputAddPerson.getContent())); 
@@ -127,13 +130,13 @@ public class RestClient {
 		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
 		 					+ "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"encounterProviders\":[{\"provider\":\""+providerUuid+"\", \"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}], "
 		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\"},{\"person\":"
+		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\",\"comment\":\"IDART\"},{\"person\":"
 		 			  + "\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+String.valueOf(packagedDrugs.get(1).getAmount())+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+String.valueOf(packagedDrugs.get(0).getAmount())+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_0+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_1+"\"},{\"person\":\""+nidUuid+"\","
-		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
+		 			  + "\"value\":\""+String.valueOf(packagedDrugs.get(1).getAmount())+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
+		 			  + "\"value\":\""+String.valueOf(packagedDrugs.get(0).getAmount())+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
+		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_0+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
+		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_1+"\",\"comment\":\"IDART\"},{\"person\":\""+nidUuid+"\","
+		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\",\"comment\":\"IDART\"}]}"
 		 			);
 		 	
 		 	/*inputAddPerson = new StringEntity(

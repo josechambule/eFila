@@ -795,7 +795,7 @@ public class PatientManager {
 		// if this patient is a NEW PATIENT
 		if (!sess.contains(thePatient)) {
 			sess.save(thePatient);
-
+        
 		}
 		// else, this patient needs to be updated
 		else {
@@ -810,7 +810,7 @@ public class PatientManager {
 							+ pre.getPrescriptionId());
 				}
 			}
-
+			System.out.print("AQUIIIIIIIIIIIIIIIIII");
 		}
 	}
 

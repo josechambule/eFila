@@ -35,6 +35,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import model.nonPersistent.Autenticacao;
+
 /**
  */
 @Entity
@@ -77,7 +79,7 @@ public class User {
 	public User(String username, String password, String role, char modified, Set<Clinic> clinics, char permission) {
 		super();
 		this.username = username;
-		this.password = password;
+		this.password = Autenticacao.converteMD5(password);
 		this.role = role;
 		this.modified = modified;
 		this.clinics=clinics;
@@ -146,7 +148,8 @@ public class User {
 	 * @param password String
 	 */
 	public void setPassword(String password) {
-		this.password = password;
+		
+		this.password = Autenticacao.converteMD5(password);
 	}
 
 	/**

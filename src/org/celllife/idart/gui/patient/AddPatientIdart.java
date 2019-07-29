@@ -1344,10 +1344,10 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 				strRecentdate = strRecentdate.substring(32, 43).trim();
 				
 				//Other places
-				String _year = strRecentdate.substring(6, 10);
+				String _year = strRecentdate.substring(0, 4);
 				//String _month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(strRecentdate.substring(3, 5))-1];
-				String _month = strRecentdate.substring(3, 5);
-				Integer _day = Integer.valueOf(strRecentdate.substring(0, 2));
+				String _month = strRecentdate.substring(5, 7);
+				Integer _day = Integer.valueOf(strRecentdate.substring(8, 10));
 				
 				//Namacurra
 				/*Calendar calendar = RestUtils.shortDate(strRecentdate);

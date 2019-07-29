@@ -34,7 +34,7 @@ public class ApiAuthRest {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
         	HttpPost httpPost = new HttpPost(URL);
-        	System.out.println("YEEEEEEEEEEEEEEEEEEEEEE"+URL);
+        	//System.out.println("YEEEEEEEEEEEEEEEEEEEEEE"+URL);
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
             BasicScheme scheme = new BasicScheme();
             Header authorizationHeader = scheme.authenticate(credentials, httpPost);
