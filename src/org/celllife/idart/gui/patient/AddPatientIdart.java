@@ -1048,7 +1048,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 		
 		//Verificar se o NID existe no OpenMRS
 		String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(patientId, " ", "%20"));
-				
+								
 		if (openMrsResource.length() == 14 && !localPatient.getIsPatientEmTransito()) {
 			title = Messages.getString("Informação não encontrada");
 			message = Messages.getString("NID inserido não existe no OpenMRS");
@@ -1289,6 +1289,8 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 			JSONObject jsonObject = new org.json.JSONObject(personDemografics);
 
 			String fullName = jsonObject.getJSONObject("preferredName").getString("display");
+						
+			localPatient.setUuidopenmrs(personUuid);      
 
 			String[] names = fullName.trim().split(" ");
 

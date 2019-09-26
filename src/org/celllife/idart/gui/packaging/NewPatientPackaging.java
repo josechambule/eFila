@@ -2668,6 +2668,11 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				nidUuid = (String) results.get("uuid");
 			}
 			
+			String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST+nidUuid);
+			
+			JSONObject jsonReportingRest = new JSONObject(openrsMrsReportingRest);
+			JSONArray jsonReportingRestArray = (JSONArray) jsonReportingRest.get("members");
+			
 			if (nidUuid==null) { 
 				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 				m.setText("Problema dispensando o pacote de medicamentos");
@@ -2676,6 +2681,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				
 				return;
 			}
+			
+			if (jsonReportingRestArray.length() < 1) {
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Informação sobre estado do programa");
+				m.setMessage("NID inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
+				m.open();
+				
+				return;
+			} 
 
 			String strProvider = newPack.getPrescription().getDoctor().getFirstname().trim() + " "
 					+ newPack.getPrescription().getDoctor().getLastname().trim();

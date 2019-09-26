@@ -244,8 +244,7 @@ public class CommonObjects {
 	 */
 	public static void populatePrescriptionDuration(Session sess, CCombo combo) {
 
-		List<SimpleDomain> sdList = AdministrationManager
-		.getPrescriptionDurations(sess);
+		List<SimpleDomain> sdList = AdministrationManager.getPrescriptionDurations(sess);
 
 		if (sdList != null) {
 			for (SimpleDomain s : sdList) {

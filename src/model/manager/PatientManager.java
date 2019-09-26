@@ -810,7 +810,6 @@ public class PatientManager {
 							+ pre.getPrescriptionId());
 				}
 			}
-			System.out.print("AQUIIIIIIIIIIIIIIIIII");
 		}
 	}
 

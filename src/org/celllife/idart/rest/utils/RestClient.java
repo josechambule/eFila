@@ -215,4 +215,15 @@ public class RestClient {
 		}
 		return resource;
 	}
+	
+	public String getOpenMRSReportingRest(String resourceParameter) {
+		ApiAuthRest.setURLReportingBase(prop.getProperty("urlBaseReportingRest"));
+		String resource = null;
+		try {
+			resource = ApiAuthRest.getReportingRequestGet(resourceParameter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resource;
+	}
 }
