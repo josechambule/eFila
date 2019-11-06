@@ -1479,6 +1479,34 @@ public class ConexaoJDBC {
 		return linha;
 
 	}
+	
+    public int carregaDispensaTrimestral(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + "  dispensatrimestral "
+                + "  FROM "
+                + "  prescription "
+                + "  WHERE "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        // 0 = nao
+        // 1 = sim
+        int dispensaTrimestral = 0;
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                dispensaTrimestral = rs.getInt("dispensatrimestral");
+            }
+            rs.close(); //
+        }
+
+        return dispensaTrimestral;
+
+    }
 
 	/**
 	 * Devolve tb duma prescricao
@@ -1518,6 +1546,257 @@ public class ConexaoJDBC {
 		return tb;
 
 	}
+	
+    public String carregaCcr(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " ccr "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String ccr = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                ccr = rs.getString("ccr");
+
+            }
+            rs.close(); //
+        }
+
+        return ccr;
+
+    }
+    
+    
+    public String carregaCpn(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " cpn "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String cpn = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                cpn = rs.getString("cpn");
+
+            }
+            rs.close(); //
+        }
+
+        return cpn;
+
+    }
+    
+    
+    public String carregaAf(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " af "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String af = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (af != null) {
+
+            while (rs.next()) {
+
+                af = rs.getString("af");
+
+            }
+            rs.close(); //
+        }
+
+        return af;
+
+    }
+    
+    
+    public String carregaFr(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " fr "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String fr = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (fr != null) {
+
+            while (rs.next()) {
+
+                fr = rs.getString("fr");
+
+            }
+            rs.close(); //
+        }
+
+        return fr;
+
+    }
+    
+    
+    public String carregaGaac(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " gaac "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String gaac = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (gaac != null) {
+
+            while (rs.next()) {
+
+                gaac = rs.getString("gaac");
+
+            }
+            rs.close(); //
+        }
+
+        return gaac;
+
+    }
+    
+    
+    public String carregaDc(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " dc "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String dc = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (dc != null) {
+
+            while (rs.next()) {
+
+                dc = rs.getString("dc");
+
+            }
+            rs.close(); //
+        }
+
+        return dc;
+
+    }
+    
+    
+    public String carregaCa(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " ca "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String ca = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (ca != null) {
+
+            while (rs.next()) {
+
+                ca = rs.getString("ca");
+
+            }
+            rs.close(); //
+        }
+
+        return ca;
+
+    }
 
 	/**
 	 * Devolve tb duma prescricao

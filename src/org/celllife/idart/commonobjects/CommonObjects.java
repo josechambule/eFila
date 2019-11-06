@@ -665,9 +665,24 @@ public class CommonObjects {
 		
 		
 	}
-
-
-
-
-
+	
+	public static void populateDispensaTrimestral(Session hSession, CCombo cmbDispensaTrimestral) {
+		cmbDispensaTrimestral.add("Sim");
+        cmbDispensaTrimestral.add("Nao");
+	}
+	
+	public static void populateDispensaSemestral(Session hSession, CCombo cmbDispensaSemestral) {
+		cmbDispensaSemestral.add("Sim");
+		cmbDispensaSemestral.add("Nao");
+	}
+	
+	public static void populateTipoDispensaTrimestral(Session hSession, CCombo cmbDispensaTrimestral){
+		cmbDispensaTrimestral.add("Novo");
+        cmbDispensaTrimestral.add("Manuntencao");
+	}
+	
+	public static void populateTipoDispensaSemestral(Session hSession, CCombo cmbTipoDispensaSemestral){
+		cmbTipoDispensaSemestral.add("Novo");
+		cmbTipoDispensaSemestral.add("Manuntencao");
+	}
 }
