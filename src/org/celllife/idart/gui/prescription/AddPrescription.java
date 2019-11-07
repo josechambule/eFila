@@ -1385,10 +1385,7 @@ iDARTChangeListener {
 			missing.open();
 			txtPatientId.setFocus();
 			return false;
-		}
-		else
-		
-		if(btnDataInicioNoutroServico.getDate()!=null && btnDataInicioNoutroServico.getDate().after(new Date())){
+		} else if(btnDataInicioNoutroServico.getDate()!=null && btnDataInicioNoutroServico.getDate().after(new Date())){
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
@@ -1399,9 +1396,7 @@ iDARTChangeListener {
 			btnDataInicioNoutroServico.setFocus();
 			return false;
 			
-		}
-		else
-		if(cmbUpdateReason.getText().equals("Alterar") && cmbMotivoMudanca.getText().length()==0){
+		} else if(cmbUpdateReason.getText().equals("Alterar") && cmbMotivoMudanca.getText().length()==0){
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
@@ -1412,9 +1407,7 @@ iDARTChangeListener {
 			cmbMotivoMudanca.setFocus();
 			
 			return false;
-		}
-
-		else if (lblUpdateReason.isVisible()
+		} else if (lblUpdateReason.isVisible()
 				&& cmbUpdateReason.getText().trim().equals("")) {
 			MessageBox missingUpdateReason = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
@@ -1423,6 +1416,8 @@ iDARTChangeListener {
 			.setMessage("O campo 'Motivo de mudan�a' n�o foi inserido.");
 			cmbUpdateReason.setFocus();
 			missingUpdateReason.open();
+			return false;
+		} else if (!cheackDispensaTrimestral()) { 
 			return false;
 		} else if (!txtWeight.getText().equals("")) {
 			try {
@@ -3069,6 +3064,84 @@ iDARTChangeListener {
 			cmbRegime.setText(r.getRegimeesquema());
 		}
 	}
+	
+    private boolean cheackDispensaTrimestral() {
+        try {
+            String result = cmbDispensaTrimestral.getItem(cmbDispensaTrimestral.getSelectionIndex());
+            String prescritionDuration = null;
+            switch (result) {
+                case "Sim": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (cmbTipoDispensaTrimestral.getSelectionIndex() < 0) {
+                        MessageBox mb = new MessageBox(getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("Selecionou dispensa trimestral, especifique o tipo de Dispensa Trimesteal do Paciente");
+                        mb.open();
+                        return false;
+                    }
+
+                    if (("3 meses".equals(prescritionDuration) || ("3 months".equals(prescritionDuration)))) {
+                        return true;
+                    } else {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("Selecionou dispensa trimestral, mas a duracao da prescricao nao e de 3 meses. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+                
+                case "Nao": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (prescritionDuration.contentEquals("3 meses") || prescritionDuration.contentEquals("3 months")) {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("A duração da prescrição é de 3 meses e não está na Dispensa Trimestral. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    } else {
+                        return true;
+                    }
+                }
+                
+                default:
+                    MessageBox mb = new MessageBox(getShell());
+                    mb.setText("Dispensa Trimestral");
+                    mb.setMessage("Especifique se é dispensa trimestral ou nao");
+                    mb.open();
+                    return false;
+            }
+        } catch (java.lang.IllegalArgumentException ex) {
+
+            MessageBox mb = new MessageBox(getShell());
+            mb.setText("Dispensa Trimestral");
+            mb.setMessage("Dispensa trimestral nao foi Selecionada");
+            mb.open();
+            return false;
+
+        }
+
+    }
 	
     public void avaliaMDSSelection() {
 
