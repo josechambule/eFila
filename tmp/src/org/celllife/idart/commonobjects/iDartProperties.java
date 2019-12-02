@@ -22,6 +22,8 @@ public class iDartProperties {
 	
 	public static final String REST_GET_PATIENT = "patient?q=";
 	
+	public static final String REST_GET_REPORTING_REST = "?personUuid=";
+	
 	public static final String REST_GET_PATIENT_GENERIC = "patient/";
 	
 	public static final String REST_GET_PERSON_GENERIC = "person/";

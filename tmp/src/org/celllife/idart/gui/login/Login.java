@@ -24,10 +24,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +37,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import model.manager.AdministrationManager;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -53,6 +51,7 @@ import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
+import org.celllife.idart.rest.ApiAuthRest;
 import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -74,6 +73,9 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.json.JSONObject;
+
+import model.manager.AdministrationManager;
+import model.nonPersistent.Autenticacao;
 
 
 /**
@@ -461,6 +463,10 @@ public class Login implements GenericGuiInterface {
 		// Check the password against the username
 		checkLogin();
 	}
+	
+
+	
+	
 
 	private void checkLogin() {
 
@@ -500,8 +506,10 @@ public class Login implements GenericGuiInterface {
 						.getString("login.dialog.error.title"), //$NON-NLS-1$
 						Messages.getString("login.error.userpermission")); //$NON-NLS-1$
 				txtPassword.setFocus();
-				txtPassword.setText(""); //$NON-NLS-1$
-			} else if (!txtPassword.getText().equals((theUser.getPassword()))) {
+				txtPassword.setText(""); 
+				
+				//TESTA COM ENCRIPTAÇÃO
+			} else if (!Autenticacao.converteMD5(txtPassword.getText()).equals((theUser.getPassword()))) {
 				// If the login was unsuccessful, then alert the user
 				successfulLogin = false;
 				MessageDialog.openError(loginShell, Messages
@@ -509,7 +517,7 @@ public class Login implements GenericGuiInterface {
 						Messages.getString("login.error.password")); //$NON-NLS-1$
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
-			} else {
+			} else if(verificaLoginOpenMRS() ) {
 				
 				File myFile = new File("src/jdbc_auto_generated.properties");
 	            Properties properties = new Properties();
@@ -531,9 +539,12 @@ public class Login implements GenericGuiInterface {
 	            properties.remove("userName");}
 	            OutputStream out = null;
 				try {
-					properties.setProperty("password", txtPassword.getText());
+				//	properties.setProperty("password", txtPassword.getText());
 					properties.setProperty("userName", cmbUsers.getText());
 					
+					Autenticacao.senhaTemporaria = txtPassword.getText();
+				
+				//	System.out.println(Autenticacao.senhaTemporaria+"TESTETETETETETETETTTTTTTTTTTTTTTTTTTTTTTTTt");
 					out = new FileOutputStream(myFile);
 				
 				} catch (FileNotFoundException e) {
@@ -547,19 +558,15 @@ public class Login implements GenericGuiInterface {
 					e.printStackTrace();
 				}
 	            
-	        	restClient = new RestClient();
-	            String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_SESSION);
-	            JSONObject json = new JSONObject(openMrsResource);
-	          
-	           
-	            boolean resultado = false;
-	           
-	            resultado  = json.getBoolean("authenticated");
+	      //  	boolean resultado = verificaLoginOpenMRS();
                
-	            if(resultado==false){
+	            
+	            
+	           /* if(resultado==false){
 	            MessageDialog.openInformation(loginShell,"Atenção", //$NON-NLS-1$
 						"O Usuario Logado não será capaz de realizar nenhuma despensa! Por favor entre em contacto com o SIS.");
-	            }
+	           //  successfulLogin = false;
+	            }*/
 				successfulLogin = true;
 			
                 
@@ -574,11 +581,46 @@ public class Login implements GenericGuiInterface {
 				closeScreen();
 
 			}
+			
+			else{
+				
+				successfulLogin = false;
+				MessageDialog.openError(loginShell, Messages
+						.getString("login.dialog.error.title"), //$NON-NLS-1$
+						Messages.getString("login.error.openmrs")); //$NON-NLS-1$
+				txtPassword.setFocus();
+				txtPassword.setText(""); 
+			}
 
 		} catch (HibernateException e) {
 			e.printStackTrace();
 			log.error("Erro ao logar ..\n" + e.toString()); //$NON-NLS-1$	
 			showErrorAndClose();	
 		}
+	}
+
+	private Boolean verificaLoginOpenMRS() {
+	
+		restClient = new RestClient();
+		ApiAuthRest.setUsername(cmbUsers.getText());
+		ApiAuthRest.setPassword(txtPassword.getText());
+		boolean resultado = false;
+        
+		  try {
+		String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_SESSION);
+		  
+		JSONObject json = new JSONObject(openMrsResource);
+        
+         
+		
+		resultado  = json.getBoolean("authenticated");
+		}catch (Exception e) {
+		
+		}
+		
+		System.out.print(resultado);
+		
+		
+		return resultado;
 	}
 }

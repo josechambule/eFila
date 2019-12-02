@@ -350,6 +350,9 @@ public class PrintLayoutUtils {
 			b.setBarHeight(20);
 			b.setResolution(70);
 			disableDoubleBuffering(b);
+			
+			g2d.scale(0.7, 1);
+			
 			// print barcode in center of printableWidth
 			b.draw(g2d, (printableWidth - b.getWidth()) / 2, ypos);
 			enableDoubleBuffering(b);

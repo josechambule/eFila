@@ -66,6 +66,242 @@ public class ConexaoJDBC {
 		st = conn_db.createStatement();
 
 	}
+	
+    /**
+     * Total de pacientes novos que iniciam dispensa trimestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesNovosDispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT patient, dispensatrimestral, date "
+                + "FROM prescription "
+                + "WHERE dispensatrimestral=1 AND tipodt = 'Novo' "
+                + "AND date::date BETWEEN " + "\'" + startDate + "\'" + " AND " + " \'" + endDate + "\'"
+                + "group by patient, dispensatrimestral, date ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    /**
+     * Total de pacientes novos que iniciam dispensa semestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesNovosDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT patient, dispensasemestral, date "
+                + "FROM prescription "
+                + "WHERE dispensasemestral=1 AND tipods = 'Novo' "
+                + "AND date::date BETWEEN " + "\'" + startDate + "\'" + " AND " + " \'" + endDate + "\'"
+                + "group by patient, dispensasemestral, date ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    /**
+     * Total de pacientes manutencao transporte em dispensa semestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesManuntencaoTransporteDispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient "
+                + " FROM prescription pr"
+                + " inner join package pack on pack.prescription = pr.id "
+                + " inner join packageddrugs packdrug on packdrug.parentPackage = pack.id "
+                + " WHERE packdrug.amount = 0"
+                + " AND pr.date::date between " + "\'" + startDate + "\' AND " + "\'" + endDate + "\'"
+                + " group by  pr.patient ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    /**
+     * Total de pacientes manutencao transporte em dispensa semestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesManuntencaoTransporteDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient "
+                + " FROM prescription pr"
+                + " inner join package pack on pack.prescription = pr.id "
+                + " inner join packageddrugs packdrug on packdrug.parentPackage = pack.id "
+                + " WHERE packdrug.amount = 0"
+                + " AND pr.date::date between " + "\'" + startDate + "\' AND " + "\'" + endDate + "\'"
+                + " group by  pr.patient ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    public int totalPacientesCumulativoDispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient "
+                + " FROM prescription pr"
+                + " WHERE pr.dispensatrimestral = 1 "
+                + " group by  pr.patient ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    public int totalPacientesCumulativoDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient "
+                + " FROM prescription pr"
+                + " WHERE pr.dispensasemestral = 1 "
+                + " group by  pr.patient ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    /**
+     * Total de pacientes Manter em dispensa trimestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesManterDispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient, pr.dispensatrimestral, pr.date "
+                + " FROM prescription pr"
+                + " inner join package pack on pack.prescription = pr.id "
+                + " inner join packageddrugs packdrug on packdrug.parentPackage = pack.id "
+                + " WHERE (pr.dispensatrimestral=1 and pr.tipodt = 'Manuntencao') AND packdrug.amount <> 0"
+                + " AND pr.date::date between " + "\'" + startDate + "\' AND " + "\'" + endDate + "\'"
+                + " group by  pr.patient, pr.dispensatrimestral,pr.date ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
+    
+    /**
+     * Total de pacientes Manter em dispensa semestral
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesManterDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        String query = " SELECT count(*) soma "
+                + " FROM ( SELECT distinct pr.patient, pr.dispensasemestral, pr.date "
+                + " FROM prescription pr"
+                + " inner join package pack on pack.prescription = pr.id "
+                + " inner join packageddrugs packdrug on packdrug.parentPackage = pack.id "
+                + " WHERE (pr.dispensasemestral=1 and pr.tipods = 'Manuntencao') AND packdrug.amount <> 0"
+                + " AND pr.date::date between " + "\'" + startDate + "\' AND " + "\'" + endDate + "\'"
+                + " group by  pr.patient, pr.dispensasemestral,pr.date ) v ";
+
+        int total = 0;
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            rs.next();
+            total = rs.getInt("soma");
+            rs.close(); //
+        }
+
+        return total;
+
+    }
 
 	/**
 	 * Retorna a conexao com a base de dados
@@ -174,6 +410,73 @@ public class ConexaoJDBC {
 		conn_db.close();
 		return data;
 	}
+	
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 * @throws SQLException
+	 */
+    public int mesesDispensadosParaDT(String startDate, String endDate) throws SQLException {
+
+        int mesesPacientes = 0;
+
+        String query = " SELECT "
+                + " distinct pr.patient"
+                + " FROM package "
+                + "inner join packageddrugs on packageddrugs.parentpackage = package.id "
+                + "inner join prescription pr on pr.id = package.prescription "
+                + " WHERE pr.dispensatrimestral = 1 AND "
+                + " package.pickupdate::date >= "
+                + "\'" + startDate + "\'::date "
+                + "AND package.pickupdate::date <="
+                + " \'" + endDate + "\'::date GROUP BY pr.patient";
+
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+            while (rs.next()) {
+                mesesPacientes = mesesPacientes + 1;
+            }
+            rs.close(); //
+        }
+        return mesesPacientes;
+    }
+    
+    /**
+     * 
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws SQLException
+     */
+    public int mesesDispensadosParaDS(String startDate, String endDate) throws SQLException {
+
+        int mesesPacientes = 0;
+
+        String query = " SELECT "
+                + " distinct pr.patient"
+                + " FROM package "
+                + "inner join packageddrugs on packageddrugs.parentpackage = package.id "
+                + "inner join prescription pr on pr.id = package.prescription "
+                + " WHERE pr.dispensasemestral = 1 AND "
+                + " package.pickupdate::date >= "
+                + "\'" + startDate + "\'::date "
+                + "AND package.pickupdate::date <="
+                + " \'" + endDate + "\'::date GROUP BY pr.patient";
+
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+            while (rs.next()) {
+                mesesPacientes = mesesPacientes + 1;
+            }
+            rs.close(); //
+        }
+        return mesesPacientes;
+    }
+    
 
 	/**
 	 * devolve um vector de todos medicamentos com seus AMC, SALDO E QUANTIDADE
@@ -963,82 +1266,51 @@ public class ConexaoJDBC {
 				+ "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
 				+ "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
 
-		/*
-		 * String query=" SELECT  DISTINCT " +" dispensa_packege.patientid "
-		 * +"	FROM "
-		 * 
-		 * +"	(SELECT "
-		 * 
-		 * +"	prescription.id, package.packageid "
-		 * 
-		 * +" FROM "
-		 * 
-		 * +" prescription, " +" 	package "
-		 * 
-		 * +" WHERE "
-		 * 
-		 * +" prescription.id = package.prescription "
-		 * 
-		 * +" AND " +
-		 * "  prescription.ppe=\'T\' AND  prescription.ptv=\'F\' AND prescription.tb=\'F\'  "
-		 * 
-		 * 
-		 * 
-		 * +" )as prescription_package, "
-		 * 
-		 * +" ( " +" SELECT "
-		 * 
-		 * 
-		 * +" packagedruginfotmp.patientid, " +" packagedruginfotmp.packageid,"
-		 * + "packagedruginfotmp.dispensedate "
-		 * 
-		 * +" FROM " +" package, packagedruginfotmp "
-		 * 
-		 * +" WHERE "
-		 * 
-		 * +" package.packageid=packagedruginfotmp.packageid " +" AND "
-		 * 
-		 * +"				 packagedruginfotmp.dispensedate::timestamp::date >= " +
-		 * "\'"+startDate+
-		 * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <= "
-		 * + " \'"+endDate+"\'::timestamp::date" +" ) as dispensa_packege ,"
-		 * 
-		 * + " (" + "     select packagedruginfotmp.patientid,  "
-		 * 
-		 * + " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
-		 * 
-		 * 
-		 * + " 	 FROM " + " 	 package, packagedruginfotmp  "
-		 * 
-		 * + "  	 WHERE  "
-		 * 
-		 * + "	 package.packageid=packagedruginfotmp.packageid  " + "	 AND  "
-		 * 
-		 * + "					 packagedruginfotmp.dispensedate::timestamp::date >=  " +
-		 * "\'"+startDate+
-		 * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-		 * + " \'"+endDate+"\'::timestamp::date  "
-		 * 
-		 * + "  group by packagedruginfotmp.patientid "
-		 * 
-		 * + "     ) as ultimadatahora "
-		 * 
-		 * + "	 WHERE  " +
-		 * "	 dispensa_packege.packageid=prescription_package.packageid  " +
-		 * "	  and  " +
-		 * "  dispensa_packege.dispensedate=ultimadatahora.lastdispense";
-		 */
+		conecta(iDartProperties.hibernateUsername,
+				iDartProperties.hibernatePassword);
+
+		ResultSet rs = st.executeQuery(query);
+		if (rs != null) {
+			while (rs.next()) {
+				total++;
+			}
+			rs.close(); //
+		}
+		return total;
+
+	}
+	
+	/**
+	 * Total de pacientes PPE
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	
+	public int totalPacientes_PTV(String startDate, String endDate)
+			throws ClassNotFoundException, SQLException {
+		int total = 0;
+
+		String query = "SELECT * FROM prescription,regimeterapeutico, package "
+				+ "WHERE prescription.regimeid=regimeterapeutico.regimeid "
+				+ "AND regimeterapeutico.active=true "
+				+ "AND prescription.ptv='T' "
+				+ "AND prescription.id=package.prescription "
+				+ "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
+				+ "'::TIMESTAMP::DATE "
+				+ "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
+				+ "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
 
 		conecta(iDartProperties.hibernateUsername,
 				iDartProperties.hibernatePassword);
 
 		ResultSet rs = st.executeQuery(query);
 		if (rs != null) {
-
 			while (rs.next()) {
-
 				total++;
-
 			}
 			rs.close(); //
 		}
@@ -1479,6 +1751,34 @@ public class ConexaoJDBC {
 		return linha;
 
 	}
+	
+    public int carregaDispensaTrimestral(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + "  dispensatrimestral "
+                + "  FROM "
+                + "  prescription "
+                + "  WHERE "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        // 0 = nao
+        // 1 = sim
+        int dispensaTrimestral = 0;
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                dispensaTrimestral = rs.getInt("dispensatrimestral");
+            }
+            rs.close(); //
+        }
+
+        return dispensaTrimestral;
+
+    }
 
 	/**
 	 * Devolve tb duma prescricao
@@ -1518,6 +1818,257 @@ public class ConexaoJDBC {
 		return tb;
 
 	}
+	
+    public String carregaCcr(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " ccr "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String ccr = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                ccr = rs.getString("ccr");
+
+            }
+            rs.close(); //
+        }
+
+        return ccr;
+
+    }
+    
+    
+    public String carregaCpn(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " cpn "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String cpn = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                cpn = rs.getString("cpn");
+
+            }
+            rs.close(); //
+        }
+
+        return cpn;
+
+    }
+    
+    
+    public String carregaAf(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " af "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String af = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (af != null) {
+
+            while (rs.next()) {
+
+                af = rs.getString("af");
+
+            }
+            rs.close(); //
+        }
+
+        return af;
+
+    }
+    
+    
+    public String carregaFr(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " fr "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String fr = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (fr != null) {
+
+            while (rs.next()) {
+
+                fr = rs.getString("fr");
+
+            }
+            rs.close(); //
+        }
+
+        return fr;
+
+    }
+    
+    
+    public String carregaGaac(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " gaac "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String gaac = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (gaac != null) {
+
+            while (rs.next()) {
+
+                gaac = rs.getString("gaac");
+
+            }
+            rs.close(); //
+        }
+
+        return gaac;
+
+    }
+    
+    
+    public String carregaDc(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " dc "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String dc = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (dc != null) {
+
+            while (rs.next()) {
+
+                dc = rs.getString("dc");
+
+            }
+            rs.close(); //
+        }
+
+        return dc;
+
+    }
+    
+    
+    public String carregaCa(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + " ca "
+                + "  FROM "
+                + "   "
+                + "  prescription "
+                + "  WHERE "
+                + "   "
+                + "  "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+        String ca = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (ca != null) {
+
+            while (rs.next()) {
+
+                ca = rs.getString("ca");
+
+            }
+            rs.close(); //
+        }
+
+        return ca;
+
+    }
 
 	/**
 	 * Devolve tb duma prescricao
@@ -2192,7 +2743,13 @@ public class ConexaoJDBC {
 				+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
 				+ " dispensas_e_prescricoes.tipotarv,  "
 				+ "   dispensas_e_prescricoes.regime, "
-				+ "    dispensas_e_prescricoes.datalevantamento,"
+				+ "   dispensas_e_prescricoes.linhanome, "
+				+ " CASE "
+				+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' " 
+				+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
+				+ " ELSE 'DM' "
+				+"  END AS tipodispensa, "
+				+ "   dispensas_e_prescricoes.datalevantamento,"
 				+ "    dispensas_e_prescricoes.dataproximolevantamento "
 				+ "    FROM "
 				+ "  (SELECT   "
@@ -2200,6 +2757,9 @@ public class ConexaoJDBC {
 				+ "  dispensa_packege.nid , "
 				+ "    prescription_package.tipotarv,  "
 				+ "    prescription_package.regime, "
+	            + " prescription_package.linhanome, "
+	            + " prescription_package.dispensatrimestral, "
+	            + " prescription_package.dispensasemestral, " 
 				+ "    dispensa_packege.datalevantamento, "
 				+ "    dispensa_packege.dataproximolevantamento "
 				+ " 	FROM  "
@@ -2207,12 +2767,12 @@ public class ConexaoJDBC {
 				+ " 	( "
 				+ "   SELECT  "
 
-				+ " 		prescription.id, "
+				+ " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, linhat.linhanome AS linhanome, "
 				+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime "
 
 				+ " 	 FROM  "
 
-				+ " 	 prescription,  " + " package , regimeterapeutico "
+				+ " 	 prescription,  " + " package , regimeterapeutico, linhat "
 
 				+ "  WHERE   "
 
@@ -2220,7 +2780,7 @@ public class ConexaoJDBC {
 
 				+ "  AND  " + " 	 prescription.ppe=\'F\' "
 
-				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
+				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid AND linhat.linhaid = prescription.linhaid "
 				+ " AND   "
 
 				+ "  	 prescription.reasonforupdate IN "
@@ -2695,4 +3255,49 @@ public class ConexaoJDBC {
 
 		return id;
 	}
+	
+    public boolean jaTemFilaInicio(String nid) {
+    	
+        boolean jatemFilaInicio = false;
+
+        String query = " SELECT  "
+                + " prescription.id, "
+                + " package.packageid ,"
+                + " prescription.reasonforupdate as tipotarv, "
+                + " patient.patientid "
+                + " FROM  "
+                + " prescription  "
+                + " inner join package on prescription.id = package.prescription "
+                + " inner join patient on patient.id = prescription.patient"
+                + " WHERE   "
+                + " prescription.ppe=\'F\' "
+                + " AND   "
+                + " prescription.reasonforupdate IN ('Inicia') "
+                + " AND patient.patientid = \'" + nid + "\'";
+        try {
+            conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                if (rs.getString("patientid").equals(nid)) {
+                    jatemFilaInicio = true;
+                    break;
+                }
+                System.out.println("/*/*//*///*/*//*/*/" + rs.getString("nid"));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return jatemFilaInicio;
+
+    }
 }

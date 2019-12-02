@@ -38,6 +38,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.Session;
 
+import model.nonPersistent.Autenticacao;
+
 /**
  * Dialog to prompt current user for password
  * 
@@ -92,8 +94,8 @@ public class ConfirmWithPasswordDialog extends Dialog {
 		this(
 				parent,
 				message,
-				"ATEN�A�: Voc� s� deve executar esta ac��o se tiver certeza de que deseja remover as informa��es da base de dados PERMANENTEMENTE. O"
-				+ " Usuário que realizou esta ac��o, bem como a hora atual, ser� gravado no log de transa��es ",
+				"ATENÇÃO: Você só deve executar esta acção se tiver certeza de que deseja remover as informações da base de dados PERMANENTEMENTE. O"
+				+ " Usuário que realizou esta accção, bem como a hora atual, será gravado no log de transações ",
 				sess);
 	}
 
@@ -320,14 +322,14 @@ public class ConfirmWithPasswordDialog extends Dialog {
 		if (noOfTimestoAllowUserToEnterPassword > 0) {
 			passwordAttmpts++;
 		}
-		if (LocalObjects.getUser(sess).getPassword().equals(password)) {
+		if (LocalObjects.getUser(sess).getPassword().equals(Autenticacao.converteMD5(password))) {
 			result = "verified";
 			return true;
 		} else {
 			if ((noOfTimestoAllowUserToEnterPassword - passwordAttmpts) > 1) {
 				setMessage("Senha Incorreta! \nDigite a senha incorreta.");
 			} else if ((noOfTimestoAllowUserToEnterPassword - passwordAttmpts) == 1) {
-				setMessage("Senha Incorreta! \nDigite a senha incorreta.\n Esta � a sua �ltima tentativa.");
+				setMessage("Senha Incorreta! \nDigite a senha incorreta.\n Esta é a sua última tentativa.");
 			}
 
 			return false;

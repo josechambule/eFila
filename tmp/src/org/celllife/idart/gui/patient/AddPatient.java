@@ -1524,9 +1524,18 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
 	private void setLocalPatient() {
 		
+		
+		
+		// Bug iDART-86
+		localPatient.setLastname(txtSurname.getText());
+		localPatient.setFirstNames(txtFirstNames.getText());
+		
+		
 		localPatient.setModified('T');
 		localPatient.setPatientId(txtPatientId.getText().toUpperCase());//NID
 		localPatient.setCellphone(txtCellphone.getText().trim());
+		
+		
 		
 		/*if (cmbSex.getText().equals(Messages.getString("patient.sex.female"))) { //$NON-NLS-1$
 			localPatient.setSex('F');
@@ -1536,15 +1545,17 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 			localPatient.setSex('U');
 		}*/
 		
-		// Set the date of birth
-		/*SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH); //$NON-NLS-1$
+		// Set the date of birth  Bug iDART-86
+		SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy"); //$NON-NLS-1$
 		Date theDate = null;//Data de Nascimento
 		try {
 			theDate = sdf.parse(cmbDOBDay.getText() + "-" //$NON-NLS-1$
 					+ cmbDOBMonth.getText() + "-" + cmbDOBYear.getText()); //$NON-NLS-1$
 		} catch (ParseException e1) {
 			getLog().error("Error parsing date: ",e1); //$NON-NLS-1$
-		}*/
+		}
+		
+		localPatient.setDateOfBirth(theDate);
 		
 		Date episodeStartDate = btnEpisodeStartDate.getDate();
 		Date episodeStopDate = btnEpisodeStopDate.getDate();

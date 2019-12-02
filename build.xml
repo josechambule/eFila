@@ -154,7 +154,7 @@
 			</fileset>
 		</copy>
 
-		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="on" deprecation="on" source="1.5" target="1.5" encoding="utf-8">
+		<javac destdir="${build.dir}" classpathref="Large.ClassPath" debug="on" deprecation="on" source="1.7" target="1.7" encoding="utf-8">
 			<src path="${tmp.dir}/src" />
 		</javac>
 	</target>

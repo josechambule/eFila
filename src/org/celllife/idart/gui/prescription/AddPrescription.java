@@ -42,10 +42,12 @@ import org.celllife.function.DateRuleFactory;
 import org.celllife.function.IRule;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.Doctor;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Form;
+import org.celllife.idart.database.hibernate.LinhaT;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
@@ -165,6 +167,8 @@ iDARTChangeListener {
 	private CCombo cmbDispensaSemestral;
 	
 	private CCombo cmbTipoDispensaSemestral;
+	
+	private CCombo cmbLinha;
 	
 	private Label lblTipoDispensaSemestral;
 	
@@ -1043,24 +1047,49 @@ iDARTChangeListener {
 				});
 				cmbRegime.setFocus();
 				
-		// Prescription Notes
-		Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
-		lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
-		lblNotes.setText(Messages.getString("patient.prescription.dialog.prescription.notes"));
-		lblNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP
-				| SWT.V_SCROLL | SWT.BORDER);
-		txtAreaNotes.setBounds(new Rectangle(620, 40, 170, 80));
-		txtAreaNotes.setText("");
-		txtAreaNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		// New Prescription ID
-		lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
-				| SWT.BORDER);
-		lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
-		lblNewPrescriptionId.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
+				
+	        // Linha Terapeutica
+	        Label lblLinha = new Label(grpParticulars, SWT.NONE);
+	        lblLinha.setBounds(new Rectangle(350, 120, 90, 20));
+	        lblLinha.setText("* Linha:");
+	        lblLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+	        cmbLinha = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
+	        cmbLinha.setBounds(new Rectangle(450, 120, 130, 20));
+	        cmbLinha.setVisibleItemCount(10);
+	        cmbLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	        cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+	        //popula o ccombo de linhas
+	        CommonObjects.populateLinha(getHSession(), cmbLinha, false);
+	        cmbLinha.addFocusListener(new FocusAdapter() {
+	            @Override
+	            public void focusGained(FocusEvent e) {
+	                cmbLinha.removeAll();
+	                CommonObjects.populateLinha(getHSession(), cmbLinha, false);
+	                cmbLinha.setVisibleItemCount(Math.min(
+	                        cmbLinha.getItemCount(), 25));
+	            }
+	        });
+	        cmbLinha.setFocus();
+				
+			// Prescription Notes
+			Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
+			lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
+			lblNotes.setText(Messages.getString("patient.prescription.dialog.prescription.notes"));
+			lblNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+			txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP
+					| SWT.V_SCROLL | SWT.BORDER);
+			txtAreaNotes.setBounds(new Rectangle(620, 40, 170, 80));
+			txtAreaNotes.setText("");
+			txtAreaNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+			// New Prescription ID
+			lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
+					| SWT.BORDER);
+			lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
+			lblNewPrescriptionId.setFont(ResourceUtils
+					.getFont(iDartFont.VERASANS_8));
 
 	}
 
@@ -1373,15 +1402,17 @@ iDARTChangeListener {
 	 */
 	@Override
 	protected boolean fieldsOk() {
+		
+		ConexaoJDBC conexao = new ConexaoJDBC();
 
-		if ((cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
+		if ((cmbLinha.getText().trim().equals("")) || (cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
 				|| (lblNewPrescriptionId.getText().trim().equals(""))
 				|| (cmbDuration.getText().trim().equals(""))) {
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
 			missing.setText("Campos em falta");
 			missing
-			.setMessage("Alguns Campos est�o vazios. Inserir informa��o nos campos *.");
+			.setMessage("Alguns Campos estão vazios. Inserir informação nos campos *.");
 			missing.open();
 			txtPatientId.setFocus();
 			return false;
@@ -1389,9 +1420,9 @@ iDARTChangeListener {
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			dataNoutroServico.setText("Data In�cio Noutro Servi�o Inv�lido");
+			dataNoutroServico.setText("Data Inicio Noutro Serviço Inválido");
 			dataNoutroServico
-			.setMessage("A data do in�cio noutro servi�o n�o pode ser depois da data de hoje.");
+			.setMessage("A data do inicio noutro serviço não pode ser depois da data de hoje.");
 			dataNoutroServico.open();
 			btnDataInicioNoutroServico.setFocus();
 			return false;
@@ -1400,14 +1431,25 @@ iDARTChangeListener {
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			dataNoutroServico.setText("Motivo da Mudan�a");
+			dataNoutroServico.setText("Motivo da Mudança");
 			dataNoutroServico
-			.setMessage("Insira o motivo da mudan�a.");
+			.setMessage("Insira o motivo da mudança.");
 			dataNoutroServico.open();
 			cmbMotivoMudanca.setFocus();
 			
 			return false;
-		} else if (lblUpdateReason.isVisible()
+		} else if (cmbUpdateReason.getText().equals("Inicia") && conexao.jaTemFilaInicio(localPrescription.getPatient().getPatientId())) {
+
+            MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            dataNoutroServico.setText("Pacite ja iniciou tarv");
+            dataNoutroServico
+                    .setMessage("Este paciente já iniciou o tarv....mude o TIPOTARV para Manter");
+            dataNoutroServico.open();
+            cmbMotivoMudanca.setFocus();
+
+            return false;
+        } else if (lblUpdateReason.isVisible()
 				&& cmbUpdateReason.getText().trim().equals("")) {
 			MessageBox missingUpdateReason = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
@@ -1417,7 +1459,9 @@ iDARTChangeListener {
 			cmbUpdateReason.setFocus();
 			missingUpdateReason.open();
 			return false;
-		} else if (!cheackDispensaTrimestral()) { 
+		} else if (!checkDispensaTrimestral()) { 
+			return false;
+		} else if (!cheackDispensaSemestral()) { 
 			return false;
 		} else if (!txtWeight.getText().equals("")) {
 			try {
@@ -1427,7 +1471,7 @@ iDARTChangeListener {
 						SWT.ICON_ERROR | SWT.OK);
 				incorrectData.setText("Valor do peso incorrecto");
 				incorrectData
-				.setMessage("O peso inserido est� incorrecto.Inserir um n�mero");
+				.setMessage("O peso inserido é incorrecto.Inserir um número");
 				incorrectData.open();
 				txtWeight.setFocus();
 				return false;
@@ -1439,7 +1483,23 @@ iDARTChangeListener {
 			semestralTrimestral.open();
 			cmbDispensaTrimestral.setFocus();
 			return false;
-		}
+		} else if (lblTipoDispensaTrimestral.isVisible() && cmbTipoDispensaTrimestral.getText().trim().equals("")) {
+            MessageBox missingTipoDispensaTrimestral = new MessageBox(getShell(),
+                    SWT.ICON_ERROR | SWT.OK);
+            missingTipoDispensaTrimestral
+                    .setMessage("O campo 'Tipo DT: Deve ser preenchido(Novo ou Manutencao)?");
+            cmbUpdateReason.setFocus();
+            missingTipoDispensaTrimestral.open();
+            return false;
+        } else if (lblTipoDispensaSemestral.isVisible() && cmbTipoDispensaSemestral.getText().trim().equals("")) {
+            MessageBox missingTipoDispensaSemestral = new MessageBox(getShell(),
+                    SWT.ICON_ERROR | SWT.OK);
+            missingTipoDispensaSemestral.setMessage("O campo 'Tipo DS: Deve ser preenchido(Novo ou Manutencao)?");
+            cmbUpdateReason.setFocus();
+            missingTipoDispensaSemestral.open();
+            return false;
+        }
+		
 		return true;
 
 	}
@@ -1464,8 +1524,15 @@ iDARTChangeListener {
 
 		// Generate a new prescription id
 		cmdUpdatePrescriptionId();
-		cmbDuration.setText("1 mês");
-
+		cmbDuration.setText("1 meses");
+		cmbDispensaTrimestral.select(1);
+		cmbDispensaSemestral.select(1);
+		
+		cmbTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		
+		cmbTipoDispensaSemestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaSemestral.setVisible(Boolean.FALSE); 
 	}
 
 	/**
@@ -1515,6 +1582,17 @@ iDARTChangeListener {
 			e.printStackTrace();
 		}
 		
+        try {
+            cmbLinha.setText(""
+                    + AdministrationManager.loadLinha(localPrescription.getPatient().getId()));
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		
         //Dispensa Trimestral
         try {
             int estaNaDispensaTrimestral = AdministrationManager.loadDispensaTrimestral(localPrescription.getPatient().getId());
@@ -1526,6 +1604,27 @@ iDARTChangeListener {
                 cmbDispensaTrimestral.select(0);
                 lblTipoDispensaTrimestral.setVisible(true);
                 cmbTipoDispensaTrimestral.setVisible(true);
+            }
+
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        //Dispensa Semestral
+        try {
+            int estaNaDispensaSemestral = AdministrationManager.loadDispensaTrimestral(localPrescription.getPatient().getId());
+            if (estaNaDispensaSemestral == 0) {
+                cmbDispensaSemestral.select(1);
+                lblTipoDispensaSemestral.setVisible(false);
+                cmbTipoDispensaSemestral.setVisible(false);
+            } else {
+                cmbDispensaSemestral.select(0);
+                lblTipoDispensaSemestral.setVisible(true);
+                cmbTipoDispensaSemestral.setVisible(true);
             }
 
         } catch (ClassNotFoundException e) {
@@ -2516,6 +2615,7 @@ iDARTChangeListener {
 		localPrescription.setDatainicionoutroservico(btnDataInicioNoutroServico.getDate());
 		localPrescription.setTipoDT(cmbTipoDispensaTrimestral.getText());
 		localPrescription.setTipoDS(cmbTipoDispensaSemestral.getText());
+		localPrescription.setDurationSentence(cmbDuration.getText());
 		
 		//PTV , PPE and Tb
 		
@@ -2559,7 +2659,7 @@ iDARTChangeListener {
 		if (chkBtnCPN.getSelection()) {
 			localPrescription.setCpn('T');
 		} else {
-			localPrescription.setCpn('T');
+			localPrescription.setCpn('F');
 		}
 		
         if (chkBtnCCR.getSelection()) {
@@ -2660,6 +2760,9 @@ iDARTChangeListener {
 		
 		localPrescription.setRegimeTerapeutico(AdministrationManager.getRegimeTerapeutico(
 				getHSession(), cmbRegime.getText()));
+		
+        localPrescription.setLinha(AdministrationManager.getLinha(
+                getHSession(), cmbLinha.getText()));
 		
 		localPrescription.setMotivoMudanca(cmbMotivoMudanca.getText());
 		
@@ -2831,6 +2934,7 @@ iDARTChangeListener {
 			txtDOB.setText("");
 			lblNewPrescriptionId.setText("");
 			cmbDuration.setText("");
+			cmbLinha.setText("");
 			// cmbClinicalStage.setText("");
 			lblPicChild.setVisible(false);
 			txtAge.setText("");
@@ -2898,7 +3002,7 @@ iDARTChangeListener {
 		btnAddDoctor.setEnabled(enable);
 		btnMoveUp.setEnabled(enable);
 		btnMoveDown.setEnabled(enable);
-
+		cmbLinha.setEnabled(enable);
 		btnDispenseDrugs.setEnabled(enable);
 
 		// cmbClinicalStage.setEnabled(enable);
@@ -3063,9 +3167,14 @@ iDARTChangeListener {
 			RegimeTerapeutico r = (RegimeTerapeutico) o;
 			cmbRegime.setText(r.getRegimeesquema());
 		}
+		
+        if (o instanceof LinhaT) {
+            LinhaT r = (LinhaT) o;
+            cmbLinha.setText(r.getLinhanome());
+        }
 	}
 	
-    private boolean cheackDispensaTrimestral() {
+    private boolean checkDispensaTrimestral() {
         try {
             String result = cmbDispensaTrimestral.getItem(cmbDispensaTrimestral.getSelectionIndex());
             String prescritionDuration = null;
@@ -3081,7 +3190,7 @@ iDARTChangeListener {
                         MessageBox mb = new MessageBox(getShell(),
                                 SWT.ICON_ERROR | SWT.OK);
                         mb.setText("Dispensa Trimestral");
-                        mb.setMessage("Selecionou dispensa trimestral, especifique o tipo de Dispensa Trimesteal do Paciente");
+                        mb.setMessage("Selecionou dispensa trimestral, especifique o tipo de Dispensa Trimestral do Paciente");
                         mb.open();
                         return false;
                     }
@@ -3136,6 +3245,84 @@ iDARTChangeListener {
             MessageBox mb = new MessageBox(getShell());
             mb.setText("Dispensa Trimestral");
             mb.setMessage("Dispensa trimestral nao foi Selecionada");
+            mb.open();
+            return false;
+
+        }
+
+    }
+    
+    private boolean cheackDispensaSemestral() {
+        try {
+            String result = cmbDispensaSemestral.getItem(cmbDispensaSemestral.getSelectionIndex());
+            String prescritionDuration = null;
+            switch (result) {
+                case "Sim": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (cmbTipoDispensaSemestral.getSelectionIndex() < 0) {
+                        MessageBox mb = new MessageBox(getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("Selecionou dispensa semestral, especifique o tipo de Dispensa Semestral do Paciente");
+                        mb.open();
+                        return false;
+                    }
+
+                    if (("6 meses".equals(prescritionDuration) || ("6 months".equals(prescritionDuration)))) {
+                        return true;
+                    } else {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("Selecionou dispensa semestral, mas a duracao da prescricao nao e de 6 meses. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+                
+                case "Nao": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (prescritionDuration.contentEquals("6 meses") || prescritionDuration.contentEquals("6 months")) {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("A duração da prescrição é de 6 meses e não está na Dispensa Semestral. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    } else {
+                        return true;
+                    }
+                }
+                
+                default:
+                    MessageBox mb = new MessageBox(getShell());
+                    mb.setText("Dispensa Semestral");
+                    mb.setMessage("Especifique se é dispensa semestral ou nao");
+                    mb.open();
+                    return false;
+            }
+        } catch (java.lang.IllegalArgumentException ex) {
+
+            MessageBox mb = new MessageBox(getShell());
+            mb.setText("Dispensa Semestral");
+            mb.setMessage("Dispensa semestral nao foi Selecionada");
             mb.open();
             return false;
 

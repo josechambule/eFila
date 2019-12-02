@@ -55,7 +55,7 @@
 	<parameter name="monthStart" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="monthEnd" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\eclipse.OLD\\wp\\idart\\Reports\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["/home/machabane/eclipse-workspace/eFila/Reports/"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="dateEnd" class="java.util.Date"/>
 	<parameter name="totalpacientesfarmacia" class="java.lang.Integer"/>

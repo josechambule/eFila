@@ -1048,7 +1048,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 		
 		//Verificar se o NID existe no OpenMRS
 		String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(patientId, " ", "%20"));
-				
+								
 		if (openMrsResource.length() == 14 && !localPatient.getIsPatientEmTransito()) {
 			title = Messages.getString("Informação não encontrada");
 			message = Messages.getString("NID inserido não existe no OpenMRS");
@@ -1289,6 +1289,8 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 			JSONObject jsonObject = new org.json.JSONObject(personDemografics);
 
 			String fullName = jsonObject.getJSONObject("preferredName").getString("display");
+						
+			localPatient.setUuidopenmrs(personUuid);      
 
 			String[] names = fullName.trim().split(" ");
 
@@ -1344,10 +1346,10 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 				strRecentdate = strRecentdate.substring(32, 43).trim();
 				
 				//Other places
-				String _year = strRecentdate.substring(6, 10);
+				String _year = strRecentdate.substring(0, 4);
 				//String _month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(strRecentdate.substring(3, 5))-1];
-				String _month = strRecentdate.substring(3, 5);
-				Integer _day = Integer.valueOf(strRecentdate.substring(0, 2));
+				String _month = strRecentdate.substring(5, 7);
+				Integer _day = Integer.valueOf(strRecentdate.substring(8, 10));
 				
 				//Namacurra
 				/*Calendar calendar = RestUtils.shortDate(strRecentdate);

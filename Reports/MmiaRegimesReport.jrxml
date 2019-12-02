@@ -9,7 +9,7 @@
 	<parameter name="dateEnd" class="java.util.Date" isForPrompting="false">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="totalpacientesfarmacia" class="java.lang.Integer"/>
+	<parameter name="totalpacientesfarmacia" class="java.lang.String"/>
 	<parameter name="monthStart" class="java.lang.String"/>
 	<parameter name="monthEnd" class="java.lang.String"/>
 	<parameter name="dataelaboracao" class="java.lang.String"/>
@@ -91,7 +91,7 @@ AND package.weekssupply=8
 				<textField pattern="">
 					<reportElement x="269" y="5" width="35" height="16"/>
 					<textElement/>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$P{totalpacientesfarmacia}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesfarmacia}]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="0" y="33" width="314" height="1"/>

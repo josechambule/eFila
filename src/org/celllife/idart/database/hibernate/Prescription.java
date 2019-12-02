@@ -101,9 +101,15 @@ public class Prescription {
 	private String tipoDT;
 	
 	private String tipoDS;
+	
+	private String durationSentence;
 
 	@Transient
 	private HashSet<Drug> arvDrugSet;
+	
+	@ManyToOne
+	@JoinColumn(name = "linhaid")
+	private LinhaT linha;
 	
 	private char ppe;
 	private char ptv;
@@ -668,5 +674,23 @@ public class Prescription {
 
 	public void setDc(char dc) {
 		this.dc = dc;
+	}
+	
+	public void setLinha(LinhaT linha) {
+		this.linha=linha;
+		
+	}
+
+	public LinhaT getLinha() {
+		return this.linha;
+		
+	}
+
+	public String getDurationSentence() {
+		return durationSentence;
+	}
+
+	public void setDurationSentence(String durationSentence) {
+		this.durationSentence = durationSentence;
 	}
 }

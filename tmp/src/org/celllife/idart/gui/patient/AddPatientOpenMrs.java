@@ -38,6 +38,7 @@ import model.manager.PatientManager;
 import model.manager.StudyManager;
 import model.manager.reports.PatientHistoryReport;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.function.DateRuleFactory;
 import org.celllife.idart.commonobjects.CommonObjects;
@@ -109,6 +110,8 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeListener {
 
@@ -1367,12 +1370,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
 			for (IPatientTab tab : groupTabs) {
 				tab.submit(localPatient);
 			}
-
-			PatientManager.savePatient(getHSession(), localPatient);
-			
-			System.out.println(" local patient "+localPatient.getPatientId()+"  "+localPatient.getFirstNames());
-			System.out.println(" local patient "+localPatient.getPatientId()+"  "+localPatient.getFirstNames());
-			
+						
 			//ConexaoODBC conn=new ConexaoODBC();
 			ConexaoJDBC conn2=new ConexaoJDBC();
 			
@@ -1385,6 +1383,26 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
 			
 			restClient.postOpenMRSPatient(cmbSex.getText().trim().equals(iDartProperties.MASCULINO) ? "M" : "F", lstFullName.get(0), lstFullName.get(1), lstFullName.get(2),
 					cmbDOBYear.getText().trim()+"-"+String.valueOf(cal.get(Calendar.MONTH) + 1)+"-"+cmbDOBDay.getText().trim(), txtPatientId.getText().toUpperCase().trim());
+			
+			String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(txtPatientId.getText().toUpperCase(), " ", "%20"));
+			
+			JSONObject _jsonObject = new JSONObject(resource);
+			
+			String personUuid = null; 
+			
+			JSONArray _jsonArray = (JSONArray) _jsonObject.get("results"); 
+			
+			for (int i = 0; i < _jsonArray.length(); i++) {
+				JSONObject results = (JSONObject) _jsonArray.get(i);
+				personUuid = (String) results.get("uuid");
+			}
+			
+			localPatient.setUuidopenmrs(personUuid);
+
+			PatientManager.savePatient(getHSession(), localPatient);
+			
+			System.out.println(" local patient "+localPatient.getPatientId()+"  "+localPatient.getFirstNames());
+			System.out.println(" local patient "+localPatient.getPatientId()+"  "+localPatient.getFirstNames());
 			
 			conn2.inserPacienteIdart(localPatient.getPatientId(), localPatient.getFirstNames(), localPatient.getLastname(), new Date());
 			

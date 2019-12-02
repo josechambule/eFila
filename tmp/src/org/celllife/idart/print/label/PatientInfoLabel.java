@@ -187,8 +187,8 @@ public class PatientInfoLabel implements Printable, DefaultLabel {
 		// Print the barcode at the bottom
 		/*Barcode barcode = new Barcode(id);
 		barcode.doPaint(g2d, 20, 125, 20, w);*/
-		
-		PrintLayoutUtils.printBarcode(g2d, id, w, 97);
+		PrintLayoutUtils.printBarcode(g2d, id, 280, 97);
+		//PrintLayoutUtils.printBarcode(g2d, id, w, 97);
 		return Printable.PAGE_EXISTS;
 
 	}
