@@ -618,7 +618,7 @@ public class Login implements GenericGuiInterface {
 		
 		}
 		
-		System.out.print(resultado);
+		
 		
 		
 		return resultado;

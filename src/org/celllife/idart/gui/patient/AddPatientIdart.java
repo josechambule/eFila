@@ -1463,6 +1463,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 			if (identifier != null) {
 				localPatient = identifier.getPatient();
 				updateGUIforNewLocalPatient();
+		
 			}
 
 			// if we've returned from the search GUI with the user having
@@ -1577,6 +1578,8 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 			for (IPatientTab tab : groupTabs) {
 				tab.submit(localPatient);
 			}
+			
+			
 
 			PatientManager.savePatient(getHSession(), localPatient);
 			
@@ -1703,6 +1706,8 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 		}
 
 		localPatient.updateClinic();
+		
+		
 
 		// update the patient with details from the tabs
 		for (IPatientTab tab : groupTabs) {
@@ -2490,11 +2495,13 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
 	protected void cmdSaveWidgetSelected() {
 		// if we're updating a patient, 1st check that there
 		// are actual changes to update
-		if (!isSaveRequired()) {
+		if (!isSaveRequired() ) {
+			
 			MessageBox mb = new MessageBox(getShell());
 			mb.setText(Messages.getString("patient.info.noDbUpdateRequired.title")); //$NON-NLS-1$
 			mb.setMessage(Messages.getString("patient.info.noDbUpdateRequired")); //$NON-NLS-1$
 			mb.open();
+			
 		} else if (doSave()) {
 			cmdCancelWidgetSelected();
 		}

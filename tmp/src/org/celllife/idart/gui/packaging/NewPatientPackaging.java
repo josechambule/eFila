@@ -2968,20 +2968,33 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				nidUuid = (String) results.get("uuid");
 			}
 			
-			String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST+nidUuid);
+			
+			String uuid = localPatient.getUuidopenmrs();
+			 if(uuid != null && !uuid.isEmpty()){
+				 uuid = localPatient.getUuidopenmrs();
+			    }
+			 else{
+				  MessageBox m = new MessageBox(getShell(), SWT.OK |
+						  SWT.ICON_ERROR); m.setText("Problema dispensando o pacote de medicamentos");
+						  m.
+						  setMessage("O NID deste paciente foi alterado no OpenMRS."
+						  		+ " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."
+						  ); m.open();
+						  
+						  return; 
+				 
+				 
+			 }
+			
+			
+			String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST+uuid);
 			
 			JSONObject jsonReportingRest = new JSONObject(openrsMrsReportingRest);
 			JSONArray jsonReportingRestArray = (JSONArray) jsonReportingRest.get("members");
 			
-			/*
-			 * if (nidUuid==null) { MessageBox m = new MessageBox(getShell(), SWT.OK |
-			 * SWT.ICON_ERROR); m.setText("Problema dispensando o pacote de medicamentos");
-			 * m.
-			 * setMessage("O NID deste paciente foi alterado no OpenMRS. Por favor contacte o SIS."
-			 * ); m.open();
-			 * 
-			 * return; }
-			 */
+			
+			 
+			 
 			
 			if (jsonReportingRestArray.length() < 1) {
 				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
@@ -3002,6 +3015,16 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			// Provider
 			String providerUuid = response.substring(21, 57);
 
+			if(providerUuid==null ||providerUuid.isEmpty()){
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Informação sobre estado do programa");
+				m.setMessage("Verifica se o nome do provedor existe no OpenMRS");
+				m.open();
+				
+				return;
+			}
+			
+			
 			String facility = newPack.getClinic().getClinicName().trim();
 
 			// Location
@@ -3009,6 +3032,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 			// Health Facility
 			String strFacilityUuid = strFacility.substring(21, 57);
+			
+			if(strFacility==null ||strFacility.isEmpty()){
+				MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+				m.setText("Informação sobre estado do programa");
+				m.setMessage("Verifica o nome do local da Unidade Sanitária");
+				m.open();
+				
+				return;
+			}
 
 			// Regimen
 			String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
@@ -3030,7 +3062,9 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 			String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
 
 			try {
-				postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+				
+				
+				postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, uuid , iDartProperties.ENCOUNTER_TYPE_PHARMACY,
 					strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
 					iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
 					iDartProperties.VISIT_UUID, strNextPickUp);

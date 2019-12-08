@@ -112,6 +112,7 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AddPatient extends GenericFormGui implements iDARTChangeListener {
@@ -1535,6 +1536,25 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 		localPatient.setPatientId(txtPatientId.getText().toUpperCase());//NID
 		localPatient.setCellphone(txtCellphone.getText().trim());
 		
+		if (localPatient.getUuidopenmrs() == null){
+			String openMrsResource = new RestClient().getOpenMRSResource("patient?q="+StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
+
+			JSONObject _jsonObject = new JSONObject(openMrsResource);
+			
+			String personUuid = null; 
+			
+			JSONArray _jsonArray = (JSONArray) _jsonObject.get("results"); 
+			
+			for (int i = 0; i < _jsonArray.length(); i++) {
+				JSONObject results = (JSONObject) _jsonArray.get(i);
+				personUuid = (String) results.get("uuid");
+			} 
+
+			
+			
+			
+			localPatient.setUuidopenmrs(personUuid);
+		}
 		
 		
 		/*if (cmbSex.getText().equals(Messages.getString("patient.sex.female"))) { //$NON-NLS-1$
@@ -2034,6 +2054,10 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 			offerToPrintLabel = true;
 			return true;
 		}
+		
+		if(localPatient.getUuidopenmrs()==null){
+			return true;
+		}
 
 		if (!localPatient.getCellphone().trim().equals(
 				txtCellphone.getText().trim()))
@@ -2377,11 +2401,15 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 	protected void cmdSaveWidgetSelected() {
 		// if we're updating a patient, 1st check that there
 		// are actual changes to update
-		if (!isSaveRequired()) {
+		
+    
+		if (!isSaveRequired() ) {
+		
 			MessageBox mb = new MessageBox(getShell());
 			mb.setText(Messages.getString("patient.info.noDbUpdateRequired.title")); //$NON-NLS-1$
 			mb.setMessage(Messages.getString("patient.info.noDbUpdateRequired")); //$NON-NLS-1$
 			mb.open();
+			
 		} else if (doSave()) {
 			cmdCancelWidgetSelected();
 		}
@@ -2395,7 +2423,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 	 */
 	private boolean doSave() {
 	
-		if (!isSaveRequired())
+		if (!isSaveRequired() )
 			return true;
 	
 		//Verificar se o NID existe no OpenMRS

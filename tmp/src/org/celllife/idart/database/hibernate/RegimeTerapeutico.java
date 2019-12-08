@@ -14,6 +14,7 @@ public class RegimeTerapeutico {
 	private boolean active;
 	private String regimenomeespecificado;
 	private int codigoregime;
+	private String regimeesquemaidart;
 
 	public String getRegimenomeespecificado() {
 		return regimenomeespecificado;
@@ -64,5 +65,18 @@ public class RegimeTerapeutico {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public String getRegimeesquemaidart() {
+		return regimeesquemaidart;
+	}
+
+	public void setRegimeesquemaidart(String regimeesquemaidart) {
+		this.regimeesquemaidart = regimeesquemaidart;
+	}
+	
+	@Override
+	public String toString() {
+		return regimeesquema + " " + regimeesquemaidart;
 	}
 }

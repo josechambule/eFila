@@ -1459,7 +1459,7 @@ iDARTChangeListener {
 			cmbUpdateReason.setFocus();
 			missingUpdateReason.open();
 			return false;
-		} else if (!cheackDispensaTrimestral()) { 
+		} else if (!checkDispensaTrimestral()) { 
 			return false;
 		} else if (!cheackDispensaSemestral()) { 
 			return false;
@@ -1525,7 +1525,14 @@ iDARTChangeListener {
 		// Generate a new prescription id
 		cmdUpdatePrescriptionId();
 		cmbDuration.setText("1 meses");
-
+		cmbDispensaTrimestral.select(1);
+		cmbDispensaSemestral.select(1);
+		
+		cmbTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		
+		cmbTipoDispensaSemestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaSemestral.setVisible(Boolean.FALSE); 
 	}
 
 	/**
@@ -1597,6 +1604,27 @@ iDARTChangeListener {
                 cmbDispensaTrimestral.select(0);
                 lblTipoDispensaTrimestral.setVisible(true);
                 cmbTipoDispensaTrimestral.setVisible(true);
+            }
+
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        //Dispensa Semestral
+        try {
+            int estaNaDispensaSemestral = AdministrationManager.loadDispensaTrimestral(localPrescription.getPatient().getId());
+            if (estaNaDispensaSemestral == 0) {
+                cmbDispensaSemestral.select(1);
+                lblTipoDispensaSemestral.setVisible(false);
+                cmbTipoDispensaSemestral.setVisible(false);
+            } else {
+                cmbDispensaSemestral.select(0);
+                lblTipoDispensaSemestral.setVisible(true);
+                cmbTipoDispensaSemestral.setVisible(true);
             }
 
         } catch (ClassNotFoundException e) {
@@ -2631,7 +2659,7 @@ iDARTChangeListener {
 		if (chkBtnCPN.getSelection()) {
 			localPrescription.setCpn('T');
 		} else {
-			localPrescription.setCpn('T');
+			localPrescription.setCpn('F');
 		}
 		
         if (chkBtnCCR.getSelection()) {
@@ -3146,7 +3174,7 @@ iDARTChangeListener {
         }
 	}
 	
-    private boolean cheackDispensaTrimestral() {
+    private boolean checkDispensaTrimestral() {
         try {
             String result = cmbDispensaTrimestral.getItem(cmbDispensaTrimestral.getSelectionIndex());
             String prescritionDuration = null;
@@ -3267,7 +3295,7 @@ iDARTChangeListener {
                         prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
                     }
 
-                    if (prescritionDuration.contentEquals("3 meses") || prescritionDuration.contentEquals("3 months")) {
+                    if (prescritionDuration.contentEquals("6 meses") || prescritionDuration.contentEquals("6 months")) {
                         MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                         mb.setText("Dispensa Semestral");
                         mb.setMessage("A duração da prescrição é de 6 meses e não está na Dispensa Semestral. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
