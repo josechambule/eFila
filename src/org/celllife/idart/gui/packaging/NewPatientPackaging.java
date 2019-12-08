@@ -2959,7 +2959,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				MessageBox m = new MessageBox(getShell(), SWT.OK |
 						SWT.ICON_ERROR); m.setText("Problema dispensando o pacote de medicamentos");
 						m.
-						setMessage("O NID deste paciente foi alterado no OpenMRS."
+						setMessage("O NID deste paciente foi alterado no OpenMRS ou não possui UUID."
 								+ " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."
 								); m.open();
 
