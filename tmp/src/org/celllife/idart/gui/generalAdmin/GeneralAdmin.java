@@ -390,6 +390,8 @@ public class GeneralAdmin extends GenericAdminGui {
 				cmd_generateTemplate();
 			}
 		});
+		
+		btnGenerateTemplate.setEnabled(false);
 
 		//  
 		Button btnImportPatients = new Button(grpImport, SWT.NONE);
@@ -407,6 +409,8 @@ public class GeneralAdmin extends GenericAdminGui {
 				cmd_importPatients();
 			}
 		});
+		
+		btnImportPatients.setEnabled(false);
 		
 		
 		// btnImportPatientsSESP
@@ -426,6 +430,7 @@ public class GeneralAdmin extends GenericAdminGui {
 						cmd_importPatientsSESP();
 					}
 				});
+				btnImportPatientsSESP.setEnabled(false);
 				
 	}
 
