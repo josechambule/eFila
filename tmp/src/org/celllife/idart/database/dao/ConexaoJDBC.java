@@ -2743,7 +2743,7 @@ public class ConexaoJDBC {
 				+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
 				+ " dispensas_e_prescricoes.tipotarv,  "
 				+ "   dispensas_e_prescricoes.regime, "
-				+ "   dispensas_e_prescricoes.linhanome, "
+				//+ "   dispensas_e_prescricoes.linhanome, "
 				+ " CASE "
 				+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' " 
 				+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
@@ -2757,7 +2757,7 @@ public class ConexaoJDBC {
 				+ "  dispensa_packege.nid , "
 				+ "    prescription_package.tipotarv,  "
 				+ "    prescription_package.regime, "
-	            + " prescription_package.linhanome, "
+	            //+ " prescription_package.linhanome, "
 	            + " prescription_package.dispensatrimestral, "
 	            + " prescription_package.dispensasemestral, " 
 				+ "    dispensa_packege.datalevantamento, "
@@ -2767,7 +2767,8 @@ public class ConexaoJDBC {
 				+ " 	( "
 				+ "   SELECT  "
 
-				+ " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, linhat.linhanome AS linhanome, "
+				+ " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
+				//+ "linhat.linhanome AS linhanome, "
 				+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime "
 
 				+ " 	 FROM  "
@@ -2780,7 +2781,8 @@ public class ConexaoJDBC {
 
 				+ "  AND  " + " 	 prescription.ppe=\'F\' "
 
-				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid AND linhat.linhaid = prescription.linhaid "
+				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
+				//+ "AND linhat.linhaid = prescription.linhaid "
 				+ " AND   "
 
 				+ "  	 prescription.reasonforupdate IN "
