@@ -215,7 +215,7 @@ public class ClinicInfoTab extends GenericTab implements IPatientTab {
 		lblPicPatientVisitsandStats.setImage(ResourceUtils
 				.getImage(iDartImage.PAVAS));
 		lblPicPatientVisitsandStats
-		.setToolTipText("Pressione este bot�o para inserir visitas do paciente e m�dulo de estat�stca.");
+		.setToolTipText("Pressione este botão para inserir visitas do paciente e módulo de estatístca.");
 		lblPicPatientVisitsandStats.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
@@ -405,8 +405,8 @@ public class ClinicInfoTab extends GenericTab implements IPatientTab {
 		// if patient is pregnant, confirm date must be set
 		if ((rdBtnPregnant.getSelection())
 				&& (btnMenstrualOccurance.getDate() == null)) {
-			title = "O per�odo da �ltima mestrua��o n�o foi colocado";
-			message = "Se esta paciente est� gr�vida, inserir o per�odo da �ltima mestrua��o (ou uma estimativa).";
+			title = "O período da última mestruação não foi colocado";
+			message = "Se esta paciente está grávida, inserir o período da última mestruação (ou uma estimativa).";
 			result = false;
 		}
 		Map<String, String> map = new HashMap<String, String>();

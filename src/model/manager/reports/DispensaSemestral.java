@@ -56,20 +56,21 @@ public class DispensaSemestral extends AbstractJasperReport {
             int totalpacientesnovos= conn.totalPacientesNovosDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
             System.out.println("Total de pacientes novos dispensa semestral " + totalpacientesnovos);
 
-
             int totalpacientesmanter = conn.totalPacientesManterDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
             System.out.println("Total de pacientes a manter arv " + totalpacientesmanter);
 
             int totalpacientesTransporte = conn.totalPacientesManuntencaoTransporteDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
             System.out.println("Total de pacientes a transportar arv " + totalpacientesTransporte);
 
-            int totalpacientesCumulativo = conn.totalPacientesCumulativoDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+//          int totalpacientesCumulativo = conn.totalPacientesCumulativoDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+            int totalpacientesCumulativo = totalpacientesnovos + totalpacientesmanter + totalpacientesTransporte;
+          
             System.out.println("Total de pacientes Cumulativo " + totalpacientesCumulativo);
             
-            map.put("totalpacientesmanter", totalpacientesmanter);
-            map.put("totalpacientesnovos", totalpacientesnovos);
-            map.put("totalpacienteManuntencaoTransporte", totalpacientesTransporte);
-            map.put("totalpacienteCumulativo", totalpacientesCumulativo);
+            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));
+            map.put("totalpacientesnovos", String.valueOf(totalpacientesnovos));
+            map.put("totalpacienteManuntencaoTransporte", String.valueOf(totalpacientesTransporte));
+            map.put("totalpacienteCumulativo", String.valueOf(totalpacientesCumulativo));
             map.put("facilityName", LocalObjects.currentClinic.getClinicName());
             map.put("dateStart",  theStartDate);
             map.put("dateEnd", theEndDate);

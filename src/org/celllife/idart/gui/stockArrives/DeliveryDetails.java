@@ -496,8 +496,8 @@ public class DeliveryDetails extends GenericFormGui {
 			.setMessage("O Medicamento '"
 					.concat(drugName)
 					.concat(
-					"' n�o foi encontrado na base de dados. Por favor adiciona este medicamento na base de dados, usando a tela de  'Administra��o Geral'."));
-			feedback.setText("Medicamento n�o Encontrado");
+					"' não foi encontrado na base de dados. Por favor adiciona este medicamento na base de dados, usando a tela de  'Administração Geral'."));
+			feedback.setText("Medicamento não Encontrado");
 			feedback.open();
 
 		} else {

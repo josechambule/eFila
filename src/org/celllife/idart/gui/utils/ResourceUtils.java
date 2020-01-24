@@ -310,6 +310,8 @@ public class ResourceUtils {
 					.createFromURL(new URL(baseDir, "Unused.jpg")));
 			imageRegistry.put(iDartImage.UPARROW_30X26.name(), ImageDescriptor
 					.createFromURL(new URL(baseDir, "UpArrow_30x26.jpg")));
+                        imageRegistry.put(iDartImage.SEARCH_ICON_16.name(), ImageDescriptor
+					.createFromURL(new URL(baseDir, "searchIcon16px.png")));
 
 		} catch (MalformedURLException m) {
 			log.error(m);

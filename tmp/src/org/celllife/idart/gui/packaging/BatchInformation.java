@@ -251,7 +251,7 @@ public class BatchInformation extends GenericFormGui {
 
 		lblPackSize = new Label(grpDrugInfo, SWT.NONE);
 		lblPackSize.setBounds(new Rectangle(18, 124, 160, 20));
-		lblPackSize.setText("1 Frasco cont�m:");
+		lblPackSize.setText("1 Frasco contém:");
 		lblPackSize.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPackSize = new Text(grpDrugInfo, SWT.BORDER);
@@ -302,7 +302,7 @@ public class BatchInformation extends GenericFormGui {
 		tblBatch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		clmBatch = new TableColumn(tblBatch, SWT.NONE);
-		clmBatch.setText("Lote N�");
+		clmBatch.setText("Lote Nº");
 
 		clmBatch.setWidth(60);
 		clmBatch.setResizable(true);
@@ -318,7 +318,7 @@ public class BatchInformation extends GenericFormGui {
 		clmUnitsOnHand.setResizable(true);
 
 		clmShelfNo = new TableColumn(tblBatch, SWT.NONE);
-		clmShelfNo.setText("N� da Prateleira");
+		clmShelfNo.setText("Nº da Prateleira");
 		clmShelfNo.setWidth(55);
 		clmShelfNo.setResizable(true);
 
@@ -657,11 +657,11 @@ public class BatchInformation extends GenericFormGui {
 					if (Integer.parseInt(ti.getText(4)) > pillsAvailable) {
 						MessageBox noStock = new MessageBox(getShell(), SWT.OK
 								| SWT.ICON_ERROR);
-						noStock.setText("N�o h� stock neste lote");
+						noStock.setText("Não hà stock neste lote");
 						noStock
-						.setMessage("N�o h� stock suficiente dispon�vel no lote N� '"
+						.setMessage("Não hà stock suficiente disponível no lote Nº '"
 								+ ti.getText(0)
-								+ "'. H� "
+								+ "'. Hà "
 								+ ti.getText(2)
 								+ " unidades em saldo. Escolhe o stock em um lote diferente.");
 						noStock.open();
@@ -743,9 +743,9 @@ public class BatchInformation extends GenericFormGui {
 		catch (NumberFormatException ne) {
 			MessageBox invalidQuantity = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_ERROR);
-			invalidQuantity.setText("Quantidade Inv�lida");
+			invalidQuantity.setText("Quantidade Inválida");
 			invalidQuantity
-			.setMessage("Especificar a quantidade �  aviar");
+			.setMessage("Especificar a quantidade à  aviar");
 			invalidQuantity.open();
 			TableItem ti = tblBatch.getItem(index - 1);
 			ti.setText(4, "0");
