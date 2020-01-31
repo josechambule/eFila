@@ -67,7 +67,9 @@ public class CommonObjects {
 
 	public static final int ATC = 11;
 
-        public static final int REGIMESACTIVOS = 12;
+	public static final int REGIMESACTIVOS = 12;
+
+	public static final int ASSOCIATEDDRUGS = 13;
         
 	public static String timesPerDayLanguage1 = "times per day";
 

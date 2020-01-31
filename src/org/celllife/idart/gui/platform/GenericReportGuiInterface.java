@@ -45,8 +45,23 @@ public interface GenericReportGuiInterface {
 	static String REPORT_TPC = Messages.getString("reports.idart.tpc");  //$NON-NLS-1$
 	static String REPORT_TPI = Messages.getString("reports.idart.tpi");  //$NON-NLS-1$
 	static String REPORT_LEVANTAMENTOS_ARV= Messages.getString("reports.idart.levantamentos");  //$NON-NLS-1$
-	
+        static String REPORT_LINHAS_TERAPEUTICAS = Messages.getString("reports.LinhasTerapeuticas");
+        static String REPORT_MISSED_APPOINTMENTS_DT  = Messages.getString("reports.missedAppointmentsDT");
+        static String REPORT_FILA_GERAL = Messages.getString("reports.fila");
+        static String REPORT_PACIENTES_REFERIDOS = Messages.getString("reports.referidos");
+        static String REPORT_SECOND_LINE = Messages.getString("reports.secondLine");
+        static String REPORT_LOST_TO_FOLLOW_UP  = Messages.getString("reports.losttofollowup");
+        static String REPORT_LOST_TO_FOLLOW_UP_RETURNED  = Messages.getString("reports.losttofollowupreturned");
+        static String REPORT_SEGUNDA_LINHA_AVALIACAO  = Messages.getString("reports.segundaslinhasavaliacao");
+        static String REPORT_LIVRO_ELETRONICO_ARV  = Messages.getString("reports.idart.lrda");
+        static String REPORT_CONFIRMACA_ABANDONOS_OPENMRS  = Messages.getString("reports.confirmaabandonos");
+        static String REPORT_INDICADORES_MENSAIS  = Messages.getString("reports.indicadoresmensais");
+        static String REPORT_LISTA_PACIENTES_SEMDT  = Messages.getString("reports.pacientesSemDT");
+        static String REPORT_COHORT_DISPENSA_TRIMESTRAL  = Messages.getString("reports.cohortDT");
 	static String REPORT_DISPENSA_TRIMESTRAL = Messages.getString("reports.DispensaTrimestral");
 	static String REPORT_DISPENSA_SEMESTRAL = Messages.getString("reports.DispensaSemestral");
+        static String REPORT_MISSED_APPOINTMENTS_NEW = Messages.getString("reports.missedAppointmentsNew");  //$NON-NLS-1$
+        static String REPORT_MISSED_APPOINTMENTS_CHAMADAS = Messages.getString("reports.missedAppointmentsChamadas");  //$NON-NLS-1$
+        static String REPORT_MISSED_APPOINTMENTS_APSS = Messages.getString("reports.missedAppointmentsApss");  //$NON-NLS-1$
 	
 }

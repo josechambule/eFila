@@ -121,7 +121,7 @@ public class PatientHistory extends GenericReportGui {
 		grpPatientSelection = new Group(getShell(), SWT.NONE);
 		grpPatientSelection
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpPatientSelection.setText("Select a Patient");
+		grpPatientSelection.setText("Seleccione o Paciente");
 		grpPatientSelection.setBounds(new Rectangle(80, 80, 340, 440));
 
 		tblWaitingPatients = new Table(grpPatientSelection, SWT.FULL_SELECTION);
@@ -131,11 +131,11 @@ public class PatientHistory extends GenericReportGui {
 
 		tblColPatId = new TableColumn(tblWaitingPatients, SWT.NONE);
 		tblColPatId.setWidth(100);
-		tblColPatId.setText("Patient Number");
+		tblColPatId.setText("NID");
 
 		tblColPatName = new TableColumn(tblWaitingPatients, SWT.NONE);
 		tblColPatName.setWidth(150);
-		tblColPatName.setText("Patient Name");
+		tblColPatName.setText("Nome do Paciente");
 
 		searchBar = new Text(grpPatientSelection, SWT.BORDER);
 		searchBar.setBounds(new Rectangle(17, 409, 311, 20));
@@ -175,8 +175,8 @@ public class PatientHistory extends GenericReportGui {
 		else {
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Patient Selected");
-			missing.setMessage("Please select a patient");
+			missing.setText("Nenhum paciente foi seleccionado");
+			missing.setMessage("Por favor, seleccione o paciente");
 			missing.open();
 		}
 		searchBar.setText("");
@@ -201,9 +201,9 @@ public class PatientHistory extends GenericReportGui {
 
 		if(patientId == null){
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Patient Number not entered");
+			mb.setText("Não foi introduzido o NID do paciente");
 			mb
-			.setMessage("You have not entered a patient number. \n\nPlease enter a patient number.");
+			.setMessage("Não foi introduzido o NID do Paciente. \n\nPor favor intruduzir o NID do Paciente.");
 			mb.open();
 			searchBar.setText("");
 			searchBar.setFocus();
@@ -217,11 +217,11 @@ public class PatientHistory extends GenericReportGui {
 			viewReport(report);
 		} else {
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Patient Does Not Exist");
+			mb.setText("O Paciente não existe");
 			mb
-			.setMessage("There is no patient with ID '"
+			.setMessage("Não existe nenhum Paciente com o NID '"
 					+ searchBar.getText()
-					+ "' in the database. \n\nIf this may be the old ID of a patient whose ID has changed, you can search by patients' previous IDs by going to the Update Patient screen and typing this ID there.");
+					+ "' no IDART.");
 			mb.open();
 		}
 		searchBar.setText("");

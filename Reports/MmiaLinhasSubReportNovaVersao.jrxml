@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaLinhasSubReportNovaVersao" pageWidth="640" pageHeight="842" columnWidth="640" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="date" class="java.util.Date" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateEnd" class="java.util.Date" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="totalpacientesfarmacia" class="java.lang.String"/>
+	<parameter name="monthStart" class="java.lang.String"/>
+	<parameter name="monthEnd" class="java.lang.String"/>
+	<parameter name="dataelaboracao" class="java.lang.String"/>
+	<parameter name="username" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select abc.regimeesquema, abc.count, abc2.count2 from (
+select
+regimeesquema, count(*)
+from (select* from prescription,regimeterapeutico, package
+where prescription.regimeid=regimeterapeutico.regimeid AND
+	  	 prescription.ppe='F'
+
+  		  AND regimeterapeutico.active=true and prescription.id=package.prescription
+
+  		  AND
+
+  		   package.pickupdate::timestamp::date >=
+$P{monthStart}::timestamp::date  AND  package.pickupdate::timestamp::date <=
+	   $P{monthEnd}::timestamp::date  order by pediatrico asc) as tabela
+	    group by regimeesquema
+) AS abc
+
+full OUTER JOIN (select
+regimeesquema, count(*) as count2
+from (select* from prescription,regimeterapeutico, package
+where prescription.regimeid=regimeterapeutico.regimeid AND
+	  	 prescription.ppe='F'
+
+  		  AND regimeterapeutico.active=true and prescription.id=package.prescription
+AND package.weekssupply=8
+  		   AND
+  		   package.pickupdate::timestamp::date >=
+	$P{monthStart}::timestamp::date - INTEGER '30' AND  package.pickupdate::timestamp::date <=
+	    $P{monthEnd}::timestamp::date - INTEGER '30'  order by pediatrico asc) as tabela
+	    group by regimeesquema
+) as abc2 on abc.regimeesquema=abc2.regimeesquema]]>
+	</queryString>
+	<field name="regimeesquema" class="java.lang.String"/>
+	<field name="count" class="java.lang.Long"/>
+	<field name="count2" class="java.lang.Long"/>
+	<group name="total_pacientes">
+		<groupExpression><![CDATA[null]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="117">
+				<staticText>
+					<reportElement mode="Opaque" x="140" y="53" width="124" height="14" backcolor="#D0D8FC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total:]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="264" y="14" width="1" height="53" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="366" y="0" width="1" height="68" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="0" y="1" width="1" height="52" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="13" width="366" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="74" width="640" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="92" width="640" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="0" y="74" width="1" height="19" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="139" y="75" width="1" height="16" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="639" y="75" width="1" height="17" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="2" y="74" width="59" height="17"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Elaborado Por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="140" y="76" width="100" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[  Visto:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="368" y="76" width="83" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[  Data de Elaboração:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="451" y="76" width="175" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{dataelaboracao}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="61" y="76" width="78" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{username}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="314" y="13" width="1" height="54" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="2" y="2" width="364" height="11" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Linhas Terapêuicas]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="26" width="366" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="1" y="39" width="366" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="52" width="367" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="139" y="67" width="229" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="139" y="53" width="1" height="15" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="14" width="263" height="12" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[1ª Linhas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="27" width="263" height="12" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[2ª Linhas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="40" width="263" height="12" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[3ª Linhas]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="367" y="75" width="1" height="17" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="2" y="99" width="365" height="9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nota: Mapa de Preenchimento Obrigatório Mensal pela Farmácia da Unidade Sanitária]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="2" y="108" width="365" height="9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Versão nº 8 19 Nov 2019 DS TLD90 MDS e ARVs de nova geração]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="265" y="53" width="49" height="14" backcolor="#E4E4F4"/>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="315" y="53" width="51" height="13" backcolor="#E4E4F4"/>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

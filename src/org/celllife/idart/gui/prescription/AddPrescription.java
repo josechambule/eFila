@@ -115,6 +115,8 @@ public class AddPrescription extends GenericFormGui implements
 
     private Button btnAddDrug;
 
+    private Button btnAddAssociatedDrug;
+
     private Button btnSearch;
 
     private Button btnEkapaSearch;
@@ -210,6 +212,8 @@ public class AddPrescription extends GenericFormGui implements
     private Patient thePatient;
 
     private TableColumn tblDescription;
+
+    private TableColumn tblQnty;
 
     private Table tblDrugs;
 
@@ -1095,31 +1099,34 @@ public class AddPrescription extends GenericFormGui implements
 
         // compButtonsMiddle
         compButtonsMiddle = new Composite(getShell(), SWT.NONE);
-        compButtonsMiddle.setBounds(new Rectangle(200, 335, 500, 65));
+        compButtonsMiddle.setBounds(new Rectangle(200, 335, 600, 65));
 
         // Add Drug button and icon
         lblPicAddDrug = new Label(compButtonsMiddle, SWT.NONE);
-        lblPicAddDrug.setBounds(new Rectangle(10, 38, 30, 26));
+        lblPicAddDrug.setBounds(new Rectangle(5, 38, 30, 26));
         lblPicAddDrug.setImage(ResourceUtils
                 .getImage(iDartImage.PRESCRIPTIONADDDRUG_30X26));
 
-        btnAddDrug = new Button(compButtonsMiddle, SWT.NONE);
-        btnAddDrug.setBounds(new Rectangle(60, 38, 185, 27));
-        btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnAddDrug.setText(Messages.getString("patient.prescription.dialog.add"));
-        btnAddDrug.setEnabled(false);
-        btnAddDrug
+
+        // Associated drugs with regimeTerapeutico
+        btnAddAssociatedDrug  = new Button(compButtonsMiddle, SWT.NONE);
+        btnAddAssociatedDrug.setBounds(new Rectangle(50, 38, 185, 28));
+        btnAddAssociatedDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnAddAssociatedDrug.setText(Messages.getString("patient.prescription.dialog.add.associated"));
+        btnAddAssociatedDrug.setEnabled(false);
+        btnAddAssociatedDrug
                 .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
                     @Override
                     public void widgetSelected(
                             org.eclipse.swt.events.SelectionEvent e) {
-                                cmdAddDrugWidgetSelected();
-                            }
+                        cmdAddAssociatedDrugWidgetSelected();
+                    }
                 });
-        btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnAddAssociatedDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
 
         btnRemoveDrug = new Button(compButtonsMiddle, SWT.NONE);
-        btnRemoveDrug.setBounds(new Rectangle(268, 37, 181, 28));
+        btnRemoveDrug.setBounds(new Rectangle(247, 38, 181, 28));
         btnRemoveDrug.setText(Messages.getString("patient.prescription.dialog.remove"));
         lblPicAddDrug.setEnabled(false);
         btnRemoveDrug.setEnabled(false);
@@ -1132,6 +1139,22 @@ public class AddPrescription extends GenericFormGui implements
                             }
                 });
         btnRemoveDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        btnAddDrug = new Button(compButtonsMiddle, SWT.NONE);
+        btnAddDrug.setBounds(new Rectangle(440, 38, 110, 28));
+        btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnAddDrug.setText(Messages.getString("patient.prescription.dialog.add"));
+        btnAddDrug.setEnabled(false);
+        btnAddDrug
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                        cmdAddDrugWidgetSelected();
+                    }
+                });
+        btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
 
         // View Prescription History button and icon
     }
@@ -1223,7 +1246,7 @@ public class AddPrescription extends GenericFormGui implements
 
         tblDrugs = new Table(grpDrugs, SWT.FULL_SELECTION);
         tblDrugs.setLinesVisible(true);
-        tblDrugs.setBounds(new Rectangle(50, 25, 600, 100));
+        tblDrugs.setBounds(new Rectangle(50, 25, 600, 126));
         tblDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         tblDrugs.setHeaderVisible(true);
 
@@ -1245,30 +1268,39 @@ public class AddPrescription extends GenericFormGui implements
 
         // 2 - clmTake
         clmTake = new TableColumn(tblDrugs, SWT.NONE);
-        clmTake.setWidth(90);
-        // clmTake.setText("Directions");
-        clmTake.setResizable(false);
+        clmTake.setWidth(60);
+        clmTake.setText("Instrução");
+        clmTake.setResizable(true);
 
         // 3 - clmAmt
         clmAmt = new TableColumn(tblDrugs, SWT.NONE);
-        // clmAmt.setText("Amount");
-        clmAmt.setWidth(40);
+        clmAmt.setText("Quant.");
+        clmAmt.setWidth(46);
         clmAmt.setResizable(false);
 
         // 4 - tblDescription
         tblDescription = new TableColumn(tblDrugs, SWT.NONE);
-        tblDescription.setWidth(70);
+        tblDescription.setText("Forma");
+        tblDescription.setWidth(60);
         tblDescription.setResizable(false);
 
         // 5 - tblPerDay
         tblPerDay = new TableColumn(tblDrugs, SWT.NONE);
-        tblPerDay.setWidth(30);
+        tblPerDay.setText("Vez(es)");
+        tblPerDay.setWidth(40);
         tblPerDay.setResizable(false);
 
         // 6 - tblTPD
         tblTPD = new TableColumn(tblDrugs, SWT.NONE);
-        tblTPD.setWidth(95);
+        tblTPD.setText("Por Dia");
+        tblTPD.setWidth(85);
         tblTPD.setResizable(false);
+
+        // 7 - tblQnty
+        tblQnty = new TableColumn(tblDrugs, SWT.NONE);
+        tblQnty.setText("Frasco");
+        tblQnty.setWidth(44);
+        tblQnty.setResizable(true);
 
         editor = new TableEditor(tblDrugs);
         editor.horizontalAlignment = SWT.LEFT;
@@ -2023,6 +2055,20 @@ public class AddPrescription extends GenericFormGui implements
                 TableItem ti = new TableItem(tblDrugs, SWT.NONE);
                 ti.setText(0, (Integer.toString(tblDrugs.getItemCount())));
                 new PrescriptionObject(getHSession(), ti, false, getShell());
+                intDrugTableSize = tblDrugs.getItemCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void cmdAddAssociatedDrugWidgetSelected() {
+        if (fieldsOk()) {
+            try {
+                // Add a new table item
+                TableItem ti = new TableItem(tblDrugs, SWT.NONE);
+                ti.setText(0, (Integer.toString(tblDrugs.getItemCount())));
+                new PrescriptionObjectAssociated(getHSession(), ti, false, cmbRegime.getText(),getShell());
                 intDrugTableSize = tblDrugs.getItemCount();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2850,7 +2896,7 @@ public class AddPrescription extends GenericFormGui implements
                 temp[4] = f.getFormLanguage1();
                 temp[5] = (new Integer(rd.getTimesPerDay())).toString();
                 temp[6] = "vezes por dia";
-
+                temp[7] = String.valueOf(d.getPackSize());
                 ti.setText(temp);
 
                 PrescribedDrugs pd = new PrescribedDrugs();
@@ -2953,6 +2999,7 @@ public class AddPrescription extends GenericFormGui implements
     protected void enableFields(boolean enable) {
 
         btnAddDrug.setEnabled(enable);
+        btnAddAssociatedDrug.setEnabled(enable);
         lblPicAddDrug.setEnabled(enable);
 
         btnRemoveDrug.setEnabled(enable);
@@ -3076,10 +3123,10 @@ public class AddPrescription extends GenericFormGui implements
         if (regimenSearch.getValueSelected() != null) {
             cmbRegime.setText(regimenSearch.getValueSelected()[0]);
 
-            populateDrugsFromDrugGroup(regimenSearch.getValueSelected()[0]);
+       //     populateDrugsFromDrugGroup(regimenSearch.getValueSelected()[0]);
             localRegime = DrugManager.getRegimeTerapeutico(getHSession(),
                     regimenSearch.getValueSelected()[0]);
-            cmbLinha.setText(localRegime.getLinhaT().getLinhanome());
+//            cmbLinha.setText(localRegime.getLinhaT().getLinhanome());
 
         }
     }

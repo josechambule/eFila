@@ -22,18 +22,18 @@ public class RegimeTerapeutico {
 	private String regimenomeespecificado;
 	private String codigoregime;
 	private String regimeesquemaidart;
-        private String pediatrico;
+//        private String pediatrico;
         
         /*
         * 
-        * Adicionei 2 atributos: linhaT e regimenDrugs
+        * Removi 2 atributos: linhaT e regimenDrugs
         * Metodo para buscar regime terapeutico - Idart antigo 
         * Modified by : Colaco Nhongo
         * Modifica date: 14/01/2020
         */      
-    @ManyToOne
-    @JoinColumn(name = "linhaid")
-    private LinhaT linhaT;
+//    @ManyToOne
+//    @JoinColumn(name = "linhaid")
+//    private LinhaT linhaT;
 
     @OneToMany
 	@JoinColumn(name = "regimen")
@@ -74,13 +74,13 @@ public class RegimeTerapeutico {
 		this.regimeesquema = regimeesquema;
 	}
 
-        public String getPediatrico() {
-		return pediatrico;
-	}
+//   public String getPediatrico() {
+//		return pediatrico;
+//	}
 
-	public void setPediatrico(String pediatrico) {
-		this.pediatrico = pediatrico;
-	}
+//	public void setPediatrico(String pediatrico) {
+//		this.pediatrico = pediatrico;
+//	}
         
 	public RegimeTerapeutico(int regimeid, String regimeesquema, boolean active,
                 String regimenomeespecificado, String codigoregime,String regimeesquemaidart,String pediatrico) {
@@ -89,7 +89,7 @@ public class RegimeTerapeutico {
 		this.regimeesquema = regimeesquema;
 		this.active = active;
                 this.codigoregime = codigoregime;
-                this.pediatrico = pediatrico;
+//                this.pediatrico = pediatrico;
                 this.regimeesquemaidart = regimeesquemaidart;
                 this.regimenomeespecificado=regimenomeespecificado;
 	}
@@ -114,13 +114,13 @@ public class RegimeTerapeutico {
 		this.regimeesquemaidart = regimeesquemaidart;
 	}
 	
-         public LinhaT getLinhaT() {
-        return linhaT;
-    }
+//    public LinhaT getLinhaT() {
+//        return linhaT;
+//    }
 
-    public void setLinhaT(LinhaT linhaT) {
-        this.linhaT = linhaT;
-    }
+//    public void setLinhaT(LinhaT linhaT) {
+//        this.linhaT = linhaT;
+//    }
 
     /**
 	 * Method getRegimenDrugs.

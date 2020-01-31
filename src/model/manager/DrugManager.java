@@ -3,23 +3,13 @@
  */
 package model.manager;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.ChemicalCompound;
-import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.RegimeTerapeutico;
-import org.celllife.idart.database.hibernate.Regimen;
-import org.celllife.idart.database.hibernate.RegimenDrugs;
+import org.celllife.idart.database.hibernate.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.TableItem;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -292,6 +282,24 @@ public class DrugManager {
 			throws HibernateException {
 		List<Drug> result = sess.createQuery(
 				"select d from Drug as d order by d.name").list();
+
+		return result;
+	}
+
+	public static List<Drug> getAllAssociatedDrugs(Session sess, String regimeTerapeutico)
+			throws HibernateException {
+		List<Drug> result = new ArrayList<>();
+
+				RegimeTerapeutico regimeTerapeutic = DrugManager.getRegimeTerapeutico(sess, regimeTerapeutico);
+		Iterator<RegimenDrugs> it = regimeTerapeutic.getRegimenDrugs().iterator();
+
+		while (it.hasNext()) {
+			RegimenDrugs rd = it.next();
+
+			Drug d = rd.getDrug();
+
+			result.add(d);
+		}
 
 		return result;
 	}

@@ -257,27 +257,27 @@ public class AddDrug extends GenericFormGui {
 		Label lblatc = new Label(grpDrugInfo, SWT.NONE);
 		lblatc.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 		lblatc.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblatc.setText(" Código FNM:");
+		lblatc.setText("* Código FNM:");
 	
 
 		txtAtc = new Text(grpDrugInfo, SWT.BORDER);
-		txtAtc.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false, 1,1));
+		txtAtc.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false, 2,1));
 		txtAtc.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		txtAtc.setEditable(false);
+		txtAtc.setEditable(true);
 		
-		btnAtcSearch = new Button(grpDrugInfo, SWT.NONE);
-		btnAtcSearch.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		btnAtcSearch.setText("Procurar");
-		btnAtcSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnAtcSearch.setEnabled(false);
-		btnAtcSearch.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdAtcSearchWidgetSelected();
-			}
-		});
-		btnAtcSearch.setToolTipText("Pressione este botão para pesquisar por código FNM.");
+//		btnAtcSearch = new Button(grpDrugInfo, SWT.NONE);
+//		btnAtcSearch.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
+//		btnAtcSearch.setText("Procurar");
+//		btnAtcSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+//		btnAtcSearch.setEnabled(false);
+//		btnAtcSearch.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(
+//					org.eclipse.swt.events.SelectionEvent e) {
+//				cmdAtcSearchWidgetSelected();
+//			}
+//		});
+//		btnAtcSearch.setToolTipText("Pressione este botão para pesquisar por código FNM.");
 
 //		// lblStockCode & txtStockCode
 //		Label lblMims = new Label(grpDrugInfo, SWT.NONE);
@@ -452,7 +452,7 @@ public class AddDrug extends GenericFormGui {
 				}
 			}
 			txtName.setText(name);
-			txtAtc.setText(atc.getCode());
+//			txtAtc.setText(atc.getCode());
 			String mims = atc.getMims();
 			if (mims != null)
 				//txtMims.setText(mims);
@@ -697,6 +697,7 @@ public class AddDrug extends GenericFormGui {
 	private void loadDrugDetails() {
 
 		txtName.setText(localDrug.getName());
+		txtAtc.setText(localDrug.getAtccode());
 		cmbForm.setText(localDrug.getForm().getForm());
 		txtPacksize.setText(String.valueOf(localDrug.getPackSize()));
 
@@ -738,9 +739,9 @@ public class AddDrug extends GenericFormGui {
 			//txtMims.setText(localDrug.getStockCode());
 		}
 
-		if (localDrug.getAtccode() != null) {
-			txtAtc.setText(localDrug.getAtccode().getCode());
-		}
+//		if (localDrug.getAtccode() != null) {
+//			txtAtc.setText(localDrug.getAtccode().getCode());
+//		}
 
 		Iterator<ChemicalDrugStrength> chemicalDrugStrengthIt = localDrug
 		.getChemicalDrugStrengths().iterator();
@@ -879,13 +880,13 @@ public class AddDrug extends GenericFormGui {
 
 		}
 		
-		if (!txtAtc.getText().trim().isEmpty()){
-			AtcCode atccode = AdministrationManager.getAtccodeFromCode(getHSession(),
-					txtAtc.getText().trim());
-			if (atccode == null){
-				showMessage(MessageDialog.ERROR, "Código FNM Desconhecido", "O código FNM que seleccionou não está na base de dados.");
+		if (txtAtc.getText().trim().isEmpty()){
+//			AtcCode atccode = AdministrationManager.getAtccodeFromCode(getHSession(),
+//					txtAtc.getText().trim());
+//			if (atccode == null){
+				showMessage(MessageDialog.ERROR, "Código FNM vazio", "O código FNM seleccionou não está na base de dados.");
 				return false;
-			}
+//			}
 		}
 
 		if (!txtTimesPerDay.getText().trim().equals("")) {
@@ -1045,7 +1046,7 @@ public class AddDrug extends GenericFormGui {
 		try {
 
 			localDrug.setName(txtName.getText());
-
+			localDrug.setAtccode(txtAtc.getText());
 			localDrug.setPackSize(Integer.parseInt(txtPacksize.getText()));
 			localDrug.setDispensingInstructions1(txtDispensingInstructions1
 					.getText());
@@ -1087,10 +1088,10 @@ public class AddDrug extends GenericFormGui {
 				localDrug.setPediatric('T');
 			}
 			
-			if (!txtAtc.getText().trim().isEmpty()){
-				localDrug.setAtccode(AdministrationManager.getAtccodeFromCode(getHSession(),
-					txtAtc.getText().trim()));
-			}
+//			if (!txtAtc.getText().trim().isEmpty()){
+//				localDrug.setAtccode(AdministrationManager.getAtccodeFromCode(getHSession(),
+//					txtAtc.getText().trim()));
+//			}
 			//localDrug.setStockCode(txtMims.getText());
 
 			if (localDrug.getChemicalDrugStrengths() == null) {
@@ -1146,7 +1147,7 @@ public class AddDrug extends GenericFormGui {
 		tblChemicalCompounds.setEnabled(enable);
 		btnAddChemical.setEnabled(enable);
 		btnEditChemical.setEnabled(enable);
-		btnAtcSearch.setEnabled(enable);
+//		btnAtcSearch.setEnabled(enable);
 
 		if (enable) {
 			cmbForm.setBackground(ResourceUtils.getColor(iDartColor.WHITE));

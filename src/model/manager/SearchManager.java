@@ -65,6 +65,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
+ *
  */
 public class SearchManager {
 
@@ -84,7 +85,7 @@ public class SearchManager {
     /**
      * loads a list of the clinics onto the grid
      *
-     * @param sess Session
+     * @param sess   Session
      * @param search Search
      * @return List<Clinic>
      * @throws HibernateException
@@ -232,7 +233,7 @@ public class SearchManager {
     /**
      * loads a list of doctors onto the grid
      *
-     * @param sess Session
+     * @param sess   Session
      * @param search Search
      * @return List<Doctor>
      * @throws HibernateException
@@ -346,7 +347,7 @@ public class SearchManager {
     /**
      * Method loadStockTakes.
      *
-     * @param sess Session
+     * @param sess   Session
      * @param search Search
      * @return List<StockTake>
      * @throws HibernateException
@@ -401,13 +402,12 @@ public class SearchManager {
      *
      * @param sess Session
      * @param search Search
-     * @return List<Object[]>
+     * @return List<Object [ ]>
      * @throws HibernateException
      */
     /**
      * @param search
-     *
-     * @return List<Object[]>
+     * @return List<Object [ ]>
      */
     public static List<RegimeTerapeutico> loadRegimens(Session sess, Search search)
             throws HibernateException {
@@ -516,15 +516,15 @@ public class SearchManager {
     /**
      * loads a list of drugs onto the form
      *
-     * @param sess Session
+     * @param sess                      Session
      * @param search
      * @param includeSideTreatmentDrugs boolean
-     * @param includeZeroDrugs boolean
+     * @param includeZeroDrugs          boolean
      * @return List<Drug>
      * @throws HibernateException
      */
     public static List<Drug> loadDrugs(Session sess, Search search,
-            boolean includeSideTreatmentDrugs, boolean includeZeroDrugs)
+                                       boolean includeSideTreatmentDrugs, boolean includeZeroDrugs)
             throws HibernateException {
 
         listTableEntries = new ArrayList<SearchEntry>();
@@ -577,13 +577,63 @@ public class SearchManager {
 
     }
 
+    public static List<Drug> loadAssociatedDrugs(Session sess, Search search,
+                                                 String regimeterapeutico, boolean includeZeroDrugs)
+            throws HibernateException {
+
+        listTableEntries = new ArrayList<SearchEntry>();
+        comparator = new TableComparator();
+
+        List<Drug> drugs = null;
+        String itemText[];
+        search.getTableColumn1().setText("Nome");
+        search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColOneSelected();
+            }
+        });
+        search.getTableColumn2().setText("QTD no Frasco");
+        search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColTwoSelected();
+            }
+        });
+
+        search.getShell().setText("Seleccione o Medicamento...");
+
+        drugs = DrugManager.getAllAssociatedDrugs(sess, regimeterapeutico);
+
+        Collections.sort(drugs);
+
+        Iterator<Drug> iter = new ArrayList<Drug>(drugs).iterator();
+        TableItem[] t = new TableItem[drugs.size()];
+
+        int i = 0;
+        while (iter.hasNext()) {
+            Drug drugList = iter.next();
+            t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
+            itemText = new String[2];
+            itemText[0] = drugList.getName();
+            itemText[1] = (Integer.valueOf(drugList.getPackSize())).toString();
+            t[i].setText(itemText);
+            listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
+            i++;
+        }
+        comparator.setColumn(TableComparator.COL1_NAME);
+        redrawTable();
+        return drugs;
+
+    }
+
     /**
      * loads a list of drugs onto the form
      *
-     * @param sess Session
+     * @param sess                      Session
      * @param search
      * @param includeSideTreatmentDrugs boolean
-     * @param includeZeroDrugs boolean
+     * @param includeZeroDrugs          boolean
      * @return List<Drug>
      * @throws HibernateException
      */
@@ -639,15 +689,15 @@ public class SearchManager {
     /**
      * loads a list of Stock into the table
      *
-     * @param sess Session
+     * @param sess            Session
      * @param search
      * @param onlyZeroBatches boolean
-     * @param theDrug Drug
+     * @param theDrug         Drug
      * @return List<Stock>
      * @throws HibernateException
      */
     public static List<Stock> loadStock(Session sess, Search search,
-            boolean onlyZeroBatches, Drug theDrug) throws HibernateException {
+                                        boolean onlyZeroBatches, Drug theDrug) throws HibernateException {
 
         listTableEntries = new ArrayList<SearchEntry>();
         comparator = new TableComparator();
@@ -713,7 +763,7 @@ public class SearchManager {
         Collections.sort(listTableEntries, comparator);
 
         for (Iterator<SearchEntry> itr = listTableEntries.iterator(); itr
-                .hasNext();) {
+                .hasNext(); ) {
             SearchEntry theEntry = itr.next();
             TableItem item = new TableItem(Search.tblSearch, SWT.NONE);
             int c = 0;
@@ -742,13 +792,13 @@ public class SearchManager {
     /**
      * Method minimiseSearch.
      *
-     * @param t Table
+     * @param t            Table
      * @param searchString String
-     * @param fullList List<? extends Object>
-     * @param classid int
+     * @param fullList     List<? extends Object>
+     * @param classid      int
      */
     public static void minimiseSearch(Table t, String searchString,
-            List<? extends Object> fullList, int classid) {
+                                      List<? extends Object> fullList, int classid) {
         t.removeAll();
         for (int i = 0; i < fullList.size(); i++) {
             int found1 = 0;
@@ -951,13 +1001,13 @@ public class SearchManager {
      }*/
 
     /**
-     * @param sess Session
-     * @param includeInactive boolean
+     * @param sess                  Session
+     * @param includeInactive       boolean
      * @param filterPackageAwaiting boolean
      * @return a list of all patient ids and names including inactive patients
      */
     public static List<PatientIdAndName> getPatientIDsAndNames(Session sess,
-            boolean includeInactive, boolean filterPackageAwaiting) {
+                                                               boolean includeInactive, boolean filterPackageAwaiting) {
         List<PatientIdAndName> newList = new ArrayList<PatientIdAndName>();
         if (!filterPackageAwaiting) {
             List<PatientIdAndName> activePatients = getActivePatientIDsAndNames(sess);
@@ -975,7 +1025,7 @@ public class SearchManager {
     }
 
     public static List<PatientIdentifier> getPatientIdentifiers(Session session, String patientId,
-            boolean includeInactivePatients)
+                                                                boolean includeInactivePatients)
             throws HibernateException {
         patientId = patientId == null ? "" : patientId.trim();
 
@@ -998,7 +1048,7 @@ public class SearchManager {
     }
 
     public static List<PatientIdentifier> getPatientIdentifiersByName(Session session, String patientId,
-            boolean includeInactivePatients, List<IdentifierType> types)
+                                                                      boolean includeInactivePatients, List<IdentifierType> types)
             throws HibernateException {
 
         String jsonString;
@@ -1162,7 +1212,7 @@ public class SearchManager {
         List<Object[]> result = sess
                 .createQuery(
                         "select pat.id, pat.patientId, pat.firstNames, pat.lastname from "
-                        + "Patient as pat where pat.accountStatus=false order by pat.clinic.clinicName, pat.patientId")
+                                + "Patient as pat where pat.accountStatus=false order by pat.clinic.clinicName, pat.patientId")
                 .list();
 
         if (result != null) {
@@ -1191,7 +1241,7 @@ public class SearchManager {
         List<Object[]> result = sess
                 .createQuery(
                         "select pat.id, pat.patientId, pat.firstNames, pat.lastname from "
-                        + "Patient as pat where pat.accountStatus=true order by pat.clinic.clinicName, pat.patientId")
+                                + "Patient as pat where pat.accountStatus=true order by pat.clinic.clinicName, pat.patientId")
                 .list();
 
         if (result != null) {
@@ -1212,9 +1262,9 @@ public class SearchManager {
         List<Object[]> result = sess
                 .createQuery(
                         "select distinct pat.id, pat.patientId, pat.firstNames, pat.lastname, pat.clinic.clinicName "
-                        + "from Patient pat,  Prescription pre where pre.endDate is null "
-                        + "and pat.id = pre.patient and pat.accountStatus = true order by "
-                        + "pat.clinic.clinicName, pat.patientId")
+                                + "from Patient pat,  Prescription pre where pre.endDate is null "
+                                + "and pat.id = pre.patient and pat.accountStatus = true order by "
+                                + "pat.clinic.clinicName, pat.patientId")
                 .list();
 
         if (result != null) {
@@ -1230,11 +1280,11 @@ public class SearchManager {
 
     @SuppressWarnings("unchecked")
     public static List<PatientIdAndName> findPatientsWithIdLike(Session sess,
-            String patientid) {
+                                                                String patientid) {
         List<PatientIdAndName> returnList = new ArrayList<PatientIdAndName>();
         List<Object[]> results = sess.createQuery(
                 "select pat.id, pat.patientId, pat.firstNames, pat.lastname from "
-                + "Patient as pat where UPPER(pat.patientId) like :id")
+                        + "Patient as pat where UPPER(pat.patientId) like :id")
                 .setString("id", "%" + patientid.toUpperCase() + "%").list();
 
         if (results != null) {
@@ -1252,9 +1302,9 @@ public class SearchManager {
         List<PatientIdAndName> returnList = new ArrayList<PatientIdAndName>();
         List<Object[]> results = sess.createQuery(
                 "select distinct pat.id, pat.patientId, pat.firstNames, pat.lastname, pat.clinic.clinicName from "
-                + "Patient as pat, Prescription as pre where pre.endDate is null and UPPER(pat.patientId) like :id "
-                + "and pat.id = pre.patient and pat.accountStatus = true order by "
-                + "pat.clinic.clinicName, pat.patientId")
+                        + "Patient as pat, Prescription as pre where pre.endDate is null and UPPER(pat.patientId) like :id "
+                        + "and pat.id = pre.patient and pat.accountStatus = true order by "
+                        + "pat.clinic.clinicName, pat.patientId")
                 .setString("id", "%" + patientid.toUpperCase() + "%").list();
 
         if (results != null) {
