@@ -212,6 +212,14 @@ public class AdministrationManager {
 
 	}
 	
+    //Previous Dispensa Trimestral
+    public static int loadDispensaTrimestral(int idPatient) throws ClassNotFoundException, SQLException {
+       ConexaoJDBC conn = new ConexaoJDBC();
+
+       return conn.carregaDispensaTrimestral(idPatient);
+
+   }
+	
 	//Previous Linha
 	
 public static String loadLinha(int idPatient)throws ClassNotFoundException, SQLException
@@ -242,6 +250,62 @@ return conn.carregaPtv(idPatient);
 
 }
 
+//Previous CCR
+public static String loadCcr(int idPatient) throws ClassNotFoundException, SQLException {
+    ConexaoJDBC conn = new ConexaoJDBC();
+
+    return conn.carregaCcr(idPatient);
+
+}
+
+//Previous CPN
+public static String loadCpn(int idPatient) throws ClassNotFoundException, SQLException {
+  ConexaoJDBC conn = new ConexaoJDBC();
+
+  return conn.carregaCpn(idPatient);
+
+}
+
+//Previous AF
+public static String loadAf(int idPatient) throws ClassNotFoundException, SQLException {
+ConexaoJDBC conn = new ConexaoJDBC();
+
+return conn.carregaAf(idPatient);
+
+}
+
+//Previous CA
+public static String loadCa(int idPatient) throws ClassNotFoundException, SQLException {
+ConexaoJDBC conn = new ConexaoJDBC();
+
+return conn.carregaAf(idPatient);
+
+}
+
+//Previous FR
+public static String loadFr(int idPatient) throws ClassNotFoundException, SQLException {
+ConexaoJDBC conn = new ConexaoJDBC();
+
+return conn.carregaFr(idPatient);
+
+}
+
+//Previous FR
+public static String loadGaac(int idPatient) throws ClassNotFoundException, SQLException {
+ConexaoJDBC conn = new ConexaoJDBC();
+
+return conn.carregaGaac(idPatient);
+
+}
+
+//Previous DC
+public static String loadDc(int idPatient) throws ClassNotFoundException, SQLException {
+ConexaoJDBC conn = new ConexaoJDBC();
+
+return conn.carregaDc(idPatient);
+
+}
+
 //Previous TB
 
 public static String loadTb(int idPatient)throws ClassNotFoundException, SQLException
@@ -249,6 +313,16 @@ public static String loadTb(int idPatient)throws ClassNotFoundException, SQLExce
 { ConexaoJDBC conn=new ConexaoJDBC();
 
 return conn.carregaTb(idPatient);
+
+}
+
+//Previous TB
+
+public static String loadSAAJ(int idPatient)throws ClassNotFoundException, SQLException
+
+{ ConexaoJDBC conn=new ConexaoJDBC();
+
+return conn.carregaSAAJ(idPatient);
 
 }
 

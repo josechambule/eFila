@@ -21,6 +21,7 @@ public class ApiAuthRest {
 	static String username = null;
 	static String password = null;
 	static String URLBase = null;
+	static String URLReportingBase = null;
 	/**
 	 * HTTP POST
 	 * @param URLPath
@@ -34,14 +35,14 @@ public class ApiAuthRest {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
         	HttpPost httpPost = new HttpPost(URL);
-        	System.out.println(URL);
+        	//System.out.println("YEEEEEEEEEEEEEEEEEEEEEE"+URL);
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
             BasicScheme scheme = new BasicScheme();
             Header authorizationHeader = scheme.authenticate(credentials, httpPost);
             httpPost.setHeader(authorizationHeader);
             httpPost.setEntity(input);
             //System.out.println("Executing request: " + httpGet.getRequestLine());
-            //System.out.println(response);
+            System.out.println("SACUR"+response);
 //            response = httpclient.execute(httpGet,responseHandler);
             HttpResponse responseRequest = httpclient.execute(httpPost);
             
@@ -58,6 +59,7 @@ public class ApiAuthRest {
         }
         return response;
     }
+	
 	/**
 	 * HTTP GET
 	 * @param URLPath
@@ -66,6 +68,36 @@ public class ApiAuthRest {
 	 */
 	public static String getRequestGet(String URLPath) throws Exception {
         String URL = URLBase + URLPath;
+        String response =  "";
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        try {
+            HttpGet httpGet = new HttpGet(URL);
+
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+            BasicScheme scheme = new BasicScheme();
+            Header authorizationHeader = scheme.authenticate(credentials, httpGet);
+            httpGet.setHeader(authorizationHeader);
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            
+            System.out.println("Executing request: " + httpGet.getRequestLine());
+            System.out.println(response);
+            response = httpclient.execute(httpGet,responseHandler);
+            
+           
+        } finally {
+            httpclient.getConnectionManager().shutdown();
+        }
+        return response;
+    }
+	
+	/**
+	 * HTTP GET
+	 * @param URLPath
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getReportingRequestGet(String URLPath) throws Exception {
+        String URL = URLReportingBase + URLPath;
         String response =  "";
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
@@ -101,6 +133,10 @@ public class ApiAuthRest {
 
 	public static void setURLBase(String uRLBase) {
 		URLBase = uRLBase;
+	}
+	
+	public static void setURLReportingBase(String uRLReportingBase) {
+		URLReportingBase = uRLReportingBase;
 	}
   
 }

@@ -6,52 +6,77 @@ import javax.persistence.Id;
 
 @Entity
 public class RegimeTerapeutico {
-	
+
 	@Id
 	@GeneratedValue
 	private int regimeid;
 	private String regimeesquema;
 	private boolean active;
 	private String regimenomeespecificado;
-	
+	private int codigoregime;
+	private String regimeesquemaidart;
+
 	public String getRegimenomeespecificado() {
 		return regimenomeespecificado;
 	}
-	
+
 	public void setRegimenomeespecificado(String regimenomeespecificado) {
 		this.regimenomeespecificado = regimenomeespecificado;
 	}
-	
+
+	public int getCodigoregime() {
+		return codigoregime;
+	}
+
+	public void setCodigoregime(int codigoregime) {
+		this.codigoregime = codigoregime;
+	}
+
 	public int getRegimeid() {
 		return regimeid;
 	}
+
 	public void setRegimeid(int regimeid) {
 		this.regimeid = regimeid;
 	}
+
 	public String getRegimeesquema() {
 		return regimeesquema;
 	}
+
 	public void setRegimeesquema(String regimeesquema) {
 		this.regimeesquema = regimeesquema;
 	}
+
 	public RegimeTerapeutico(int regimeid, String regimeesquema, boolean active) {
 		super();
 		this.regimeid = regimeid;
 		this.regimeesquema = regimeesquema;
-		this.active=active;
+		this.active = active;
 	}
+
 	public RegimeTerapeutico() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean isActive() {
 		return active;
 	}
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
-	
 
+	public String getRegimeesquemaidart() {
+		return regimeesquemaidart;
+	}
+
+	public void setRegimeesquemaidart(String regimeesquemaidart) {
+		this.regimeesquemaidart = regimeesquemaidart;
+	}
+	
+	@Override
+	public String toString() {
+		return regimeesquema + " " + regimeesquemaidart;
+	}
 }

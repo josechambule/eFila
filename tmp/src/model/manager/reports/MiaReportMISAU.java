@@ -90,7 +90,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
   			System.out.println("Total de pacientes ppe "+ totalpacientesppe);
   			
   			
-  			 int totalpacienteptv =conn.totalPacientesPTV(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+  			 int totalpacienteptv =conn.totalPacientes_PTV(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
    			System.out.println("Total de pacientes ptv "+ totalpacienteptv);
    			
 			
@@ -99,7 +99,12 @@ public class MiaReportMISAU extends AbstractJasperReport {
 			
 			int pacientesEmTarv=conn.pacientesActivosEmTarv(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
 			System.out.println("Pacientes em tarv  "+ pacientesEmTarv);
-
+			
+            int mesesdispensadosparaDT = conn.mesesDispensadosParaDT(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+            System.out.println("Meses dispensados Para DT "+ mesesdispensadosparaDT);
+            
+            int mesesdispensadosparaDS = conn.mesesDispensadosParaDS(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
+            System.out.println("Meses dispensados Para DS "+ mesesdispensadosparaDS);
 			
 			//ConexaoODBC conn2=new ConexaoODBC();
 			//int _pacientesEmTarv=conn2.pacientesActivosEmTarv();
@@ -123,18 +128,20 @@ public class MiaReportMISAU extends AbstractJasperReport {
 		map.put("facilityName", LocalObjects.currentClinic.getClinicName());
 		map.put("pharmacist1", LocalObjects.pharmacy.getPharmacist());
 		map.put("pharmacist2", LocalObjects.pharmacy.getAssistantPharmacist());
-		map.put("totalpacientesfarmacia", totalpacientesfarmacia);
-		map.put("totalpacientesinicio",totalpacientesinicio);
-		map.put("totalpacientestransito",totalpacientestransito);
-		map.put("totalpacientesmanter",totalpacientesmanter);
-		map.put("totalpacientesalterar",totalpacientesalterar);
-		map.put("totalpacientesppe",totalpacientesppe);
-		map.put("totalpacienteptv",totalpacienteptv);
-		map.put("mesesdispensados",mesesdispensados);
-		map.put("pacientesEmTarv",pacientesEmTarv);
+		map.put("totalpacientesfarmacia", String.valueOf(totalpacientesfarmacia)); 
+		map.put("totalpacientesinicio",String.valueOf(totalpacientesinicio));
+		map.put("totalpacientestransito",String.valueOf(totalpacientestransito));
+		map.put("totalpacientesmanter",String.valueOf(totalpacientesmanter)); 
+		map.put("totalpacientesalterar",String.valueOf(totalpacientesalterar));
+		map.put("totalpacientesppe",String.valueOf(totalpacientesppe));
+		map.put("totalpacienteptv",String.valueOf(totalpacienteptv));
+		map.put("mesesdispensados",String.valueOf(mesesdispensados));
+		map.put("pacientesEmTarv",String.valueOf(pacientesEmTarv));
 		map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date())); 
 		map.put("mes", mesPortugues(theStartDate));
 		map.put("mes2",mesPortugues(theEndDate));
+		map.put("totalpacientesdt",String.valueOf(mesesdispensadosparaDT));
+		map.put("totalpacientesds",String.valueOf(mesesdispensadosparaDS));
 
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

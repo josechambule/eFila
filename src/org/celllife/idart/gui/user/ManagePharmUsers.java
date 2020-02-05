@@ -110,8 +110,8 @@ public class ManagePharmUsers extends GenericFormGui {
 		
 		
 		isForClinicApp = !LocalObjects.loggedInToMainClinic();
-		String shellTxt = isAddNotUpdate ? "Adicionar Novo Usu�rio"
-				: "Actalizar Usu�rio Corrente";
+		String shellTxt = isAddNotUpdate ? "Adicionar Novo Usuário"
+				: "Actalizar Usuário Corrente";
 		
 		
 		Rectangle bounds = new Rectangle(25, 0, 800, 600);
@@ -137,8 +137,8 @@ public class ManagePharmUsers extends GenericFormGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = (isAddNotUpdate ? "Adicionar Novo Usu�rio"
-				: "Actalizar Usu�rio Corrente");
+		String headerTxt = (isAddNotUpdate ? "Adicionar Novo Usuário"
+				: "Actalizar Usuário Corrente");
 		iDartImage icoImage = iDartImage.PHARMACYUSER;
 		buildCompHeader(headerTxt, icoImage);
 	}
@@ -160,7 +160,7 @@ public class ManagePharmUsers extends GenericFormGui {
 
 		Label lblInstructions = new Label(compInstructions, SWT.CENTER);
 		lblInstructions.setBounds(new Rectangle(0, 0, 600, 25));
-		lblInstructions.setText("Todos campos com * s�o de preenchimento obrigat�rio");
+		lblInstructions.setText("Todos campos com * são de preenchimento obrigatório");
 		lblInstructions.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_10_ITALIC));
 	}
@@ -177,7 +177,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		rdBtnAddUser = new Button(grpAddOrConfigureUser, SWT.RADIO);
 		rdBtnAddUser.setBounds(new Rectangle(20, 12, 160, 30));
 		rdBtnAddUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnAddUser.setText("Adicionar novo usu�rio");
+		rdBtnAddUser.setText("Adicionar novo usuário");
 		
 		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
 		rdBtnAddUser.setSelection(false);
@@ -199,7 +199,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		rdBtnUpdateUser = new Button(grpAddOrConfigureUser, SWT.RADIO);
 		rdBtnUpdateUser.setBounds(new Rectangle(195, 12, 180, 30));
 		rdBtnUpdateUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnUpdateUser.setText("Actualizar usu�rio actual");
+		rdBtnUpdateUser.setText("Actualizar usuário actual");
 		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
 			rdBtnAddUser.setSelection(true);
 			else
@@ -245,7 +245,7 @@ if(localUser.getPermission()!='A'){
 			Label lblUser = new Label(grpUserInfo, SWT.NONE);
 			lblUser.setBounds(new Rectangle(30, 20, 125, 20));
 			lblUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-			lblUser.setText("* Usu�rio:");
+			lblUser.setText("* Usuário:");
 			txtUser = new Text(grpUserInfo, SWT.BORDER);
 			txtUser.setBounds(new Rectangle(185, 20, 130, 20));
 			txtUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -274,7 +274,7 @@ if(localUser.getPermission()!='A'){
 						lblTipoUser.setBounds(new Rectangle(30, 110, 125, 20));
 						lblTipoUser.setFont(ResourceUtils
 								.getFont(iDartFont.VERASANS_8));
-						lblTipoUser.setText("* Tipo do Usu�rio:");
+						lblTipoUser.setText("* Tipo do Usuário:");
 						tipo_user = new Combo(grpUserInfo, SWT.BORDER);
 						tipo_user.setBounds(new Rectangle(185, 110, 125,
 								20));
@@ -297,7 +297,7 @@ if(localUser.getPermission()!='A'){
 			Label lblUser = new Label(grpUserInfo, SWT.NONE);
 			lblUser.setBounds(new Rectangle(30, 20, 125, 20));
 			lblUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-			lblUser.setText("* Usu�rio:");
+			lblUser.setText("* Usuário:");
 			txtUser = new Text(grpUserInfo, SWT.BORDER);
 			txtUser.setBounds(new Rectangle(185, 20, 130, 20));
 			txtUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -358,7 +358,7 @@ if(localUser.getPermission()!='A'){
 		
 		Label noteLabel = new Label(grpUserInfo, SWT.WRAP | SWT.CENTER | SWT.NONE);
 		noteLabel.setBounds(new Rectangle(50, 110, 250, 30));
-		noteLabel.setText("Note que este � apenas para fins de estudo. Deixe em branco para o pessoal da farmácia");
+		noteLabel.setText("Note que este é apenas para fins de estudo. Deixe em branco para o pessoal da farmácia");
 		noteLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		
 		Group grpUserRoles = new Group(grpUserInfo, SWT.NONE);
@@ -366,7 +366,7 @@ if(localUser.getPermission()!='A'){
 
 		Label confLabel = new Label(grpUserRoles, SWT.NONE);
 		confLabel.setBounds(new Rectangle(40, 10, 150, 15));
-		confLabel.setText("Configure o tipo de usu�rio:");
+		confLabel.setText("Configure o tipo de usuário:");
 		confLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		
 		rdBtnStudy = new Button(grpUserRoles, SWT.RADIO);
@@ -378,7 +378,7 @@ if(localUser.getPermission()!='A'){
 		rdBtnReports = new Button(grpUserRoles, SWT.RADIO);
 		rdBtnReports.setBounds(new Rectangle(20, 50, 150, 30));
 		rdBtnReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnReports.setText("acesso a relat�rios");
+		rdBtnReports.setText("acesso a relatários");
 		rdBtnReports.setSelection(false);
 		
 	}
@@ -419,8 +419,8 @@ if(localUser.getPermission()!='A'){
 
 		if (!checkedClinic) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("Todos os usu�rios precisam ter acesso a pelo menos uma unidade sanit�ria. \n\n"
-					+ "Por favor, selecione pelo menos uma unidade sanit�ria e tentar salvar novamente.");
+			b.setMessage("Todos os usuários precisam ter acesso a pelo menos uma unidade sanitária. \n\n"
+					+ "Por favor, selecione pelo menos uma unidade sanitária e tentar salvar novamente.");
 			b.setText("Nenhum acesso a US concedido");
 
 			b.open();
@@ -430,8 +430,8 @@ if(localUser.getPermission()!='A'){
 		
 		if((isAddNotUpdate) && !tipo_user.getText().equals("Normal") && !tipo_user.getText().equals("Administrador")) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("Seleccione o tipo do usu�rio. ");
-			b.setText("Seleccione o tipo do usu�rio");
+			b.setMessage("Seleccione o tipo do usuário. ");
+			b.setText("Seleccione o tipo do usuário");
 
 			b.open();
 			return false;
@@ -440,8 +440,8 @@ if(localUser.getPermission()!='A'){
 		if (isAddNotUpdate && txtUser.getText().trim().equals("")) {
 
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("O nome de usu�rio n�o pode ficar em branco");
-			b.setText("Faltando Informa��o");
+			b.setMessage("O nome de usuário não pode ficar em branco");
+			b.setText("Faltando Informação");
 			b.open();
 			txtUser.setFocus();
 			return false;
@@ -449,8 +449,8 @@ if(localUser.getPermission()!='A'){
 		}
 		if (isAddNotUpdate && txtPassword.getText().trim().equals("")) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("A senha n�o pode ficar em branco");
-			b.setText("Faltando Informa��o");
+			b.setMessage("A senha não pode ficar em branco");
+			b.setText("Faltando Informação");
 			b.open();
 			txtPassword.setFocus();
 			return false;
@@ -465,8 +465,8 @@ if(localUser.getPermission()!='A'){
 					.equals(txtPassword.getText().trim())) {
 				MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR
 						| SWT.OK);
-				b.setMessage("A nova senha � a mesma que a senha antiga");
-				b.setText("Nova senha inv�lida");
+				b.setMessage("A nova senha é a mesma que a senha antiga");
+				b.setText("Nova senha inválida");
 				b.open();
 				txtPassword.setFocus();
 
@@ -488,7 +488,7 @@ if(localUser.getPermission()!='A'){
 		if (!txtPassword.getText().equals(txtPassConfirm.getText())) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m.setText("Senhas inconsistentes");
-			m.setMessage("As senhas n�o coincidem. Digite novamente ambas as senhas");
+			m.setMessage("As senhas não coincidem. Digite novamente ambas as senhas");
 			m.open();
 			txtPassword.setText("");
 			txtPassConfirm.setText("");
@@ -530,8 +530,8 @@ if(localUser.getPermission()!='A'){
 				
 				MessageBox m = new MessageBox(getShell(), SWT.YES | SWT.NO
 					| SWT.ICON_QUESTION);
-				m.setText("Adicioar Usu�rio");
-				m.setMessage("Tem certeza de que deseja adicionar este usu�rio sem acesso a qualquer uma das unidade sanit�rias ?");
+				m.setText("Adicioar Usuário");
+				m.setMessage("Tem certeza de que deseja adicionar este usuário sem acesso a qualquer uma das unidade sanitárias ?");
 				option = m.open();
 			}
 			if(option == SWT.YES)
@@ -550,9 +550,9 @@ if(localUser.getPermission()!='A'){
 					}
 	
 					// before we try anything, lets ask the user for their password
-					String confirm = "ATEN��O:Voc� s� deve executar esta aC��o se tiver certeza de que voc� deseja "
+					String confirm = "ATENÇÃO:Vocé só deve executar esta acção se tiver certeza de que vocé deseja "
 						+ (isAddNotUpdate ? "adicionar" : "actualizar")
-						+ " este usu�rio. O usu�rio que realizou esta ac��o, bem como a hora atual, ser� gravado no log de transa��es.";
+						+ " este usuário. O usuário que realizou esta acção, bem como a hora atual, será gravado no log de transações.";
 					ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
 							getShell(), "Por favor, insira sua senha", confirm,
 							getHSession());
@@ -575,7 +575,7 @@ if(localUser.getPermission()!='A'){
 	
 							MessageBox m = new MessageBox(getShell(), SWT.OK
 									| SWT.ICON_INFORMATION);
-							m.setText("Novo Usu�rio Adicionado");
+							m.setText("Novo Usuário Adicionado");
 							m.setMessage("A new user, named '".concat(
 									txtUser.getText()).concat(
 									"' foi adicionado ao sistema."));
@@ -611,10 +611,10 @@ if(localUser.getPermission()!='A'){
 							}
 							MessageBox m = new MessageBox(getShell(), SWT.OK
 									| SWT.ICON_WARNING);
-							m.setText(" Usu�rio Duplicado");
-							m.setMessage("O usu�rio'".concat(txtUser.getText())
-									.concat("' j� existe na base de dados. ")
-									.concat("\n\nPor favor, escolhe outro nome do usu�rio."));
+							m.setText(" Usuário Duplicado");
+							m.setMessage("O usuário'".concat(txtUser.getText())
+									.concat("' já existe na base de dados. ")
+									.concat("\n\nPor favor, escolhe outro nome do usuário."));
 							m.open();
 						}
 					}
@@ -622,10 +622,10 @@ if(localUser.getPermission()!='A'){
 					else {
 						MessageBox m = new MessageBox(getShell(), SWT.OK
 								| SWT.ICON_ERROR);
-						m.setText("Falha de autentica��o");
+						m.setText("Falha de autenticação");
 						m
 						.setMessage("Database update not allowed because you could not provide your password  "
-								+ "Atualiza��o da base de dados n�o permitida porque voc� n�o forneceu sua senha.");
+								+ "Atualização da base de dados não permitida porque vocé não forneceu sua senha.");
 						m.open();
 						clearForm();
 					}
@@ -640,11 +640,11 @@ if(localUser.getPermission()!='A'){
 							| SWT.ICON_WARNING);
 					m.setText("Problem Saving To Database");
 					m
-					.setMessage(isAddNotUpdate ? "O Usu�rio '".concat(
+					.setMessage(isAddNotUpdate ? "O Usuário '".concat(
 							txtUser.getText()).concat(
-							"' n�o foi gravado. ").concat(
+							"' não foi gravado. ").concat(
 							"\n\nPor favor tente de novo.")
-							: "A senha n�o pode ser alterado. Por favor, tente novamente");
+							: "A senha não pode ser alterado. Por favor, tente novamente");
 					m.open();
 					getLog().error(he);
 				}
@@ -666,7 +666,7 @@ if(localUser.getPermission()!='A'){
 
 	private void cmdAddWidgetSelected() {
 		isAddNotUpdate = true;
-		getShell().setText("Adicionar Novo Usu�rio");
+		getShell().setText("Adicionar Novo Usuário");
 		createCompHeader();
 		createGrpUserInfo();
 		txtUser.setFocus();
@@ -674,7 +674,7 @@ if(localUser.getPermission()!='A'){
 
 	private void cmdUpdateWidgetSelected() {
 		isAddNotUpdate = false;
-		getShell().setText("Actualizar o Usu�rio corrente");
+		getShell().setText("Actualizar o Usuário corrente");
 		createCompHeader();
 		createGrpUserInfo();
 		txtPassword.setFocus();

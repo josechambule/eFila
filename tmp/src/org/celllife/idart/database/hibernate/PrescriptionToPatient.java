@@ -12,7 +12,6 @@ import java.util.Date;
 
 public class PrescriptionToPatient {
 	
-
 	private int  id;
 	 private String current;
 	 private int duration;
@@ -23,11 +22,10 @@ public class PrescriptionToPatient {
 	 private int  idade;
 	 private String motivomudanca;
 	 private Date dataInicionoutroservico;
-	 private String linha;
 	 
 	
 	public PrescriptionToPatient(int id, String current, int duration, String reasonforupdate, String notes,
-			String patientid, String regimeesquema, int idade, String motivomudanca, Date dataInicionoutroservico, String linha) {
+			String patientid, String regimeesquema, int idade, String motivomudanca, Date dataInicionoutroservico) {
 		super();
 		this.id = id;
 		this.current = current;
@@ -39,22 +37,12 @@ public class PrescriptionToPatient {
 		this.idade = idade;
 		this.motivomudanca = motivomudanca;
 		this.dataInicionoutroservico = dataInicionoutroservico;
-		this.linha=linha;
 	}
 
 
 	public String getMotivomudanca() {
 		return motivomudanca;
-	}
-
-	public String getLinha() {
-		return linha;
-	}
-	
-	public void setLinha(String linha) {
-		this.linha = linha;
-	}
-	
+	}	
 	
 	public void setMotivomudanca(String motivomudanca) {
 		this.motivomudanca = motivomudanca;
@@ -124,7 +112,4 @@ public class PrescriptionToPatient {
 	public void setIdade(int idade) {
 		this.idade = idade;
 	}
-	
-	
-
 }

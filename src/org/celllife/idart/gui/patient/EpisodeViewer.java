@@ -110,7 +110,7 @@ public class EpisodeViewer extends GenericOthersGui {
 
 	@Override
 	protected void createShell() {
-		String shellTxt = "Ver / editar epis�dios anteriores";
+		String shellTxt = "Ver / editar episódios anteriores";
 		buildShell(shellTxt, new Rectangle(25, 0, 900, 500));
 
 		createCompEpisodeTable();
@@ -118,7 +118,7 @@ public class EpisodeViewer extends GenericOthersGui {
 
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = "Ver / editar epis�dios anteriores";
+		String headerTxt = "Ver / editar episódios anteriores";
 		iDartImage icoImage = iDartImage.PATIENTARRIVES;
 		buildCompHeader(headerTxt, icoImage);
 	}
@@ -132,7 +132,7 @@ public class EpisodeViewer extends GenericOthersGui {
 		lblInstructions.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8_ITALIC));
 		lblInstructions
-		.setText("Clique na tabela para editar informa��o de epis�dios anteriores");
+		.setText("Clique na tabela para editar informação de episódios anteriores");
 
 		tblEpisodes = new Table(compEpisodeTable, SWT.FULL_SELECTION
 				| SWT.BORDER);
@@ -148,13 +148,13 @@ public class EpisodeViewer extends GenericOthersGui {
 		COL_START_DATE = 0;
 
 		TableColumn clmStartReason = new TableColumn(tblEpisodes, SWT.CENTER);
-		clmStartReason.setText("Motivo de In�cio");
+		clmStartReason.setText("Motivo de Início");
 		clmStartReason.setWidth(130);
 		clmStartReason.setResizable(true);
 		COL_START_REASON = 1;
 
 		TableColumn clmStartNotes = new TableColumn(tblEpisodes, SWT.CENTER);
-		clmStartNotes.setText("Notas do In�cio");
+		clmStartNotes.setText("Notas do Início");
 		clmStartNotes.setWidth(175);
 		clmStartNotes.setResizable(true);
 		COL_START_NOTES = 2;
@@ -196,7 +196,7 @@ public class EpisodeViewer extends GenericOthersGui {
 		btnSave.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		if (isEditable) {
 			btnSave
-			.setToolTipText("Pressione este bot�o para salvar a informa��o \nque inseriu na tela.");
+			.setToolTipText("Pressione este botão para salvar a informação \nque inseriu na tela.");
 			btnSave
 			.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 				@Override
@@ -213,7 +213,7 @@ public class EpisodeViewer extends GenericOthersGui {
 		btnCancel.setText("Cancelar");
 		btnCancel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnCancel
-		.setToolTipText("Pressione este bot�o para fechar esta tela.\nA informa��o que inseriu ser� perdida.");
+		.setToolTipText("Pressione este botão para fechar esta tela.\nA informação que inseriu será perdida.");
 		btnCancel
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -588,13 +588,13 @@ public class EpisodeViewer extends GenericOthersGui {
 				if (newPatientCnt > 1) {
 					// Warn of duplicate
 					// fail the check.
-					String txt = "Este paciente j� tem um epis�dio com  'Motivo de In�cio' coloque "
-						+ " 'Novo Paciente'. \n\nNote que 'Novo Paciente' implica que o paciente est� "
-						+ "iniciar o TARV na US, portanto n�o pode ter mais de 1 "
-						+ "epis�dio com este 'Motivo de In�cio'. \n\nMude 'Motivo de In�cio' "
-						+ "par o epis�dio anterior.";
+					String txt = "Este paciente já tem um episódio com  'Motivo de Início' coloque "
+						+ " 'Novo Paciente'. \n\nNote que 'Novo Paciente' implica que o paciente está "
+						+ "iniciar o TARV na US, portanto não pode ter mais de 1 "
+						+ "episódio com este 'Motivo de Início'. \n\nMude 'Motivo de Início' "
+						+ "par o episódio anterior.";
 					msgBox
-					.setText("S� 1 'Novo Paciente' � permitido por Paciente");
+					.setText("Só 1 'Novo Paciente' é permitido por Paciente");
 					msgBox.setMessage(txt);
 					msgBox.open();
 					consistent = false;
@@ -606,12 +606,12 @@ public class EpisodeViewer extends GenericOthersGui {
 				if (deceasedCnt > 1) {
 					// Warn of duplicate
 					// fail the check.
-					String txt = "Este paciente j� foi marcado como"
-						+ " 'Falecido' no epis�dio anterior.\n\nMude "
-						+ "o 'Motivo de Fim' para ter certeza de que � s� 1 epis�dio "
+					String txt = "Este paciente já foi marcado como"
+						+ " 'Falecido' no episódio anterior.\n\nMude "
+						+ "o 'Motivo de Fim' para ter certeza de que é só 1 episódio "
 						+ "foi marcado com 'Falecido'.";
 					msgBox
-					.setText("S� 1 'Falecido' permido por paciente");
+					.setText("Só 1 'Falecido' permido por paciente");
 					msgBox.setMessage(txt);
 					msgBox.open();
 					consistent = false;

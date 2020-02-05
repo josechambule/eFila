@@ -254,7 +254,7 @@ public class Search extends GenericOthersGui {
 		btnClose = new Button(getCompButtons(), SWT.NONE);
 		btnClose.setText("Fechar");
 		btnClose.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnClose.setToolTipText("Clique este bot�o para fechar esta tela.");
+		btnClose.setToolTipText("Clique este botão para fechar esta tela.");
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent evt) {

@@ -302,8 +302,8 @@ public class PatientIdentifierDialogOpenMrs extends GenericOthersGui {
 			}
 			
 			//Validate NID format against OpenMRS
-			if (!(newId.getValueEdit().matches("[0-9]{8}/[0-9]{2}/[0-9]{4,5}"))) {
-				showMessage(MessageDialog.ERROR, "Formato de NID incorrecto", "O valor introduzido n�o obedece a estrutura de um NID");
+			if (!(newId.getValueEdit().matches("[0-9]{8,10}/[0-9]{2,4}/[0-9]{4,5}"))) {
+				showMessage(MessageDialog.ERROR, "Formato de NID incorrecto", "O valor introduzido não obedece a estrutura de um NID");
 				return false;
 			}
 			
@@ -314,7 +314,7 @@ public class PatientIdentifierDialogOpenMrs extends GenericOthersGui {
 					+StringUtils.replace(newId.getValueEdit(), " ", "%20"));
 			
 			if (openMrsResource.length() > 14) {
-				showMessage(MessageDialog.ERROR, "Informa��o n�o encontrada", "NID inserido j� existe no OpenMRS");
+				showMessage(MessageDialog.ERROR, "Informação não encontrada", "NID inserido já existe no OpenMRS");
 				return false;
 			}
 			

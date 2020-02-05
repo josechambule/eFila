@@ -241,7 +241,7 @@ public class AddDrug extends GenericFormGui {
 			}
 		});
 		btnSearch
-		.setToolTipText("Pressione este bot�o para procurar um ARV existente.");
+		.setToolTipText("Pressione este botão para procurar um ARV existente.");
 
 		// lblName & txtName
 		Label lblName = new Label(grpDrugInfo, SWT.NONE);
@@ -257,7 +257,7 @@ public class AddDrug extends GenericFormGui {
 		Label lblatc = new Label(grpDrugInfo, SWT.NONE);
 		lblatc.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 		lblatc.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblatc.setText(" C�digo FNM:");
+		lblatc.setText(" Código FNM:");
 	
 
 		txtAtc = new Text(grpDrugInfo, SWT.BORDER);
@@ -277,7 +277,7 @@ public class AddDrug extends GenericFormGui {
 				cmdAtcSearchWidgetSelected();
 			}
 		});
-		btnAtcSearch.setToolTipText("Pressione este bot�o para pesquisar por c�digo FNM.");
+		btnAtcSearch.setToolTipText("Pressione este botão para pesquisar por código FNM.");
 
 //		// lblStockCode & txtStockCode
 //		Label lblMims = new Label(grpDrugInfo, SWT.NONE);
@@ -294,7 +294,7 @@ public class AddDrug extends GenericFormGui {
 		// lblFormLanguage1 & txtFormLanguage1
 		Label lblFormLanguage1 = new Label(grpDrugInfo, SWT.NONE);
 		lblFormLanguage1.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		lblFormLanguage1.setText("* Forma Farmac�utica:");
+		lblFormLanguage1.setText("* Forma Farmacéutica:");
 		lblFormLanguage1.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbForm = new Combo(grpDrugInfo, SWT.BORDER);
@@ -363,7 +363,7 @@ public class AddDrug extends GenericFormGui {
 		Label lblDispensingInstructions1 = new Label(grpDrugInfo, SWT.NONE);
 		lblDispensingInstructions1.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 		lblDispensingInstructions1
-		.setText("  Instru��o de toma(linha 1):");
+		.setText("  Instrução de toma(linha 1):");
 		lblDispensingInstructions1.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		lblDispensingInstructions1
@@ -378,7 +378,7 @@ public class AddDrug extends GenericFormGui {
 		Label lblDispensingInstructions2 = new Label(grpDrugInfo, SWT.NONE);
 		lblDispensingInstructions2.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 		lblDispensingInstructions2
-		.setText("  Instru��o de toma(linha 2):");
+		.setText("  Instrução de toma(linha 2):");
 		lblDispensingInstructions2.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		lblDispensingInstructions2
@@ -393,12 +393,12 @@ public class AddDrug extends GenericFormGui {
 				Label lblSideTreatment = new Label(grpDrugInfo, SWT.NONE);
 				lblSideTreatment.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 				lblSideTreatment.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-				lblSideTreatment.setText("* O medicamento � ARV?:");
+				lblSideTreatment.setText("* O medicamento é ARV?:");
 
 				rdBtnSideTreatment = new Button(grpDrugInfo, SWT.RADIO);
 				rdBtnSideTreatment.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false, 1,1));
 				rdBtnSideTreatment.setLayoutData(new GridData(110, 20));
-				rdBtnSideTreatment.setText("N�o");
+				rdBtnSideTreatment.setText("Nao");
 				rdBtnSideTreatment.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 				rdBtnSideTreatment.setSelection(false);
 
@@ -412,12 +412,12 @@ public class AddDrug extends GenericFormGui {
 		Label lblPediatrc = new Label(grpDrugInfo, SWT.NONE);
 		lblPediatrc.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
 		lblPediatrc.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblPediatrc.setText("* O medicamento �:");
+		lblPediatrc.setText("* O medicamento é:");
 
 		chkBtnPediatric = new Button(grpDrugInfo, SWT.CHECK);
 		chkBtnPediatric.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false, 1,1));
 		chkBtnPediatric.setLayoutData(new GridData(130, 20));
-		chkBtnPediatric.setText("Pedi�trico");
+		chkBtnPediatric.setText("Pediatrico");
 		chkBtnPediatric.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnPediatric.setSelection(false);
 

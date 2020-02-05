@@ -405,7 +405,7 @@ public class AddDrugGroup extends GenericFormGui {
 			newRD.setAmtPerTime(oldRD.getAmtPerTime());
 			newRD.setDrug(oldRD.getDrug());
 			newRD.setModified(oldRD.getModified());
-			newRD.setRegimen(regToSave);
+//			newRD.setRegimen(regToSave);
 			newRD.setTimesPerDay(oldRD.getTimesPerDay());
 			regimenDrugsList.add(newRD);
 		}
@@ -449,13 +449,13 @@ public class AddDrugGroup extends GenericFormGui {
 
 					
 
-					boolean isDrugIdentical = DrugManager
-					.regimenDrugsIdentical(getHSession(), regToSave);
+//					boolean isDrugIdentical = DrugManager
+//					.regimenDrugsIdentical(getHSession(), regToSave);
 
-					boolean isDrugDuplicated = DrugManager
-					.regimenDrugsDuplicated(regToSave);
+//					boolean isDrugDuplicated = DrugManager
+//					.regimenDrugsDuplicated(regToSave);
 
-					if (isDrugIdentical ) {
+					if (false ) {
 						MessageBox m = new MessageBox(getShell(), SWT.OK
 								| SWT.ICON_ERROR);
 						m.setText(Messages.getString("adddruggroup.m.message.title")); //$NON-NLS-1$
@@ -466,7 +466,7 @@ public class AddDrugGroup extends GenericFormGui {
 							tx.rollback();
 						}
 
-					} else if (isDrugDuplicated) {
+					} else if (false) {
 						MessageBox m = new MessageBox(getShell(), SWT.OK
 								| SWT.ICON_ERROR);
 						m.setText(Messages.getString("adddruggroup.m.message.title")); //$NON-NLS-1$

@@ -254,7 +254,7 @@ public class Alert extends GenericFormGui  {
 					if(riscos.get(i).getAmc()*3 < riscos.get(i).getSaldo()){
 						
 						final TableItem item = new TableItem(tblDrugs, SWT.NONE);
-					    item.setText(new String[] {""+(++k), riscos.get(i).getNome(), ""+riscos.get(i).getAmc(),""+riscos.get(i).getSaldo(), " -- ", "Acima do Consumo M�ximo"});
+					    item.setText(new String[] {""+(++k), riscos.get(i).getNome(), ""+riscos.get(i).getAmc(),""+riscos.get(i).getSaldo(), " -- ", "Acima do Consumo Máximo"});
 					    	
 						item.setBackground(5, green);
 					}

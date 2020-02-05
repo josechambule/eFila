@@ -79,6 +79,7 @@ public enum iDartImage {
 	STOCKCONTROL,
 	STOCKDELETE,
 	UNUSED,
-	UPARROW_30X26;
+	UPARROW_30X26,
+        SEARCH_ICON_16;
 
 }

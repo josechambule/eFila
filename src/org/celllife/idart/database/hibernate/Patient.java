@@ -106,6 +106,8 @@ public class Patient {
 
 	private String race;
 	
+	private String uuidopenmrs;
+	
 	public Boolean getIsPatientEmTransito() {
 		return isPatientEmTransito;
 	}
@@ -399,7 +401,16 @@ public class Patient {
 			return "";
 		return workPhone;
 	}
-
+	
+	/**
+	 * Method getUuidopenmrs. 
+	 * 
+	 * @return String
+	 */
+	public String getUuidopenmrs() {
+		return uuidopenmrs;
+	}
+	
 	/**
 	 * Method getAlternateIdentifiers.
 	 * 
@@ -652,6 +663,16 @@ public class Patient {
 	 */
 	public void setWorkPhone(String workPhone) {
 		this.workPhone = workPhone;
+	}
+	
+	/**
+	 * Method setUuidopenmrs 
+	 * 
+	 * @param uuidopenmrs
+	 * 					String
+	 */
+	public void setUuidopenmrs(String uuidopenmrs) {
+		this.uuidopenmrs = uuidopenmrs;
 	}
 
 	/**

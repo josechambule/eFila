@@ -101,7 +101,7 @@ public class HibernateUtil {
 
 		if (validate)
 		ac.setProperty("hibernate.hbm2ddl.auto", "validate");
-		ac.setProperty("hibernate.show_sql", "true");
+		ac.setProperty("hibernate.show_sql", "false");
 		ac.setProperty("hibernate.use_outer_join", "false");
 		ac.setProperty("hibernate.cache.provider_class",
 		"org.hibernate.cache.HashtableCacheProvider");

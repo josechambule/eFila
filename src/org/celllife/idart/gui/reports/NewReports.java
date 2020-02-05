@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import model.manager.exports.iedea.IedeaExporter;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.dataExports.DataExport;
 import org.celllife.idart.gui.dataQuality.DataQuality;
@@ -36,14 +34,17 @@ import org.celllife.idart.gui.reportParameters.ARVDrugUsage;
 import org.celllife.idart.gui.reportParameters.ClinicIndicators;
 import org.celllife.idart.gui.reportParameters.CohortDrugCollections;
 import org.celllife.idart.gui.reportParameters.CotrimoxazolReport;
-import org.celllife.idart.gui.reportParameters.HistoricoLevantamentos;
-import org.celllife.idart.gui.reportParameters.IsoniazidaReport;
 import org.celllife.idart.gui.reportParameters.DailyDispensingTotals;
+import org.celllife.idart.gui.reportParameters.DispensaSemestralReport;
+import org.celllife.idart.gui.reportParameters.DispensaTrimestralReport;
 import org.celllife.idart.gui.reportParameters.DrugCombinations;
 import org.celllife.idart.gui.reportParameters.DrugsDispensed;
 import org.celllife.idart.gui.reportParameters.EpisodeStats;
 import org.celllife.idart.gui.reportParameters.EpisodesStartedOrEndedReportGUI;
+import org.celllife.idart.gui.reportParameters.HistoricoLevantamentos;
+import org.celllife.idart.gui.reportParameters.IsoniazidaReport;
 import org.celllife.idart.gui.reportParameters.MissedAppointments;
+import org.celllife.idart.gui.reportParameters.MmiaReport;
 import org.celllife.idart.gui.reportParameters.MmiaReportMISAU;
 import org.celllife.idart.gui.reportParameters.MonthlyReceiptsAndIssues;
 import org.celllife.idart.gui.reportParameters.MonthlyStockReceipt;
@@ -54,7 +55,6 @@ import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.reportParameters.PatientsExpected;
 import org.celllife.idart.gui.reportParameters.PepfarReportGUI;
 import org.celllife.idart.gui.reportParameters.PrescribingDoctors;
-import org.celllife.idart.gui.reportParameters.MmiaReport;
 import org.celllife.idart.gui.reportParameters.RegisteredIdart;
 import org.celllife.idart.gui.reportParameters.StockTakeReportGUI;
 import org.celllife.idart.gui.reportParameters.TransactionLog;
@@ -85,6 +85,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+
+import model.manager.exports.iedea.IedeaExporter;
 
 /**
  */
@@ -405,8 +407,10 @@ private void createGrpClinicManagementReports() {
 		
 		
 		// MMIA Reports
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MIA,
-				new MmiaReport(getShell(), false));
+		/*
+		 * reportGUIs.put(GenericReportGuiInterface.REPORT_MIA, new
+		 * MmiaReport(getShell(), false));
+		 */
 		
 		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
 				new MmiaReportMISAU(getShell(), false));
@@ -423,7 +427,13 @@ private void createGrpClinicManagementReports() {
 		reportGUIs.put(GenericReportGuiInterface.REPORT_LEVANTAMENTOS_ARV,
 				new HistoricoLevantamentos(getShell(), false));
 		
-		
+        //Dipensa Trimestral
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_TRIMESTRAL,
+		new DispensaTrimestralReport(getShell(), false));
+        
+      //Dipensa Semestral
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_SEMESTRAL,
+		new DispensaSemestralReport(getShell(), false));
 
 		// Patient Reports
 		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,

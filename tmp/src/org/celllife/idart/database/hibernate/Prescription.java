@@ -93,10 +93,20 @@ public class Prescription {
 	private Date endDate;
 	
 	private String drugTypes;
+	
+	private int dispensaTrimestral;
+	
+	private int dispensaSemestral;
+	
+	private String tipoDT;
+	
+	private String tipoDS;
+	
+	private String durationSentence;
 
 	@Transient
 	private HashSet<Drug> arvDrugSet;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "linhaid")
 	private LinhaT linha;
@@ -106,6 +116,15 @@ public class Prescription {
 	private char tb;
 	private char tpc;
 	private char tpi;
+	private char saaj;
+	
+	private char gaac;
+	private char af;
+	private char ca;
+	private char fr;
+	private char cpn;
+	private char ccr;
+	private char dc;
 
 	/**
 	 * @param clinicalStage
@@ -135,7 +154,9 @@ public class Prescription {
 			Doctor doctor, int duration, int id, char modified,
 			Set<Packages> packages, Patient patient,
 			List<PrescribedDrugs> prescribedDrugs, String prescriptionId,
-			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, char tpi) {
+			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, 
+			Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, 
+			char tpi, char saaj, char gaac, char af, char ca, char fr, char cpn, char ccr, int dispensaSemestral, String tipoDS, char dc) {
 		super();
 		this.clinicalStage = clinicalStage;
 		this.current = current;
@@ -150,15 +171,24 @@ public class Prescription {
 		this.prescriptionId = prescriptionId;
 		this.reasonForUpdate = reasonForUpdate;
 		this.notes = notes;
-		this.regimeTerapeutico=regimeTerapeutico;
-		this.datainicionoutroservico=datainicionoutroservico;
-		this.motivoMudanca=motivoMudanca;
-		this.ppe=ppe;
-		this.ptv=ptv;
-		this.tb=tb;
-		this.tpc=tpc;
-		this.tpi=tpi;
-
+		this.regimeTerapeutico = regimeTerapeutico;
+		this.datainicionoutroservico = datainicionoutroservico;
+		this.motivoMudanca = motivoMudanca;
+		this.ppe = ppe;
+		this.ptv = ptv;
+		this.tb = tb;
+		this.tpc = tpc;
+		this.tpi = tpi;
+		this.saaj = saaj;
+		this.gaac = gaac; 
+		this.af = af; 
+		this.ca = ca; 
+		this.fr = fr; 
+		this.cpn = cpn; 
+		this.ccr = ccr;
+		this.dispensaSemestral = dispensaSemestral; 
+		this.tipoDS = tipoDS;
+		this.dc = dc;
 	}
 
 	public Prescription() {
@@ -510,16 +540,6 @@ public class Prescription {
 		this.motivoMudanca = motivoMudanca;
 	}
 
-	public void setLinha(LinhaT linha) {
-		this.linha=linha;
-		
-	}
-
-	public LinhaT getLinha() {
-		return this.linha;
-		
-	}
-
 	public char getPpe() {
 		return ppe;
 	}
@@ -536,6 +556,13 @@ public class Prescription {
 		this.ptv = ptv;
 	}
 	
+	public char getSaaj() {
+		return saaj;
+	}
+	
+	public void setSaaj(char saaj) {
+		this.saaj = saaj;
+	}
 	
 	public char getTb() {
 		return tb;
@@ -543,6 +570,54 @@ public class Prescription {
 	
 	public void setTb(char tb) {
 		this.tb = tb;
+	}
+	
+	public char getGaac() {
+		return gaac;
+	}
+
+	public void setGaac(char gaac) {
+		this.gaac = gaac;
+	}
+
+	public char getAf() {
+		return af;
+	}
+
+	public void setAf(char af) {
+		this.af = af;
+	}
+
+	public char getCa() {
+		return ca;
+	}
+
+	public void setCa(char ca) {
+		this.ca = ca;
+	}
+
+	public char getFr() {
+		return fr;
+	}
+
+	public void setFr(char fr) {
+		this.fr = fr;
+	}
+
+	public char getCpn() {
+		return cpn;
+	}
+
+	public void setCpn(char cpn) {
+		this.cpn = cpn;
+	}
+
+	public char getCcr() {
+		return ccr;
+	}
+
+	public void setCcr(char ccr) {
+		this.ccr = ccr;
 	}
 
 	public char getTpc() {
@@ -560,6 +635,62 @@ public class Prescription {
 	public void setTpi(char tpi) {
 		this.tpi = tpi;
 	}
+
+	public String getTipoDT() {
+		return tipoDT;
+	}
+
+	public void setTipoDT(String tipoDT) {
+		this.tipoDT = tipoDT;
+	}
+
+	public int getDispensaTrimestral() {
+		return dispensaTrimestral;
+	}
+
+	public void setDispensaTrimestral(int dispensaTrimestral) {
+		this.dispensaTrimestral = dispensaTrimestral;
+	}
+
+	public int getDispensaSemestral() {
+		return dispensaSemestral;
+	}
+
+	public void setDispensaSemestral(int dispensaSemestral) {
+		this.dispensaSemestral = dispensaSemestral;
+	}
+
+	public String getTipoDS() {
+		return tipoDS;
+	}
+
+	public void setTipoDS(String tipoDS) {
+		this.tipoDS = tipoDS;
+	}
+
+	public char getDc() {
+		return dc;
+	}
+
+	public void setDc(char dc) {
+		this.dc = dc;
+	}
 	
-	
+	public void setLinha(LinhaT linha) {
+		this.linha=linha;
+		
+	}
+
+	public LinhaT getLinha() {
+		return this.linha;
+		
+	}
+
+	public String getDurationSentence() {
+		return durationSentence;
+	}
+
+	public void setDurationSentence(String durationSentence) {
+		this.durationSentence = durationSentence;
+	}
 }

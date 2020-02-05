@@ -21,10 +21,6 @@ package org.celllife.idart.start;
 
 import java.util.Arrays;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
-import model.manager.StockManager;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.CommonObjects;
@@ -60,6 +56,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import model.manager.StockManager;
+
 /**
  */
 public class PharmacyApplication {
@@ -69,7 +69,7 @@ public class PharmacyApplication {
 
 	/**
 	 * Method main.
-	 * 
+	 * sacur
 	 * @param args
 	 * String[]
 	 */

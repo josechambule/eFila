@@ -112,6 +112,7 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AddPatient extends GenericFormGui implements iDARTChangeListener {
@@ -1042,8 +1043,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 		String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(patientId, " ", "%20"));
 				
 		if (openMrsResource.length() == 14) {
-			title = Messages.getString("Informa��o n�o encontrada");
-			message = Messages.getString("NID inserido n�o existe no OpenMRS");
+			title = Messages.getString("Informação não encontrada");
+			message = Messages.getString("NID inserido não existe no OpenMRS");
 			txtPatientId.setFocus();
 			result = false;
 		}
@@ -1524,9 +1525,37 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
 	private void setLocalPatient() {
 		
+		
+		
+		// Bug iDART-86
+		localPatient.setLastname(txtSurname.getText());
+		localPatient.setFirstNames(txtFirstNames.getText());
+		
+		
 		localPatient.setModified('T');
 		localPatient.setPatientId(txtPatientId.getText().toUpperCase());//NID
 		localPatient.setCellphone(txtCellphone.getText().trim());
+		
+		if (localPatient.getUuidopenmrs() == null){
+			String openMrsResource = new RestClient().getOpenMRSResource("patient?q="+StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
+
+			JSONObject _jsonObject = new JSONObject(openMrsResource);
+			
+			String personUuid = null; 
+			
+			JSONArray _jsonArray = (JSONArray) _jsonObject.get("results"); 
+			
+			for (int i = 0; i < _jsonArray.length(); i++) {
+				JSONObject results = (JSONObject) _jsonArray.get(i);
+				personUuid = (String) results.get("uuid");
+			} 
+
+			
+			
+			
+			localPatient.setUuidopenmrs(personUuid);
+		}
+		
 		
 		/*if (cmbSex.getText().equals(Messages.getString("patient.sex.female"))) { //$NON-NLS-1$
 			localPatient.setSex('F');
@@ -1536,15 +1565,17 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 			localPatient.setSex('U');
 		}*/
 		
-		// Set the date of birth
-		/*SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH); //$NON-NLS-1$
+		// Set the date of birth  Bug iDART-86
+		SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy"); //$NON-NLS-1$
 		Date theDate = null;//Data de Nascimento
 		try {
 			theDate = sdf.parse(cmbDOBDay.getText() + "-" //$NON-NLS-1$
 					+ cmbDOBMonth.getText() + "-" + cmbDOBYear.getText()); //$NON-NLS-1$
 		} catch (ParseException e1) {
 			getLog().error("Error parsing date: ",e1); //$NON-NLS-1$
-		}*/
+		}
+		
+		localPatient.setDateOfBirth(theDate);
 		
 		Date episodeStartDate = btnEpisodeStartDate.getDate();
 		Date episodeStopDate = btnEpisodeStopDate.getDate();
@@ -2023,6 +2054,10 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 			offerToPrintLabel = true;
 			return true;
 		}
+		
+		if(localPatient.getUuidopenmrs()==null){
+			return true;
+		}
 
 		if (!localPatient.getCellphone().trim().equals(
 				txtCellphone.getText().trim()))
@@ -2366,11 +2401,15 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 	protected void cmdSaveWidgetSelected() {
 		// if we're updating a patient, 1st check that there
 		// are actual changes to update
-		if (!isSaveRequired()) {
+		
+    
+		if (!isSaveRequired() ) {
+		
 			MessageBox mb = new MessageBox(getShell());
 			mb.setText(Messages.getString("patient.info.noDbUpdateRequired.title")); //$NON-NLS-1$
 			mb.setMessage(Messages.getString("patient.info.noDbUpdateRequired")); //$NON-NLS-1$
 			mb.open();
+			
 		} else if (doSave()) {
 			cmdCancelWidgetSelected();
 		}
@@ -2384,7 +2423,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 	 */
 	private boolean doSave() {
 	
-		if (!isSaveRequired())
+		if (!isSaveRequired() )
 			return true;
 	
 		//Verificar se o NID existe no OpenMRS
@@ -2392,8 +2431,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 				
 		if (openMrsResource.length() == 14) {
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Informa��o n�o encontrada"); //$NON-NLS-1$
-			mb.setMessage("NID inserido n�o existe no OpenMRS"); //$NON-NLS-1$
+			mb.setText("Informação não encontrada"); //$NON-NLS-1$
+			mb.setMessage("NID inserido não existe no OpenMRS"); //$NON-NLS-1$
 			mb.open();
 			txtPatientId.setFocus();
 			return false;

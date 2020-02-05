@@ -332,7 +332,7 @@ public class Login implements GenericGuiInterface {
 			}
 		} else {
 			try {
-				 users = AdministrationManager.getUserList(hSession);
+				users = AdministrationManager.getUserList(hSession);
 			} catch (HibernateException e) {
 				log.error("Unable to get user list.", e); //$NON-NLS-1$
 
@@ -455,12 +455,7 @@ public class Login implements GenericGuiInterface {
 					cmbClinics.getText());
 			User theUser = AdministrationManager.getUserByName(hSession,
 					cmbUsers.getText());
-	
-			
-	
-			
-	
-			
+
 			if (theUser == null) {
 				successfulLogin = false;
 				MessageDialog.openError(loginShell, Messages
@@ -469,8 +464,6 @@ public class Login implements GenericGuiInterface {
 						+ ""); //$NON-NLS-1$
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
-				
-				
 			} else if (theClinic == null) {
 				successfulLogin = false;
 				MessageDialog.openError(loginShell, Messages
@@ -495,8 +488,6 @@ public class Login implements GenericGuiInterface {
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
 			} else {
-				
-			 
 
 				successfulLogin = true;
 
@@ -511,9 +502,7 @@ public class Login implements GenericGuiInterface {
 			}
 
 		} catch (HibernateException e) {
-			e.printStackTrace();
-			log.error("Erro ao logar ..\n" + e.toString()); //$NON-NLS-1$	
-			showErrorAndClose();	
+			showErrorAndClose();
 		}
 	}
 }

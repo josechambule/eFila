@@ -42,6 +42,7 @@ import org.celllife.function.DateRuleFactory;
 import org.celllife.function.IRule;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.Doctor;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Episode;
@@ -108,8 +109,6 @@ import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
-/**
- */
 public class AddPrescription extends GenericFormGui implements
 iDARTChangeListener {
 
@@ -129,8 +128,6 @@ iDARTChangeListener {
 
 	private Text txtClinic;
 
-	// private CCombo cmbClinicalStage;
-
 	private CCombo cmbDoctor;
 
 	private CCombo cmbDuration;
@@ -146,6 +143,8 @@ iDARTChangeListener {
 	private Group grpParticulars;
 
 	private Group grpPatientID;
+	
+	private Group grpPatientMDS;
 
 	private int intDrugTableSize = 1;
 
@@ -153,27 +152,55 @@ iDARTChangeListener {
 
 	private Label lblPicChild;
 
-	//lbl tIPO TARV
 	private Label lblUpdateReason;
-	//lbl data de inicio noutro servico
+	
 	private Label lblDataInicioNoutroServico;
-	//lbl motivo de mudanca
+	
 	private Label lblMotivoMudanca;
 	
-	//Data de inicio noutro servi�o
+	private Label lblDispensaTrimestral;
+	
+	private Label lblDispensaSemestral;
+	
+	private CCombo cmbDispensaTrimestral;
+	
+	private CCombo cmbDispensaSemestral;
+	
+	private CCombo cmbTipoDispensaSemestral;
+	
+	private CCombo cmbLinha;
+	
+	private Label lblTipoDispensaSemestral;
+	
+	private Label lblTipoDispensaTrimestral;
+	
+	private CCombo cmbTipoDispensaTrimestral;
+	
 	private DateButton btnDataInicioNoutroServico;
 	
-	
-	//pacientes PTV , PPE & TB
 	private Button chkBtnPPE;
 
 	private Button chkBtnPTV;
 	
 	private Button chkBtnTB;
+	
+	private Button chkBtnCPN;
+	
+	private Button chkBtnCCR;
+	
+	private Button chkBtnSAAJ;
+	
+	private Button chkBtnGAAC;
+	
+	private Button chkBtnAF;
+	
+	private Button chkBtnCA;
+	
+	private Button chkBtnFR;
+	
+	private Button chkBtnDC;
 		
 	// cotrimoxazol & isoniazida
-		
-		
     /*private Button chkBtnTPI;
 	
 	private Button chkBtnTPC;
@@ -227,7 +254,6 @@ iDARTChangeListener {
 
 	private Text txtWeight;
 
-	private CCombo cmbLinha;
 	private CCombo cmbRegime;
 
 	private Button btnRemoveDrug;
@@ -239,7 +265,7 @@ iDARTChangeListener {
 	boolean fromShortcut;
 
 	private DateButton btnCaptureDate;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -270,7 +296,7 @@ iDARTChangeListener {
 				noPatient
 				.setMessage("O Paciente "
 						+ (txtPatientId.getText()).toUpperCase()
-						+ " n�o tem epis�dio actual. \n\nVoc� precisa come�ar um novo epis�dio para este paciente (Usando a tela 'Actualizar Paciente Existente') antes de registar a sua Prescrição.");
+						+ " não tem episódio actual. \n\nVocê precisa começar um novo episódio para este paciente (Usando a tela 'Actualizar Paciente Existente') antes de registar a sua Prescrição.");
 				noPatient.open();
 				txtPatientId.setFocus();
 				txtPatientId.setText("");
@@ -279,6 +305,7 @@ iDARTChangeListener {
 				checkFirstPrescription();
 				loadPatientDetails();
 				enableFields(true);
+				//cmbLinha.setEnabled(Boolean.FALSE);  
 				txtPatientId.setEnabled(false);
 				btnSearch.setEnabled(false);
 				btnEkapaSearch.setEnabled(false);
@@ -291,6 +318,7 @@ iDARTChangeListener {
 					if (script != null) {
 						localPrescription = script;
 						loadPrescriptionDetails();
+						avaliaMDSSelectionActual();
 						cmbUpdateReason.setEnabled(true);
 					} else {
 						setFormToInitialPrescription();
@@ -376,18 +404,29 @@ iDARTChangeListener {
 	 */
 	private void createGrpPatientID() {
 
-		// grpPatientID
-		grpPatientID = new Group(getShell(), SWT.NONE);
-		grpPatientID.setBounds(new Rectangle(235, 84, 430, 112));
+        // grpPatientID
+        grpPatientID = new Group(getShell(), SWT.NONE);
+        grpPatientID.setBounds(new Rectangle(40, 71, 480, 148));
+
+        grpPatientMDS = new Group(getShell(), SWT.NONE);
+        grpPatientMDS.setBounds(new Rectangle(530, 68, 220, 140));
 
 		// Patient ID
 		Label lblPatientId = new Label(grpPatientID, SWT.NONE);
 		lblPatientId.setBounds(new Rectangle(10, 15, 110, 20));
 		lblPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblPatientId.setText(Messages.getString("patient.label.patientid")); //$NON-NLS-1$
+		
+        // Patient MDS
+        Label lblPatientMDS = new Label(grpPatientMDS, SWT.NONE);
+        lblPatientMDS.setBounds(new Rectangle(10, 10, 200, 20));
+        lblPatientMDS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        //lblPatientMDS.setBackground(ResourceUtils.getColor(iDartColor.GREEN));
+        lblPatientMDS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_BOLD));
+        lblPatientMDS.setText("Modelos Diferenciados de Serviços"); //$NON-NLS-1$
 
 		txtPatientId = new Text(grpPatientID, SWT.BORDER);
-		txtPatientId.setBounds(new Rectangle(160, 13, 150, 20));
+		txtPatientId.setBounds(new Rectangle(160, 8, 150, 20));
 		txtPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		txtPatientId.addKeyListener(new KeyAdapter() {
 			@Override
@@ -401,10 +440,10 @@ iDARTChangeListener {
 
 		btnSearch = new Button(grpPatientID, SWT.NONE);
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnSearch.setBounds(new Rectangle(320, 4, 105, 30));
+		btnSearch.setBounds(new Rectangle(320, 9, 108, 30));
 		btnSearch.setText("Procurar Paciente");
 		btnSearch
-		.setToolTipText("Pressione este bot�o para procurar um paciente existente");
+		.setToolTipText("Pressione este botão para procurar um paciente existente");
 		btnSearch
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -426,7 +465,7 @@ iDARTChangeListener {
 		}
 
 		btnEkapaSearch
-		.setToolTipText("Pressione este bot�o para importar um paciente de eKapa.");
+		.setToolTipText("Pressione este botão para importar um paciente de eKapa.");
 		btnEkapaSearch
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 
@@ -448,7 +487,7 @@ iDARTChangeListener {
 		lblUpdateReason.setText("* Tipo Tarv:");
 
 		cmbUpdateReason = new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
-		cmbUpdateReason.setBounds(new Rectangle(160, 40, 150, 20));
+		cmbUpdateReason.setBounds(new Rectangle(160, 32, 150, 20));
 		cmbUpdateReason.setEditable(false);
 		cmbUpdateReason.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbUpdateReason.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -513,30 +552,127 @@ iDARTChangeListener {
 		});
 		
 	lblDataInicioNoutroServico=new Label(grpPatientID, SWT.NONE);
-	lblDataInicioNoutroServico.setBounds(new Rectangle(10, 65, 150, 20));
+	lblDataInicioNoutroServico.setBounds(new Rectangle(10, 62, 150, 20));
 	lblDataInicioNoutroServico.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	lblDataInicioNoutroServico.setText(Messages.getString("patient.prescription.dialog.startdate.anotherservice"));
 	
 
 	btnDataInicioNoutroServico = new DateButton(grpPatientID, DateButton.NONE, null);
-	btnDataInicioNoutroServico.setBounds(160, 65, 150, 20);
+	btnDataInicioNoutroServico.setBounds(160, 55, 150, 20);
 	btnDataInicioNoutroServico.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	btnDataInicioNoutroServico.setText("Seleccione a data");
 	btnDataInicioNoutroServico.setEnabled(false);
 	
 	
 	lblMotivoMudanca=new Label(grpPatientID, SWT.NONE);
-	lblMotivoMudanca.setBounds(new Rectangle(10, 90, 150, 20));
+	lblMotivoMudanca.setBounds(new Rectangle(10, 82, 150, 20));
 	lblMotivoMudanca.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	lblMotivoMudanca.setText(Messages.getString("patient.prescription.dialog.startdate.reason.change"));
 		
+    lblDispensaTrimestral = new Label(grpPatientID, SWT.NONE);
+    lblDispensaTrimestral.setBounds(new Rectangle(10, 108, 150, 20));
+    lblDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    lblDispensaTrimestral.setText("Dispensa Trimestral:");
+    
+    cmbDispensaTrimestral = new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
+    cmbDispensaTrimestral.setBounds(new Rectangle(160, 101, 150, 20));
+    cmbDispensaTrimestral.setEditable(true);
+    cmbDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    cmbDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    cmbDispensaTrimestral.setEnabled(true);
+    //POPULA combo dispensa trimestral
+    cmbDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    CommonObjects.populateDispensaTrimestral(getHSession(), cmbDispensaTrimestral);
+    
+    lblDispensaSemestral = new Label(grpPatientID, SWT.NONE);
+    lblDispensaSemestral.setBounds(new Rectangle(10, 128, 150, 20));
+    lblDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    lblDispensaSemestral.setText("Dispensa Semestral:");
+    
+    cmbDispensaSemestral = new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
+    cmbDispensaSemestral.setBounds(new Rectangle(160, 124, 150, 20));
+    cmbDispensaSemestral.setEditable(true);
+    cmbDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    cmbDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    cmbDispensaSemestral.setEnabled(true);
+    //POPULA combo dispensa semestral
+    cmbDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    CommonObjects.populateDispensaSemestral(getHSession(), cmbDispensaSemestral);
+    
+    lblTipoDispensaTrimestral = new Label(grpPatientID, SWT.NONE);
+    lblTipoDispensaTrimestral.setBounds(new Rectangle(320, 102, 50, 20));
+    lblTipoDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    lblTipoDispensaTrimestral.setText("* Tipo DT:");
+    
+    cmbTipoDispensaTrimestral = new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
+    cmbTipoDispensaTrimestral.setBounds(new Rectangle(370, 100, 100, 20));
+    cmbTipoDispensaTrimestral.setEditable(true);
+    cmbTipoDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    cmbTipoDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    cmbTipoDispensaTrimestral.setEnabled(true);
+
+    //POPULA combo tipo dispensa trimestral
+    cmbTipoDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    CommonObjects.populateTipoDispensaTrimestral(getHSession(), cmbTipoDispensaTrimestral);
+    
+    lblTipoDispensaSemestral = new Label(grpPatientID, SWT.NONE);
+    lblTipoDispensaSemestral.setBounds(new Rectangle(320, 123, 50, 20));
+    lblTipoDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    lblTipoDispensaSemestral.setText("* Tipo DS:");
+    
+    cmbTipoDispensaSemestral = new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
+    cmbTipoDispensaSemestral.setBounds(new Rectangle(370, 123, 100, 20));
+    cmbTipoDispensaSemestral.setEditable(true);
+    cmbTipoDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    cmbTipoDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    cmbTipoDispensaSemestral.setEnabled(true);
+
+    //POPULA combo dispensa semestral
+    cmbTipoDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    CommonObjects.populateTipoDispensaSemestral(getHSession(), cmbTipoDispensaSemestral);
 
 	cmbMotivoMudanca= new CCombo(grpPatientID, SWT.BORDER | SWT.READ_ONLY);
-	cmbMotivoMudanca.setBounds(new Rectangle(160, 90, 150, 20));
+	cmbMotivoMudanca.setBounds(new Rectangle(160, 78, 150, 20));
 	cmbMotivoMudanca.setEditable(false);
 	cmbMotivoMudanca.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	cmbMotivoMudanca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 	cmbMotivoMudanca.setEnabled(false);
+	
+    cmbDispensaTrimestral.addSelectionListener(new SelectionListener() {
+        @Override
+        public void widgetSelected(SelectionEvent arg0) {
+            // TODO Auto-generated method stub
+            if (cmbDispensaTrimestral.getText().equals("Sim")) {
+                lblTipoDispensaTrimestral.setVisible(true);
+                cmbTipoDispensaTrimestral.setVisible(true);
+            } else {
+                lblTipoDispensaTrimestral.setVisible(false);
+                cmbTipoDispensaTrimestral.setVisible(false);
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent arg0) {
+        }
+    });
+    
+    cmbDispensaSemestral.addSelectionListener(new SelectionListener() {
+        @Override
+        public void widgetSelected(SelectionEvent arg0) {
+            // TODO Auto-generated method stub
+            if (cmbDispensaSemestral.getText().equals("Sim")) {
+                lblTipoDispensaSemestral.setVisible(true);
+                cmbTipoDispensaSemestral.setVisible(true);
+            } else {
+                lblTipoDispensaSemestral.setVisible(false);
+                cmbTipoDispensaSemestral.setVisible(false);
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent arg0) {
+        }
+    });
 	
 	//POPULA OS Motivos de Mudanca
 	cmbMotivoMudanca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -577,6 +713,15 @@ iDARTChangeListener {
 		chkBtnPTV.setText("PTV B+");
 		chkBtnPTV.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnPTV.setSelection(false);
+		
+		/*
+		 * chkBtnSAAJ = new Button(grpPatientID, SWT.CHECK);
+		 * chkBtnSAAJ.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING,
+		 * false, false, 1,1)); chkBtnSAAJ.setBounds(new Rectangle(377, 60, 50, 20));
+		 * chkBtnSAAJ.setText("SAAJ");
+		 * chkBtnSAAJ.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		 * chkBtnSAAJ.setSelection(false);
+		 */
 
 		chkBtnPPE = new Button(grpPatientID, SWT.CHECK);
 		chkBtnPPE.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
@@ -595,17 +740,87 @@ iDARTChangeListener {
 //		});
 		
 		
-		chkBtnTB = new Button(grpPatientID, SWT.CHECK);
-		chkBtnTB.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		chkBtnTB.setBounds(new Rectangle(320, 80, 50, 20));
-		chkBtnTB.setText("TB");
-		chkBtnTB.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		chkBtnTB.setSelection(false);
+		/*
+		 * chkBtnTB = new Button(grpPatientID, SWT.CHECK); chkBtnTB.setLayoutData(new
+		 * GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
+		 * chkBtnTB.setBounds(new Rectangle(320, 80, 50, 20)); chkBtnTB.setText("TB");
+		 * chkBtnTB.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		 * chkBtnTB.setSelection(false);
+		 */
 		
-	
+		//MDS
+        chkBtnCPN = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnCPN.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnCPN.setBounds(new Rectangle(10, 30, 40, 20));
+        chkBtnCPN.setText("CPN");
+        chkBtnCPN.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnCPN.setSelection(false);
 
-		
+		/*
+		 * chkBtnPPE = new Button(grpPatientMDS, SWT.CHECK); chkBtnPPE.setLayoutData(new
+		 * GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		 * chkBtnPPE.setBounds(new Rectangle(10, 50, 40, 20)); chkBtnPPE.setText("PPE");
+		 * chkBtnPPE.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		 * chkBtnPPE.setSelection(false);
+		 */
 
+        chkBtnTB = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnTB.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnTB.setBounds(new Rectangle(10, 50, 50, 20));
+        chkBtnTB.setText("TB");
+        chkBtnTB.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnTB.setSelection(false);
+
+        chkBtnCCR = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnCCR.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnCCR.setBounds(new Rectangle(10, 70, 50, 20));
+        chkBtnCCR.setText("CCR");
+        chkBtnCCR.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnCCR.setSelection(false);
+
+        chkBtnSAAJ = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnSAAJ.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnSAAJ.setBounds(new Rectangle(10, 90, 50, 20));
+        chkBtnSAAJ.setText("SAAJ");
+        chkBtnSAAJ.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnSAAJ.setSelection(false);
+
+        chkBtnGAAC = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnGAAC.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnGAAC.setBounds(new Rectangle(70, 30, 120, 20));
+        chkBtnGAAC.setText("GAAC");
+        chkBtnGAAC.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnGAAC.setSelection(false);
+
+        chkBtnAF = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnAF.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnAF.setBounds(new Rectangle(70, 50, 120, 20));
+        chkBtnAF.setText("Abordagem Familiar");
+        chkBtnAF.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnAF.setSelection(false);
+
+        chkBtnCA = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnCA.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnCA.setBounds(new Rectangle(70, 70, 120, 20));
+        chkBtnCA.setText("Clube de Adesao");
+        chkBtnCA.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnCA.setSelection(false);
+
+        chkBtnFR = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnFR.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnFR.setBounds(new Rectangle(70, 90, 120, 20));
+        chkBtnFR.setText("Fluxo Rapido");
+        chkBtnFR.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnFR.setSelection(false);
+        
+        chkBtnDC = new Button(grpPatientMDS, SWT.CHECK);
+        chkBtnDC.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+        chkBtnDC.setBounds(new Rectangle(70, 110, 120, 20));
+        chkBtnDC.setText("Dispensa Comunitaria");
+        chkBtnDC.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnDC.setSelection(false);
+        
+        avaliaMDSSelection();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -619,7 +834,7 @@ iDARTChangeListener {
 			afterEpisodeStart.setDescription("Este paciente paciente foi marcado com "
 					+ latestEpi.getStartReason()
 					+ " em <date>. A data da Prescrição deve estar em,"
-					+ " ou depois da data deste epis�dio.");
+					+ " ou depois da data deste episódio.");
 			rule = new AndRule<Date>(rule, afterEpisodeStart);
 		}
 
@@ -635,7 +850,7 @@ iDARTChangeListener {
 
 		// grpParticulars
 		grpParticulars = new Group(getShell(), SWT.NONE);
-		grpParticulars.setBounds(new Rectangle(40, 200, 810, 155));
+		grpParticulars.setBounds(new Rectangle(40, 218, 810, 150));
 		grpParticulars.setText(Messages.getString("patient.prescription.dialog.info"));
 		grpParticulars.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -665,7 +880,7 @@ iDARTChangeListener {
 		btnPatientHistoryReport = new Button(grpParticulars, SWT.NONE);
 		btnPatientHistoryReport.setBounds(new Rectangle(270, 48, 40, 40));
 		btnPatientHistoryReport
-		.setToolTipText("Pressione este bot�o para visualizar e / ou imprimir relat�rios \n do hist�rico das prescri��es do paciente.");
+		.setToolTipText("Pressione este botão para visualizar e / ou imprimir relatórios \n do histórico das prescrições do paciente.");
 		btnPatientHistoryReport.setImage(ResourceUtils
 				.getImage(iDartImage.REPORT_PATIENTHISTORY_30X26));
 
@@ -764,7 +979,7 @@ iDARTChangeListener {
 				cmdAddDoctorWidgetSelected();
 			}
 		});
-		btnAddDoctor.setToolTipText("Pressionar este bot�o para adicionar um novo cl�nico");
+		btnAddDoctor.setToolTipText("Pressionar este bot�o para adicionar um novo clínico");
 
 		// Duration
 		Label lblDuration = new Label(grpParticulars, SWT.NONE);
@@ -827,55 +1042,54 @@ iDARTChangeListener {
 					public void focusGained(FocusEvent e) {
 						cmbRegime.removeAll();
 						CommonObjects.populateRegimesTerapeuticos(getHSession(), cmbRegime, false);
-						cmbRegime.setVisibleItemCount(Math.min(
-								cmbRegime.getItemCount(), 25));
+						cmbRegime.setVisibleItemCount(Math.min(cmbRegime.getItemCount(), 25));
 					}
 				});
 				cmbRegime.setFocus();
 				
 				
-				// Linha Terapeutica
-		Label lblLinha = new Label(grpParticulars, SWT.NONE);
-		lblLinha.setBounds(new Rectangle(350, 120, 90, 20));
-		lblLinha.setText("* Linha:");
-		lblLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		cmbLinha = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
-		cmbLinha.setBounds(new Rectangle(450, 120, 130, 20));
-		cmbLinha.setVisibleItemCount(10);
-		cmbLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-		//popula o ccombo de linhas
-		CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-		cmbLinha.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				cmbLinha.removeAll();
-				CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-				cmbLinha.setVisibleItemCount(Math.min(
-						cmbLinha.getItemCount(), 25));
-			}
-		});
-		cmbLinha.setFocus();
-
-		// Prescription Notes
-		Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
-		lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
-		lblNotes.setText(Messages.getString("patient.prescription.dialog.prescription.notes"));
-		lblNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP
-				| SWT.V_SCROLL | SWT.BORDER);
-		txtAreaNotes.setBounds(new Rectangle(620, 40, 170, 80));
-		txtAreaNotes.setText("");
-		txtAreaNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		// New Prescription ID
-		lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
-				| SWT.BORDER);
-		lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
-		lblNewPrescriptionId.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
+	        // Linha Terapeutica
+	        Label lblLinha = new Label(grpParticulars, SWT.NONE);
+	        lblLinha.setBounds(new Rectangle(350, 120, 90, 20));
+	        lblLinha.setText("* Linha:");
+	        lblLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+	        cmbLinha = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
+	        cmbLinha.setBounds(new Rectangle(450, 120, 130, 20));
+	        cmbLinha.setVisibleItemCount(10);
+	        cmbLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	        cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+	        //popula o ccombo de linhas
+	        CommonObjects.populateLinha(getHSession(), cmbLinha, false);
+	        cmbLinha.addFocusListener(new FocusAdapter() {
+	            @Override
+	            public void focusGained(FocusEvent e) {
+	                cmbLinha.removeAll();
+	                CommonObjects.populateLinha(getHSession(), cmbLinha, false);
+	                cmbLinha.setVisibleItemCount(Math.min(
+	                        cmbLinha.getItemCount(), 25));
+	            }
+	        });
+	        cmbLinha.setFocus();
+				
+			// Prescription Notes
+			Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
+			lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
+			lblNotes.setText(Messages.getString("patient.prescription.dialog.prescription.notes"));
+			lblNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+			txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP
+					| SWT.V_SCROLL | SWT.BORDER);
+			txtAreaNotes.setBounds(new Rectangle(620, 40, 170, 80));
+			txtAreaNotes.setText("");
+			txtAreaNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+	
+			// New Prescription ID
+			lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
+					| SWT.BORDER);
+			lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
+			lblNewPrescriptionId.setFont(ResourceUtils
+					.getFont(iDartFont.VERASANS_8));
 
 	}
 
@@ -891,12 +1105,12 @@ iDARTChangeListener {
 
 		// Add Drug button and icon
 		lblPicAddDrug = new Label(compButtonsMiddle, SWT.NONE);
-		lblPicAddDrug.setBounds(new Rectangle(10, 30, 30, 26));
+		lblPicAddDrug.setBounds(new Rectangle(10, 38, 30, 26));
 		lblPicAddDrug.setImage(ResourceUtils
 				.getImage(iDartImage.PRESCRIPTIONADDDRUG_30X26));
 
 		btnAddDrug = new Button(compButtonsMiddle, SWT.NONE);
-		btnAddDrug.setBounds(new Rectangle(60, 30, 185, 27));
+		btnAddDrug.setBounds(new Rectangle(60, 38, 185, 27));
 		btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnAddDrug.setText(Messages.getString("patient.prescription.dialog.add"));
 		btnAddDrug.setEnabled(false);
@@ -911,7 +1125,7 @@ iDARTChangeListener {
 		btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		btnRemoveDrug = new Button(compButtonsMiddle, SWT.NONE);
-		btnRemoveDrug.setBounds(new Rectangle(268,30, 181, 28));
+		btnRemoveDrug.setBounds(new Rectangle(268,37, 181, 28));
 		btnRemoveDrug.setText(Messages.getString("patient.prescription.dialog.remove"));
 		lblPicAddDrug.setEnabled(false);
 		btnRemoveDrug.setEnabled(false);
@@ -937,7 +1151,7 @@ iDARTChangeListener {
 		grpDrugs = new Group(getShell(), SWT.NONE);
 
 		grpDrugs.setText("Medicamentos em Prescri;ao:");
-		grpDrugs.setBounds(new Rectangle(100, 400, 700, 160));
+		grpDrugs.setBounds(new Rectangle(100, 418, 700, 160));
 		grpDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		btnMoveUp = new Button(grpDrugs, SWT.NONE);
@@ -1188,6 +1402,8 @@ iDARTChangeListener {
 	 */
 	@Override
 	protected boolean fieldsOk() {
+		
+		ConexaoJDBC conexao = new ConexaoJDBC();
 
 		if ((cmbLinha.getText().trim().equals("")) || (cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
 				|| (lblNewPrescriptionId.getText().trim().equals(""))
@@ -1196,48 +1412,56 @@ iDARTChangeListener {
 					| SWT.OK);
 			missing.setText("Campos em falta");
 			missing
-			.setMessage("Alguns Campos est�o vazios. Inserir informa��o nos campos *.");
+			.setMessage("Alguns Campos estão vazios. Inserir informação nos campos *.");
 			missing.open();
 			txtPatientId.setFocus();
 			return false;
-		}
-		else
-		
-		if(btnDataInicioNoutroServico.getDate()!=null && btnDataInicioNoutroServico.getDate().after(new Date())){
+		} else if(btnDataInicioNoutroServico.getDate()!=null && btnDataInicioNoutroServico.getDate().after(new Date())){
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			dataNoutroServico.setText("Data In�cio Noutro Servi�o Inv�lido");
+			dataNoutroServico.setText("Data Inicio Noutro Serviço Inválido");
 			dataNoutroServico
-			.setMessage("A data do in�cio noutro servi�o n�o pode ser depois da data de hoje.");
+			.setMessage("A data do inicio noutro serviço não pode ser depois da data de hoje.");
 			dataNoutroServico.open();
 			btnDataInicioNoutroServico.setFocus();
 			return false;
 			
-		}
-		else
-		if(cmbUpdateReason.getText().equals("Alterar") && cmbMotivoMudanca.getText().length()==0){
+		} else if(cmbUpdateReason.getText().equals("Alterar") && cmbMotivoMudanca.getText().length()==0){
 			
 			MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			dataNoutroServico.setText("Motivo da Mudan�a");
+			dataNoutroServico.setText("Motivo da Mudança");
 			dataNoutroServico
-			.setMessage("Insira o motivo da mudan�a.");
+			.setMessage("Insira o motivo da mudança.");
 			dataNoutroServico.open();
 			cmbMotivoMudanca.setFocus();
 			
 			return false;
-		}
+		} else if (cmbUpdateReason.getText().equals("Inicia") && conexao.jaTemFilaInicio(localPrescription.getPatient().getPatientId())) {
 
-		else if (lblUpdateReason.isVisible()
+            MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            dataNoutroServico.setText("Pacite ja iniciou tarv");
+            dataNoutroServico
+                    .setMessage("Este paciente já iniciou o tarv....mude o TIPOTARV para Manter");
+            dataNoutroServico.open();
+            cmbMotivoMudanca.setFocus();
+
+            return false;
+        } else if (lblUpdateReason.isVisible()
 				&& cmbUpdateReason.getText().trim().equals("")) {
 			MessageBox missingUpdateReason = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			missingUpdateReason.setText("Inserir motivo de mudan�a");
+			missingUpdateReason.setText("Inserir motivo de mudança");
 			missingUpdateReason
-			.setMessage("O campo 'Motivo de mudan�a' n�o foi inserido.");
+			.setMessage("O campo 'Motivo de mudança' não foi inserido.");
 			cmbUpdateReason.setFocus();
 			missingUpdateReason.open();
+			return false;
+		} else if (!checkDispensaTrimestral()) { 
+			return false;
+		} else if (!cheackDispensaSemestral()) { 
 			return false;
 		} else if (!txtWeight.getText().equals("")) {
 			try {
@@ -1247,12 +1471,35 @@ iDARTChangeListener {
 						SWT.ICON_ERROR | SWT.OK);
 				incorrectData.setText("Valor do peso incorrecto");
 				incorrectData
-				.setMessage("O peso inserido est� incorrecto.Inserir um n�mero");
+				.setMessage("O peso inserido é incorrecto.Inserir um número");
 				incorrectData.open();
 				txtWeight.setFocus();
 				return false;
 			}
-		}
+		} else if (cmbDispensaTrimestral.getText().equals("Sim") && cmbDispensaSemestral.getText().equals("Sim")) {
+			MessageBox semestralTrimestral = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			semestralTrimestral.setText("Campos incorrectamente seleccionados");
+			semestralTrimestral.setMessage("O paciente não pode fazer parte da dispensa trimestral e semestral ao mesmo tempo");
+			semestralTrimestral.open();
+			cmbDispensaTrimestral.setFocus();
+			return false;
+		} else if (lblTipoDispensaTrimestral.isVisible() && cmbTipoDispensaTrimestral.getText().trim().equals("")) {
+            MessageBox missingTipoDispensaTrimestral = new MessageBox(getShell(),
+                    SWT.ICON_ERROR | SWT.OK);
+            missingTipoDispensaTrimestral
+                    .setMessage("O campo 'Tipo DT: Deve ser preenchido(Novo ou Manutencao)?");
+            cmbUpdateReason.setFocus();
+            missingTipoDispensaTrimestral.open();
+            return false;
+        } else if (lblTipoDispensaSemestral.isVisible() && cmbTipoDispensaSemestral.getText().trim().equals("")) {
+            MessageBox missingTipoDispensaSemestral = new MessageBox(getShell(),
+                    SWT.ICON_ERROR | SWT.OK);
+            missingTipoDispensaSemestral.setMessage("O campo 'Tipo DS: Deve ser preenchido(Novo ou Manutencao)?");
+            cmbUpdateReason.setFocus();
+            missingTipoDispensaSemestral.open();
+            return false;
+        }
+		
 		return true;
 
 	}
@@ -1277,8 +1524,15 @@ iDARTChangeListener {
 
 		// Generate a new prescription id
 		cmdUpdatePrescriptionId();
-		cmbDuration.setText("1 mês");
-
+		cmbDuration.setText("1 meses");
+		cmbDispensaTrimestral.select(1);
+		cmbDispensaSemestral.select(1);
+		
+		cmbTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaTrimestral.setVisible(Boolean.FALSE);
+		
+		cmbTipoDispensaSemestral.setVisible(Boolean.FALSE);
+		lblTipoDispensaSemestral.setVisible(Boolean.FALSE); 
 	}
 
 	/**
@@ -1316,14 +1570,10 @@ iDARTChangeListener {
 
 		cmbUpdateReason.setText("Manter");
 		String tempAmtPerTime = "";
-		cmbDoctor.setText(""
-				+ AdministrationManager.getDoctor(getHSession(),
-						localPrescription.getDoctor().getFullname())
-						.getFullname());
+		cmbDoctor.setText(""+ AdministrationManager.getDoctor(getHSession(),localPrescription.getDoctor().getFullname()).getFullname());
 		
 		try {
-			cmbRegime.setText(""
-					+ AdministrationManager.loadRegime(localPrescription.getPatient().getId()));
+			cmbRegime.setText("" + AdministrationManager.loadRegime(localPrescription.getPatient().getId()));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1332,23 +1582,59 @@ iDARTChangeListener {
 			e.printStackTrace();
 		}
 		
+        try {
+            cmbLinha.setText(""
+                    + AdministrationManager.loadLinha(localPrescription.getPatient().getId()));
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		
+        //Dispensa Trimestral
+        try {
+            int estaNaDispensaTrimestral = AdministrationManager.loadDispensaTrimestral(localPrescription.getPatient().getId());
+            if (estaNaDispensaTrimestral == 0) {
+                cmbDispensaTrimestral.select(1);
+                lblTipoDispensaTrimestral.setVisible(false);
+                cmbTipoDispensaTrimestral.setVisible(false);
+            } else {
+                cmbDispensaTrimestral.select(0);
+                lblTipoDispensaTrimestral.setVisible(true);
+                cmbTipoDispensaTrimestral.setVisible(true);
+            }
 
-		
-		try {
-			cmbLinha.setText(""
-					+ AdministrationManager.loadLinha(localPrescription.getPatient().getId()));
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-					
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        //Dispensa Semestral
+        try {
+            int estaNaDispensaSemestral = AdministrationManager.loadDispensaTrimestral(localPrescription.getPatient().getId());
+            if (estaNaDispensaSemestral == 0) {
+                cmbDispensaSemestral.select(1);
+                lblTipoDispensaSemestral.setVisible(false);
+                cmbTipoDispensaSemestral.setVisible(false);
+            } else {
+                cmbDispensaSemestral.select(0);
+                lblTipoDispensaSemestral.setVisible(true);
+                cmbTipoDispensaSemestral.setVisible(true);
+            }
 
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		
 		if (localPrescription.getDuration() <= 2) {
 			cmbDuration.setText(localPrescription.getDuration() + " semanas");
 		} else {
@@ -1363,15 +1649,12 @@ iDARTChangeListener {
 			txtAreaNotes.setText(localPrescription.getNotes());
 		}
 		// set the previous weight
-
 		if (localPrescription.getWeight() != null) {
 			txtWeight.setText(localPrescription.getWeight().toString());
 		}
 		
 		
 		// set the previous ppe
-		
-		
 		try {
 			
 			String ppe=(AdministrationManager.loadPpe(localPrescription.getPatient().getId()));
@@ -1391,28 +1674,44 @@ iDARTChangeListener {
 		
 		
 		// set the previous TB
-		
-		
-				try {
-					
-					String tb=(AdministrationManager.loadTb(localPrescription.getPatient().getId()));
-					
-					System.out.println(" TB actual "+tb);
-					
-					
-					if (tb.trim().equals("T"))
-					chkBtnTB.setSelection(true);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		try {
+			
+			String tb=(AdministrationManager.loadTb(localPrescription.getPatient().getId()));
+			
+			System.out.println(" TB actual "+tb);
+			
+			
+			if (tb.trim().equals("T"))
+			chkBtnTB.setSelection(true);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		// set the previous SAAJ
+		try {
+			
+			String saaj=(AdministrationManager.loadSAAJ(localPrescription.getPatient().getId()));
+			
+			System.out.println(" SAAJ actual "+saaj);
+			
+			
+			if (saaj.trim().equals("T"))
+			chkBtnSAAJ.setSelection(true);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		// set the previous ptv
-try {
+		try {
 			
 			String ptv=(AdministrationManager.loadPtv(localPrescription.getPatient().getId()));
 			
@@ -1426,7 +1725,126 @@ try {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				
+		
+		
+        // set the previous CCR
+        try {
+
+            String ccr = (AdministrationManager.loadCcr(localPrescription.getPatient().getId()));
+
+            System.out.println(" CCR actual " + ccr);
+            if (ccr.trim().equals("T")) {
+                chkBtnCCR.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        // set the previous CPN
+        try {
+
+            String cpn = (AdministrationManager.loadCpn(localPrescription.getPatient().getId()));
+
+            System.out.println(" CPN actual " + cpn);
+            if (cpn.trim().equals("T")) {
+                chkBtnCPN.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        // set the previous Abordagem Familiar
+        try {
+
+            String af = (AdministrationManager.loadAf(localPrescription.getPatient().getId()));
+
+            System.out.println(" Abordagem Familiar actual " + af);
+            if (af.trim().equals("T")) {
+                chkBtnAF.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // set the previous Clube de Adesao
+        try {
+
+            String ca = (AdministrationManager.loadCa(localPrescription.getPatient().getId()));
+
+            System.out.println(" CA actual " + ca);
+            if (ca.trim().equals("T")) {
+                chkBtnCA.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // set the previous Fluxo Rapido
+        try {
+
+            String fr = (AdministrationManager.loadFr(localPrescription.getPatient().getId()));
+
+            System.out.println(" FR actual " + fr);
+            if (fr.trim().equals("T")) {
+                chkBtnFR.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // set the previous GAAC
+        try {
+
+            String gaac = (AdministrationManager.loadGaac(localPrescription.getPatient().getId()));
+
+            System.out.println(" GAAC actual " + gaac);
+            if (gaac.trim().equals("T")) {
+                chkBtnGAAC.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        // set the previous DC
+        try {
+
+            String dc = (AdministrationManager.loadDc(localPrescription.getPatient().getId()));
+
+            System.out.println(" DC actual " + dc);
+            if (dc.trim().equals("T")) {
+                chkBtnDC.setSelection(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 		// Generate a new prescription id
 		cmdUpdatePrescriptionId();
@@ -1645,7 +2063,7 @@ try {
 			cmbUpdateReason.setText("");
 
 			localPrescription = thePatient.getMostRecentPrescription();
-
+			
 			if (localPrescription == null) {
 				// Patient has had a previous prescription, but doesn't
 				// have an active one at the moment
@@ -1676,8 +2094,8 @@ try {
 			cmdUpdatePrescriptionId();
 		}
 		loadPatientDetails();
-
 		enableFields(true);
+		avaliaMDSSelectionActual();
 		btnSearch.setEnabled(false);
 		btnEkapaSearch.setEnabled(false);
 		txtPatientId.setEnabled(false);
@@ -1752,11 +2170,11 @@ try {
 				MessageBox noPatient = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
 
-				noPatient.setText("Paciente n�o possui um Epis�dio actual");
+				noPatient.setText("Paciente não possui um Episódio actual");
 				noPatient
 				.setMessage("O Paciente "
 						+ (txtPatientId.getText()).toUpperCase()
-						+ " n�o possui um Epis�dio actual. \n\nPrecisa Iniciar um novo epis�dio para este Paciente (usando a tela 'Actualizar Paciente Existente') antes de registra a sua Prescrição.");
+						+ " não possui um Episódio actual. \n\nPrecisa Iniciar um novo episódio para este Paciente (usando a tela 'Actualizar Paciente Existente') antes de registra a sua Prescrição.");
 				noPatient.open();
 				txtPatientId.setFocus();
 				txtPatientId.setText("");
@@ -1891,21 +2309,16 @@ try {
 					try {
 						tx = getHSession().beginTransaction();
 						if (localPrescription.getPatient().getId() <= 0) {
-							PatientManager.savePatient(getHSession(),
-									localPrescription.getPatient());
+							PatientManager.savePatient(getHSession(),localPrescription.getPatient());
 						}
 						setLocalPrescription();
 
 						SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-						Prescription oldPrescription = localPrescription
-						.getPatient().getCurrentPrescription();
+						Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
 						// Check if any packages have been created for the
 						// prescription
-						if ((oldPrescription != null)
-								&& PackageManager.getPackagesForPrescription(
-										getHSession(), oldPrescription).size() == 0) {
-							List<PrescribedDrugs> prescribedDrugs = oldPrescription
-							.getPrescribedDrugs();
+						if ((oldPrescription != null) && PackageManager.getPackagesForPrescription(getHSession(), oldPrescription).size() == 0) {
+							List<PrescribedDrugs> prescribedDrugs = oldPrescription.getPrescribedDrugs();
 							String drugs = "";
 							if (prescribedDrugs.size() == 0) {
 								drugs = "\nNão há medicamentos nesta prescrição!";
@@ -1913,15 +2326,13 @@ try {
 							for (int i = 0; i < prescribedDrugs.size(); i++) {
 								drugs = drugs
 								+ "\n\t\t"
-								+ prescribedDrugs.get(i).getDrug()
-								.getName();
+								+ prescribedDrugs.get(i).getDrug().getName();
 							}
-							MessageBox box = new MessageBox(getShell(),
-									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+							
+							MessageBox box = new MessageBox(getShell(),SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 
 							box.setText("Remover Prescrições anteriores, não usadas");
-							box
-							.setMessage("Este paciente não recebeu nenhum medicamento desde "
+							box.setMessage("Este paciente não recebeu nenhum medicamento desde "
 									+ "a sua Prescrição anterior com o id "
 									+ oldPrescription.getPrescriptionId()
 									+ " (detalhes abaixo). \n\n"
@@ -1948,10 +2359,8 @@ try {
 							case SWT.YES:
 								// before we try anything, lets ask the user for
 								// their password
-								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-										getShell(), getHSession());
-								passwordDialog
-								.setMessage("Por favor insserir a Password");
+								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
+								passwordDialog.setMessage("Por favor insserir a Password");
 								// if password verified
 								String messg = passwordDialog.open();
 								if (messg.equalsIgnoreCase("verified")) {
@@ -1966,36 +2375,40 @@ try {
 						if(localPrescription.containsARVDrug())
 							localPrescription.setDrugTypes("ARV");
 						
-						PackageManager.saveNewPrescription(getHSession(),
-								localPrescription, deletedPrescription);
-						getHSession().flush();
-						tx.commit();
-
-						getLog().info(
-								"Saved Prescription for Patient: "
-								+ localPrescription.getPatient().getId());
-						MessageBox done = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_INFORMATION);
-						done.setText("Base de dados actualizada");
-						done.setMessage("Prescrição '".concat(
-								localPrescription.getPrescriptionId()).concat(
-								"' foi adicionado ao paciente '").concat(
-										localPrescription.getPatient().getPatientId())
-										.concat("'."));
-						done.open();
-						saveSuccessful = true;
+						if (patientsPrescriptions.size() > 0) {
+							if (localPrescription.getRegimeTerapeutico().getCodigoregime() < oldPrescription.getRegimeTerapeutico().getCodigoregime()) {
+								MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+								errorBox.setText("Não foi possível salvar a prescrição, má alteração da linha terapêutica");
+								errorBox.setMessage("Não é possível mudar o regime terapeutico do paciente de " + oldPrescription.getRegimeTerapeutico().getRegimeesquema() 
+										+ " para " + localPrescription.getRegimeTerapeutico().getRegimeesquema());
+								errorBox.open();
+								saveSuccessful = false;
+							} else {
+								PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+								getHSession().flush();
+								tx.commit();
+								getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
+								MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+								done.setText("Base de dados actualizada");
+								done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+								done.open();
+								saveSuccessful = true;
+							}
+						} else if (patientsPrescriptions.size() == 0) { 
+							PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+							getHSession().flush();
+							tx.commit();
+							getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
+							MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+							done.setText("Base de dados actualizada");
+							done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+							done.open();
+							saveSuccessful = true;
+						} 
 					} catch (IllegalArgumentException ie) {
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
-						errorBox
-						.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
-						errorBox
-						.setMessage("A Prescrição '"
-								.concat(
-										localPrescription
-										.getPrescriptionId())
-										.concat(
-										"' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+						errorBox.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
+						errorBox.setMessage("A Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
 						errorBox.open();
 						if (tx != null) {
 							tx.rollback();
@@ -2006,11 +2419,9 @@ try {
 
 					catch (HibernateException he) {
 
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 						errorBox.setText("Não pode salvar: Actualização da base de dados falhou");
-						errorBox
-						.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
+						errorBox.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
 						if (tx != null) {
 							tx.rollback();
 						}
@@ -2037,37 +2448,28 @@ try {
 					try {
 						tx = getHSession().beginTransaction();
 						if (localPrescription.getPatient().getId() <= 0) {
-							PatientManager.savePatient(getHSession(),
-									localPrescription.getPatient());
+							PatientManager.savePatient(getHSession(),localPrescription.getPatient());
 						}
 						setLocalPrescription();
 
 						SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-						Prescription oldPrescription = localPrescription
-						.getPatient().getCurrentPrescription();
+						Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
 						// Check if any packages have been created for the
 						// prescription
-						if ((oldPrescription != null)
-								&& PackageManager.getPackagesForPrescription(
-										getHSession(), oldPrescription).size() == 0) {
-							List<PrescribedDrugs> prescribedDrugs = oldPrescription
-							.getPrescribedDrugs();
+						if ((oldPrescription != null) && PackageManager.getPackagesForPrescription(getHSession(), oldPrescription).size() == 0) {
+							List<PrescribedDrugs> prescribedDrugs = oldPrescription.getPrescribedDrugs();
 							String drugs = "";
 							if (prescribedDrugs.size() == 0) {
 								drugs = "\nNão há medicamentos nesta Prescrição!";
 							}
 							for (int i = 0; i < prescribedDrugs.size(); i++) {
-								drugs = drugs
-								+ "\n\t\t"
-								+ prescribedDrugs.get(i).getDrug()
-								.getName();
+								drugs = drugs + "\n\t\t" + prescribedDrugs.get(i).getDrug().getName();
 							}
 							MessageBox box = new MessageBox(getShell(),
 									SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 
 							box.setText("Remover Prescrições anteriores, não usadas");
-							box
-							.setMessage("Este paciente não recebeu nenhum medicamento desde "
+							box.setMessage("Este paciente não recebeu nenhum medicamento desde "
 									+ "a sua Prescrição anterior com o id "
 									+ oldPrescription.getPrescriptionId()
 									+ " (detalhes abaixo). \n\n '"
@@ -2094,10 +2496,8 @@ try {
 							case SWT.YES:
 								// before we try anything, lets ask the user for
 								// their password
-								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-										getShell(), getHSession());
-								passwordDialog
-								.setMessage("Por favor insserir a Password");
+								ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
+								passwordDialog.setMessage("Por favor insserir a Password");
 								// if password verified
 								String messg = passwordDialog.open();
 								if (messg.equalsIgnoreCase("verified")) {
@@ -2112,36 +2512,40 @@ try {
 						if(localPrescription.containsARVDrug())
 							localPrescription.setDrugTypes("ARV");
 						
-						PackageManager.saveNewPrescription(getHSession(),
-								localPrescription, deletedPrescription);
-						getHSession().flush();
-						tx.commit();
-
-						getLog().info(
-								"Saved Prescription for Patient: "
-								+ localPrescription.getPatient().getId());
-						MessageBox done = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_INFORMATION);
-						done.setText("Base de dados actualizada");
-						done.setMessage("Prescrição '".concat(
-								localPrescription.getPrescriptionId()).concat(
-								"' foi adicionado ao paciente '").concat(
-										localPrescription.getPatient().getPatientId())
-										.concat("'."));
-						done.open();
-						saveSuccessful = true;
+						if (patientsPrescriptions.size() > 0) {
+							if (localPrescription.getRegimeTerapeutico().getCodigoregime() < oldPrescription.getRegimeTerapeutico().getCodigoregime()) {
+								MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+								errorBox.setText("Não foi possível salvar a prescrição, má alteração da linha terapêutica");
+								errorBox.setMessage("Não é possível mudar o regime terapeutico do paciente de " + oldPrescription.getRegimeTerapeutico().getRegimeesquema() 
+										+ " para " + localPrescription.getRegimeTerapeutico().getRegimeesquema());
+								errorBox.open();
+								saveSuccessful = false;
+							} else {
+								PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+								getHSession().flush();
+								tx.commit();
+								getLog().info("Saved Prescription for Patient: "+ localPrescription.getPatient().getId());
+								MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+								done.setText("Base de dados actualizada");
+								done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+								done.open();
+								saveSuccessful = true;
+							}
+						} else if (patientsPrescriptions.size() == 0) {
+							PackageManager.saveNewPrescription(getHSession(),localPrescription, deletedPrescription);
+							getHSession().flush();
+							tx.commit();
+							getLog().info("Saved Prescription for Patient: "+ localPrescription.getPatient().getId());
+							MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+							done.setText("Base de dados actualizada");
+							done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+							done.open();
+							saveSuccessful = true;
+						}
 					} catch (IllegalArgumentException ie) {
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
-						errorBox
-						.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
-						errorBox
-						.setMessage("A Prescrição '"
-								.concat(
-										localPrescription
-										.getPrescriptionId())
-										.concat(
-										"' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+						errorBox.setText("Não foi possível salvar: A data do registo da Prescrição é inválida");
+						errorBox.setMessage("A Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' tem a data de registo antes da data de de registo da Prescrição anterior. A Prescrição não pode ser salva "));
 						errorBox.open();
 						if (tx != null) {
 							tx.rollback();
@@ -2152,8 +2556,7 @@ try {
 
 					catch (HibernateException he) {
 
-						MessageBox errorBox = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
+						MessageBox errorBox = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
 						errorBox.setText("Não pode salvar: Actualização da base de dados falhou");
 						errorBox.setMessage("Houve um problema ao salvar esta receita. Por favor, tente novamente.");
 						if (tx != null) {
@@ -2210,6 +2613,9 @@ try {
 		localPrescription.setPatient(thePatient);
 		localPrescription.setReasonForUpdate(cmbUpdateReason.getText());
 		localPrescription.setDatainicionoutroservico(btnDataInicioNoutroServico.getDate());
+		localPrescription.setTipoDT(cmbTipoDispensaTrimestral.getText());
+		localPrescription.setTipoDS(cmbTipoDispensaSemestral.getText());
+		localPrescription.setDurationSentence(cmbDuration.getText());
 		
 		//PTV , PPE and Tb
 		
@@ -2227,7 +2633,7 @@ try {
 			localPrescription.setPtv('T');
 			
 		}
-
+		
 		else {
 			localPrescription.setPtv('F');
 		}
@@ -2241,6 +2647,62 @@ try {
 		else {
 			localPrescription.setTb('F');
 		}
+		
+		if (chkBtnSAAJ.getSelection()) { 
+			localPrescription.setSaaj('T');
+		}
+		
+		else {
+			localPrescription.setSaaj('F'); 
+		}
+		
+		if (chkBtnCPN.getSelection()) {
+			localPrescription.setCpn('T');
+		} else {
+			localPrescription.setCpn('F');
+		}
+		
+        if (chkBtnCCR.getSelection()) {
+            localPrescription.setCcr('T');
+        } else {
+            localPrescription.setCcr('F');
+        }
+        
+        if (chkBtnGAAC.getSelection()) {
+            localPrescription.setGaac('T');
+        } else {
+            localPrescription.setGaac('F');
+        }
+        
+        if (chkBtnAF.getSelection()) {
+            localPrescription.setAf('T');
+        } else {
+            localPrescription.setAf('F');
+        }
+        
+        if (chkBtnCA.getSelection()) {
+            localPrescription.setCa('T');
+        } else {
+            localPrescription.setCa('F');
+        }
+        
+        if (chkBtnFR.getSelection()) {
+            localPrescription.setFr('T');
+        } else {
+            localPrescription.setFr('F');
+        } 
+        
+        if (chkBtnFR.getSelection()) {
+            localPrescription.setFr('T');
+        } else {
+            localPrescription.setFr('F');
+        }
+        
+        if (chkBtnDC.getSelection()) {
+            localPrescription.setDc('T');
+        } else {
+            localPrescription.setDc('F');
+        } 
 		
 		localPrescription.setTpc('F');
 
@@ -2299,11 +2761,8 @@ try {
 		localPrescription.setRegimeTerapeutico(AdministrationManager.getRegimeTerapeutico(
 				getHSession(), cmbRegime.getText()));
 		
-		
-		localPrescription.setLinha(AdministrationManager.getLinha(
-				getHSession(), cmbLinha.getText()));
-		
-		
+        localPrescription.setLinha(AdministrationManager.getLinha(
+                getHSession(), cmbLinha.getText()));
 		
 		localPrescription.setMotivoMudanca(cmbMotivoMudanca.getText());
 		
@@ -2331,6 +2790,22 @@ try {
 		}
 
 		localPrescription.setPrescribedDrugs(prescribedDrugsList);
+		
+        // set dispensatrimestral
+        if (cmbDispensaTrimestral.getText().contentEquals("Sim")) {
+            localPrescription.setDispensaTrimestral(1);
+        }
+        if (cmbDispensaTrimestral.getText().contentEquals("Nao")) {
+            localPrescription.setDispensaTrimestral(0);
+        }
+        
+        // set dispensasemestral
+        if (cmbDispensaSemestral.getText().contentEquals("Sim")) {
+            localPrescription.setDispensaSemestral(1);
+        }
+        if (cmbDispensaSemestral.getText().contentEquals("Nao")) {
+            localPrescription.setDispensaSemestral(0);
+        }
 	}
 
 	/**
@@ -2446,6 +2921,8 @@ try {
 	public void clearForm() {
 
 		try {
+			//cmbDispensaTrimestral.setText("");
+			//cmbDispensaTrimestral.setEnabled(false);
 			txtPatientId.setText("");
 	     	cmbMotivoMudanca.setText("");
 			txtName.setText("");
@@ -2453,11 +2930,11 @@ try {
 			txtClinic.setText("");
 			cmbDoctor.setText("");
 			cmbRegime.setText("");
-			cmbLinha.setText("");
 			txtWeight.setText("");
 			txtDOB.setText("");
 			lblNewPrescriptionId.setText("");
 			cmbDuration.setText("");
+			cmbLinha.setText("");
 			// cmbClinicalStage.setText("");
 			lblPicChild.setVisible(false);
 			txtAge.setText("");
@@ -2475,8 +2952,17 @@ try {
 
 			enableFields(false);
 			chkBtnPPE.setSelection(false);
-			chkBtnTB.setSelection(false);
-			chkBtnPTV.setSelection(false);
+            chkBtnTB.setSelection(false);
+            chkBtnPTV.setSelection(false);
+            chkBtnCCR.setSelection(false);
+            chkBtnSAAJ.setSelection(false);
+            chkBtnAF.setSelection(false);
+            chkBtnCA.setSelection(false);
+            chkBtnFR.setSelection(false);
+            chkBtnGAAC.setSelection(false);
+            chkBtnCPN.setSelection(false);
+            chkBtnDC.setSelection(false); 
+			
 			//chkBtnTPC.setSelection(false);
 			//chkBtnTPI.setSelection(false);
 			btnSearch.setEnabled(true);
@@ -2516,11 +3002,10 @@ try {
 		btnAddDoctor.setEnabled(enable);
 		btnMoveUp.setEnabled(enable);
 		btnMoveDown.setEnabled(enable);
-
+		cmbLinha.setEnabled(enable);
 		btnDispenseDrugs.setEnabled(enable);
 
 		// cmbClinicalStage.setEnabled(enable);
-		cmbLinha.setEnabled(enable);
 		cmbDuration.setEnabled(enable);
 		cmbRegime.setEnabled(enable);
 		txtWeight.setEnabled(enable);
@@ -2533,9 +3018,22 @@ try {
 		lblPicDispenseDrugs.setEnabled(enable);
 		chkBtnPPE.setEnabled(enable);
 		chkBtnTB.setEnabled(enable);
-		chkBtnPTV.setEnabled(enable);
+		chkBtnSAAJ.setEnabled(enable);
 		//chkBtnTPI.setEnabled(enable);
 		//chkBtnTPC.setEnabled(enable);
+		
+		chkBtnPPE.setEnabled(enable);
+		chkBtnTB.setEnabled(enable);
+		chkBtnCCR.setEnabled(enable);
+		chkBtnSAAJ.setEnabled(enable);
+		chkBtnGAAC.setEnabled(enable);
+		chkBtnAF.setEnabled(enable);
+		chkBtnCA.setEnabled(enable);
+		chkBtnFR.setEnabled(enable);
+		chkBtnPTV.setEnabled(enable);
+		chkBtnCPN.setEnabled(enable);
+		chkBtnDC.setEnabled(enable); 
+		
 		Color theColour;
 
 		if (enable) {
@@ -2548,7 +3046,6 @@ try {
 		cmbDoctor.setBackground(theColour);
 		cmbDuration.setBackground(theColour);
 		cmbRegime.setBackground(theColour);
-		cmbLinha.setBackground(theColour);
 		cmbMotivoMudanca.setBackground(theColour);
 	}
 
@@ -2562,14 +3059,14 @@ try {
 		compDispense.setBounds(new Rectangle(330, 567, 240, 50));
 
 		lblPicDispenseDrugs = new Label(compDispense, SWT.NONE);
-		lblPicDispenseDrugs.setBounds(new Rectangle(0, 0, 50, 43));
+		lblPicDispenseDrugs.setBounds(new Rectangle(0, 15, 50, 43));
 		lblPicDispenseDrugs.setImage(ResourceUtils
 				.getImage(iDartImage.DISPENSEPACKAGES));
 
 		lblPicDispenseDrugs.setEnabled(false);
 
 		btnDispenseDrugs = new Button(compDispense, SWT.NONE);
-		btnDispenseDrugs.setBounds(new Rectangle(60, 12, 180, 30));
+		btnDispenseDrugs.setBounds(new Rectangle(60, 20, 180, 30));
 		btnDispenseDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnDispenseDrugs.setText(Messages.getString("patient.prescription.dialog.dispense"));
 		btnDispenseDrugs
@@ -2644,14 +3141,13 @@ try {
 	 *            Transaction
 	 */
 	private void deleteScript(Prescription prescriptionToRemove, Transaction tx) {
-		DeletionsManager.removeUndispensedPrescription(getHSession(),
-				prescriptionToRemove);
+		
+		DeletionsManager.removeUndispensedPrescription(getHSession(),prescriptionToRemove);
 		getHSession().flush();
 
 		MessageBox mb = new MessageBox(getShell());
 		mb.setText("Prescrição apagada com sucesso");
-		mb
-		.setMessage("Essa Prescrição foi removida com sucesso da base de dados.");
+		mb.setMessage("Essa Prescrição foi removida com sucesso da base de dados.");
 		mb.open();
 
 	}
@@ -2672,13 +3168,685 @@ try {
 			cmbRegime.setText(r.getRegimeesquema());
 		}
 		
-		if (o instanceof LinhaT) {
-			LinhaT r = (LinhaT) o;
-			cmbLinha.setText(r.getLinhanome());
-		}
+        if (o instanceof LinhaT) {
+            LinhaT r = (LinhaT) o;
+            cmbLinha.setText(r.getLinhanome());
+        }
 	}
 	
+    private boolean checkDispensaTrimestral() {
+        try {
+            String result = cmbDispensaTrimestral.getItem(cmbDispensaTrimestral.getSelectionIndex());
+            String prescritionDuration = null;
+            switch (result) {
+                case "Sim": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (cmbTipoDispensaTrimestral.getSelectionIndex() < 0) {
+                        MessageBox mb = new MessageBox(getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("Selecionou dispensa trimestral, especifique o tipo de Dispensa Trimestral do Paciente");
+                        mb.open();
+                        return false;
+                    }
+
+                    if (("3 meses".equals(prescritionDuration) || ("3 months".equals(prescritionDuration)))) {
+                        return true;
+                    } else {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("Selecionou dispensa trimestral, mas a duracao da prescricao nao e de 3 meses. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+                
+                case "Nao": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (prescritionDuration.contentEquals("3 meses") || prescritionDuration.contentEquals("3 months")) {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Trimestral");
+                        mb.setMessage("A duração da prescrição é de 3 meses e não está na Dispensa Trimestral. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    } else {
+                        return true;
+                    }
+                }
+                
+                default:
+                    MessageBox mb = new MessageBox(getShell());
+                    mb.setText("Dispensa Trimestral");
+                    mb.setMessage("Especifique se é dispensa trimestral ou nao");
+                    mb.open();
+                    return false;
+            }
+        } catch (java.lang.IllegalArgumentException ex) {
+
+            MessageBox mb = new MessageBox(getShell());
+            mb.setText("Dispensa Trimestral");
+            mb.setMessage("Dispensa trimestral nao foi Selecionada");
+            mb.open();
+            return false;
+
+        }
+
+    }
+    
+    private boolean cheackDispensaSemestral() {
+        try {
+            String result = cmbDispensaSemestral.getItem(cmbDispensaSemestral.getSelectionIndex());
+            String prescritionDuration = null;
+            switch (result) {
+                case "Sim": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (cmbTipoDispensaSemestral.getSelectionIndex() < 0) {
+                        MessageBox mb = new MessageBox(getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("Selecionou dispensa semestral, especifique o tipo de Dispensa Semestral do Paciente");
+                        mb.open();
+                        return false;
+                    }
+
+                    if (("6 meses".equals(prescritionDuration) || ("6 months".equals(prescritionDuration)))) {
+                        return true;
+                    } else {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("Selecionou dispensa semestral, mas a duracao da prescricao nao e de 6 meses. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+                
+                case "Nao": {
+                    if (cmbDuration.getSelectionIndex() < 0) {
+                        prescritionDuration = cmbDuration.getItem(2);
+                    } else {
+                        prescritionDuration = cmbDuration.getItem(cmbDuration.getSelectionIndex());
+                    }
+
+                    if (prescritionDuration.contentEquals("6 meses") || prescritionDuration.contentEquals("6 months")) {
+                        MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                        mb.setText("Dispensa Semestral");
+                        mb.setMessage("A duração da prescrição é de 6 meses e não está na Dispensa Semestral. PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
+                        int resposta = mb.open();
+                        if (resposta == SWT.NO) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    } else {
+                        return true;
+                    }
+                }
+                
+                default:
+                    MessageBox mb = new MessageBox(getShell());
+                    mb.setText("Dispensa Semestral");
+                    mb.setMessage("Especifique se é dispensa semestral ou nao");
+                    mb.open();
+                    return false;
+            }
+        } catch (java.lang.IllegalArgumentException ex) {
+
+            MessageBox mb = new MessageBox(getShell());
+            mb.setText("Dispensa Semestral");
+            mb.setMessage("Dispensa semestral nao foi Selecionada");
+            mb.open();
+            return false;
+
+        }
+
+    }
 	
+    public void avaliaMDSSelection() {
 
+        chkBtnCCR.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                if (chkBtnCCR.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+        
+        chkBtnDC.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                if (chkBtnDC.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                }
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+        
+        chkBtnCPN.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                if (chkBtnCPN.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                }
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnTB.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnTB.getSelection()) {
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnPTV.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnPTV.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnSAAJ.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnSAAJ.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnPPE.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnPPE.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnGAAC.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnGAAC.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnAF.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnAF.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnCA.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnCA.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnFR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+        chkBtnFR.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                // TODO Auto-generated method stub
+                if (chkBtnFR.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnCCR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    chkBtnTB.setEnabled(true);
+                    chkBtnPTV.setEnabled(true);
+                    chkBtnPPE.setEnabled(true);
+                    chkBtnSAAJ.setEnabled(true);
+                    chkBtnGAAC.setEnabled(true);
+                    chkBtnAF.setEnabled(true);
+                    chkBtnCA.setEnabled(true);
+                    chkBtnCCR.setEnabled(true);
+                    chkBtnDC.setEnabled(true);
+                    chkBtnCPN.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+        });
+
+    }
+
+    private void avaliaMDSSelectionActual() {
+        if (chkBtnPTV.getSelection()) {
+            chkBtnTB.setEnabled(false);
+            chkBtnCCR.setEnabled(false);
+            chkBtnPPE.setEnabled(false);
+            chkBtnSAAJ.setEnabled(false);
+            chkBtnGAAC.setEnabled(false);
+            chkBtnAF.setEnabled(false);
+            chkBtnCA.setEnabled(false);
+            chkBtnFR.setEnabled(false);
+            chkBtnDC.setEnabled(false);
+            chkBtnCPN.setEnabled(false);
+        } else {
+            if (chkBtnTB.getSelection()) {
+                chkBtnPTV.setEnabled(false);
+                chkBtnCCR.setEnabled(false);
+                chkBtnPPE.setEnabled(false);
+                chkBtnSAAJ.setEnabled(false);
+                chkBtnGAAC.setEnabled(false);
+                chkBtnAF.setEnabled(false);
+                chkBtnCA.setEnabled(false);
+                chkBtnFR.setEnabled(false);
+                chkBtnDC.setEnabled(false);
+                chkBtnCPN.setEnabled(false);
+            } else {
+                if (chkBtnCCR.getSelection()) {
+                    chkBtnTB.setEnabled(false);
+                    chkBtnPTV.setEnabled(false);
+                    chkBtnPPE.setEnabled(false);
+                    chkBtnSAAJ.setEnabled(false);
+                    chkBtnGAAC.setEnabled(false);
+                    chkBtnAF.setEnabled(false);
+                    chkBtnCA.setEnabled(false);
+                    chkBtnFR.setEnabled(false);
+                    chkBtnDC.setEnabled(false);
+                    chkBtnCPN.setEnabled(false);
+                } else {
+                    if (chkBtnPPE.getSelection()) {
+                        chkBtnTB.setEnabled(false);
+                        chkBtnCCR.setEnabled(false);
+                        chkBtnPTV.setEnabled(false);
+                        chkBtnSAAJ.setEnabled(false);
+                        chkBtnGAAC.setEnabled(false);
+                        chkBtnAF.setEnabled(false);
+                        chkBtnCA.setEnabled(false);
+                        chkBtnFR.setEnabled(false);
+                        chkBtnDC.setEnabled(false);
+                        chkBtnCPN.setEnabled(false);
+                    } else {
+                        if (chkBtnSAAJ.getSelection()) {
+                            chkBtnTB.setEnabled(false);
+                            chkBtnCCR.setEnabled(false);
+                            chkBtnPPE.setEnabled(false);
+                            chkBtnPTV.setEnabled(false);
+                            chkBtnGAAC.setEnabled(false);
+                            chkBtnAF.setEnabled(false);
+                            chkBtnCA.setEnabled(false);
+                            chkBtnFR.setEnabled(false);
+                            chkBtnDC.setEnabled(false);
+                            chkBtnCPN.setEnabled(false);
+                        } else {
+                            if (chkBtnGAAC.getSelection()) {
+                                chkBtnTB.setEnabled(false);
+                                chkBtnCCR.setEnabled(false);
+                                chkBtnPPE.setEnabled(false);
+                                chkBtnSAAJ.setEnabled(false);
+                                chkBtnPTV.setEnabled(false);
+                                chkBtnAF.setEnabled(false);
+                                chkBtnCA.setEnabled(false);
+                                chkBtnFR.setEnabled(false);
+                                chkBtnDC.setEnabled(false);
+                                chkBtnCPN.setEnabled(false);
+                            } else {
+                                if (chkBtnAF.getSelection()) {
+                                    chkBtnTB.setEnabled(false);
+                                    chkBtnCCR.setEnabled(false);
+                                    chkBtnPPE.setEnabled(false);
+                                    chkBtnSAAJ.setEnabled(false);
+                                    chkBtnGAAC.setEnabled(false);
+                                    chkBtnPTV.setEnabled(false);
+                                    chkBtnCA.setEnabled(false);
+                                    chkBtnFR.setEnabled(false);
+                                    chkBtnDC.setEnabled(false);
+                                    chkBtnCPN.setEnabled(false);
+                                } else {
+                                    if (chkBtnCA.getSelection()) {
+                                        chkBtnTB.setEnabled(false);
+                                        chkBtnCCR.setEnabled(false);
+                                        chkBtnPPE.setEnabled(false);
+                                        chkBtnSAAJ.setEnabled(false);
+                                        chkBtnGAAC.setEnabled(false);
+                                        chkBtnAF.setEnabled(false);
+                                        chkBtnPTV.setEnabled(false);
+                                        chkBtnFR.setEnabled(false);
+                                        chkBtnDC.setEnabled(false);
+                                        chkBtnCPN.setEnabled(false);
+                                    } else {
+                                        if (chkBtnFR.getSelection()) {
+                                            chkBtnTB.setEnabled(false);
+                                            chkBtnCCR.setEnabled(false);
+                                            chkBtnPPE.setEnabled(false);
+                                            chkBtnSAAJ.setEnabled(false);
+                                            chkBtnGAAC.setEnabled(false);
+                                            chkBtnAF.setEnabled(false);
+                                            chkBtnPTV.setEnabled(false);
+                                            chkBtnCA.setEnabled(false);
+                                            chkBtnDC.setEnabled(false);
+                                            chkBtnCPN.setEnabled(false);
+                                        } else {
+                                        	if (chkBtnCPN.getSelection()) { 
+                                                chkBtnTB.setEnabled(false);
+                                                chkBtnCCR.setEnabled(false);
+                                                chkBtnPPE.setEnabled(false);
+                                                chkBtnSAAJ.setEnabled(false);
+                                                chkBtnGAAC.setEnabled(false);
+                                                chkBtnAF.setEnabled(false);
+                                                chkBtnPTV.setEnabled(false);
+                                                chkBtnCA.setEnabled(false);
+                                                chkBtnDC.setEnabled(false);
+                                                chkBtnFR.setEnabled(false);
+											} else {
+												if (chkBtnDC.getSelection()) { 
+	                                                chkBtnTB.setEnabled(false);
+	                                                chkBtnCCR.setEnabled(false);
+	                                                chkBtnPPE.setEnabled(false);
+	                                                chkBtnSAAJ.setEnabled(false);
+	                                                chkBtnGAAC.setEnabled(false);
+	                                                chkBtnAF.setEnabled(false);
+	                                                chkBtnPTV.setEnabled(false);
+	                                                chkBtnCA.setEnabled(false);
+	                                                chkBtnFR.setEnabled(false);
+	                                                chkBtnCPN.setEnabled(false); 
+												}
+											}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
-

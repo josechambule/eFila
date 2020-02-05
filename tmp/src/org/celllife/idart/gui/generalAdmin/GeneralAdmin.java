@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.dao.ConexaoODBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
 import org.celllife.idart.gui.doctor.AddDoctor;
@@ -391,6 +390,8 @@ public class GeneralAdmin extends GenericAdminGui {
 				cmd_generateTemplate();
 			}
 		});
+		
+		btnGenerateTemplate.setEnabled(false);
 
 		//  
 		Button btnImportPatients = new Button(grpImport, SWT.NONE);
@@ -408,6 +409,8 @@ public class GeneralAdmin extends GenericAdminGui {
 				cmd_importPatients();
 			}
 		});
+		
+		btnImportPatients.setEnabled(false);
 		
 		
 		// btnImportPatientsSESP
@@ -427,6 +430,7 @@ public class GeneralAdmin extends GenericAdminGui {
 						cmd_importPatientsSESP();
 					}
 				});
+				btnImportPatientsSESP.setEnabled(false);
 				
 	}
 
@@ -565,7 +569,7 @@ public class GeneralAdmin extends GenericAdminGui {
 		String sheet = "Sheet1";
 		InputDialog sheetInput = new InputDialog(getShell(),
 		            "Nome do sheeet Excel", 
-		            "Por favor inserir o nome do sheet Excel para import��o", 
+		            "Por favor inserir o nome do sheet Excel para imporação", 
 		            sheet, null);
         if (sheetInput.open() == Window.OK) {
         	sheet = sheetInput.getValue();
@@ -644,7 +648,7 @@ public char getUserPermission(){
 
 		
 		
-		ConexaoODBC odbc=new ConexaoODBC();
+		//ConexaoODBC odbc=new ConexaoODBC();
 		Connection c=null;
 		
 		ConexaoJDBC jdbc=new ConexaoJDBC();
@@ -652,7 +656,7 @@ public char getUserPermission(){
 		jdbc.insere_sync_temp_patients();
 		try {
 			
-		 c=odbc.getConnection();
+		 //c=odbc.getConnection();
 			 
 		} catch (Exception e) {
 		
@@ -665,7 +669,7 @@ public char getUserPermission(){
 					| SWT.OK);
         	conexaoACCESS.setText("Conexão com Base de Dados SESP");
         	conexaoACCESS
-			.setMessage("O iDART não está a se conectar com o SESP.\n Por favor verifique se os cabos da rede estão ligados no seu \ncomputador ou se o computador com SESP est� ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, não será possivel importar os pacientes do SESP");
+			.setMessage("O iDART não está a se conectar com o SESP.\n Por favor verifique se os cabos da rede estão ligados no seu \ncomputador ou se o computador com SESP está ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, não será possivel importar os pacientes do SESP");
         	conexaoACCESS.open();
 			
 		}

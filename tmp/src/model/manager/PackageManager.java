@@ -895,6 +895,21 @@ public class PackageManager {
 		}
 
 	}
+	
+    public static void savePackageQty0(Session sess, Packages packageToSave)
+            throws HibernateException {
+
+        Prescription pre = packageToSave.getPrescription();
+
+        if (pre != null) {
+            packageToSave.setPrescription(pre);
+            pre.getPackages().add(packageToSave);
+        }
+
+        sess.save(packageToSave);
+     //   sess.flush();
+
+    }
 
 	/**
 	 * Method update.
