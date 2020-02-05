@@ -19,6 +19,7 @@ import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PillCount;
 import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.RegimeTerapeutico;
 import org.celllife.idart.database.hibernate.Regimen;
 import org.celllife.idart.database.hibernate.RegimenDrugs;
 import org.celllife.idart.database.hibernate.Stock;
@@ -217,6 +218,24 @@ public class DeletionsManager {
 				.executeUpdate();
 
 		log.info("deleting Regimen record " + reg.getId());
+
+	}
+        
+        public static void removeRegimeTerapeuico(Session sess, RegimeTerapeutico reg)
+			throws HibernateException {
+
+		// delete regimen drugs, if any
+		for (RegimenDrugs rd : reg.getRegimenDrugs()) {
+			String regDelete = "delete RegimenDrugs where id = :rdId";
+			sess.createQuery(regDelete).setInteger("rdId", rd.getId())
+					.executeUpdate();
+			log.info("deleting RegimenDrugs record " + rd.getId());
+		}
+		String regDrugsDelete = "delete RegimeTerapeutico where regimeid = :rId";
+		sess.createQuery(regDrugsDelete).setInteger("rId", reg.getRegimeid())
+				.executeUpdate();
+
+		log.info("deleting RegimeTerapeutico record " + reg.getRegimeid());
 
 	}
 

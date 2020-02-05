@@ -36,7 +36,9 @@ public class RegimenDrugs {
 
 	@ManyToOne
 	@JoinColumn(name = "regimen", insertable = false, updatable = false)
-	private Regimen regimen;
+	/* alterado por colaco nhongo: join com a tabela regime terapeutico*/
+//        private Regimen regimen;
+        private RegimeTerapeutico regimen;
 
 	@ManyToOne
 	@JoinColumn(name = "drug")
@@ -122,7 +124,7 @@ public class RegimenDrugs {
 	 * Method getRegimen.
 	 * @return Regimen
 	 */
-	public Regimen getRegimen() {
+	public RegimeTerapeutico getRegimen() {
 		return regimen;
 	}
 
@@ -130,7 +132,7 @@ public class RegimenDrugs {
 	 * Method setRegimen.
 	 * @param regimen Regimen
 	 */
-	public void setRegimen(Regimen regimen) {
+	public void setRegimen(RegimeTerapeutico regimen) {
 		this.regimen = regimen;
 	}
 

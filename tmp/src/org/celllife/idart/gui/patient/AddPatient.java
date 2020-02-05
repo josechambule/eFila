@@ -1043,8 +1043,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 		String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+StringUtils.replace(patientId, " ", "%20"));
 				
 		if (openMrsResource.length() == 14) {
-			title = Messages.getString("Informa��o n�o encontrada");
-			message = Messages.getString("NID inserido n�o existe no OpenMRS");
+			title = Messages.getString("Informação não encontrada");
+			message = Messages.getString("NID inserido não existe no OpenMRS");
 			txtPatientId.setFocus();
 			result = false;
 		}
@@ -2431,8 +2431,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 				
 		if (openMrsResource.length() == 14) {
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Informa��o n�o encontrada"); //$NON-NLS-1$
-			mb.setMessage("NID inserido n�o existe no OpenMRS"); //$NON-NLS-1$
+			mb.setText("Informção não encontrada"); //$NON-NLS-1$
+			mb.setMessage("NID inserido não existe no OpenMRS"); //$NON-NLS-1$
 			mb.open();
 			txtPatientId.setFocus();
 			return false;

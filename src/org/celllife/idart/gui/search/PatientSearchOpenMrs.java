@@ -198,7 +198,7 @@ public class PatientSearchOpenMrs extends GenericOthersGui {
 	 */
 	@Override
 	protected void createShell() {
-		buildShell("Identifica��o de Pacientes", new Rectangle(0, 0, 600, 570));
+		buildShell("Identificação de Pacientes", new Rectangle(0, 0, 600, 570));
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class PatientSearchOpenMrs extends GenericOthersGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		buildCompHeader("Identifica��o do Paciente", iDartImage.PATIENTINFOLABEL);
+		buildCompHeader("Identificação do Paciente", iDartImage.PATIENTINFOLABEL);
 	}
 
 	/**

@@ -97,7 +97,7 @@ public class TransactionLog extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Per�odo de Tempo:");
+		grpDateRange.setText("Período de Tempo:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 80, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -192,8 +192,8 @@ public class TransactionLog extends GenericReportGui {
 				.getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Data Final Inv�lida");
-			mb.setMessage("Por favor seleccione uma data final que � depois da data inicial");
+			mb.setText("Data Final Inválida");
+			mb.setMessage("Por favor seleccione uma data final que é depois da data inicial");
 			mb.open();
 		}
 		else {

@@ -13,3 +13,5 @@ src/jdbc.properties
 /target
 /tmp
 Reports/tmpPackageProcessing.csv
+/nbproject/private/
+/build/

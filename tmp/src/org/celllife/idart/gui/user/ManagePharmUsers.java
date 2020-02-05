@@ -177,7 +177,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		rdBtnAddUser = new Button(grpAddOrConfigureUser, SWT.RADIO);
 		rdBtnAddUser.setBounds(new Rectangle(20, 12, 160, 30));
 		rdBtnAddUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnAddUser.setText("Adicionar novo usu�rio");
+		rdBtnAddUser.setText("Adicionar novo usuário");
 		
 		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
 		rdBtnAddUser.setSelection(false);
@@ -245,7 +245,7 @@ if(localUser.getPermission()!='A'){
 			Label lblUser = new Label(grpUserInfo, SWT.NONE);
 			lblUser.setBounds(new Rectangle(30, 20, 125, 20));
 			lblUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-			lblUser.setText("* Usu�rio:");
+			lblUser.setText("* Usuário:");
 			txtUser = new Text(grpUserInfo, SWT.BORDER);
 			txtUser.setBounds(new Rectangle(185, 20, 130, 20));
 			txtUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -274,7 +274,7 @@ if(localUser.getPermission()!='A'){
 						lblTipoUser.setBounds(new Rectangle(30, 110, 125, 20));
 						lblTipoUser.setFont(ResourceUtils
 								.getFont(iDartFont.VERASANS_8));
-						lblTipoUser.setText("* Tipo do Usu�rio:");
+						lblTipoUser.setText("* Tipo do Usuário:");
 						tipo_user = new Combo(grpUserInfo, SWT.BORDER);
 						tipo_user.setBounds(new Rectangle(185, 110, 125,
 								20));
@@ -297,7 +297,7 @@ if(localUser.getPermission()!='A'){
 			Label lblUser = new Label(grpUserInfo, SWT.NONE);
 			lblUser.setBounds(new Rectangle(30, 20, 125, 20));
 			lblUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-			lblUser.setText("* Usu�rio:");
+			lblUser.setText("* Usuário:");
 			txtUser = new Text(grpUserInfo, SWT.BORDER);
 			txtUser.setBounds(new Rectangle(185, 20, 130, 20));
 			txtUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -366,7 +366,7 @@ if(localUser.getPermission()!='A'){
 
 		Label confLabel = new Label(grpUserRoles, SWT.NONE);
 		confLabel.setBounds(new Rectangle(40, 10, 150, 15));
-		confLabel.setText("Configure o tipo de usu�rio:");
+		confLabel.setText("Configure o tipo de usuário:");
 		confLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		
 		rdBtnStudy = new Button(grpUserRoles, SWT.RADIO);
@@ -378,7 +378,7 @@ if(localUser.getPermission()!='A'){
 		rdBtnReports = new Button(grpUserRoles, SWT.RADIO);
 		rdBtnReports.setBounds(new Rectangle(20, 50, 150, 30));
 		rdBtnReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnReports.setText("acesso a relat�rios");
+		rdBtnReports.setText("acesso a relatórios");
 		rdBtnReports.setSelection(false);
 		
 	}
@@ -440,7 +440,7 @@ if(localUser.getPermission()!='A'){
 		if (isAddNotUpdate && txtUser.getText().trim().equals("")) {
 
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("O nome de usuário n�o pode ficar em branco");
+			b.setMessage("O nome de usuário não pode ficar em branco");
 			b.setText("Faltando Informação");
 			b.open();
 			txtUser.setFocus();
@@ -449,7 +449,7 @@ if(localUser.getPermission()!='A'){
 		}
 		if (isAddNotUpdate && txtPassword.getText().trim().equals("")) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("A senha n�o pode ficar em branco");
+			b.setMessage("A senha não pode ficar em branco");
 			b.setText("Faltando Informação");
 			b.open();
 			txtPassword.setFocus();
@@ -465,7 +465,7 @@ if(localUser.getPermission()!='A'){
 					.equals(txtPassword.getText().trim())) {
 				MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR
 						| SWT.OK);
-				b.setMessage("A nova senha � a mesma que a senha antiga");
+				b.setMessage("A nova senha é a mesma que a senha antiga");
 				b.setText("Nova senha inválida");
 				b.open();
 				txtPassword.setFocus();
@@ -642,7 +642,7 @@ if(localUser.getPermission()!='A'){
 					m
 					.setMessage(isAddNotUpdate ? "O Usuário '".concat(
 							txtUser.getText()).concat(
-							"' n�o foi gravado. ").concat(
+							"' não foi gravado. ").concat(
 							"\n\nPor favor tente de novo.")
 							: "A senha não pode ser alterado. Por favor, tente novamente");
 					m.open();

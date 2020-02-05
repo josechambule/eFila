@@ -17,6 +17,7 @@ import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.RegimeTerapeutico;
 import org.celllife.idart.database.hibernate.Regimen;
 import org.celllife.idart.database.hibernate.RegimenDrugs;
 import org.hibernate.HibernateException;
@@ -428,6 +429,22 @@ public class DrugManager {
 		return result;
 	}
 
+        	public static RegimeTerapeutico getRegimeTerapeutico(Session session, String name)
+			throws HibernateException {
+		RegimeTerapeutico result = null;
+		List<RegimeTerapeutico> regList = session.createQuery(
+				"from RegimeTerapeutico r where r.regimeesquema = :name").setString("name",
+				name).list();
+		if (regList.size() > 0) {
+			if (regList.size() > 1) {
+				log.warn("Existem dois regimes com o mesmo nome '" + name
+						+ "' no IDART.");
+			}
+			result = regList.get(0);
+		}
+		return result;
+	}
+        
 	/**
 	 * Method regimenDrugsDuplicated.
 	 * 
@@ -437,7 +454,7 @@ public class DrugManager {
 	 * @return boolean
 	 * @throws HibernateException
 	 */
-	public static boolean regimenDrugsDuplicated(Regimen theRegToSave)
+	public static boolean regimenDrugsDuplicated(RegimeTerapeutico theRegToSave)
 			throws HibernateException {
 		Iterator<RegimenDrugs> it2 = theRegToSave.getRegimenDrugs().iterator();
 		Set<Integer> theDrugSet = new HashSet<Integer>();
@@ -459,13 +476,14 @@ public class DrugManager {
 	 * @param session
 	 *            Session
 	 * @param theRegToSave
-	 *            Regimen
-	 * @return boolean
+	 *            RegimeTerapeutico 
+	 * @return boolean 
 	 * @throws HibernateException
 	 */
+        /*Alterado por colaco para acomodar ao regimeTerapeutico*/
 	@SuppressWarnings("unchecked")
 	public static boolean regimenDrugsIdentical(Session session,
-			Regimen theRegToSave) throws HibernateException {
+			         RegimeTerapeutico theRegToSave) throws HibernateException {
 		List<RegimenDrugs> regDrugs = theRegToSave.getRegimenDrugs();
 		Iterator<RegimenDrugs> it2 = regDrugs.iterator();
 		Set<Integer> theDrugSet = new HashSet<Integer>();
@@ -473,13 +491,13 @@ public class DrugManager {
 			RegimenDrugs rd = it2.next();
 			theDrugSet.add(rd.getDrug().getId());
 		}
-		List<Regimen> resultList = session.createQuery("from Regimen r ")
+		List<RegimeTerapeutico> resultList = session.createQuery("from RegimeTerapeutico r ")
 				.list();
-		Iterator<Regimen> it = resultList.iterator();
+		Iterator<RegimeTerapeutico> it = resultList.iterator();
 
 		while (it.hasNext()) {
-			Regimen theReg = it.next();
-			if (theRegToSave.getId() == null || theReg.getId() != theRegToSave.getId()) {
+			RegimeTerapeutico theReg = it.next();
+			if (theRegToSave == null || theReg.getRegimeid()!= theRegToSave.getRegimeid()) {
 				Iterator<RegimenDrugs> it3 = theReg.getRegimenDrugs()
 						.iterator();
 				Set<Integer> theExistingDrugSet = new HashSet<Integer>();
@@ -540,6 +558,16 @@ public class DrugManager {
 		return false;
 	}
 
+        public static boolean regimeTerapeuticoNameExists(Session session, String name)
+			throws HibernateException {
+		List<RegimeTerapeutico> resultList = session.createQuery(
+				"from RegimeTerapeutico r where " + "upper(r.regimeesquema) = :name")
+				.setString("name", name.toUpperCase()).list();
+		if (resultList.size() > 0)
+			return true;
+		return false;
+	}
+        
 	/**
 	 * Method saveRegimen.
 	 * 
@@ -555,6 +583,12 @@ public class DrugManager {
 
 	}
 
+        public static void saveRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
+			throws HibernateException {
+		sess.save(theRegToSave);
+
+	}
+        
 	/**
 	 * Returns the information of the prescribed drug
 	 * 
