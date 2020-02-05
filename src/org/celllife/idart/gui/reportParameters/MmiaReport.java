@@ -318,7 +318,7 @@ public class MmiaReport extends GenericReportGui {
 	
 	private void createGrpDateRange() {
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Per�odo:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));

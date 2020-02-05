@@ -296,7 +296,7 @@ iDARTChangeListener {
 				noPatient
 				.setMessage("O Paciente "
 						+ (txtPatientId.getText()).toUpperCase()
-						+ " n�o tem epis�dio actual. \n\nVoc� precisa come�ar um novo epis�dio para este paciente (Usando a tela 'Actualizar Paciente Existente') antes de registar a sua Prescrição.");
+						+ " não tem episódio actual. \n\nVocê precisa começar um novo episódio para este paciente (Usando a tela 'Actualizar Paciente Existente') antes de registar a sua Prescrição.");
 				noPatient.open();
 				txtPatientId.setFocus();
 				txtPatientId.setText("");
@@ -443,7 +443,7 @@ iDARTChangeListener {
 		btnSearch.setBounds(new Rectangle(320, 9, 108, 30));
 		btnSearch.setText("Procurar Paciente");
 		btnSearch
-		.setToolTipText("Pressione este bot�o para procurar um paciente existente");
+		.setToolTipText("Pressione este botão para procurar um paciente existente");
 		btnSearch
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -465,7 +465,7 @@ iDARTChangeListener {
 		}
 
 		btnEkapaSearch
-		.setToolTipText("Pressione este bot�o para importar um paciente de eKapa.");
+		.setToolTipText("Pressione este botão para importar um paciente de eKapa.");
 		btnEkapaSearch
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 
@@ -834,7 +834,7 @@ iDARTChangeListener {
 			afterEpisodeStart.setDescription("Este paciente paciente foi marcado com "
 					+ latestEpi.getStartReason()
 					+ " em <date>. A data da Prescrição deve estar em,"
-					+ " ou depois da data deste epis�dio.");
+					+ " ou depois da data deste episódio.");
 			rule = new AndRule<Date>(rule, afterEpisodeStart);
 		}
 
@@ -880,7 +880,7 @@ iDARTChangeListener {
 		btnPatientHistoryReport = new Button(grpParticulars, SWT.NONE);
 		btnPatientHistoryReport.setBounds(new Rectangle(270, 48, 40, 40));
 		btnPatientHistoryReport
-		.setToolTipText("Pressione este bot�o para visualizar e / ou imprimir relat�rios \n do hist�rico das prescri��es do paciente.");
+		.setToolTipText("Pressione este botão para visualizar e / ou imprimir relatórios \n do histórico das prescrições do paciente.");
 		btnPatientHistoryReport.setImage(ResourceUtils
 				.getImage(iDartImage.REPORT_PATIENTHISTORY_30X26));
 
@@ -979,7 +979,7 @@ iDARTChangeListener {
 				cmdAddDoctorWidgetSelected();
 			}
 		});
-		btnAddDoctor.setToolTipText("Pressionar este bot�o para adicionar um novo cl�nico");
+		btnAddDoctor.setToolTipText("Pressionar este bot�o para adicionar um novo clínico");
 
 		// Duration
 		Label lblDuration = new Label(grpParticulars, SWT.NONE);
@@ -1453,9 +1453,9 @@ iDARTChangeListener {
 				&& cmbUpdateReason.getText().trim().equals("")) {
 			MessageBox missingUpdateReason = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			missingUpdateReason.setText("Inserir motivo de mudan�a");
+			missingUpdateReason.setText("Inserir motivo de mudança");
 			missingUpdateReason
-			.setMessage("O campo 'Motivo de mudan�a' n�o foi inserido.");
+			.setMessage("O campo 'Motivo de mudança' não foi inserido.");
 			cmbUpdateReason.setFocus();
 			missingUpdateReason.open();
 			return false;
@@ -2170,11 +2170,11 @@ iDARTChangeListener {
 				MessageBox noPatient = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
 
-				noPatient.setText("Paciente n�o possui um Epis�dio actual");
+				noPatient.setText("Paciente não possui um Episódio actual");
 				noPatient
 				.setMessage("O Paciente "
 						+ (txtPatientId.getText()).toUpperCase()
-						+ " n�o possui um Epis�dio actual. \n\nPrecisa Iniciar um novo epis�dio para este Paciente (usando a tela 'Actualizar Paciente Existente') antes de registra a sua Prescrição.");
+						+ " não possui um Episódio actual. \n\nPrecisa Iniciar um novo episódio para este Paciente (usando a tela 'Actualizar Paciente Existente') antes de registra a sua Prescrição.");
 				noPatient.open();
 				txtPatientId.setFocus();
 				txtPatientId.setText("");

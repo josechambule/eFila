@@ -36,6 +36,7 @@ import org.celllife.idart.database.hibernate.RegimeTerapeutico;
 import org.celllife.idart.database.hibernate.Regimen;
 import org.celllife.idart.database.hibernate.SimpleDomain;
 import org.celllife.idart.database.hibernate.StockCenter;
+import org.celllife.idart.messages.Messages;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Combo;
 import org.hibernate.Session;
@@ -66,6 +67,8 @@ public class CommonObjects {
 
 	public static final int ATC = 11;
 
+        public static final int REGIMESACTIVOS = 12;
+        
 	public static String timesPerDayLanguage1 = "times per day";
 
 	public static String timesPerDayLanguage2 = "ngemini";
@@ -634,6 +637,37 @@ public class CommonObjects {
 		cmbRegimen.setItems(items);
 	}
 
+         /*
+ * 
+ * Este metodo popula o ccombo linha terapeutica  - Idart antigo 
+ * Modified by : Colaco Nhongo
+ * Modifica date: 14/01/2017
+ */      
+      
+	public static void populateLinhas(Session session, CCombo cmbLine) {
+		List<LinhaT> lines = AdministrationManager
+				.getAllLinhas(session);
+		String[] items = new String[lines.size()];
+		for (int i = 0; i < lines.size(); i++) {
+			items[i] = lines.get(i).getLinhanome();
+		}
+		cmbLine.setItems(items);
+		
+	}
+ 
+        public static void populateComboRegimenStatus(Session session, CCombo cmbLine) {
+		String[] items = new String[2];
+		items[0] =Messages.getString("addRegimen.field.active");
+                items[1] = Messages.getString("addRegimen.field.inactive");
+		cmbLine.setItems(items);
+		
+	}
+        
+        public static void populateYesNo(Session hSession, CCombo genericYesNo) {
+		genericYesNo.add("Sim");
+                genericYesNo.add("Nao");
+	}
+        
 	/**
 	 * Este metodo popula o ccombo de motivo de mudanca de ARV
 	 * @param hSession
