@@ -25,8 +25,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
 	
 
 
-	public MiaReportMISAU(Shell parent, StockCenter stockCenter, Date theStartDate,
-			Date theEndDate) {
+	public MiaReportMISAU(Shell parent, StockCenter stockCenter, Date theStartDate, Date theEndDate) {
 		super(parent);
 		this.stockCenter = stockCenter;
 		this.theStartDate=theStartDate;
@@ -39,85 +38,43 @@ public class MiaReportMISAU extends AbstractJasperReport {
 
 	@Override
 	protected Map<String, Object> getParameterMap() throws ReportException {
-//		Calendar calStart = Calendar.getInstance();
-//		calStart.setTime(theStartDate);
-//		calStart.set(Calendar.DATE, 1);
-//		calStart.set(Calendar.HOUR_OF_DAY, 0);
-//		calStart.set(Calendar.MINUTE, 0);
-//		calStart.set(Calendar.SECOND, 0);
-//		calStart.set(Calendar.MILLISECOND, 0);
-//		
-//		
-//		Calendar calEnd = Calendar.getInstance();
-//		 calEnd.setTime(theEndDate);
-//		 calEnd.set(Calendar.DATE,1);
-//		 calEnd.set(Calendar.HOUR_OF_DAY, 0);
-//		 calEnd.set(Calendar.MINUTE, 0);
-//		 calEnd.set(Calendar.SECOND, 0);
-//		 calEnd.set(Calendar.MILLISECOND, 0);
 		
-		//total de pacientes
-		ConexaoJDBC conn=new ConexaoJDBC();
+		ConexaoJDBC conn = new ConexaoJDBC();
 
-		
-		// Set the parameters for the report
-				Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 				
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			
 			//Total de pacientes que levantaram arv 20 a 20
 			int totalpacientesfarmacia = conn.totalPacientesFarmacia(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Total de pacientes "+ totalpacientesfarmacia);
-		
 		
 			int totalpacientesinicio = conn.totalPacientesInicio(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Total de pacientes Inicio arv "+ totalpacientesinicio);
 			
 			int totalpacientestransito = conn.totalPacientesEmTransito(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Total de pacientes Inicio arv "+ totalpacientesinicio);
-			
 			
 			int totalpacientesmanter = conn.totalPacientesManter(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Total de pacientes a manter arv "+ totalpacientesmanter);
-		
 			
-             int totalpacientesalterar =conn.totalPacientesAlterar(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
- 			System.out.println("Total de pacientes a alterar arv "+ totalpacientesalterar);
- 			
+            int totalpacientesalterar =conn.totalPacientesAlterar(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
  				
- 			 int totalpacientesppe =conn.totalPacientesPPE(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-  			System.out.println("Total de pacientes ppe "+ totalpacientesppe);
+ 			int totalpacientesppe =conn.totalPacientesPPE(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
   			
-  			
-  			 int totalpacienteptv =conn.totalPacientes_PTV(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-   			System.out.println("Total de pacientes ptv "+ totalpacienteptv);
-   			
+  			int totalpacienteptv =conn.totalPacientes_PTV(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
 			
 			int mesesdispensados=conn.mesesDispensados(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Meses dispensados "+ mesesdispensados);
 			
 			int pacientesEmTarv=conn.pacientesActivosEmTarv(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			System.out.println("Pacientes em tarv  "+ pacientesEmTarv);
 			
             int mesesdispensadosparaDT = conn.mesesDispensadosParaDT(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            System.out.println("Meses dispensados Para DT "+ mesesdispensadosparaDT);
             
             int mesesdispensadosparaDS = conn.mesesDispensadosParaDS(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            System.out.println("Meses dispensados Para DS "+ mesesdispensadosparaDS);
-			
-			//ConexaoODBC conn2=new ConexaoODBC();
-			//int _pacientesEmTarv=conn2.pacientesActivosEmTarv();
-			//System.out.println("Pacientes em tarv  "+ pacientesEmTarv);
 			
 		map.put("stockCenterId", new Integer(stockCenter.getId()));
 		map.put("date", theStartDate);
 		map.put("dateFormat", dateFormat.format(theStartDate));
 		map.put("monthStart", dateFormat.format(theStartDate));
 		
-		//calStart.add(Calendar.MONTH, 1);
-		
-	User localUser = LocalObjects.getUser(getHSession());
+		User localUser = LocalObjects.getUser(getHSession());
 		
 		map.put("username",localUser.getUsername());
 		map.put("monthEnd", dateFormat.format(theEndDate));
@@ -144,10 +101,8 @@ public class MiaReportMISAU extends AbstractJasperReport {
 		map.put("totalpacientesds",String.valueOf(mesesdispensadosparaDS));
 
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -162,10 +117,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
 	
 
 
-	private String mesPortugues(Date data )
-	{
-		
-		
+	private String mesPortugues(Date data ) {
 		
 		String mes="";
 		
@@ -175,25 +127,25 @@ public class MiaReportMISAU extends AbstractJasperReport {
 		 
 
 		int mesint =calendar.get(Calendar.MONTH);
-		System.out.println(mesint);
-		switch(mesint)
-		{
-		case 0: mes="Janeiro";break;
-		case 1: mes="Fevereiro";break;
-		case 2: mes="Março";break;
-		case 3: mes="Abril";break;
-		case 4: mes="Maio";break;
-		case 5: mes="Junho";break;
-		case 6: mes="Julho";break;
-		case 7: mes="Agosto";break;
-		case 8: mes="Setembro";break;
-		case 9: mes="Outubro";break;
-		case 10: mes="Novembro";break;
-		case 11: mes="Dezembro";break;
-		default:mes="";break;
 		
+		System.out.println(mesint);
+		
+		switch(mesint) {
+			case 0: mes="Janeiro";break;
+			case 1: mes="Fevereiro";break;
+			case 2: mes="Março";break;
+			case 3: mes="Abril";break;
+			case 4: mes="Maio";break;
+			case 5: mes="Junho";break;
+			case 6: mes="Julho";break;
+			case 7: mes="Agosto";break;
+			case 8: mes="Setembro";break;
+			case 9: mes="Outubro";break;
+			case 10: mes="Novembro";break;
+			case 11: mes="Dezembro";break;
+			default:mes="";break;
 		}
+		
 		return mes;
 	}
-
 }

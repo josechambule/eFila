@@ -26,6 +26,7 @@ import java.util.Set;
 import model.manager.PatientManager;
 import model.manager.SearchManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.IdentifierType;
@@ -36,6 +37,7 @@ import org.celllife.idart.gui.platform.GenericOthersGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class PatientSearch extends GenericOthersGui {
 
@@ -111,32 +114,26 @@ public class PatientSearch extends GenericOthersGui {
 		this.searchString = patientId == null ? "" : patientId;
 		loadPatientIdentifiers();
 		
-		/*if (selectedIdentifier== null) {
-			RestClient restClient = new RestClient();
-			
-			String openMrsResource = restClient.getOpenMRSResource("patient?q="+StringUtils.replace(patientId, " ", "%20"));
-			
-			Transaction tx = null;
-
-			try {
-				tx = getHSession().beginTransaction();
-
-				for (IPatientTab tab : groupTabs) {
-					tab.submit(localPatient);
-				}
-
-				PatientManager.savePatient(getHSession(), localPatient);
-								
-				getHSession().flush();
-				tx.commit();
-
-			} catch (Exception he) {
-				if (tx != null) {
-					tx.rollback();
-				}
-				getLog().error("Error saving patient to the database.", he);
-			}
-		}*/
+		/*
+		 * if (selectedIdentifier== null) { RestClient restClient = new RestClient();
+		 * 
+		 * String openMrsResource =
+		 * restClient.getOpenMRSResource("patient?q="+StringUtils.replace(patientId,
+		 * " ", "%20"));
+		 * 
+		 * Transaction tx = null;
+		 * 
+		 * try { tx = getHSession().beginTransaction();
+		 * 
+		 * for (IPatientTab tab : groupTabs) { tab.submit(localPatient); }
+		 * 
+		 * PatientManager.savePatient(getHSession(), localPatient);
+		 * 
+		 * getHSession().flush(); tx.commit();
+		 * 
+		 * } catch (Exception he) { if (tx != null) { tx.rollback(); }
+		 * getLog().error("Error saving patient to the database.", he); } }
+		 */
 		
 		if (patientids.size() == 1){
 			return identifiers.get(0);
@@ -149,7 +146,7 @@ public class PatientSearch extends GenericOthersGui {
 	
 	public PatientIdentifier searchByName(String patientId) {
 		this.searchString = patientId == null ? "" : patientId;
-		loadPatientIdentifiersOpenMRS();
+		//loadPatientIdentifiersOpenMRS();
 		if (patientids.size() == 1){
 			return identifiers.get(0);
 		}
@@ -179,22 +176,18 @@ public class PatientSearch extends GenericOthersGui {
 			});
 	}
 	
-	private void loadPatientIdentifiersOpenMRS() {
-		BusyIndicator.showWhile(getParent().getDisplay(), 
-			new Runnable() {
-				@Override
-				public void run() {
-					
-					identifiers = SearchManager.getPatientIdentifiersByName(getHSession(), searchString, showInactive, types);	
-					
-					if (identifiers.size() <= maxNumberOfIdentifiersPerPatient){
-						populatePatientIds();
-					} else {
-						patientids.clear();
-					}
-				}
-			});
-	}
+	/*
+	 * private void loadPatientIdentifiersOpenMRS() {
+	 * BusyIndicator.showWhile(getParent().getDisplay(), new Runnable() {
+	 * 
+	 * @Override public void run() {
+	 * 
+	 * identifiers = SearchManager.getPatientIdentifiersByName(getHSession(),
+	 * searchString, showInactive, types);
+	 * 
+	 * if (identifiers.size() <= maxNumberOfIdentifiersPerPatient){
+	 * populatePatientIds(); } else { patientids.clear(); } } }); }
+	 */
 	
 	private void updateTable(){
 		tblViewer.setInput(identifiers);

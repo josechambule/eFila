@@ -46,8 +46,7 @@ import org.hibernate.Session;
 
 /**
  */
-public abstract class GenericReportGui extends GenericGui implements
-GenericReportGuiInterface {
+public abstract class GenericReportGui extends GenericGui implements GenericReportGuiInterface {
 
 	protected Composite compHeader;
 
@@ -58,6 +57,8 @@ GenericReportGuiInterface {
 	protected Label lblHeader;
 
 	protected Button btnViewReport;
+	
+	protected Button btnViewReportXls;
 
 	protected Button btnClose;
 
@@ -115,6 +116,8 @@ GenericReportGuiInterface {
 	protected abstract void createCompButtons();
 
 	protected abstract void cmdViewReportWidgetSelected();
+	
+	protected abstract void cmdViewReportXlsWidgetSelected();
 
 	protected abstract void cmdCloseWidgetSelected();
 
@@ -222,6 +225,18 @@ GenericReportGuiInterface {
 			public void widgetSelected(
 					org.eclipse.swt.events.SelectionEvent e) {
 				cmdViewReportWidgetSelected();
+			}
+		});
+		
+		btnViewReportXls = new Button(getCompButtons(), SWT.NONE);
+		btnViewReportXls.setText(Messages.getString("reportgui.button.viewreport.xls.text")); //$NON-NLS-1$
+		btnViewReportXls.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		btnViewReportXls
+		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			@Override
+			public void widgetSelected(
+					org.eclipse.swt.events.SelectionEvent e) {
+				cmdViewReportXlsWidgetSelected();
 			}
 		});
 

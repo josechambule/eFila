@@ -2852,10 +2852,23 @@ public class ConexaoJDBC {
 
 				+ "    dispensas_e_prescricoes.nid=patient.patientid";
 
-		System.out.println("Historico de levantamento " + query);
-
 		return query;
 
+	}
+	
+	public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
+		
+		String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" + 
+				" FROM prescription pr\r\n" + 
+				" INNER JOIN patient pa ON pa.id=pr.patient\r\n" + 
+				" WHERE pr.id NOT IN (\r\n" + 
+				" SELECT prescription FROM package\r\n" + 
+				")\r\n" + 
+				" AND pr.date::timestamp::date >= '"+startDate+"'::timestamp::date\r\n" + 
+				" AND pr.date::timestamp::date <= '"+endDate+"'::timestamp::date\r\n" + 
+				" AND pr.current='T';";
+		
+		return query;
 	}
 
 	public void insere_sync_temp_dispense() {

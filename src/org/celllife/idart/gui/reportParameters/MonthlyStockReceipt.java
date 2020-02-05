@@ -251,4 +251,8 @@ public class MonthlyStockReceipt extends GenericReportGui {
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
 	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
 }

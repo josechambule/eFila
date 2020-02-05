@@ -20,13 +20,30 @@
 package org.celllife.idart.gui.reportParameters;
 
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import model.manager.reports.HHistoricoLevantamentos;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -39,37 +56,38 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import model.manager.reports.HHistoricoLevantamentos;
+import model.manager.reports.HistoricoLevantamentoXLS;
+
 /**
  */
 public class HistoricoLevantamentos extends GenericReportGui {
-	
 	
 	private Group grpDateRange;
 	
 	private Group grpTipoTarv;
 
-
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
 
 	private Button chkBtnInicio;
 
 	private Button chkBtnManutencao;
 	
 	private Button chkBtnAlteraccao;
-
+	
+	private List<HistoricoLevantamentoXLS> historicoLevantamentoXLS;
+	
+	private final Shell parent;
+	
+    private FileOutputStream out = null; 
 
 	/**
 	 * Constructor
@@ -81,6 +99,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	 */
 	public HistoricoLevantamentos(Shell parent, boolean activate) {
 		super(parent, REPORTTYPE_MIA, activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -110,21 +129,12 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		buildCompdHeader(REPORT_LEVANTAMENTOS_ARV, icoImage);
 	}
 
-
-
-
-
-
 	/**
 	 * This method initializes grpDateInfo
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-		
-		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -140,60 +150,187 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
 			return;
 		}
 		
 		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
 		{
-			
-			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv",
-					"Seleccione pelo menos um tipo TARV.");
+			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
-		}
-
-		else {
-			try {
-				
+		} else {
 			
-				
+			try {
+
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 				 
-
-
-				
-				
-				
 				Date theStartDate = calendarStart.getCalendar().getTime(); 
 			
 				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
 				
-			
-				
-				
-
-				
 				//theStartDate = sdf.parse(strTheDate);
 				
-				 
-				
-			
-
-	
-				
-				HHistoricoLevantamentos report = new HHistoricoLevantamentos(
-						getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
+				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
 				viewReport(report);
 			} catch (Exception e) {
-				getLog()
-				.error(
-						"Exception while running Historico levantamento report",
-						e);
+				getLog().error("Exception while running Historico levantamento report",e);
 			}
 		}
 
+	}
+	
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		System.out.println("Hello cmdViewReportXlsWidgetSelected");
+				
+		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			return;
+		}
+		
+		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
+		{
+			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
+			return;
+			
+		} else {
+			
+			try {
+
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+				
+				SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+
+				 
+				Date theStartDate = calendarStart.getCalendar().getTime(); 
+			
+				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
+				
+				//theStartDate = sdf.parse(strTheDate);
+				
+				historicoLevantamentoXLS = new ArrayList<HistoricoLevantamentoXLS>();
+				
+				try {
+					ConexaoJDBC con=new ConexaoJDBC();
+					
+					historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
+							chkBtnAlteraccao.getSelection(), sdf.format(theStartDate), sdf.format(theEndDate));
+					
+					if(historicoLevantamentoXLS.size() > 0) {
+						
+						FileInputStream currentXls = new FileInputStream("TemplateHistoricoLevantamento.xls");
+						
+						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+						
+						HSSFSheet sheet = workbook.getSheetAt(0);
+						
+						HSSFCellStyle cellStyle = workbook.createCellStyle();
+						cellStyle.setBorderBottom(BorderStyle.THIN);
+						cellStyle.setBorderTop(BorderStyle.THIN);
+						cellStyle.setBorderLeft(BorderStyle.THIN);
+						cellStyle.setBorderRight(BorderStyle.THIN);
+						cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+												
+						HSSFRow healthFacility = sheet.getRow(8); 
+						HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+						healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+						healthFacilityCell.setCellStyle(cellStyle); 
+						
+						HSSFRow reportPeriod = sheet.getRow(8);
+						HSSFCell reportPeriodCell = reportPeriod.createCell(6);
+						reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
+						reportPeriodCell.setCellStyle(cellStyle); 
+
+						HSSFRow reportYear = sheet.getRow(9);
+						HSSFCell reportYearCell = reportYear.createCell(6);
+						reportYearCell.setCellValue(sdfYear.format(theStartDate));
+						reportYearCell.setCellStyle(cellStyle); 
+
+						  for(int i=12; i<= sheet.getLastRowNum(); i++) 
+						  { 
+							Row row = sheet.getRow(i);
+						  	deleteRow(sheet,row);  
+						  }
+						 
+						  out = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls"));
+						  workbook.write(out); 
+						
+						int rowNum = 12;
+						
+						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
+							
+							Row row = sheet.createRow(rowNum++);
+							
+							Cell createCellNid = row.createCell(1);
+							createCellNid.setCellValue(xls.getPatientIdentifier());
+							createCellNid.setCellStyle(cellStyle); 
+							
+							Cell createCellNome = row.createCell(2);
+							createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
+							createCellNome.setCellStyle(cellStyle);
+	
+							Cell createCellTipoTarv = row.createCell(3);
+							createCellTipoTarv.setCellValue(xls.getTipoTarv());
+							createCellTipoTarv.setCellStyle(cellStyle);
+	
+							Cell createCellRegimeTerapeutico = row.createCell(4); 
+							createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
+							createCellRegimeTerapeutico.setCellStyle(cellStyle);
+	
+							Cell createCellTipoDispensa = row.createCell(5); 
+							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
+							createCellTipoDispensa.setCellStyle(cellStyle);
+	
+							Cell createCellDataLevantamento = row.createCell(6); 
+							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
+							createCellDataLevantamento.setCellStyle(cellStyle);
+	
+							Cell createCellDataProximoLevantamento = row.createCell(7);
+							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
+							createCellDataProximoLevantamento.setCellStyle(cellStyle);
+						}
+						
+						for(int i = 0; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
+				            sheet.autoSizeColumn(i);
+				        }
+						
+						currentXls.close();
+						
+						FileOutputStream outputStream = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls")); 
+						workbook.write(outputStream);
+						workbook.close();
+						
+						Desktop.getDesktop().open(new File("TemplateHistoricoLevantamento.xls"));
+						
+					} else {
+						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+						mNoPages.setText("Report Has No Pages");
+						mNoPages.setMessage("The report you are trying to generate does not contain any data. \n\nPlease check the input values you have entered (such as dates) for this report, and try again.");
+						mNoPages.open();
+					}
+										
+				} catch (SQLException | ClassNotFoundException e) { 
+					e.printStackTrace();
+				}
+				
+			} catch (Exception e) {
+				getLog().error("Exception while running Historico levantamento report",e);
+			}
+		}
+	}
+
+	private void deleteRow(HSSFSheet sheet, Row row) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (lastRowNum > 0) {
+			int rowIndex = row.getRowNum();
+			Row removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+				System.out.println("Deleting.... ");
+			}
+		}
 	}
 
 	/**
@@ -246,10 +383,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		chkBtnManutencao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnManutencao.setSelection(false);
 		
-		
-		
-	
-		
 		//chk button Alterar
 		chkBtnAlteraccao= new Button(grpTipoTarv, SWT.CHECK);
 		chkBtnAlteraccao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
@@ -257,8 +390,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		chkBtnAlteraccao.setText("Alteração");
 		chkBtnAlteraccao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnAlteraccao.setSelection(false);
-		
-		
 		
 		grpDateRange = new Group(getShell(), SWT.NONE);
 		grpDateRange.setText("Período:");

@@ -184,11 +184,9 @@ public abstract class AbstractJasperReport implements iDARTReport {
 						viewer.getReportViewer().setDocument(jp);
 						viewer.open();
 					} else {
-						MessageBox mNoPages = new MessageBox(parent,
-								SWT.ICON_ERROR | SWT.OK);
+						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
 						mNoPages.setText("Report Has No Pages");
-						mNoPages
-								.setMessage("The report you are trying to generate does not contain any data. \n\nPlease check the input values you have entered (such as dates) for this report, and try again.");
+						mNoPages.setMessage("The report you are trying to generate does not contain any data. \n\nPlease check the input values you have entered (such as dates) for this report, and try again.");
 						mNoPages.open();
 					}
 				}

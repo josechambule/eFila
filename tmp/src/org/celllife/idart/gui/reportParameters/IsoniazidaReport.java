@@ -52,21 +52,11 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class IsoniazidaReport extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Constructor
@@ -305,5 +295,11 @@ public class IsoniazidaReport extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		// TODO Auto-generated method stub
+		
 	}
 }

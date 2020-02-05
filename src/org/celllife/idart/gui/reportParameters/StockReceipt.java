@@ -112,7 +112,6 @@ public class StockReceipt extends GenericReportGui {
 		lblHeader.setBounds(new org.eclipse.swt.graphics.Rectangle(60, 20, 370,
 				30));
 		lblHeader.setText("Stock Receipt (Received at Pharmacy)");
-
 	}
 
 	/**
@@ -242,6 +241,12 @@ public class StockReceipt extends GenericReportGui {
 	@Override
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

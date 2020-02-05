@@ -1,75 +1,764 @@
-19-12-2019 16:00:31 [main] INFO  dart.start.PharmacyApplication - 
-19-12-2019 16:00:31 [main] INFO  dart.start.PharmacyApplication - *********************
-19-12-2019 16:00:31 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
-19-12-2019 16:00:31 [main] INFO  dart.start.PharmacyApplication - *********************
-19-12-2019 16:00:31 [main] INFO  dart.start.PharmacyApplication - 
-19-12-2019 16:00:31 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
-19-12-2019 16:00:31 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
-19-12-2019 16:00:31 [main] WARN  .commonobjects.iDartProperties - Property: updateUrl is null
-19-12-2019 16:00:31 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
-19-12-2019 16:00:31 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/test
-19-12-2019 16:00:31 [main] ERROR e.idart.database.DatabaseTools - Error creating hibernate connection.
-org.postgresql.util.PSQLException: FATAL: database "test" does not exist
-	at org.postgresql.core.v3.ConnectionFactoryImpl.readStartupMessages(ConnectionFactoryImpl.java:444)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:99)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:66)
-	at org.postgresql.jdbc2.AbstractJdbc2Connection.<init>(AbstractJdbc2Connection.java:124)
-	at org.postgresql.jdbc3.AbstractJdbc3Connection.<init>(AbstractJdbc3Connection.java:30)
-	at org.postgresql.jdbc3.Jdbc3Connection.<init>(Jdbc3Connection.java:24)
-	at org.postgresql.Driver.makeConnection(Driver.java:386)
-	at org.postgresql.Driver.connect(Driver.java:260)
-	at java.sql.DriverManager.getConnection(DriverManager.java:571)
-	at java.sql.DriverManager.getConnection(DriverManager.java:215)
-	at org.celllife.idart.database.hibernate.util.JDBCUtil.currentSession(JDBCUtil.java:94)
-	at org.celllife.idart.database.DatabaseTools.checkConnection(DatabaseTools.java:64)
-	at org.celllife.idart.database.DatabaseTools.checkDatabase(DatabaseTools.java:74)
-	at org.celllife.idart.start.PharmacyApplication.performStartupChecks(PharmacyApplication.java:120)
-	at org.celllife.idart.start.PharmacyApplication.main(PharmacyApplication.java:94)
-19-12-2019 16:00:41 [main] DEBUG database.wizard.ConnectionPage - Updating properties
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] DEBUG database.wizard.ConnectionPage - Updating properties
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:41 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  .idart.database.DatabaseWizard - Writing updated properties to file.
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:42 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:43 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
-19-12-2019 16:00:43 [main] INFO                       liquibase - Successfully released change log lock
-19-12-2019 16:00:48 [main] INFO                       liquibase - Successfully acquired change log lock
-19-12-2019 16:00:49 [main] INFO                       liquibase - Reading from databasechangelog
-19-12-2019 16:00:49 [main] INFO                       liquibase - Reading from databasechangelog
-19-12-2019 16:00:49 [main] INFO                       liquibase - Successfully released change log lock
-19-12-2019 16:00:49 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:00:49 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
-19-12-2019 16:00:49 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
-19-12-2019 16:00:49 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@2b9e798a  Av./Rua Cidade Tel CS FORMACAO
-19-12-2019 16:00:49 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
-19-12-2019 16:00:50 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-19-12-2019 16:01:28 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
-19-12-2019 16:01:28 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
-19-12-2019 16:01:28 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
-19-12-2019 16:01:28 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
-19-12-2019 16:01:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+05-02-2020 10:36:15 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:36:15 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 10:36:15 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 10:36:15 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:15 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 10:36:15 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:36:15 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 10:36:15 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:36:15 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:36:16 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:36:16 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:16 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 10:36:17 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 10:36:17 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@643d12f  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 10:36:17 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 10:36:17 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:36:27 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 10:36:27 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 10:36:27 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 10:36:27 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 10:36:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
 URL = jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:01:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
-19-12-2019 16:02:00 [Report task] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
-19-12-2019 16:02:17 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
-19-12-2019 16:02:17 [main] DEBUG dart.start.PharmacyApplication - Logged out..
-19-12-2019 16:02:17 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
-19-12-2019 16:02:18 [main] INFO  dart.start.PharmacyApplication - 
-19-12-2019 16:02:18 [main] INFO  dart.start.PharmacyApplication - *********************
-19-12-2019 16:02:18 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
-19-12-2019 16:02:18 [main] INFO  dart.start.PharmacyApplication - *********************
-19-12-2019 16:02:18 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:36:28 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:36:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:36:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:38:19 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 10:38:19 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 10:38:19 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:38:20 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:38:20 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:38:20 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 10:38:20 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:38:20 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:39:39 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:39:39 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:39:39 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 10:39:39 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:39:39 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:39:39 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 10:39:39 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 10:39:39 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:39 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 10:39:39 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:39:39 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 10:39:40 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:39:40 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:39:40 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:39:40 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:41 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 10:39:41 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 10:39:41 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@6d90851d  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 10:39:41 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 10:39:41 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:39:56 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 10:39:56 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 10:39:56 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 10:39:56 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 10:39:56 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:39:56 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:40:06 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:06 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:40:06 [main] ERROR ameters.HistoricoLevantamentos - Exception while running Historico levantamento report
+java.io.FileNotFoundException: TemplateHistoricoLevantamento.xls (No such file or directory)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:146)
+	at java.io.FileInputStream.<init>(FileInputStream.java:101)
+	at org.celllife.idart.gui.reportParameters.HistoricoLevantamentos.cmdViewReportXlsWidgetSelected(HistoricoLevantamentos.java:216)
+	at org.celllife.idart.gui.platform.GenericReportGui$3.widgetSelected(GenericReportGui.java:239)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:234)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1258)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3540)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3161)
+	at org.celllife.idart.gui.welcome.GenericWelcome.showGUI(GenericWelcome.java:134)
+	at org.celllife.idart.gui.welcome.GenericWelcome.<init>(GenericWelcome.java:106)
+	at org.celllife.idart.gui.welcome.PharmacyWelcome.<init>(PharmacyWelcome.java:28)
+	at org.celllife.idart.start.PharmacyApplication.runIDART(PharmacyApplication.java:189)
+	at org.celllife.idart.start.PharmacyApplication.launch(PharmacyApplication.java:116)
+	at org.celllife.idart.start.PharmacyApplication.main(PharmacyApplication.java:97)
+05-02-2020 10:40:11 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:11 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:40:11 [main] ERROR ameters.HistoricoLevantamentos - Exception while running Historico levantamento report
+java.io.FileNotFoundException: TemplateHistoricoLevantamento.xls (No such file or directory)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:146)
+	at java.io.FileInputStream.<init>(FileInputStream.java:101)
+	at org.celllife.idart.gui.reportParameters.HistoricoLevantamentos.cmdViewReportXlsWidgetSelected(HistoricoLevantamentos.java:216)
+	at org.celllife.idart.gui.platform.GenericReportGui$3.widgetSelected(GenericReportGui.java:239)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:234)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1258)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3540)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3161)
+	at org.celllife.idart.gui.welcome.GenericWelcome.showGUI(GenericWelcome.java:134)
+	at org.celllife.idart.gui.welcome.GenericWelcome.<init>(GenericWelcome.java:106)
+	at org.celllife.idart.gui.welcome.PharmacyWelcome.<init>(PharmacyWelcome.java:28)
+	at org.celllife.idart.start.PharmacyApplication.runIDART(PharmacyApplication.java:189)
+	at org.celllife.idart.start.PharmacyApplication.launch(PharmacyApplication.java:116)
+	at org.celllife.idart.start.PharmacyApplication.main(PharmacyApplication.java:97)
+05-02-2020 10:40:24 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 10:40:24 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 10:40:24 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:40:25 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:40:25 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:40:25 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 10:40:25 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:40:25 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:40:47 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:40:47 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:40:47 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 10:40:47 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:40:47 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:40:47 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 10:40:47 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 10:40:47 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:47 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 10:40:47 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:40:47 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 10:40:48 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:40:48 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:40:48 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:40:48 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:40:49 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 10:40:49 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 10:40:49 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4e5a67df  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 10:40:49 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 10:40:49 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:41:09 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 10:41:10 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 10:41:10 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 10:41:10 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 10:41:10 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:41:10 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:41:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:41:19 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:41:42 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 10:41:42 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 10:41:42 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:41:43 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:41:43 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:41:43 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 10:41:43 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:41:43 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:42:21 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:42:21 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:42:21 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 10:42:21 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:42:21 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:42:21 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 10:42:21 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 10:42:21 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:21 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 10:42:21 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:42:21 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 10:42:22 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:42:22 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 10:42:22 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 10:42:22 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:23 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 10:42:23 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 10:42:23 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@65820750  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 10:42:23 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 10:42:23 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:42:52 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 10:42:52 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 10:42:52 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 10:42:52 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 10:42:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:42:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:43:01 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 10:43:01 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 10:43:23 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 10:43:23 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 10:43:23 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 10:43:24 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 10:43:24 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:43:24 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 10:43:24 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 10:43:24 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:18:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:18:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:18:07 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 11:18:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:18:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:18:07 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 11:18:07 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 11:18:07 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:07 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:08 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 11:18:08 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:18:08 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 11:18:08 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:18:08 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:18:09 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:18:09 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:09 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 11:18:09 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 11:18:09 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@d5cbf25  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 11:18:09 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 11:18:09 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:18:22 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 11:18:22 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 11:18:22 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 11:18:22 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 11:18:22 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:22 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:18:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:18:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:18:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:19:03 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 11:19:03 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 11:19:03 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:19:04 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:19:04 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:19:04 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 11:19:04 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:19:04 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:21:02 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:21:02 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:21:02 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 11:21:02 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:21:02 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:21:03 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 11:21:03 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 11:21:03 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:03 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 11:21:03 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:21:03 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 11:21:03 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:21:03 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:21:04 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:21:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:04 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 11:21:04 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 11:21:04 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@cee2bd2  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 11:21:04 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 11:21:05 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:21:18 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 11:21:18 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 11:21:18 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 11:21:18 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 11:21:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:18 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:21:31 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:21:31 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:22:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:22:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:23:56 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 11:23:56 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 11:23:56 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:24:00 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:24:00 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:24:00 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 11:24:00 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:24:00 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:46:31 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:46:31 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:46:31 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 11:46:31 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:46:31 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:46:32 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 11:46:32 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 11:46:32 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:32 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 11:46:33 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:46:33 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 11:46:33 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:46:33 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:46:34 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:46:34 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:35 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 11:46:35 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 11:46:35 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@78be10d7  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 11:46:36 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 11:46:36 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:46:51 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 11:46:51 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 11:46:51 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 11:46:51 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 11:46:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:46:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:47:05 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:47:05 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:47:38 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 11:47:38 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 11:47:38 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:51:02 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:51:02 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:51:02 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 11:51:02 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:51:02 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:51:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:51:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:51:07 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 11:51:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 11:51:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 11:51:08 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 11:51:08 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 11:51:08 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:08 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 11:51:09 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:51:09 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 11:51:09 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:51:09 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 11:51:10 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 11:51:10 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:11 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 11:51:11 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 11:51:11 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@2f4b275c  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 11:51:11 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 11:51:12 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 11:51:28 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 11:51:28 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 11:51:28 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 11:51:28 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 11:51:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:29 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 11:51:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 11:51:41 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 12:01:42 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 12:01:42 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 12:01:42 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 12:01:53 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 12:01:53 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 12:01:53 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 12:01:53 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 12:01:53 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:06:43 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:06:43 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:06:43 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:06:43 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:06:43 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:06:43 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:06:43 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:06:43 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:44 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:06:44 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:06:45 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:06:45 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:06:46 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:06:46 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:06:46 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:06:48 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:06:48 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:06:48 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@3553d094  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:06:48 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:06:49 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:07:36 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:07:37 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:07:37 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:07:37 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:07:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:07:37 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:08:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:08:36 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:08:53 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:08:53 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:08:54 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:08:56 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:08:56 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:08:56 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:08:56 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:08:56 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:10:42 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:10:42 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:10:42 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:10:42 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:10:42 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:10:42 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:10:42 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:10:42 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:43 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:10:43 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:10:43 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:10:44 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:10:44 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:10:45 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:10:45 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:10:46 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:10:46 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:10:46 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@324e48f0  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:10:46 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:10:47 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:11:03 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:11:03 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:11:03 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:11:03 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:11:04 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:11:04 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:11:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:11:17 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:12:32 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:12:32 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:12:32 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:12:34 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:12:34 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:12:34 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:12:34 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:12:34 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:13:06 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:13:06 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:13:06 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:13:06 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:13:06 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:13:06 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:13:06 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:13:06 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:07 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:13:07 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:13:07 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:13:08 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:13:08 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:13:08 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:13:08 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:09 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:13:10 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:13:10 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@1777051a  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:13:10 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:13:10 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:13:26 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:13:27 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:13:27 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:13:27 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:13:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:27 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:13:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:13:45 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:16:35 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:16:35 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:16:35 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:16:37 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:16:37 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:16:37 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:16:37 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:16:37 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:16:51 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:16:51 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:16:51 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:16:51 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:16:51 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:16:51 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:16:51 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:16:51 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:51 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:52 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:16:52 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:16:52 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:16:53 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:16:53 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:16:53 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:16:53 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:16:55 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:16:55 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:16:55 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@643d12f  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:16:55 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:16:55 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:17:12 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:17:12 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:17:12 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:17:12 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:17:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:17:12 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:17:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:17:26 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:27:40 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:27:40 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:27:40 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:27:45 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:27:45 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:27:45 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:27:45 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:27:45 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:29:03 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:29:03 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:29:03 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:29:03 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:29:03 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:29:03 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:29:03 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:29:03 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:29:03 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:04 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:29:05 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:29:05 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:29:05 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:29:05 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:29:06 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:29:06 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:08 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:29:08 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:29:08 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@50cb23c5  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:29:08 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:29:08 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:29:25 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:29:25 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:29:25 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:29:25 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:29:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:25 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:29:40 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:32:08 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:32:08 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:32:08 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:32:09 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:32:09 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:32:09 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:32:09 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:32:09 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:32:18 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:32:18 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:32:18 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:32:18 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:32:18 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:32:18 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:32:18 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:32:18 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:18 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:19 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:32:19 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:32:19 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:32:20 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:32:20 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:32:20 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:32:20 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:22 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:32:22 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:32:22 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@44091cfd  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:32:22 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:32:23 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:32:37 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:32:37 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:32:37 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:32:38 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:32:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:38 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:32:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:32:53 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:42:55 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:42:55 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:42:55 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:47:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:47:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:47:07 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:47:07 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:47:07 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:50:12 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:50:12 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:50:12 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 13:50:12 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:50:12 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:50:12 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 13:50:12 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 13:50:12 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:13 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 13:50:13 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:50:14 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 13:50:14 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:50:14 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 13:50:15 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 13:50:15 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:16 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 13:50:16 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 13:50:16 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@4f1b0c33  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 13:50:16 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 13:50:17 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:50:31 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 13:50:31 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 13:50:31 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 13:50:31 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 13:50:32 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:50:32 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:51:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:51:35 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:51:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 13:51:52 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 13:52:21 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 13:52:21 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 13:52:21 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 13:52:23 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 13:52:23 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:52:23 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 13:52:23 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 13:52:23 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 15:16:29 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 15:16:29 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 15:16:29 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ starting
+05-02-2020 15:16:29 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 15:16:29 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 15:16:29 [main] INFO  .commonobjects.iDartProperties - Loading Encrypted System Properties
+05-02-2020 15:16:29 [main] INFO  .commonobjects.iDartProperties - Locale changed to Portuguese (Portugal)
+05-02-2020 15:16:29 [main] INFO  ommonobjects.PropertiesManager - Loading properties for interface org.celllife.idart.commonobjects.SmsProperties
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  tabase.hibernate.util.JDBCUtil - Opening JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:29 [main] INFO  e.idart.database.DatabaseTools - Running liquibase file: org/celllife/idart/database/changelog-master.xml
+05-02-2020 15:16:29 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 15:16:29 [main] INFO                       liquibase - Successfully acquired change log lock
+05-02-2020 15:16:30 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 15:16:30 [main] INFO                       liquibase - Reading from databasechangelog
+05-02-2020 15:16:30 [main] INFO                       liquibase - Successfully released change log lock
+05-02-2020 15:16:30 [main] INFO  tabase.hibernate.util.JDBCUtil - Closing JDBC connection to jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:16:31 [main] INFO  dart.start.PharmacyApplication - Starting Initialisation Tasks
+05-02-2020 15:16:31 [main] DEBUG   model.manager.PatientManager - Found attribute type similar to ARV Start Date: ARV Start Date
+05-02-2020 15:16:31 [main] DEBUG .manager.AdministrationManager - model.nonPersistent.PharmacyDetails@52a1bab6  Av./Rua Cidade Tel CS FORMACAO
+05-02-2020 15:16:31 [main] INFO  dart.start.PharmacyApplication - Finishing Initialisation Tasks
+05-02-2020 15:16:31 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 15:17:32 [main] INFO  celllife.idart.gui.login.Login - Login successful for user iDART_helio.machabane
+05-02-2020 15:17:32 [main] INFO  celllife.idart.misc.LoginTimer - Starting new logout timer with timeout 600 seconds.
+05-02-2020 15:17:32 [main] DEBUG art.gui.welcome.GenericWelcome - Creating newWelcome
+05-02-2020 15:17:32 [main] ERROR art.gui.welcome.GenericWelcome - Unable to load help.
+05-02-2020 15:17:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectando ao banco de dados
+URL = jdbc:postgresql://localhost:5432/chabeco
+05-02-2020 15:17:33 [main] INFO  idart.database.dao.ConexaoJDBC - Conectado...Criando a declara��o
+05-02-2020 15:17:57 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+05-02-2020 15:19:02 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+05-02-2020 15:32:18 [main] WARN  dart.misc.PatientBarcodeParser - Could not match patientId using regular expression.
+05-02-2020 15:33:57 [main] DEBUG celllife.idart.misc.LoginTimer - Terminating iDART - TIMER EXPIRED
+05-02-2020 15:33:57 [main] DEBUG dart.start.PharmacyApplication - Logged out..
+05-02-2020 15:33:57 [main] DEBUG celllife.idart.gui.login.Login - Login Form Created
+05-02-2020 15:33:59 [main] INFO  dart.start.PharmacyApplication - 
+05-02-2020 15:33:59 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 15:33:59 [main] INFO  dart.start.PharmacyApplication - iDART @IDART.VERSION.SHORT@ exited
+05-02-2020 15:33:59 [main] INFO  dart.start.PharmacyApplication - *********************
+05-02-2020 15:33:59 [main] INFO  dart.start.PharmacyApplication - 

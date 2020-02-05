@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaReportMISAU" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" isIgnorePagination="true">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
-	<style name="table">
+	<style name="table" isDefault="false">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+	<style name="table_TH" isDefault="false" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="table_CH" isDefault="false" mode="Opaque" backcolor="#BFE1FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+	<style name="table_TD" isDefault="false" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
@@ -56,7 +55,7 @@
 	<parameter name="monthStart" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="monthEnd" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\eclipse.OLD\\wp\\idart\\Reports\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["//home//machabane//eclipse-workspace//eFila//Reports//"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="dateEnd" class="java.util.Date"/>
 	<parameter name="totalpacientesfarmacia" class="java.lang.String"/>
@@ -140,12 +139,6 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement key="line-2" mode="Opaque" x="43" y="-3" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
 					<reportElement key="line-3" mode="Opaque" x="410" y="-1" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
 					<graphicElement fill="Solid">
 						<pen lineWidth="2.0"/>
@@ -175,6 +168,12 @@ order by d.pediatric asc]]>
 						<pen lineWidth="2.0"/>
 					</graphicElement>
 				</line>
+				<line>
+					<reportElement key="line-2" mode="Opaque" x="42" y="-2" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
 			</band>
 			<band height="22">
 				<subreport isUsingCache="true">
@@ -191,20 +190,20 @@ order by d.pediatric asc]]>
 					<subreportParameter name="ATC">
 						<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 					</subreportParameter>
-					<subreportParameter name="stockCenterId">
-						<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
+					<subreportParameter name="formlanguage1">
+						<subreportParameterExpression><![CDATA[$F{formlanguage1}]]></subreportParameterExpression>
 					</subreportParameter>
 					<subreportParameter name="packsize">
 						<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 					</subreportParameter>
-					<subreportParameter name="formlanguage1">
-						<subreportParameterExpression><![CDATA[$F{formlanguage1}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter name="atccode">
-						<subreportParameterExpression><![CDATA[$F{atccode}]]></subreportParameterExpression>
+					<subreportParameter name="stockCenterId">
+						<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
 					</subreportParameter>
 					<subreportParameter name="name">
 						<subreportParameterExpression><![CDATA[$F{name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="atccode">
+						<subreportParameterExpression><![CDATA[$F{atccode}]]></subreportParameterExpression>
 					</subreportParameter>
 					<subreportParameter name="path">
 						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
@@ -216,7 +215,7 @@ order by d.pediatric asc]]>
 						<subreportParameterExpression><![CDATA[$P{monthStart}]]></subreportParameterExpression>
 					</subreportParameter>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA[($P{path} + java.io.File.separator+ "MmiaPediatricReport.jasper")]]></subreportExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "MmiaPediatricReport.jasper")]]></subreportExpression>
 				</subreport>
 			</band>
 			<band height="320">
@@ -247,6 +246,7 @@ order by d.pediatric asc]]>
 				</line>
 				<staticText>
 					<reportElement x="268" y="2" width="46" height="27"/>
+					<textElement/>
 					<text><![CDATA[TOTAL DOENTES]]></text>
 				</staticText>
 				<subreport>
@@ -269,29 +269,20 @@ order by d.pediatric asc]]>
 					<subreportParameter name="date">
 						<subreportParameterExpression><![CDATA[$P{date}]]></subreportParameterExpression>
 					</subreportParameter>
-					<subreportParameter name="dataelaboracao">
-						<subreportParameterExpression><![CDATA[$P{dataelaboracao}]]></subreportParameterExpression>
-					</subreportParameter>
 					<subreportParameter name="monthStart">
 						<subreportParameterExpression><![CDATA[$P{monthStart}]]></subreportParameterExpression>
 					</subreportParameter>
+					<subreportParameter name="dataelaboracao">
+						<subreportParameterExpression><![CDATA[$P{dataelaboracao}]]></subreportParameterExpression>
+					</subreportParameter>
 					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression><![CDATA[($P{path} + java.io.File.separator+ "MmiaRegimesReport.jasper")]]></subreportExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "MmiaRegimesReport.jasper")]]></subreportExpression>
 				</subreport>
 				<line>
 					<reportElement x="346" y="269" width="205" height="1">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<graphicElement>
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-4" mode="Opaque" x="346" y="-1" width="1" height="271" forecolor="#000000" backcolor="#000000">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					</reportElement>
-					<graphicElement fill="Solid">
 						<pen lineWidth="2.0"/>
 					</graphicElement>
 				</line>
@@ -304,7 +295,7 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement key="line-4" mode="Opaque" x="448" y="16" width="1" height="251" forecolor="#000000" backcolor="#000000">
+					<reportElement key="line-4" mode="Opaque" x="458" y="17" width="1" height="251" forecolor="#000000" backcolor="#000000">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<graphicElement fill="Solid">
@@ -384,7 +375,7 @@ order by d.pediatric asc]]>
 					<text><![CDATA[TIPO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="456" y="18" width="61" height="14">
+					<reportElement x="466" y="19" width="61" height="14">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center">
@@ -482,25 +473,28 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<textField>
-					<reportElement x="469" y="36" width="66" height="15">
+					<reportElement x="487" y="36" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesinicio}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesinicio}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="469" y="56" width="50" height="16">
+					<reportElement x="487" y="56" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesmanter}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesmanter}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="469" y="76" width="48" height="16">
+					<reportElement x="487" y="76" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesalterar}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesalterar}]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement key="line-3" mode="Opaque" x="0" y="-31" width="1" height="61" forecolor="#000000" backcolor="#000000"/>
@@ -509,11 +503,12 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<textField>
-					<reportElement x="469" y="116" width="48" height="16">
+					<reportElement x="487" y="116" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesppe}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesppe}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="366" y="277" width="183" height="20">
@@ -534,16 +529,18 @@ order by d.pediatric asc]]>
 					<reportElement x="366" y="319" width="183" height="1"/>
 				</line>
 				<textField>
-					<reportElement x="469" y="222" width="50" height="16">
+					<reportElement x="487" y="220" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{mesesdispensados}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{mesesdispensados}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="469" y="249" width="48" height="16">
+					<reportElement x="487" y="248" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{pacientesEmTarv}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{pacientesEmTarv}]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="345" y="160" width="205" height="1">
@@ -573,8 +570,9 @@ order by d.pediatric asc]]>
 					<text><![CDATA[Pacientes em trânsito]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="469" y="194" width="48" height="18"/>
-					<textFieldExpression><![CDATA[$P{totalpacientestransito}]]></textFieldExpression>
+					<reportElement x="487" y="191" width="48" height="16"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientestransito}]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="345" y="134" width="205" height="1">
@@ -613,20 +611,22 @@ order by d.pediatric asc]]>
 					<text><![CDATA[Total de pacientes em DS]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="469" y="137" width="48" height="16">
+					<reportElement x="487" y="140" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesds}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesds}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="469" y="162" width="48" height="16">
+					<reportElement x="487" y="165" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacientesdt}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesdt}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="372" y="3" width="170" height="15">
@@ -639,12 +639,22 @@ order by d.pediatric asc]]>
 					<text><![CDATA[Quantificação dos doentes]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="469" y="96" width="48" height="16">
+					<reportElement x="487" y="96" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textFieldExpression><![CDATA[$P{totalpacienteptv}]]></textFieldExpression>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacienteptv}]]></textFieldExpression>
 				</textField>
+				<line>
+					<reportElement key="line-4" mode="Opaque" x="345" y="1" width="1" height="269" forecolor="#000000" backcolor="#000000">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
 			</band>
 		</groupFooter>
 	</group>
@@ -696,7 +706,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{facilityName}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{facilityName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="st_date" mode="Opaque" x="368" y="82" width="27" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -722,7 +732,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(new SimpleDateFormat("yyyy")).format($P{date})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("yyyy")).format($P{date})]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-1" mode="Opaque" x="1" y="100" width="549" height="1" forecolor="#000000" backcolor="#000000"/>
@@ -872,7 +882,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<graphicElement fill="Solid"/>
-				<imageExpression><![CDATA[$P{path}+ java.io.File.separator + "moz.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{path}+ java.io.File.separator + "moz.png"]]></imageExpression>
 			</image>
 			<line>
 				<reportElement key="line-28" x="493" y="100" width="1" height="38" backcolor="#000000"/>
@@ -969,7 +979,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(new SimpleDateFormat("dd")).format($P{date})+"/"+$P{mes} +"  -  "+ (new SimpleDateFormat("dd")).format($P{dateEnd})+"/"+$P{mes2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("dd")).format($P{date})+"/"+$P{mes} +"  -  "+ (new SimpleDateFormat("dd")).format($P{dateEnd})+"/"+$P{mes2}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="1" y="54" width="549" height="1"/>
@@ -1092,20 +1102,20 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<subreportParameter name="ATC">
 					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="formlanguage1">
-					<subreportParameterExpression><![CDATA[$F{formlanguage1}]]></subreportParameterExpression>
+				<subreportParameter name="stockCenterId">
+					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="packsize">
 					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="stockCenterId">
-					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="name">
-					<subreportParameterExpression><![CDATA[$F{name}]]></subreportParameterExpression>
+				<subreportParameter name="formlanguage1">
+					<subreportParameterExpression><![CDATA[$F{formlanguage1}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="atccode">
 					<subreportParameterExpression><![CDATA[$F{atccode}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="name">
+					<subreportParameterExpression><![CDATA[$F{name}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="path">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
@@ -1117,7 +1127,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<subreportParameterExpression><![CDATA[$P{monthStart}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[($P{path} + java.io.File.separator+ "MmiaReport_batch.jasper")]]></subreportExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "MmiaReport_batch.jasper")]]></subreportExpression>
 			</subreport>
 		</band>
 		<band/>
@@ -1138,7 +1148,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format(new Date())]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="false">
 				<reportElement key="textField-2" x="458" y="4" width="75" height="15"/>
@@ -1149,7 +1159,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-3" x="377" y="4" width="80" height="15"/>
@@ -1160,7 +1170,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Página " + String.valueOf($V{PAGE_NUMBER}) + " de "]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página " + String.valueOf($V{PAGE_NUMBER}) + " de "]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
@@ -1177,7 +1187,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format(new Date())]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report" isBlankWhenNull="false">
 				<reportElement key="textField-7" x="459" y="4" width="75" height="15"/>
@@ -1188,7 +1198,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-8" x="378" y="4" width="80" height="15"/>
@@ -1199,7 +1209,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Página " + String.valueOf($V{PAGE_NUMBER}) + " de "]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página " + String.valueOf($V{PAGE_NUMBER}) + " de "]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

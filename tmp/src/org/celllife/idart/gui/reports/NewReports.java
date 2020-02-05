@@ -55,6 +55,7 @@ import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.reportParameters.PatientsExpected;
 import org.celllife.idart.gui.reportParameters.PepfarReportGUI;
 import org.celllife.idart.gui.reportParameters.PrescribingDoctors;
+import org.celllife.idart.gui.reportParameters.PrescriptionsWithNoEncounter;
 import org.celllife.idart.gui.reportParameters.RegisteredIdart;
 import org.celllife.idart.gui.reportParameters.StockTakeReportGUI;
 import org.celllife.idart.gui.reportParameters.TransactionLog;
@@ -412,8 +413,11 @@ private void createGrpClinicManagementReports() {
 		 * MmiaReport(getShell(), false));
 		 */
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
-				new MmiaReportMISAU(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU, new MmiaReportMISAU(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
+		
+		//reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
 		
 		reportGUIs.put(GenericReportGuiInterface.REPORT_IDART,
 				new RegisteredIdart(getShell(), false));
