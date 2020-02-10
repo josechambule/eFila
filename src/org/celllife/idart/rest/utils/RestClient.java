@@ -27,6 +27,7 @@ public class RestClient {
 	
 	Properties prop = new Properties();
 	InputStream input = null;
+	
 	File myFile = new File("src/jdbc_auto_generated.properties");
     Properties prop_dynamic = new Properties();
   
@@ -59,7 +60,7 @@ public class RestClient {
 	
 		ApiAuthRest.setURLBase(prop.getProperty("urlBase"));
 		ApiAuthRest.setUsername(prop_dynamic.getProperty("userName"));
-	//	ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
+		//ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
 		ApiAuthRest.setPassword(Autenticacao.senhaTemporaria);
 	}
 	

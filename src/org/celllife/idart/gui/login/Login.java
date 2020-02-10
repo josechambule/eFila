@@ -20,14 +20,22 @@
 // PHARMACY //
 package org.celllife.idart.gui.login;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
-
-import model.manager.AdministrationManager;
 
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
@@ -43,6 +51,8 @@ import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
+import org.celllife.idart.rest.ApiAuthRest;
+import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -62,6 +72,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.json.JSONObject;
+
+import model.manager.AdministrationManager;
+import model.nonPersistent.Autenticacao;
 
 /**
  */
@@ -90,6 +104,8 @@ public class Login implements GenericGuiInterface {
 
 	private Session hSession;
 
+	private RestClient restClient;
+
 	private final boolean limitClinic;
 
 	public Login() {
@@ -107,7 +123,7 @@ public class Login implements GenericGuiInterface {
 		super();
 		limitClinic = true;
 		preInitialize();
-		
+
 		// Reload Clinic into current session to avoid
 		// LazyInitialisation error on users.
 		clinic = AdministrationManager.getClinic(hSession, clinic.getClinicName());
@@ -163,8 +179,7 @@ public class Login implements GenericGuiInterface {
 		Label lblVersionNumbers = new Label(loginShell, SWT.CENTER);
 		lblVersionNumbers.setBounds(new Rectangle(0, 247, 420, 30));
 		String message = Messages.getString("common.label.version");
-		lblVersionNumbers.setText(MessageFormat.format(message,
-				iDartProperties.idartVersionNumber)); //$NON-NLS-1$
+		lblVersionNumbers.setText(MessageFormat.format(message, iDartProperties.idartVersionNumber)); // $NON-NLS-1$
 		lblVersionNumbers.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		createCompLoginInfo();
@@ -201,7 +216,7 @@ public class Login implements GenericGuiInterface {
 				if (e.character == SWT.CR) {
 					cmdLoginSelected();
 				}
-				
+
 				String s = String.valueOf(e.character);
 
 				String[] items = cmbUsers.getItems();
@@ -272,8 +287,7 @@ public class Login implements GenericGuiInterface {
 			}
 		});
 		cmbClinics.setEditable(false);
-		if (iDartProperties.downReferralMode
-				.equalsIgnoreCase(iDartProperties.OFFLINE_DOWNREFERRAL_MODE)) {
+		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.OFFLINE_DOWNREFERRAL_MODE)) {
 			cmbClinics.setEnabled(false);
 		}
 	}
@@ -291,13 +305,10 @@ public class Login implements GenericGuiInterface {
 		btnLogin.setData(iDartProperties.SWTBOT_KEY, "btnLogin"); //$NON-NLS-1$
 		btnLogin.setText(Messages.getString("login.button.login.text")); //$NON-NLS-1$
 		btnLogin.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnLogin.setToolTipText(Messages
-				.getString("login.button.login.tooltip")); //$NON-NLS-1$
-		btnLogin
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+		btnLogin.setToolTipText(Messages.getString("login.button.login.tooltip")); //$NON-NLS-1$
+		btnLogin.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
 				cmdLoginSelected();
 			}
 		});
@@ -305,14 +316,11 @@ public class Login implements GenericGuiInterface {
 		btnCancel = new Button(compButtons, SWT.NONE);
 		btnCancel.setText(Messages.getString("login.button.cancel.text")); //$NON-NLS-1$
 		btnCancel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnCancel.setToolTipText(Messages
-				.getString("login.button.cancel.tooltip")); //$NON-NLS-1$
+		btnCancel.setToolTipText(Messages.getString("login.button.cancel.tooltip")); //$NON-NLS-1$
 		btnCancel.setBounds(new Rectangle(115, 5, 85, 27));
-		btnCancel
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+		btnCancel.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
 				cmdCancelSelected();
 			}
 		});
@@ -376,8 +384,7 @@ public class Login implements GenericGuiInterface {
 			cmbClinics.setEnabled(false);
 		} else {
 			try {
-				User user = AdministrationManager.getUserByName(hSession,
-						cmbUsers.getText());
+				User user = AdministrationManager.getUserByName(hSession, cmbUsers.getText());
 
 				if (user != null) {
 					Set<Clinic> clinicsSet = user.getClinics();
@@ -393,8 +400,7 @@ public class Login implements GenericGuiInterface {
 				Collections.sort(clinics, new Comparator<Clinic>() {
 					@Override
 					public int compare(Clinic clinic1, Clinic clinic2) {
-						return clinic1.getClinicName().compareTo(
-								clinic2.getClinicName());
+						return clinic1.getClinicName().compareTo(clinic2.getClinicName());
 					}
 				});
 
@@ -451,58 +457,133 @@ public class Login implements GenericGuiInterface {
 
 		try {
 
-			Clinic theClinic = AdministrationManager.getClinicbyName(hSession,
-					cmbClinics.getText());
-			User theUser = AdministrationManager.getUserByName(hSession,
-					cmbUsers.getText());
+			Clinic theClinic = AdministrationManager.getClinicbyName(hSession, cmbClinics.getText());
+			User theUser = AdministrationManager.getUserByName(hSession, cmbUsers.getText());
 
 			if (theUser == null) {
 				successfulLogin = false;
-				MessageDialog.openError(loginShell, Messages
-						.getString("login.dialog.error.title"), //$NON-NLS-1$
+				MessageDialog.openError(loginShell, Messages.getString("login.dialog.error.title"), //$NON-NLS-1$
 						Messages.getString("login.error.username") //$NON-NLS-1$
-						+ ""); //$NON-NLS-1$
+								+ ""); //$NON-NLS-1$
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
+
 			} else if (theClinic == null) {
 				successfulLogin = false;
-				MessageDialog.openError(loginShell, Messages
-						.getString("login.dialog.error.title"), //$NON-NLS-1$
+				MessageDialog.openError(loginShell, Messages.getString("login.dialog.error.title"), //$NON-NLS-1$
 						Messages.getString("login.error.clinic") //$NON-NLS-1$
-						+ ""); //$NON-NLS-1$
+								+ ""); //$NON-NLS-1$
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
 			} else if (!theClinic.getUsers().contains(theUser)) {
 				successfulLogin = false;
-				MessageDialog.openError(loginShell, Messages
-						.getString("login.dialog.error.title"), //$NON-NLS-1$
+				MessageDialog.openError(loginShell, Messages.getString("login.dialog.error.title"), //$NON-NLS-1$
 						Messages.getString("login.error.userpermission")); //$NON-NLS-1$
 				txtPassword.setFocus();
-				txtPassword.setText(""); //$NON-NLS-1$
-			} else if (!txtPassword.getText().equals((theUser.getPassword()))) {
+				txtPassword.setText("");
+
+				// TESTA COM ENCRIPTAÇÃO
+			} else if (!Autenticacao.converteMD5(txtPassword.getText()).equals((theUser.getPassword()))) {
 				// If the login was unsuccessful, then alert the user
 				successfulLogin = false;
-				MessageDialog.openError(loginShell, Messages
-						.getString("login.dialog.error.title"), //$NON-NLS-1$
+				MessageDialog.openError(loginShell, Messages.getString("login.dialog.error.title"), //$NON-NLS-1$
 						Messages.getString("login.error.password")); //$NON-NLS-1$
 				txtPassword.setFocus();
 				txtPassword.setText(""); //$NON-NLS-1$
-			} else {
+			} else if (verificaLoginOpenMRS()) {
 
+				File myFile = new File("src/jdbc_auto_generated.properties");
+				Properties properties = new Properties();
+
+				try {
+
+					properties.load(new FileInputStream(myFile));
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				if (!properties.isEmpty()) {
+					properties.remove("password");
+					properties.remove("userName");
+				}
+				OutputStream out = null;
+				try {
+					// properties.setProperty("password", txtPassword.getText());
+					properties.setProperty("userName", cmbUsers.getText());
+
+					Autenticacao.senhaTemporaria = txtPassword.getText();
+
+					// System.out.println(Autenticacao.senhaTemporaria+"TESTETETETETETETETTTTTTTTTTTTTTTTTTTTTTTTTt");
+					out = new FileOutputStream(myFile);
+
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					properties.store(out, null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// boolean resultado = verificaLoginOpenMRS();
+
+				/*
+				 * if(resultado==false){ MessageDialog.openInformation(loginShell,"Atenção",
+				 * //$NON-NLS-1$
+				 * "O Usuario Logado não será capaz de realizar nenhuma despensa! Por favor entre em contacto com o SIS."
+				 * ); // successfulLogin = false; }
+				 */
 				successfulLogin = true;
 
 				LocalObjects.setUser(theUser);
-				LocalObjects.currentClinic = theClinic.getClinicName()
-				.equalsIgnoreCase(
-						LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
-								: theClinic;
+				LocalObjects.currentClinic = theClinic.getClinicName().equalsIgnoreCase(
+						LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic : theClinic;
 				log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
 				closeScreen();
 
 			}
 
+			else {
+
+				successfulLogin = false;
+				MessageDialog.openError(loginShell, Messages.getString("login.dialog.error.title"), //$NON-NLS-1$
+						Messages.getString("login.error.openmrs")); //$NON-NLS-1$
+				txtPassword.setFocus();
+				txtPassword.setText("");
+			}
+
 		} catch (HibernateException e) {
+			e.printStackTrace();
+			log.error("Erro ao logar ..\n" + e.toString()); //$NON-NLS-1$
 			showErrorAndClose();
 		}
+	}
+
+	private Boolean verificaLoginOpenMRS() {
+
+		restClient = new RestClient();
+		ApiAuthRest.setUsername(cmbUsers.getText());
+		ApiAuthRest.setPassword(txtPassword.getText());
+		boolean resultado = false;
+
+		try {
+			String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_SESSION);
+
+			JSONObject json = new JSONObject(openMrsResource);
+
+			resultado = json.getBoolean("authenticated");
+		} catch (Exception e) {
+
+		}
+
+		System.out.print(resultado);
+
+		return resultado;
 	}
 }
