@@ -12,638 +12,673 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableItem;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 /**
  */
 public class DrugManager {
 
-	private static Logger log = Logger.getLogger(DrugManager.class);
+    private static Logger log = Logger.getLogger(DrugManager.class);
 
-	// ---------- METHODS FOR DRUG MANAGER ---------------
+    // ---------- METHODS FOR DRUG MANAGER ---------------
 
-	/**
-	 * Method to check if a drug already exists
-	 * 
-	 * @param session
-	 *            the current hibernate session
-	 * @param name
-	 *            the name of the drug
-	 * @param form
-	 *            the form of the drug
-	 * @param packsize
-	 *            the packsize of the drug
-	 * @return true if drug exists else false
-	 */
-	@SuppressWarnings("unchecked")
-	public static boolean drugExists(Session session, String name, String form,
-			int packsize) {
-		Query query = session.createQuery("select d from Drug d where "
-				+ "upper(d.name) = :name and upper(d.form.form) = :form "
-				+ "and d.packSize = :packsize ");
-		query.setString("name", name.toUpperCase());
-		query.setString("form", form.toUpperCase());
-		query.setInteger("packsize", packsize);
+    /**
+     * Method to check if a drug already exists
+     *
+     * @param session
+     *            the current hibernate session
+     * @param name
+     *            the name of the drug
+     * @param form
+     *            the form of the drug
+     * @param packsize
+     *            the packsize of the drug
+     * @return true if drug exists else false
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean drugExists(Session session, String name, String form,
+                                     int packsize) {
+        Query query = session.createQuery("select d from Drug d where "
+                + "upper(d.name) = :name and upper(d.form.form) = :form "
+                + "and d.packSize = :packsize ");
+        query.setString("name", name.toUpperCase());
+        query.setString("form", form.toUpperCase());
+        query.setInteger("packsize", packsize);
 
-		List<Drug> result = query.list();
-		if (result.size() > 0)
-			return true;
-		return false;
-	}
+        List<Drug> result = query.list();
+        if (result.size() > 0)
+            return true;
+        return false;
+    }
 
-	/**
-	 * Check if the drugName exists in the database
-	 * 
-	 * @param session
-	 *            Session
-	 * @param drugName
-	 * @return true if exists, else false
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static boolean drugNameExists(Session session, String drugName)
-			throws HibernateException {
-		boolean result = false;
-		List<Drug> results;
-		results = session.createQuery(
-				"from Drug as d where upper(d.name) =:drugName").setString(
-				"drugName", drugName.toUpperCase()).list();
-		if (!results.isEmpty()) {
-			result = true;
-		} else {
-			result = false;
-		}
-		return result;
-	}
+    /**
+     * Check if the drugName exists in the database
+     *
+     * @param session
+     *            Session
+     * @param drugName
+     * @return true if exists, else false
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean drugNameExists(Session session, String drugName)
+            throws HibernateException {
+        boolean result = false;
+        List<Drug> results;
+        results = session.createQuery(
+                "from Drug as d where upper(d.name) =:drugName").setString(
+                "drugName", drugName.toUpperCase()).list();
+        if (!results.isEmpty()) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-	/**
-	 * find the latest manufacturer of a specified drug
-	 * 
-	 * @param session
-	 *            Session
-	 * @param drugName
-	 * @return String with name of latest drug manufacturer, or "" if none
-	 * @throws HibernateException
-	 */
-	public static String getLatestDrugManufacturer(Session session,
-			String drugName, String stockCenterName) throws HibernateException {
-		String results;
-		results = (String) session
-				.createQuery(
-						"select s.manufacturer from Stock s "
-								+ "where s.drug.name=:drugName "
-								+ "and s.stockCenter.stockCenterName = :stockCenterName "
-								+ "order by s.id DESC").setString("drugName",
-						drugName).setString("stockCenterName", stockCenterName)
-				.setMaxResults(1).uniqueResult();
-		return results;
-	}
+    /**
+     * Check if the drugName exists in the RegimeTerapeutico List
+     *
+     * @param session
+     *            Session
+     * @param drugName
+     * @return true if exists, else false
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean updateRegimeTerapeuticoDesableDrug(Session session, String drugName)
+            throws HibernateException {
+        boolean result = false;
+        List<RegimeTerapeutico> results;
+      SQLQuery query = session.createSQLQuery(
+                "select rt.* from drug d " +
+						"inner join regimendrugs rg on rg.drug = d.id " +
+                        "inner join regimeterapeutico rt on rg.regimen = rt.regimeid " +
+                        "where upper(d.name) = '"+drugName.toUpperCase()+"'");
 
-	/**
-	 * Method getQuantityForDrugInPackage.
-	 * 
-	 * @param pack
-	 *            Packages
-	 * @param drug
-	 *            Drug
-	 * @return int
-	 */
-	public static int getQuantityForDrugInPackage(Packages pack, Drug drug) {
+        query.addEntity(RegimeTerapeutico.class);
+        results = query.list();
 
-		if (pack.getPackagedDrugs() == null)
-			return 0;
-		int qty = 0;
+        if (!results.isEmpty()) {
+            for (RegimeTerapeutico rt : results) {
+                rt.setActive(false);
+                saveRegimeTerapeutico(session, rt);
+            }
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
 
-		for (PackagedDrugs pd : pack.getPackagedDrugs()) {
-			if (pd.getStock().getDrug().getId() == drug.getId()) {
-				qty += pd.getAmount();
-			}
-		}
+    /**
+     * find the latest manufacturer of a specified drug
+     *
+     * @param session
+     *            Session
+     * @param drugName
+     * @return String with name of latest drug manufacturer, or "" if none
+     * @throws HibernateException
+     */
+    public static String getLatestDrugManufacturer(Session session,
+                                                   String drugName, String stockCenterName) throws HibernateException {
+        String results;
+        results = (String) session
+                .createQuery(
+                        "select s.manufacturer from Stock s "
+                                + "where s.drug.name=:drugName "
+                                + "and s.stockCenter.stockCenterName = :stockCenterName "
+                                + "order by s.id DESC").setString("drugName",
+                        drugName).setString("stockCenterName", stockCenterName)
+                .setMaxResults(1).uniqueResult();
+        return results;
+    }
 
-		return qty;
-	}
+    /**
+     * Method getQuantityForDrugInPackage.
+     *
+     * @param pack
+     *            Packages
+     * @param drug
+     *            Drug
+     * @return int
+     */
+    public static int getQuantityForDrugInPackage(Packages pack, Drug drug) {
 
-	/**
-	 * Returns this drug list as a string of chemical components and strengths
-	 * 
-	 * @param theDrugList
-	 * @param separator
-	 *            String
-	 * @param includeStrength 
-	 * @return String
-	 */
-	public static String getDrugListString(Collection<Drug> theDrugList,
-			String separator, boolean includeStrength) {
-		StringBuffer drugListString = new StringBuffer();
-		Iterator<Drug> drugIt = theDrugList.iterator();
-		while (drugIt.hasNext()) {
-			Drug theDrug = drugIt.next();
-			drugListString.append(getShortGenericDrugName(theDrug, includeStrength));
-			if (drugIt.hasNext()) {
-				drugListString.append(separator);
-			}
-		}
+        if (pack.getPackagedDrugs() == null)
+            return 0;
+        int qty = 0;
 
-		return drugListString.toString();
-	}
+        for (PackagedDrugs pd : pack.getPackagedDrugs()) {
+            if (pd.getStock().getDrug().getId() == drug.getId()) {
+                qty += pd.getAmount();
+            }
+        }
 
-	/**
-	 * Get the short generic name (using chem compounds if any) for this drug
-	 * 
-	 * @param d
-	 * @param includeStrength
-	 * @return String
-	 */
-	public static String getShortGenericDrugName(Drug d, boolean includeStrength) {
-		StringBuffer shortDrugString = new StringBuffer();
+        return qty;
+    }
 
-		java.util.Set<ChemicalDrugStrength> csSet = d
-				.getChemicalDrugStrengths();
-		if (csSet.size() > 0) {
-			Iterator<ChemicalDrugStrength> csIt = csSet.iterator();
+    /**
+     * Returns this drug list as a string of chemical components and strengths
+     *
+     * @param theDrugList
+     * @param separator
+     *            String
+     * @param includeStrength
+     * @return String
+     */
+    public static String getDrugListString(Collection<Drug> theDrugList,
+                                           String separator, boolean includeStrength) {
+        StringBuffer drugListString = new StringBuffer();
+        Iterator<Drug> drugIt = theDrugList.iterator();
+        while (drugIt.hasNext()) {
+            Drug theDrug = drugIt.next();
+            drugListString.append(getShortGenericDrugName(theDrug, includeStrength));
+            if (drugIt.hasNext()) {
+                drugListString.append(separator);
+            }
+        }
 
-			while (csIt.hasNext()) {
-				ChemicalDrugStrength cs = csIt.next();
-				shortDrugString.append(cs.getChemicalCompound().getAcronym());
-				if (includeStrength)
-					shortDrugString.append(" ").append(cs.getStrength());
-				if (csIt.hasNext()) {
-					shortDrugString.append("/");
-				}
-			}
-		} else {
-			shortDrugString.append(d.getName());
-		}
-		return shortDrugString.toString();
-	}
+        return drugListString.toString();
+    }
 
-	/**
-	 * Returns a particular drug
-	 * 
-	 * @param sess
-	 *            Session
-	 * @param drugName
-	 *            String
-	 * @return Drug
-	 * @throws HibernateException
-	 */
-	public static Drug getDrug(Session sess, String drugName)
-			throws HibernateException {
-		Drug theDrug = null;
-		theDrug = (Drug) sess.createQuery(
-				"from Drug as d where d.name = :drugName").setString(
-				"drugName", drugName).setMaxResults(1).uniqueResult();
-		return theDrug;
-	}
+    /**
+     * Get the short generic name (using chem compounds if any) for this drug
+     *
+     * @param d
+     * @param includeStrength
+     * @return String
+     */
+    public static String getShortGenericDrugName(Drug d, boolean includeStrength) {
+        StringBuffer shortDrugString = new StringBuffer();
 
-	public static String getDrugNameForPackagedDrug(Session session,
-			int packageDrugId) {
-		return (String) session.createQuery(
-				"select pd.stock.drug.name from PackagedDrugs pd "
-						+ "where pd.id = :pid ").setInteger("pid",
-				packageDrugId).uniqueResult();
+        java.util.Set<ChemicalDrugStrength> csSet = d
+                .getChemicalDrugStrengths();
+        if (csSet.size() > 0) {
+            Iterator<ChemicalDrugStrength> csIt = csSet.iterator();
 
-	}
+            while (csIt.hasNext()) {
+                ChemicalDrugStrength cs = csIt.next();
+                shortDrugString.append(cs.getChemicalCompound().getAcronym());
+                if (includeStrength)
+                    shortDrugString.append(" ").append(cs.getStrength());
+                if (csIt.hasNext()) {
+                    shortDrugString.append("/");
+                }
+            }
+        } else {
+            shortDrugString.append(d.getName());
+        }
+        return shortDrugString.toString();
+    }
 
-	/**
-	 * Returns a list of Drug Objects for Stock take Difference here is that the
-	 * query does not return drugs with no batches.
-	 * 
-	 * @param sess
-	 * 
-	 * @param includeZeroBatches
-	 * @return List<Drug>
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<Drug> getDrugsListForStockTake(Session sess,
-			boolean includeZeroBatches) throws HibernateException {
-		List<Drug> result;
-		if (includeZeroBatches) {
-			result = sess.createQuery(
-					"select distinct d" + " from Drug as d, Stock s"
-							+ " where d.id = s.drug" +
+    /**
+     * Returns a particular drug
+     *
+     * @param sess
+     *            Session
+     * @param drugName
+     *            String
+     * @return Drug
+     * @throws HibernateException
+     */
+    public static Drug getDrug(Session sess, String drugName)
+            throws HibernateException {
+        Drug theDrug = null;
+        theDrug = (Drug) sess.createQuery(
+                "from Drug as d where d.name = :drugName").setString(
+                "drugName", drugName).setMaxResults(1).uniqueResult();
+        return theDrug;
+    }
 
-							" order by d.name asc").list();
-		} else {
-			result = sess.createQuery(
-					"select distinct d" + " from Drug as d, Stock s"
-							+ " where s.drug = d.id and "
-							+ " s.hasUnitsRemaining = 'T'"
-							+ " order by d.sideTreatment, d.name asc").list();
+    public static String getDrugNameForPackagedDrug(Session session,
+                                                    int packageDrugId) {
+        return (String) session.createQuery(
+                "select pd.stock.drug.name from PackagedDrugs pd "
+                        + "where pd.id = :pid ").setInteger("pid",
+                packageDrugId).uniqueResult();
 
-		}
-		return result;
+    }
 
-	}
+    /**
+     * Returns a list of Drug Objects for Stock take Difference here is that the
+     * query does not return drugs with no batches.
+     *
+     * @param sess
+     *
+     * @param includeZeroBatches
+     * @return List<Drug>
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Drug> getDrugsListForStockTake(Session sess,
+                                                      boolean includeZeroBatches) throws HibernateException {
+        List<Drug> result;
+        if (includeZeroBatches) {
+            result = sess.createQuery(
+                    "select distinct d" + " from Drug as d, Stock s"
+                            + " where d.id = s.drug" +
 
-	/**
-	 * Saves the newly created drug
-	 * 
-	 * @param s
-	 *            Session
-	 * @param theDrug
-	 *            Drug
-	 * @throws HibernateException
-	 */
-	public static void saveDrug(Session s, Drug theDrug)
-			throws HibernateException {
-		s.save(theDrug);
+                            " order by d.name asc").list();
+        } else {
+            result = sess.createQuery(
+                    "select distinct d" + " from Drug as d, Stock s"
+                            + " where s.drug = d.id and "
+                            + " s.hasUnitsRemaining = 'T'"
+                            + " order by d.sideTreatment, d.name asc").list();
 
-	}
+        }
+        return result;
 
-	// ---------- METHODS FOR CHEMICAL DRUG STRENGTH MANAGER ---------------
+    }
 
-	/**
-	 * Returns all chemical compounds
-	 * 
-	 * @param sess
-	 * @return List<ChemicalCompound>
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<ChemicalCompound> getAllChemicalCompounds(Session sess)
-			throws HibernateException {
-		List<ChemicalCompound> result = sess.createQuery(
-				"select c from ChemicalCompound as c order by c.name").list();
+    /**
+     * Saves the newly created drug
+     *
+     * @param s
+     *            Session
+     * @param theDrug
+     *            Drug
+     * @throws HibernateException
+     */
+    public static void saveDrug(Session s, Drug theDrug)
+            throws HibernateException {
+        s.save(theDrug);
 
-		return result;
-	}
+    }
 
-	/**
-	 * Returns all drugs
-	 * 
-	 * @param sess
-	 * @return List<Drug>
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<Drug> getAllDrugs(Session sess)
-			throws HibernateException {
-		List<Drug> result = sess.createQuery(
-				"select d from Drug as d order by d.name").list();
+    // ---------- METHODS FOR CHEMICAL DRUG STRENGTH MANAGER ---------------
 
-		return result;
-	}
+    /**
+     * Returns all chemical compounds
+     *
+     * @param sess
+     * @return List<ChemicalCompound>
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<ChemicalCompound> getAllChemicalCompounds(Session sess)
+            throws HibernateException {
+        List<ChemicalCompound> result = sess.createQuery(
+                "select c from ChemicalCompound as c order by c.name").list();
 
-	public static List<Drug> getAllAssociatedDrugs(Session sess, String regimeTerapeutico)
-			throws HibernateException {
-		List<Drug> result = new ArrayList<>();
+        return result;
+    }
 
-				RegimeTerapeutico regimeTerapeutic = DrugManager.getRegimeTerapeutico(sess, regimeTerapeutico);
-		Iterator<RegimenDrugs> it = regimeTerapeutic.getRegimenDrugs().iterator();
+    /**
+     * Returns all drugs
+     *
+     * @param sess
+     * @return List<Drug>
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Drug> getAllDrugs(Session sess)
+            throws HibernateException {
+        List<Drug> result = sess.createQuery(
+                "select d from Drug as d order by d.name").list();
 
-		while (it.hasNext()) {
-			RegimenDrugs rd = it.next();
+        return result;
+    }
 
-			Drug d = rd.getDrug();
+    public static List<Drug> getAllAssociatedDrugs(Session sess, String regimeTerapeutico)
+            throws HibernateException {
+        List<Drug> result = new ArrayList<>();
 
-			result.add(d);
-		}
+        RegimeTerapeutico regimeTerapeutic = DrugManager.getRegimeTerapeutico(sess, regimeTerapeutico);
+        Iterator<RegimenDrugs> it = regimeTerapeutic.getRegimenDrugs().iterator();
 
-		return result;
-	}
+        while (it.hasNext()) {
+            RegimenDrugs rd = it.next();
 
-	/**
-	 * Method getChemicalCompoundByAcronym.
-	 * 
-	 * @param s
-	 *            Session
-	 * @param acronym
-	 *            String
-	 * @return ChemicalCompound
-	 * @throws HibernateException
-	 */
-	public static ChemicalCompound getChemicalCompoundByAcronym(Session s,
-			String acronym) throws HibernateException {
-		ChemicalCompound theChem = null;
-		theChem = (ChemicalCompound) s
-				.createQuery(
-						"select chem from ChemicalCompound as chem where chem.acronym = :acr")
-				.setString("acr", acronym).setMaxResults(1).uniqueResult();
-		return theChem;
-	}
+            Drug d = rd.getDrug();
 
-	/**
-	 * Method getChemicalCompoundByName.
-	 * 
-	 * @param s
-	 *            Session
-	 * @param name
-	 *            String
-	 * @return ChemicalCompound
-	 * @throws HibernateException
-	 */
-	public static ChemicalCompound getChemicalCompoundByName(Session s,
-			String name) throws HibernateException {
-		ChemicalCompound theChem = null;
-		theChem = (ChemicalCompound) s
-				.createQuery(
-						"select chem from ChemicalCompound as chem where chem.name = :theName")
-				.setString("theName", name).setMaxResults(1).uniqueResult();
-		return theChem;
-	}
+            result.add(d);
+        }
 
-	
-	
-	/**
-	 * Method saveChemicalCompound.
-	 * 
-	 * @param s
-	 *            Session
-	 * @param theChemicalCompound
-	 *            ChemicalCompound
-	 * @throws HibernateException
-	 */
-	public static void saveChemicalCompound(Session s,
-			ChemicalCompound theChemicalCompound) throws HibernateException {
-		s.save(theChemicalCompound);
+        return result;
+    }
 
-	}
+    /**
+     * Method getChemicalCompoundByAcronym.
+     *
+     * @param s
+     *            Session
+     * @param acronym
+     *            String
+     * @return ChemicalCompound
+     * @throws HibernateException
+     */
+    public static ChemicalCompound getChemicalCompoundByAcronym(Session s,
+                                                                String acronym) throws HibernateException {
+        ChemicalCompound theChem = null;
+        theChem = (ChemicalCompound) s
+                .createQuery(
+                        "select chem from ChemicalCompound as chem where chem.acronym = :acr")
+                .setString("acr", acronym).setMaxResults(1).uniqueResult();
+        return theChem;
+    }
 
-	/**
-	 * Method existsChemicalComposition.
-	 * 
-	 * @param s
-	 *            Session
-	 * @param toCompare
-	 *            List<ChemicalCompound>
-	 * @return boolean
-	 * @throws HibernateException
-	 */
-	public static String existsChemicalComposition(Session s,
-			Set<ChemicalDrugStrength> toCompare, String compareDrugName)
-			throws HibernateException {
+    /**
+     * Method getChemicalCompoundByName.
+     *
+     * @param s
+     *            Session
+     * @param name
+     *            String
+     * @return ChemicalCompound
+     * @throws HibernateException
+     */
+    public static ChemicalCompound getChemicalCompoundByName(Session s,
+                                                             String name) throws HibernateException {
+        ChemicalCompound theChem = null;
+        theChem = (ChemicalCompound) s
+                .createQuery(
+                        "select chem from ChemicalCompound as chem where chem.name = :theName")
+                .setString("theName", name).setMaxResults(1).uniqueResult();
+        return theChem;
+    }
 
-		// get a list of all the drugs in the database
-		List<Drug> existingDrugs = getAllDrugs(s);
 
-		for (Drug drug : existingDrugs) {
-			if (drug.getChemicalDrugStrengths().size() == toCompare.size()) {
-				if (drug.getChemicalDrugStrengths().containsAll(toCompare)
-						&& (!drug.getName().equals(compareDrugName)))
-					return drug.getName();
-			}
-		}
-		return null;
-	}
+    /**
+     * Method saveChemicalCompound.
+     *
+     * @param s
+     *            Session
+     * @param theChemicalCompound
+     *            ChemicalCompound
+     * @throws HibernateException
+     */
+    public static void saveChemicalCompound(Session s,
+                                            ChemicalCompound theChemicalCompound) throws HibernateException {
+        s.save(theChemicalCompound);
 
-	public static boolean formChemicalComposition(Session s,
-			Set<ChemicalDrugStrength> toCompare, String compareDrugName,String form)
-			throws HibernateException {
+    }
 
-		// get a list of all the drugs in the database
-		List<Drug> existingDrugs = getAllDrugs(s);
-		for (Drug drug : existingDrugs) {
-		
-			if (drug.getChemicalDrugStrengths().size() == toCompare.size()) {
-				if (drug.getChemicalDrugStrengths().containsAll(toCompare)&& (!drug.getName().equals(compareDrugName))){
-					if(drug.getForm().getForm().equals(form)){
-					return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	
-	// ------- METHODS FOR REGIMEN MANAGER --------------------------
+    /**
+     * Method existsChemicalComposition.
+     *
+     * @param s
+     *            Session
+     * @param toCompare
+     *            List<ChemicalCompound>
+     * @return boolean
+     * @throws HibernateException
+     */
+    public static String existsChemicalComposition(Session s,
+                                                   Set<ChemicalDrugStrength> toCompare, String compareDrugName)
+            throws HibernateException {
 
-	/**
-	 * Method getRegimen.
-	 * 
-	 * @param session
-	 *            Session
-	 * @param name
-	 *            String
-	 * @return Regimen
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static Regimen getRegimen(Session session, String name)
-			throws HibernateException {
-		Regimen result = null;
-		List<Regimen> regList = session.createQuery(
-				"from Regimen r where r.regimenName = :name").setString("name",
-				name).list();
-		if (regList.size() > 0) {
-			if (regList.size() > 1) {
-				log.warn("There are 2 regimens with the name '" + name
-						+ "' in the database. Returning the first only");
-			}
-			result = regList.get(0);
-		}
-		return result;
-	}
+        // get a list of all the drugs in the database
+        List<Drug> existingDrugs = getAllDrugs(s);
 
-        	public static RegimeTerapeutico getRegimeTerapeutico(Session session, String name)
-			throws HibernateException {
-		RegimeTerapeutico result = null;
-		List<RegimeTerapeutico> regList = session.createQuery(
-				"from RegimeTerapeutico r where r.regimeesquema = :name").setString("name",
-				name).list();
-		if (regList.size() > 0) {
-			if (regList.size() > 1) {
-				log.warn("Existem dois regimes com o mesmo nome '" + name
-						+ "' no IDART.");
-			}
-			result = regList.get(0);
-		}
-		return result;
-	}
-        
-	/**
-	 * Method regimenDrugsDuplicated.
-	 * 
-	 * @param theRegToSave
-	 *            Regimen
-	 * 
-	 * @return boolean
-	 * @throws HibernateException
-	 */
-	public static boolean regimenDrugsDuplicated(RegimeTerapeutico theRegToSave)
-			throws HibernateException {
-		Iterator<RegimenDrugs> it2 = theRegToSave.getRegimenDrugs().iterator();
-		Set<Integer> theDrugSet = new HashSet<Integer>();
-		while (it2.hasNext()) {
-			RegimenDrugs rd = it2.next();
-			theDrugSet.add(rd.getDrug().getId());
-		}
-		if (theDrugSet.size() < theRegToSave.getRegimenDrugs().size()) {
-			log.warn("Duplicates in Drug Group: " + theDrugSet.size() + ","
-					+ theRegToSave.getRegimenDrugs().size());
-			return true;
-		}
-		return false;
-	}
+        for (Drug drug : existingDrugs) {
+            if (drug.getChemicalDrugStrengths().size() == toCompare.size()) {
+                if (drug.getChemicalDrugStrengths().containsAll(toCompare)
+                        && (!drug.getName().equals(compareDrugName)))
+                    return drug.getName();
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Method regimenDrugsIdentical.
-	 * 
-	 * @param session
-	 *            Session
-	 * @param theRegToSave
-	 *            RegimeTerapeutico 
-	 * @return boolean 
-	 * @throws HibernateException
-	 */
-        /*Alterado por colaco para acomodar ao regimeTerapeutico*/
-	@SuppressWarnings("unchecked")
-	public static boolean regimenDrugsIdentical(Session session,
-			         RegimeTerapeutico theRegToSave) throws HibernateException {
-		List<RegimenDrugs> regDrugs = theRegToSave.getRegimenDrugs();
-		Iterator<RegimenDrugs> it2 = regDrugs.iterator();
-		Set<Integer> theDrugSet = new HashSet<Integer>();
-		while (it2.hasNext()) {
-			RegimenDrugs rd = it2.next();
-			theDrugSet.add(rd.getDrug().getId());
-		}
-		List<RegimeTerapeutico> resultList = session.createQuery("from RegimeTerapeutico r ")
-				.list();
-		Iterator<RegimeTerapeutico> it = resultList.iterator();
+    public static boolean formChemicalComposition(Session s,
+                                                  Set<ChemicalDrugStrength> toCompare, String compareDrugName, String form)
+            throws HibernateException {
 
-		while (it.hasNext()) {
-			RegimeTerapeutico theReg = it.next();
-			if (theRegToSave == null || theReg.getRegimeid()!= theRegToSave.getRegimeid()) {
-				Iterator<RegimenDrugs> it3 = theReg.getRegimenDrugs()
-						.iterator();
-				Set<Integer> theExistingDrugSet = new HashSet<Integer>();
-				while (it3.hasNext()) {
-					RegimenDrugs rd = it3.next();
-					theExistingDrugSet.add(rd.getDrug().getId());
-				}
-				if ((theExistingDrugSet.equals(theDrugSet))) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+        // get a list of all the drugs in the database
+        List<Drug> existingDrugs = getAllDrugs(s);
+        for (Drug drug : existingDrugs) {
 
-	/**
-	 * Method regimenExists.
-	 * 
-	 * @param session
-	 *            Session
-	 * @param regimen
-	 *            Regimen
-	 * @return boolean
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static boolean regimenExists(Session session, Regimen regimen)
-			throws HibernateException {
-		List<Regimen> resultList = session.createQuery("from Regimen r ")
-				.list();
-		for (int i = 0; i < resultList.size(); i++) {
-			if (regimen.equals(resultList.get(i))
-					&& !regimen.getRegimenName().equalsIgnoreCase(
-							resultList.get(i).getRegimenName()))
-				return true;
-		}
-		return false;
-	}
+            if (drug.getChemicalDrugStrengths().size() == toCompare.size()) {
+                if (drug.getChemicalDrugStrengths().containsAll(toCompare) && (!drug.getName().equals(compareDrugName))) {
+                    if (drug.getForm().getForm().equals(form)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Method regimenNameExists.
-	 * 
-	 * @param session
-	 *            Session
-	 * @param name
-	 *            String
-	 * @return boolean
-	 * @throws HibernateException
-	 */
-	@SuppressWarnings("unchecked")
-	public static boolean regimenNameExists(Session session, String name)
-			throws HibernateException {
-		List<Regimen> resultList = session.createQuery(
-				"from Regimen r where " + "upper(r.regimenName) = :name")
-				.setString("name", name.toUpperCase()).list();
-		if (resultList.size() > 0)
-			return true;
-		return false;
-	}
 
-        public static boolean regimeTerapeuticoNameExists(Session session, String name)
-			throws HibernateException {
-		List<RegimeTerapeutico> resultList = session.createQuery(
-				"from RegimeTerapeutico r where " + "upper(r.regimeesquema) = :name")
-				.setString("name", name.toUpperCase()).list();
-		if (resultList.size() > 0)
-			return true;
-		return false;
-	}
-        
-	/**
-	 * Method saveRegimen.
-	 * 
-	 * @param sess
-	 *            Session
-	 * @param theRegToSave
-	 *            Regimen
-	 * @throws HibernateException
-	 */
-	public static void saveRegimen(Session sess, Regimen theRegToSave)
-			throws HibernateException {
-		sess.save(theRegToSave);
+    // ------- METHODS FOR REGIMEN MANAGER --------------------------
 
-	}
+    /**
+     * Method getRegimen.
+     *
+     * @param session
+     *            Session
+     * @param name
+     *            String
+     * @return Regimen
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static Regimen getRegimen(Session session, String name)
+            throws HibernateException {
+        Regimen result = null;
+        List<Regimen> regList = session.createQuery(
+                "from Regimen r where r.regimenName = :name").setString("name",
+                name).list();
+        if (regList.size() > 0) {
+            if (regList.size() > 1) {
+                log.warn("There are 2 regimens with the name '" + name
+                        + "' in the database. Returning the first only");
+            }
+            result = regList.get(0);
+        }
+        return result;
+    }
 
-        public static void saveRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
-			throws HibernateException {
-		sess.save(theRegToSave);
+    public static RegimeTerapeutico getRegimeTerapeutico(Session session, String name)
+            throws HibernateException {
+        RegimeTerapeutico result = null;
+        List<RegimeTerapeutico> regList = session.createQuery(
+                "from RegimeTerapeutico r where r.regimeesquema = :name").setString("name",
+                name).list();
+        if (regList.size() > 0) {
+            if (regList.size() > 1) {
+                log.warn("Existem dois regimes com o mesmo nome '" + name
+                        + "' no IDART.");
+            }
+            result = regList.get(0);
+        }
+        return result;
+    }
 
-	}
-        
-	/**
-	 * Returns the information of the prescribed drug
-	 * 
-	 * @param session
-	 *            Session
-	 * @param d
-	 *            Drug
-	 * @param pre
-	 *            Prescription
-	 * @return PrescribedDrugs
-	 * @throws HibernateException
-	 */
-	public static PrescribedDrugs getPrescribedDrug(Session session, Drug d,
-			Prescription pre) throws HibernateException {
-		PrescribedDrugs id = null;
+    /**
+     * Method regimenDrugsDuplicated.
+     *
+     * @param theRegToSave
+     *            Regimen
+     *
+     * @return boolean
+     * @throws HibernateException
+     */
+    public static boolean regimenDrugsDuplicated(RegimeTerapeutico theRegToSave)
+            throws HibernateException {
+        Iterator<RegimenDrugs> it2 = theRegToSave.getRegimenDrugs().iterator();
+        Set<Integer> theDrugSet = new HashSet<Integer>();
+        while (it2.hasNext()) {
+            RegimenDrugs rd = it2.next();
+            theDrugSet.add(rd.getDrug().getId());
+        }
+        if (theDrugSet.size() < theRegToSave.getRegimenDrugs().size()) {
+            log.warn("Duplicates in Drug Group: " + theDrugSet.size() + ","
+                    + theRegToSave.getRegimenDrugs().size());
+            return true;
+        }
+        return false;
+    }
 
-		id = (PrescribedDrugs) session.createQuery(
-				"select prescribeddrugs from PrescribedDrugs as prescribeddrugs "
-						+ "where prescribeddrugs.drug.id = '" + d.getId()
-						+ "' and prescribeddrugs.prescription.id = '"
-						+ pre.getId() + "'").setMaxResults(1).uniqueResult();
+    /**
+     * Method regimenDrugsIdentical.
+     *
+     * @param session
+     *            Session
+     * @param theRegToSave
+     *            RegimeTerapeutico
+     * @return boolean
+     * @throws HibernateException
+     */
+    /*Alterado por colaco para acomodar ao regimeTerapeutico*/
+    @SuppressWarnings("unchecked")
+    public static boolean regimenDrugsIdentical(Session session,
+                                                RegimeTerapeutico theRegToSave) throws HibernateException {
+        List<RegimenDrugs> regDrugs = theRegToSave.getRegimenDrugs();
+        Iterator<RegimenDrugs> it2 = regDrugs.iterator();
+        Set<Integer> theDrugSet = new HashSet<Integer>();
+        while (it2.hasNext()) {
+            RegimenDrugs rd = it2.next();
+            theDrugSet.add(rd.getDrug().getId());
+        }
+        List<RegimeTerapeutico> resultList = session.createQuery("from RegimeTerapeutico r ")
+                .list();
+        Iterator<RegimeTerapeutico> it = resultList.iterator();
 
-		return id;
-	}
+        while (it.hasNext()) {
+            RegimeTerapeutico theReg = it.next();
+            if (theRegToSave == null || theReg.getRegimeid() != theRegToSave.getRegimeid()) {
+                Iterator<RegimenDrugs> it3 = theReg.getRegimenDrugs()
+                        .iterator();
+                Set<Integer> theExistingDrugSet = new HashSet<Integer>();
+                while (it3.hasNext()) {
+                    RegimenDrugs rd = it3.next();
+                    theExistingDrugSet.add(rd.getDrug().getId());
+                }
+                if ((theExistingDrugSet.equals(theDrugSet))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Method getPrescribedDrugForPackagedDrug.
-	 * 
-	 * @param pack
-	 *            Packages
-	 * @param drug
-	 *            Drug
-	 * @return PrescribedDrugs
-	 * @throws HibernateException
-	 */
-	public static PrescribedDrugs getPrescribedDrugForPackagedDrug(
-			Packages pack, Drug drug) throws HibernateException {
+    /**
+     * Method regimenExists.
+     *
+     * @param session
+     *            Session
+     * @param regimen
+     *            Regimen
+     * @return boolean
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean regimenExists(Session session, Regimen regimen)
+            throws HibernateException {
+        List<Regimen> resultList = session.createQuery("from Regimen r ")
+                .list();
+        for (int i = 0; i < resultList.size(); i++) {
+            if (regimen.equals(resultList.get(i))
+                    && !regimen.getRegimenName().equalsIgnoreCase(
+                    resultList.get(i).getRegimenName()))
+                return true;
+        }
+        return false;
+    }
 
-		Prescription p = pack.getPrescription();
+    /**
+     * Method regimenNameExists.
+     *
+     * @param session
+     *            Session
+     * @param name
+     *            String
+     * @return boolean
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean regimenNameExists(Session session, String name)
+            throws HibernateException {
+        List<Regimen> resultList = session.createQuery(
+                "from Regimen r where " + "upper(r.regimenName) = :name")
+                .setString("name", name.toUpperCase()).list();
+        if (resultList.size() > 0)
+            return true;
+        return false;
+    }
 
-		List<PrescribedDrugs> preDrugs = p.getPrescribedDrugs();
+    public static boolean regimeTerapeuticoNameExists(Session session, String name)
+            throws HibernateException {
+        List<RegimeTerapeutico> resultList = session.createQuery(
+                "from RegimeTerapeutico r where " + "upper(r.regimeesquema) = :name")
+                .setString("name", name.toUpperCase()).list();
+        if (resultList.size() > 0)
+            return true;
+        return false;
+    }
 
-		for (PrescribedDrugs preDrug : preDrugs) {
-			if (preDrug.getDrug().equals(drug))
-				return preDrug;
-		}
+    /**
+     * Method saveRegimen.
+     *
+     * @param sess
+     *            Session
+     * @param theRegToSave
+     *            Regimen
+     * @throws HibernateException
+     */
+    public static void saveRegimen(Session sess, Regimen theRegToSave)
+            throws HibernateException {
+        sess.save(theRegToSave);
 
-		return null;
-	}
+    }
+
+    public static void saveRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
+            throws HibernateException {
+        sess.save(theRegToSave);
+
+    }
+
+    /**
+     * Returns the information of the prescribed drug
+     *
+     * @param session
+     *            Session
+     * @param d
+     *            Drug
+     * @param pre
+     *            Prescription
+     * @return PrescribedDrugs
+     * @throws HibernateException
+     */
+    public static PrescribedDrugs getPrescribedDrug(Session session, Drug d,
+                                                    Prescription pre) throws HibernateException {
+        PrescribedDrugs id = null;
+
+        id = (PrescribedDrugs) session.createQuery(
+                "select prescribeddrugs from PrescribedDrugs as prescribeddrugs "
+                        + "where prescribeddrugs.drug.id = '" + d.getId()
+                        + "' and prescribeddrugs.prescription.id = '"
+                        + pre.getId() + "'").setMaxResults(1).uniqueResult();
+
+        return id;
+    }
+
+    /**
+     * Method getPrescribedDrugForPackagedDrug.
+     *
+     * @param pack
+     *            Packages
+     * @param drug
+     *            Drug
+     * @return PrescribedDrugs
+     * @throws HibernateException
+     */
+    public static PrescribedDrugs getPrescribedDrugForPackagedDrug(
+            Packages pack, Drug drug) throws HibernateException {
+
+        Prescription p = pack.getPrescription();
+
+        List<PrescribedDrugs> preDrugs = p.getPrescribedDrugs();
+
+        for (PrescribedDrugs preDrug : preDrugs) {
+            if (preDrug.getDrug().equals(drug))
+                return preDrug;
+        }
+
+        return null;
+    }
 }

@@ -40,6 +40,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -92,6 +93,10 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 
     private Label lblEstadoRegime;
 
+    private Button rdBtnActive;
+
+    private Button rdBtnInactive;
+
 //    private Label lblRegimePediatrico;
 
     private RegimeTerapeutico localRegimen;
@@ -122,7 +127,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 
 //    private CCombo cmbRegimenLinha;
 
-    private CCombo cmbEstadoRegime;
+//    private CCombo cmbEstadoRegime;
 
 //    private CCombo cmbRegimePediatrico;
 
@@ -298,14 +303,17 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         lblEstadoRegime.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblEstadoRegime.setText(Messages.getString("adddruggroup.estado.regime.title")); //$NON-NLS-1$
 
-        cmbEstadoRegime = new CCombo(grpRegimen, SWT.BORDER);
-//        cmbEstadoRegime.setBounds(new Rectangle(160, 120, 220, 20));
-        cmbEstadoRegime.setBounds(new Rectangle(160, 70, 220, 20));
-        cmbEstadoRegime.setEditable(false);
-        cmbEstadoRegime.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        cmbEstadoRegime.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-        CommonObjects.populateComboRegimenStatus(getHSession(), cmbEstadoRegime);
-        cmbEstadoRegime.setEnabled(false);
+        rdBtnActive = new Button(grpRegimen, SWT.RADIO);
+        rdBtnActive.setBounds(new Rectangle(160, 95, 110, 20));
+        rdBtnActive.setText("Activo");
+        rdBtnActive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        rdBtnActive.setSelection(true);
+
+        rdBtnInactive = new Button(grpRegimen, SWT.RADIO);
+        rdBtnInactive.setBounds(new Rectangle(160, 95, 220, 20));
+        rdBtnInactive.setText("Inactivo");
+        rdBtnInactive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        rdBtnInactive.setSelection(false);
 
         // Mapeamento OpenMRS
         lblRegimeEspecifico = new Label(grpRegimen, SWT.NONE);
@@ -451,19 +459,11 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             regToSave.setRegimeid(localRegimen.getRegimeid());
         }
 
-////Alterado regime pediatrico ou adulto
-//        if (cmbRegimePediatrico.getText().contentEquals("Sim")) {
-//            regToSave.setPediatrico("T");
-//        } else {
-//            regToSave.setPediatrico("F");
-//        }
+        if (rdBtnActive.getSelection())
+            regToSave.setActive(rdBtnActive.getSelection());
+        else
+            regToSave.setActive(rdBtnInactive.getSelection());
 
-        boolean isRegimenActive;
-
-        isRegimenActive = cmbEstadoRegime.getText().contentEquals("Activo");
-
-//        regToSave.setLinhaT(AdministrationManager.getLinha(getHSession(), cmbRegimenLinha.getText()));
-        regToSave.setActive(isRegimenActive);
         regToSave.setRegimeesquema(txtDrugGroupName.getText().trim());
         regToSave.setRegimenomeespecificado(txtRegimeEspecifico.getText());
         regToSave.setCodigoregime(txtCodigoRegime.getText());
@@ -616,11 +616,8 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         txtCodigoRegime.setText(EMPTY);
         txtRegimeEspecifico.setText(EMPTY);
 
-        cmbEstadoRegime.setText(EMPTY);
-//        cmbRegimePediatrico.setText(EMPTY);
-
-//        cmbRegimenLinha.setText(EMPTY); //$NON-NLS-1$
-//        cmbRegimenLinha.setEnabled(false);
+        rdBtnActive.setSelection(true);
+        rdBtnInactive.setSelection(false);
 
         tblDrugs.clearAll();
         tblDrugs.removeAll();
@@ -674,15 +671,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             result = false;
 
         }
-//        else if (cmbRegimenLinha.getText().isEmpty()) {
-//            MessageBox noRegimen = new MessageBox(getShell(), SWT.ICON_ERROR
-//                    | SWT.OK);
-//            noRegimen.setText(Messages.getString("adddruggroup.regimen.blank")); //$NON-NLS-1$
-//            noRegimen.setMessage(Messages.getString("adddruggroup.regimen.error")); //$NON-NLS-1$
-//            noRegimen.open();
-//            cmbRegimenLinha.setFocus();
-//            result = false;
-//        }
         else if (txtCodigoRegime.getText().isEmpty()) {
             MessageBox noFNM = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
@@ -699,24 +687,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             noRegimeOpenMRS.open();
             txtRegimeEspecifico.setFocus();
             result = false;
-        } else if (cmbEstadoRegime.getText().isEmpty()) {
-            MessageBox noEstadoRegime = new MessageBox(getShell(), SWT.ICON_ERROR
-                    | SWT.OK);
-            noEstadoRegime.setText(Messages.getString("adddruggroup.estado.regime.blank")); //$NON-NLS-1$
-            noEstadoRegime.setMessage(Messages.getString("adddruggroup.estado.regime.error")); //$NON-NLS-1$
-            noEstadoRegime.open();
-            cmbEstadoRegime.setFocus();
-            result = false;
         }
-//        else if (cmbRegimePediatrico.getText().isEmpty()) {
-//            MessageBox noRegimePediatrico = new MessageBox(getShell(), SWT.ICON_ERROR
-//                    | SWT.OK);
-//            noRegimePediatrico.setText(Messages.getString("adddruggroup.regime.pediatrico.blank")); //$NON-NLS-1$
-//            noRegimePediatrico.setMessage(Messages.getString("adddruggroup.regime.pediatrico.error")); //$NON-NLS-1$
-//            noRegimePediatrico.open();
-//            cmbRegimePediatrico.setFocus();
-//            result = false;
-//        }
         else if (tblDrugs.getItemCount() == 0) {
             MessageBox noDrugsAdded = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
@@ -843,19 +814,14 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         txtDrugGroupName.setText(localRegimen.getRegimeesquema());
         txtCodigoRegime.setText(localRegimen.getCodigoregime());
         txtRegimeEspecifico.setText(localRegimen.getRegimenomeespecificado());
-//        cmbRegimenLinha.setEnabled(true);
-//        cmbRegimenLinha.setText(localRegimen.getLinhaT().getLinhanome());
-        cmbEstadoRegime.setEditable(true);
+
         if (localRegimen.isActive()) {
-            cmbEstadoRegime.select(0);
+            rdBtnActive.setSelection(true);
+            rdBtnInactive.setSelection(false);
         } else {
-            cmbEstadoRegime.select(1);
+            rdBtnActive.setSelection(false);
+            rdBtnInactive.setSelection(true);
         }
-//        if (!localRegimen.getPediatrico().equalsIgnoreCase("T")) {
-//            cmbRegimePediatrico.select(1);
-//        } else {
-//            cmbRegimePediatrico.select(0);
-//        }
 
     }
 
@@ -911,14 +877,14 @@ public class AddRegimeTerapeutico extends GenericFormGui {
      */
     @Override
     protected void enableFields(boolean enable) {
-//        cmbRegimenLinha.setEnabled(enable);
+
         lblPicAddDrug.setEnabled(enable);
         btnAddDrug.setEnabled(enable);
         btnRemoveDrug.setEnabled(enable);
         btnSearch.setEnabled(!enable);
         btnSaveDrugGroup.setEnabled(enable);
-        cmbEstadoRegime.setEnabled(enable);
-//        cmbRegimePediatrico.setEnabled(enable);
+        rdBtnActive.setEnabled(enable);
+        rdBtnInactive.setEnabled(enable);
         txtCodigoRegime.setEnabled(enable);
         txtRegimeEspecifico.setEnabled(enable);
 

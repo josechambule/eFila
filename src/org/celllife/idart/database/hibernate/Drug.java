@@ -56,12 +56,16 @@ public class Drug implements Comparable<Drug> {
 
 	private String name;
 
+	private boolean active;
+
 	private int packSize;
 
 	@OneToMany(mappedBy = "drug")
 	private Set<Stock> stock;
 
 	private char sideTreatment;
+
+	private String tipoDoenca;
 
 	private double defaultAmnt;
 
@@ -405,32 +409,12 @@ public class Drug implements Comparable<Drug> {
 		return atccode_id;
 	}
 
-//	public Set<AtcCode> getAtccodes() {
-//		Set<AtcCode> codes = new HashSet<AtcCode>();
-//		if (atccode != null)
-//			codes.add(atccode);
-//
-//		if (chemicalDrugStrengths == null || chemicalDrugStrengths.isEmpty()){
-//			return codes;
-//		}
-//		for (ChemicalDrugStrength cds : chemicalDrugStrengths) {
-//			Set<AtcCode> atccodes = cds.getChemicalCompound().getAtccodes();
-//			if (atccodes != null){
-//				codes.addAll(atccodes);
-//			}
-//		}
-//		return codes;
-//	}
+	public void setTipoDoenca(String tipoDoenca) {
+		this.tipoDoenca = tipoDoenca;
+	}
 
-	public Set<ChemicalCompound> getChemicalCompounds(){
-		Set<ChemicalCompound> ccs = new HashSet<ChemicalCompound>();
-		Set<ChemicalDrugStrength> cds = getChemicalDrugStrengths();
-		if (cds != null){
-			for (ChemicalDrugStrength cd : cds) {
-				ccs.add(cd.getChemicalCompound());
-			}
-		}
-		return ccs;
+	public String getTipoDoenca() {
+		return tipoDoenca;
 	}
 
 	public char getPediatric() {
@@ -441,6 +425,12 @@ public class Drug implements Comparable<Drug> {
 		this.pediatric = pediatric;
 	}
 
-	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 	
 }

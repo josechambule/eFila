@@ -326,7 +326,7 @@ public class CommonObjects {
 	 * @param sess
 	 *            Session
 	 * @param combo
-	 * @param localPatient  
+	 * @param
 	 */
 	public static void populateActivationReasons(Session sess, CCombo combo) { 
 
@@ -656,7 +656,19 @@ public class CommonObjects {
 		cmbLine.setItems(items);
 		
 	}
- 
+
+	public static void populateDiseases (Session session, CCombo cmbDisease) {
+		List<SimpleDomain> sdList = AdministrationManager
+				.getAllDiseases(session);
+
+		if (sdList != null) {
+			for (SimpleDomain s : sdList) {
+				cmbDisease.add(s.getValue());
+			}
+		}
+
+	}
+
         public static void populateComboRegimenStatus(Session session, CCombo cmbLine) {
 		String[] items = new String[2];
 		items[0] =Messages.getString("addRegimen.field.active");
@@ -664,7 +676,15 @@ public class CommonObjects {
 		cmbLine.setItems(items);
 		
 	}
-        
+
+	public static void populateComboDrugStatus(Session session, CCombo cmbLine) {
+		String[] items = new String[2];
+		items[0] =Messages.getString("addRegimen.field.active");
+		items[1] = Messages.getString("addRegimen.field.inactive");
+		cmbLine.setItems(items);
+
+	}
+
         public static void populateYesNo(Session hSession, CCombo genericYesNo) {
 		genericYesNo.add("Sim");
                 genericYesNo.add("Nao");

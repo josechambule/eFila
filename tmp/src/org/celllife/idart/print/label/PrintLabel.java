@@ -124,7 +124,7 @@ public class PrintLabel {
 		}
 		paper.setImageableArea(0.0, 0.0, paper.getWidth(), paper.getHeight());
 		pf.setPaper(paper);
-		pf.setOrientation(PageFormat.PORTRAIT);
+//		pf.setOrientation(PageFormat.PORTRAIT);
 
 		Book book = new Book();
 

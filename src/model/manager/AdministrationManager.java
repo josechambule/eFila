@@ -107,6 +107,15 @@ public class AdministrationManager {
         return result;
     }
 
+    public static List<SimpleDomain> getAllDiseases(Session sess)
+            throws HibernateException {
+        String qString = "select s from SimpleDomain as s where s.description = 'Disease' order by s.value asc";
+        Query q = sess.createQuery(qString);
+        List<SimpleDomain> result = q.list();
+
+        return result;
+    }
+
     /**
      * Saves the current doctor
      *
@@ -209,6 +218,14 @@ public class AdministrationManager {
         ConexaoJDBC conn = new ConexaoJDBC();
 
         return conn.carregaDispensaTrimestral(idPatient);
+
+    }
+
+    //Previous Dispensa Semestral
+    public static int loadDispensaSemestral(int idPatient) throws ClassNotFoundException, SQLException {
+        ConexaoJDBC conn = new ConexaoJDBC();
+
+        return conn.carregaDispensaSemestral(idPatient);
 
     }
 
@@ -928,7 +945,7 @@ public class AdministrationManager {
      * @param district
      * @param sdistrict
      * @param facility
-     * @param fType
+     * @param
      * @return
      * @throws HibernateException
      */
