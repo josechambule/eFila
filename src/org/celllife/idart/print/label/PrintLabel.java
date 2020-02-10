@@ -46,6 +46,7 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.DocAttributeSet;
 import javax.print.attribute.HashDocAttributeSet;
 
+import org.celllife.idart.commonobjects.PrinterProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -119,9 +120,9 @@ public class PrintLabel {
         Double width = 0.0;
         Double height = 0.0;
 
-        if (isNumeric(iDartProperties.labelprintHeight) && isNumeric(iDartProperties.labelprintWidth)) {
-            height = Double.parseDouble(iDartProperties.labelprintHeight);
-            width = Double.parseDouble(iDartProperties.labelprintWidth);
+        if (isNumeric(PrinterProperties.labelprintHeight) && isNumeric(PrinterProperties.labelprintWidth)) {
+            height = Double.parseDouble(PrinterProperties.labelprintHeight);
+            width = Double.parseDouble(PrinterProperties.labelprintWidth);
         } else {
             MessageBox b = new MessageBox(null, SWT.ICON_ERROR | SWT.OK);
             b.setMessage(" Por favor verificar as configurações da impressora de etiquetas");
@@ -137,8 +138,8 @@ public class PrintLabel {
 
         paper.setImageableArea(0.0, 0.0, paper.getWidth(), paper.getHeight());
         pf.setPaper(paper);
-        if (isNumeric(iDartProperties.labelprintPageFormat))
-            if (Integer.parseInt(iDartProperties.labelprintPageFormat) < 1)
+        if (isNumeric(PrinterProperties.labelprintPageFormat))
+            if (Integer.parseInt(PrinterProperties.labelprintPageFormat) < 1)
                 pf.setOrientation(PageFormat.LANDSCAPE);
 
         Book book = new Book();
