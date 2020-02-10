@@ -44,9 +44,9 @@ public class Drug implements Comparable<Drug> {
 	@JoinColumn(name = "form")
 	private Form form;
 	
-	@ManyToOne
-	@JoinColumn(name = "atccode_id")
-	private AtcCode atccode;
+//	@ManyToOne
+//	@JoinColumn(name = "atccode_id")
+	private String atccode_id;
 
 	private String dispensingInstructions1;
 
@@ -56,12 +56,16 @@ public class Drug implements Comparable<Drug> {
 
 	private String name;
 
+	private boolean active;
+
 	private int packSize;
 
 	@OneToMany(mappedBy = "drug")
 	private Set<Stock> stock;
 
 	private char sideTreatment;
+
+	private String tipoDoenca;
 
 	private double defaultAmnt;
 
@@ -397,40 +401,20 @@ public class Drug implements Comparable<Drug> {
 		return true;
 	}
 
-	public void setAtccode(AtcCode atccode) {
-		this.atccode = atccode;
+	public void setAtccode(String atccode_id) {
+		this.atccode_id = atccode_id;
 	}
 
-	public AtcCode getAtccode() {
-		return atccode;
+	public String getAtccode() {
+		return atccode_id;
 	}
 
-	public Set<AtcCode> getAtccodes() {
-		Set<AtcCode> codes = new HashSet<AtcCode>();
-		if (atccode != null)
-			codes.add(atccode);
-		
-		if (chemicalDrugStrengths == null || chemicalDrugStrengths.isEmpty()){
-			return codes;
-		}
-		for (ChemicalDrugStrength cds : chemicalDrugStrengths) {
-			Set<AtcCode> atccodes = cds.getChemicalCompound().getAtccodes();
-			if (atccodes != null){
-				codes.addAll(atccodes);
-			}
-		}
-		return codes;
+	public void setTipoDoenca(String tipoDoenca) {
+		this.tipoDoenca = tipoDoenca;
 	}
 
-	public Set<ChemicalCompound> getChemicalCompounds(){
-		Set<ChemicalCompound> ccs = new HashSet<ChemicalCompound>();
-		Set<ChemicalDrugStrength> cds = getChemicalDrugStrengths();
-		if (cds != null){
-			for (ChemicalDrugStrength cd : cds) {
-				ccs.add(cd.getChemicalCompound());
-			}
-		}
-		return ccs;
+	public String getTipoDoenca() {
+		return tipoDoenca;
 	}
 
 	public char getPediatric() {
@@ -441,6 +425,12 @@ public class Drug implements Comparable<Drug> {
 		this.pediatric = pediatric;
 	}
 
-	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 	
 }

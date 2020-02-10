@@ -309,11 +309,12 @@ public class IedeaExport {
 	private boolean containsCompound(Prescription script, String atccode) {
 		List<PrescribedDrugs> pds = script.getPrescribedDrugs();
 		for (PrescribedDrugs pd : pds) {
-			Set<AtcCode> atccodes = pd.getDrug().getAtccodes();
-			for (AtcCode atcCode: atccodes) {
-				if (atcCode.getCode().equalsIgnoreCase(atccode)){
+//			Set<AtcCode> atccodes = pd.getDrug().getAtccodes();
+			String atccodes = pd.getDrug().getAtccode();
+//			for (AtcCode atcCode: atccodes) {
+				if (atccodes.equalsIgnoreCase(atccode)){
 					return true;
-				}
+//				}
 			}
 		}
 		return false;

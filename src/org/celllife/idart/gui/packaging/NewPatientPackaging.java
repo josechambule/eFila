@@ -2010,7 +2010,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	/**
 	 * Method getPossibleInHandOnExitValues.
 	 * 
-	 * @param ti
 	 *            TableItem
 	 * @return java.util.List<String>
 	 */
@@ -2120,7 +2119,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	 * Checks to see the paitent belonging to the prescription has a package
 	 * that has not yet been collected.
 	 * 
-	 * @param prescription
 	 * @return true if patient has package awaiting collection
 	 */
 	private boolean patientHasPackageAwaitingPickup() {
@@ -2331,7 +2329,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	/**
 	 * Populates the prescription details on the form. This includes notes.
 	 * 
-	 * @param prescription
 	 */
 	private void populatePrescriptionDetails() {
 
@@ -2455,7 +2452,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	}
 
 	/**
-	 * @param prescription
 	 */
 	private void populatePresciptionTable() {
 		tblPrescriptionInfo.removeAll();
@@ -2713,7 +2709,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	/**
 	 * Method resetGUIforDispensingType.
 	 * 
-	 * @param isDispenseNow
 	 *            boolean
 	 */
 	private void resetGUIforDispensingType() {
@@ -3261,7 +3256,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 	 * 
 	 * Clears the in hand on exit column in the current package table.
 	 * 
-	 * @param pc
 	 */
 	public void clearInHandOnExit() {
 

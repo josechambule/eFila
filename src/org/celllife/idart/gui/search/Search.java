@@ -168,6 +168,17 @@ public class Search extends GenericOthersGui {
         waitForDispose();
     }
 
+    // pesquisa drugs apartir do regime
+    public Search(Session hSession, Shell localShell, boolean showZeroBatches,String regimeTerapeutico) {
+        super(localShell, hSession);
+
+        searchType = CommonObjects.ASSOCIATEDDRUGS;
+        activate();
+        searchList = SearchManager.loadAssociatedDrugs(getHSession(), this, regimeTerapeutico,showZeroBatches);
+        waitForDispose();
+    }
+
+
     /**
      * Method retrieveSearchList.
      *

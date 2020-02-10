@@ -172,6 +172,10 @@ public class iDartProperties {
 	
 	public static String illegalPatientIdChars = "'`^";
 	public static String illegalPatientIdRegex = "["+illegalPatientIdChars+"]+";
+
+	public static String labelprintWidth="216.0";
+	public static String labelprintHeight="135.0";
+	public static String labelprintPageFormat="1";
 	
 	/**
 	 */
@@ -252,6 +256,9 @@ public class iDartProperties {
 		intValueOfAlternativeBarcodeEndChar = setIntegerProperty("intValueOfAlternativeBarcodeEndChar");
 		
 		isCidaStudy = setBooleanProperty("cidaStudy");
+		labelprintPageFormat = setStringProperty("labelprintPageFormat");
+		labelprintWidth = setStringProperty("labelprintWidth");
+		labelprintHeight = setStringProperty("labelprintHeight");
 
 		String labelTypeString = setStringProperty("labelType");
 		// Should paeds labels have quantities blank by default?

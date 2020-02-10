@@ -1636,6 +1636,35 @@ public class ConexaoJDBC {
 
     }
 
+    public int carregaDispensaSemestral(int idpaciente) throws ClassNotFoundException, SQLException {
+
+        String query = " "
+                + " SELECT "
+                + "  dispensasemestral "
+                + "  FROM "
+                + "  prescription "
+                + "  WHERE "
+                + "  prescription.patient=" + idpaciente
+                + "  AND "
+                + "  prescription.current=\'T\'"
+                + "";
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        // 0 = nao
+        // 1 = sim
+        int dispensaSemestral = 0;
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                dispensaSemestral = rs.getInt("dispensasemestral");
+            }
+            rs.close(); //
+        }
+
+        return dispensaSemestral;
+
+    }
+
+
     /**
      * Devolve tb duma prescricao
      *
@@ -1956,7 +1985,7 @@ public class ConexaoJDBC {
     /**
      * Devolve se um ARV � pedi�trico ou adulto
      *
-     * @param idpaciente
+     * @param iddrug
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException

@@ -63,17 +63,19 @@ public class LinkDrugsToAtcCodes_3_8_9 implements CustomSqlChange, CustomSqlRoll
 				ccs.add(cd.getChemicalCompound());
 			}
 			
-			Set<AtcCode> atccodes = drug.getAtccodes();
+//			Set<AtcCode> atccodes = drug.getAtccodes();
+			String atccodes = drug.getAtccode();
 			if (atccodes == null){
 				continue;
 			}
-			for (AtcCode atcCode : atccodes) {
-				if (atcCode.containsExactChemicalCompounds(ccs)){
+//			for (AtcCode atcCode : atccodes) {
+//				if (atcCode.containsExactChemicalCompounds(ccs)){
+				if (atccodes.isEmpty()){
 					statements.add(new UpdateStatement(null, "drug")
-							.addNewColumnValue("atccode_id", atcCode.getId())
+							.addNewColumnValue("atccode_id", atccodes)
 							.setWhereClause("id = " + drug.getId()));
 					break;
-				}
+//				}
 			}
 		}
 		return statements.toArray(new SqlStatement[statements.size()]);

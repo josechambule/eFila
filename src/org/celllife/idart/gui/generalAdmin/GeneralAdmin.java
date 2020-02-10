@@ -432,25 +432,44 @@ public class GeneralAdmin extends GenericAdminGui {
 
         btnImportPatients.setEnabled(false);
 
-        // btnImportPatientsSESP
-        Button btnImportPatientsSESP = new Button(grpImport, SWT.NONE);
-        btnImportPatientsSESP.setText(Messages.getString("GeneralAdmin.button.importPatients.title2")); //$NON-NLS-1$
-        btnImportPatientsSESP
-                .setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip2")); //$NON-NLS-1$
-        btnImportPatientsSESP.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                110, 235, 30));
-        btnImportPatientsSESP.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnImportPatientsSESP
-                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-
-                                cmd_importPatientsSESP();
-                            }
-                });
-        btnImportPatientsSESP.setEnabled(false);
-
+        // Actuliazado - harmonizacao -- btnImportPatientsSESP
+//        Button btnImportPatientsSESP = new Button(grpImport, SWT.NONE);
+//        btnImportPatientsSESP.setText(Messages.getString("GeneralAdmin.button.importPatients.title2")); //$NON-NLS-1$
+//        btnImportPatientsSESP
+//                .setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip2")); //$NON-NLS-1$
+//        btnImportPatientsSESP.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+//                110, 235, 30));
+//        btnImportPatientsSESP.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+//        btnImportPatientsSESP
+//                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+//                    @Override
+//                    public void widgetSelected(
+//                            org.eclipse.swt.events.SelectionEvent e) {
+//
+//                                cmd_importPatientsSESP();
+//                            }
+//                });
+//        btnImportPatientsSESP.setEnabled(false);
+//
+         // Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
+            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
+            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS
+                    .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+                    110, 235, 30));
+            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnImportPatientsOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+//                            MainPanel importPatients = new MainPanel();
+//                            importPatients.createAndShowGUI();
+                        }
+                    });
+            btnImportPatientsOpenMRS.setEnabled(true);
+        
     }
 
     /**

@@ -16,7 +16,6 @@
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-
 package org.celllife.idart.gui.reports;
 
 import java.lang.reflect.InvocationTargetException;
@@ -44,7 +43,6 @@ import org.celllife.idart.gui.reportParameters.EpisodesStartedOrEndedReportGUI;
 import org.celllife.idart.gui.reportParameters.HistoricoLevantamentos;
 import org.celllife.idart.gui.reportParameters.IsoniazidaReport;
 import org.celllife.idart.gui.reportParameters.MissedAppointments;
-import org.celllife.idart.gui.reportParameters.MmiaReport;
 import org.celllife.idart.gui.reportParameters.MmiaReportMISAU;
 import org.celllife.idart.gui.reportParameters.MonthlyReceiptsAndIssues;
 import org.celllife.idart.gui.reportParameters.MonthlyStockReceipt;
@@ -88,589 +86,646 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import model.manager.exports.iedea.IedeaExporter;
+import org.celllife.idart.gui.reportParameters.AvaliacaoSegundasLinhas;
+import org.celllife.idart.gui.reportParameters.CohortDispensaTrimestral;
+import org.celllife.idart.gui.reportParameters.IndicadoresMesnsais;
+import org.celllife.idart.gui.reportParameters.LivroEletronicoDispensaARV;
+import org.celllife.idart.gui.reportParameters.LostToFollowUpReturned;
+import org.celllife.idart.gui.reportParameters.MissedAppointmentsAPSS;
+import org.celllife.idart.gui.reportParameters.MissedAppointmentsChamadas;
+import org.celllife.idart.gui.reportParameters.MissedAppointmentsDT;
+import org.celllife.idart.gui.reportParameters.MissedAppointmentsNew;
+import org.celllife.idart.gui.reportParameters.PacientesReferidos;
+import org.celllife.idart.gui.reportParameters.PacientesSemDT;
+import org.celllife.idart.gui.reportParameters.RegimeTerapeuticoReport;
+import org.celllife.idart.gui.reportParameters.SecondLineReport;
 
 /**
  */
 public class NewReports extends GenericAdminGui {
 
-	private Group grpMia;
-	private Group grpPatientReports;
+    private Group grpMia;
+    private Group grpPatientReports;
 
-	private Group grpStockReports;
+    private Group grpStockReports;
 
-	private Group grpMandEReports;
+    private Group grpMandEReports;
 
-	private Group grpClinicManagementReports;
+    private Group grpClinicManagementReports;
 
-	private Composite compButton;
-	
-	private Label lblPicMiaReports;
+    private Composite compButton;
 
-	private Label lblPicPatientReports;
+    private Label lblPicMiaReports;
 
-	private Label lblPicStockReports;
+    private Label lblPicPatientReports;
 
-	private Label lblPicMandEReports;
+    private Label lblPicStockReports;
 
-	private Label lblPicClinicManagementReports;
-	
-	private Table tblMiaReports;
+    private Label lblPicMandEReports;
 
-	private Table tblPatientReports;
+    private Label lblPicClinicManagementReports;
 
-	private Table tblStockReports;
+    private Table tblMiaReports;
 
-	private Table tblMandEReports;
+    private Table tblPatientReports;
 
-	private Table tblClinicManagementReports;
+    private Table tblStockReports;
 
-	//private Button btnIedeaExport;
+    private Table tblMandEReports;
 
-	private Button btnDataExport;
+    private Table tblClinicManagementReports;
 
-	private Button btnDataQuality;
+    //private Button btnIedeaExport;
+    private Button btnDataExport;
 
-	Map<String, GenericReportGui> reportGUIs = new LinkedHashMap<String, GenericReportGui>();
+    private Button btnDataQuality;
 
-	/**
-	 * Constructor for NewReports.
-	 * 
-	 * @param parent
-	 *            Shell
-	 */
-	public NewReports(Shell parent) {
-		super(parent);
-		// All GenericReports will not close
-		GenericReportGui.setShouldClose(false);
-		populateReportLists();
-	}
+    Map<String, GenericReportGui> reportGUIs = new LinkedHashMap<String, GenericReportGui>();
 
-	/**
-	 * This method initializes newReports
-	 */
-	@Override
-	protected void createShell() {
-		buildShell(Messages.getString("NewReports.shell.title")); //$NON-NLS-1$
-	}
+    /**
+     * Constructor for NewReports.
+     *
+     * @param parent Shell
+     */
+    public NewReports(Shell parent) {
+        super(parent);
+        // All GenericReports will not close
+        GenericReportGui.setShouldClose(false);
+        populateReportLists();
+    }
 
-	private void createMyGroups() {
-		createGrpMia();
-		createGrpPatientReports();
-		createGrpClinicManagementReports();
-		createGrpStockReports();
-		createGrpMandEReports();
-		createCompButtons();
-	}
+    /**
+     * This method initializes newReports
+     */
+    @Override
+    protected void createShell() {
+        buildShell(Messages.getString("NewReports.shell.title")); //$NON-NLS-1$
+    }
 
-	/**
-	 * This method initializes compHeader
-	 */
-	@Override
-	protected void createCompHeader() {
-		String titleText = Messages.getString("NewReports.shell.title"); //$NON-NLS-1$
-		iDartImage icoImage = iDartImage.REPORTS;
-		buildCompHeader(titleText, icoImage);
-	}
+    private void createMyGroups() {
+        createGrpMia();
+        createGrpPatientReports();
+        createGrpClinicManagementReports();
+        createGrpStockReports();
+        createGrpMandEReports();
+        createCompButtons();
+    }
 
-	
-	private void createGrpMia() {
-		grpMia = new Group(getShell(), SWT.NONE);
-		grpMia.setBounds(new Rectangle(625, 80, 240, 250));
-		grpMia.setText(Messages.getString("NewReports.section.mmia")); //$NON-NLS-1$
-		grpMia.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+    /**
+     * This method initializes compHeader
+     */
+    @Override
+    protected void createCompHeader() {
+        String titleText = Messages.getString("NewReports.shell.title"); //$NON-NLS-1$
+        iDartImage icoImage = iDartImage.REPORTS;
+        buildCompHeader(titleText, icoImage);
+    }
 
-		lblPicMiaReports = new Label(grpMia, SWT.NONE);
-		lblPicMiaReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
-		lblPicMiaReports.setImage(ResourceUtils.getImage(iDartImage.REPORT_PATIENTHISTORY));
+    private void createGrpMia() {
+        grpMia = new Group(getShell(), SWT.NONE);
+        grpMia.setBounds(new Rectangle(625, 80, 240, 250));
+        grpMia.setText(Messages
+                .getString("NewReports.section.mmia")); //$NON-NLS-1$
+        grpMia.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
-		tblMiaReports = new Table(grpMia, SWT.BORDER);
-		tblMiaReports.setBounds(new Rectangle(10, 50, 200, 180));
-		tblMiaReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        lblPicMiaReports = new Label(grpMia, SWT.NONE);
+        lblPicMiaReports.setBounds(new org.eclipse.swt.graphics.Rectangle(
+                10, 0, 50, 43));
+        lblPicMiaReports.setImage(ResourceUtils
+                .getImage(iDartImage.REPORT_PATIENTHISTORY));
 
-		TableColumn tblColReportsAvailable = new TableColumn(tblMiaReports,SWT.NONE);
-		tblColReportsAvailable.setText(Messages.getString("NewReports.table.title")); //$NON-NLS-1$
-		tblColReportsAvailable.setWidth(270);
+        tblMiaReports = new Table(grpMia, SWT.BORDER);
+        tblMiaReports.setBounds(new Rectangle(10, 50, 200, 180));
+        tblMiaReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-		tblMiaReports.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent event) {
-				clearSelections();
+        TableColumn tblColReportsAvailable = new TableColumn(tblMiaReports,
+                SWT.NONE);
+        tblColReportsAvailable.setText(Messages
+                .getString("NewReports.table.title")); //$NON-NLS-1$
+        tblColReportsAvailable.setWidth(270);
 
-				// Determine where the mouse was clicked
-				Point pt = new Point(event.x, event.y);
+        tblMiaReports.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                clearSelections();
 
-				// Determine which row was selected
-				final TableItem item = tblMiaReports.getItem(pt);
-				if (item != null) {
-					launchReport(item);
-					tblMiaReports.select(tblMiaReports.indexOf(item));
-				}
-			}
-		});
-	}
+                // Determine where the mouse was clicked
+                Point pt = new Point(event.x, event.y);
 
-	private void createGrpPatientReports() {
-		grpPatientReports = new Group(getShell(), SWT.NONE);
-		grpPatientReports.setBounds(new Rectangle(25, 80, 275, 200));
-		grpPatientReports.setText(Messages.getString("NewReports.section.patient")); //$NON-NLS-1$
-		grpPatientReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+                // Determine which row was selected
+                final TableItem item = tblMiaReports.getItem(pt);
+                if (item != null) {
+                    launchReport(item);
+                    tblMiaReports.select(tblMiaReports.indexOf(item));
+                }
+            }
+        });
+    }
 
-		lblPicPatientReports = new Label(grpPatientReports, SWT.NONE);
-		lblPicPatientReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
-		lblPicPatientReports.setImage(ResourceUtils.getImage(iDartImage.REPORT_PATIENTHISTORY));
+    private void createGrpPatientReports() {
+        grpPatientReports = new Group(getShell(), SWT.NONE);
+        grpPatientReports.setBounds(new Rectangle(25, 80, 275, 200));
+        grpPatientReports.setText(Messages
+                .getString("NewReports.section.patient")); //$NON-NLS-1$
+        grpPatientReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
-		tblPatientReports = new Table(grpPatientReports, SWT.BORDER);
-		tblPatientReports.setBounds(new Rectangle(20, 50, 235, 130));
-		tblPatientReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        lblPicPatientReports = new Label(grpPatientReports, SWT.NONE);
+        lblPicPatientReports.setBounds(new org.eclipse.swt.graphics.Rectangle(
+                10, 0, 50, 43));
+        lblPicPatientReports.setImage(ResourceUtils
+                .getImage(iDartImage.REPORT_PATIENTHISTORY));
 
-		TableColumn tblColReportsAvailable = new TableColumn(tblPatientReports,
-				SWT.NONE);
-		tblColReportsAvailable.setText(Messages
-				.getString("NewReports.table.title")); //$NON-NLS-1$
-		tblColReportsAvailable.setWidth(270);
+        tblPatientReports = new Table(grpPatientReports, SWT.BORDER);
+        tblPatientReports.setBounds(new Rectangle(20, 50, 235, 130));
+        tblPatientReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-		tblPatientReports.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent event) {
-				clearSelections();
+        TableColumn tblColReportsAvailable = new TableColumn(tblPatientReports,
+                SWT.NONE);
+        tblColReportsAvailable.setText(Messages
+                .getString("NewReports.table.title")); //$NON-NLS-1$
+        tblColReportsAvailable.setWidth(270);
 
-				// Determine where the mouse was clicked
-				Point pt = new Point(event.x, event.y);
+        tblPatientReports.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                clearSelections();
 
-				// Determine which row was selected
-				final TableItem item = tblPatientReports.getItem(pt);
-				if (item != null) {
-					launchReport(item);
-					tblPatientReports.select(tblPatientReports.indexOf(item));
-				}
-			}
-		});
-	}
+                // Determine where the mouse was clicked
+                Point pt = new Point(event.x, event.y);
 
-private void createGrpClinicManagementReports() {
-		grpClinicManagementReports = new Group(getShell(), SWT.NONE);
-		grpClinicManagementReports.setBounds(new Rectangle(25, 305, 275, 200));
-		grpClinicManagementReports.setText(Messages
-				.getString("NewReports.section.clinic")); //$NON-NLS-1$
-		grpClinicManagementReports.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_12));
+                // Determine which row was selected
+                final TableItem item = tblPatientReports.getItem(pt);
+                if (item != null) {
+                    launchReport(item);
+                    tblPatientReports.select(tblPatientReports.indexOf(item));
+                }
+            }
+        });
+    }
 
-		lblPicClinicManagementReports = new Label(grpClinicManagementReports,
-				SWT.NONE);
-		lblPicClinicManagementReports
-				.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
-		lblPicClinicManagementReports.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_PACKAGESSCANNEDIN));
+    private void createGrpClinicManagementReports() {
+        grpClinicManagementReports = new Group(getShell(), SWT.NONE);
+        grpClinicManagementReports.setBounds(new Rectangle(25, 305, 275, 200));
+        grpClinicManagementReports.setText(Messages
+                .getString("NewReports.section.clinic")); //$NON-NLS-1$
+        grpClinicManagementReports.setFont(ResourceUtils
+                .getFont(iDartFont.VERASANS_12));
 
-		tblClinicManagementReports = new Table(grpClinicManagementReports,
-				SWT.BORDER);
+        lblPicClinicManagementReports = new Label(grpClinicManagementReports,
+                SWT.NONE);
+        lblPicClinicManagementReports
+                .setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
+        lblPicClinicManagementReports.setImage(ResourceUtils
+                .getImage(iDartImage.REPORT_PACKAGESSCANNEDIN));
 
-		tblClinicManagementReports.setBounds(new Rectangle(20, 50, 235, 130));
-		tblClinicManagementReports.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
+        tblClinicManagementReports = new Table(grpClinicManagementReports,
+                SWT.BORDER);
 
-		TableColumn tblColReportsAvailable = new TableColumn(
-				tblClinicManagementReports, SWT.NONE);
-		tblColReportsAvailable.setWidth(270);
-		tblColReportsAvailable.setText(Messages
-				.getString("NewReports.table.title")); //$NON-NLS-1$
+        tblClinicManagementReports.setBounds(new Rectangle(20, 50, 235, 130));
+        tblClinicManagementReports.setFont(ResourceUtils
+                .getFont(iDartFont.VERASANS_8));
 
-		tblClinicManagementReports.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent event) {
-				clearSelections();
-				// Determine where the mouse was clicked
-				Point pt = new Point(event.x, event.y);
+        TableColumn tblColReportsAvailable = new TableColumn(
+                tblClinicManagementReports, SWT.NONE);
+        tblColReportsAvailable.setWidth(270);
+        tblColReportsAvailable.setText(Messages
+                .getString("NewReports.table.title")); //$NON-NLS-1$
 
-				// Determine which row was selected
-				final TableItem item = tblClinicManagementReports.getItem(pt);
-				if (item != null) {
-					launchReport(item);
-					tblClinicManagementReports
-							.select(tblClinicManagementReports.indexOf(item));
-				}
+        tblClinicManagementReports.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                clearSelections();
+                // Determine where the mouse was clicked
+                Point pt = new Point(event.x, event.y);
 
-			}
-		});
-	}
+                // Determine which row was selected
+                final TableItem item = tblClinicManagementReports.getItem(pt);
+                if (item != null) {
+                    launchReport(item);
+                    tblClinicManagementReports
+                            .select(tblClinicManagementReports.indexOf(item));
+                }
 
-	/**
-	 * Method launchReport.
-	 * 
-	 * @param item
-	 *            TableItem
-	 */
-	private void launchReport(TableItem item) {
-		try {
-			GenericReportGui g = reportGUIs.get(item.getText());
-			g.openShell();
-		} catch (Exception e) {
-			getLog().error(e.getMessage(), e);
+            }
+        });
+    }
 
-		}
-	}
+    /**
+     * Method launchReport.
+     *
+     * @param item TableItem
+     */
+    private void launchReport(TableItem item) {
+        try {
+            GenericReportGui g = reportGUIs.get(item.getText());
+            g.openShell();
+        } catch (Exception e) {
+            getLog().error(e.getMessage(), e);
 
-	private void createGrpStockReports() {
-		grpStockReports = new Group(getShell(), SWT.NONE);
-		grpStockReports.setBounds(new Rectangle(340, 80, 275, 200));
-		grpStockReports.setText(Messages.getString("NewReports.section.stock")); //$NON-NLS-1$
-		grpStockReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+        }
+    }
 
-		lblPicStockReports = new Label(grpStockReports, SWT.NONE);
-		lblPicStockReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10,
-				0, 50, 43));
-		lblPicStockReports.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_STOCKCONTROLPERDRUG));
+    private void createGrpStockReports() {
+        grpStockReports = new Group(getShell(), SWT.NONE);
+        grpStockReports.setBounds(new Rectangle(340, 80, 275, 200));
+        grpStockReports.setText(Messages.getString("NewReports.section.stock")); //$NON-NLS-1$
+        grpStockReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
-		tblStockReports = new Table(grpStockReports, SWT.BORDER);
+        lblPicStockReports = new Label(grpStockReports, SWT.NONE);
+        lblPicStockReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10,
+                0, 50, 43));
+        lblPicStockReports.setImage(ResourceUtils
+                .getImage(iDartImage.REPORT_STOCKCONTROLPERDRUG));
 
-		tblStockReports.setBounds(new Rectangle(20, 50, 235, 130));
-		tblStockReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        tblStockReports = new Table(grpStockReports, SWT.BORDER);
 
-		TableColumn tblColReportsAvailable = new TableColumn(tblStockReports,
-				SWT.NONE);
-		tblColReportsAvailable.setWidth(270);
-		tblColReportsAvailable.setText(Messages
-				.getString("NewReports.table.title")); //$NON-NLS-1$
-		tblStockReports.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent event) {
-				clearSelections();
-				// Determine where the mouse was clicked
-				Point pt = new Point(event.x, event.y);
+        tblStockReports.setBounds(new Rectangle(20, 50, 235, 130));
+        tblStockReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-				// Determine which row was selected
-				final TableItem item = tblStockReports.getItem(pt);
-				if (item != null) {
-					launchReport(item);
-					tblStockReports.select(tblStockReports.indexOf(item));
-				}
-			}
-		});
-	}
+        TableColumn tblColReportsAvailable = new TableColumn(tblStockReports,
+                SWT.NONE);
+        tblColReportsAvailable.setWidth(270);
+        tblColReportsAvailable.setText(Messages
+                .getString("NewReports.table.title")); //$NON-NLS-1$
+        tblStockReports.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                clearSelections();
+                // Determine where the mouse was clicked
+                Point pt = new Point(event.x, event.y);
 
-	private void createGrpMandEReports() {
-		grpMandEReports = new Group(getShell(), SWT.NONE);
-		grpMandEReports.setBounds(new Rectangle(340, 305, 275, 200));
-		grpMandEReports.setText(Messages
-				.getString("NewReports.section.m_and_e")); //$NON-NLS-1$
-		grpMandEReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+                // Determine which row was selected
+                final TableItem item = tblStockReports.getItem(pt);
+                if (item != null) {
+                    launchReport(item);
+                    tblStockReports.select(tblStockReports.indexOf(item));
+                }
+            }
+        });
+    }
 
-		lblPicMandEReports = new Label(grpMandEReports, SWT.NONE);
-		lblPicMandEReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10,
-				0, 50, 43));
-		lblPicMandEReports.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_STOCKCONTROLPERCLINIC));
+    private void createGrpMandEReports() {
+        grpMandEReports = new Group(getShell(), SWT.NONE);
+        grpMandEReports.setBounds(new Rectangle(340, 305, 275, 200));
+        grpMandEReports.setText(Messages
+                .getString("NewReports.section.m_and_e")); //$NON-NLS-1$
+        grpMandEReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
-		tblMandEReports = new Table(grpMandEReports, SWT.BORDER);
-		tblMandEReports.setBounds(new Rectangle(20, 50, 235, 130));
-		tblMandEReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        lblPicMandEReports = new Label(grpMandEReports, SWT.NONE);
+        lblPicMandEReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10,
+                0, 50, 43));
+        lblPicMandEReports.setImage(ResourceUtils
+                .getImage(iDartImage.REPORT_STOCKCONTROLPERCLINIC));
 
-		TableColumn tblColReportsAvailable = new TableColumn(tblMandEReports,
-				SWT.NONE);
-		tblColReportsAvailable.setWidth(270);
-		tblColReportsAvailable.setText(Messages
-				.getString("NewReports.table.title")); //$NON-NLS-1$
+        tblMandEReports = new Table(grpMandEReports, SWT.BORDER);
+        tblMandEReports.setBounds(new Rectangle(20, 50, 235, 130));
+        tblMandEReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-		tblMandEReports.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent event) {
-				clearSelections();
-				// Determine where the mouse was clicked
-				Point pt = new Point(event.x, event.y);
+        TableColumn tblColReportsAvailable = new TableColumn(tblMandEReports,
+                SWT.NONE);
+        tblColReportsAvailable.setWidth(270);
+        tblColReportsAvailable.setText(Messages
+                .getString("NewReports.table.title")); //$NON-NLS-1$
 
-				// Determine which row was selected
-				final TableItem item = tblMandEReports.getItem(pt);
-				if (item != null) {
-					launchReport(item);
-					tblMandEReports.select(tblMandEReports.indexOf(item));
-				}
-			}
-		});
-	}
+        tblMandEReports.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent event) {
+                clearSelections();
+                // Determine where the mouse was clicked
+                Point pt = new Point(event.x, event.y);
 
-	/**
-	 * This method initializes compBackButton
-	 */
-	protected void createCompBackButton() {
-		buildCompBackButton();
-	}
+                // Determine which row was selected
+                final TableItem item = tblMandEReports.getItem(pt);
+                if (item != null) {
+                    launchReport(item);
+                    tblMandEReports.select(tblMandEReports.indexOf(item));
+                }
+            }
+        });
+    }
 
-	private void populateReportLists() {
-		
-		
-		// MMIA Reports
+    /**
+     * This method initializes compBackButton
+     */
+    protected void createCompBackButton() {
+        buildCompBackButton();
+    }
+
+    private void populateReportLists() {
+
+        // MMIA Reports
 		/*
-		 * reportGUIs.put(GenericReportGuiInterface.REPORT_MIA, new
-		 * MmiaReport(getShell(), false));
-		 */
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU, new MmiaReportMISAU(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_IDART, new RegisteredIdart(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TPC, new CotrimoxazolReport(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TPI, new IsoniazidaReport(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_LEVANTAMENTOS_ARV, new HistoricoLevantamentos(getShell(), false));
-		
-        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_TRIMESTRAL, new DispensaTrimestralReport(getShell(), false));
+         * reportGUIs.put(GenericReportGuiInterface.REPORT_MIA, new
+         * MmiaReport(getShell(), false));
+         */
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
+                new MmiaReportMISAU(getShell(), false));
+      
+      	reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_LIVRO_ELETRONICO_ARV,
+                new LivroEletronicoDispensaARV(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_IDART,
+                new RegisteredIdart(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_TPC,
+                new CotrimoxazolReport(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_TPI,
+                new IsoniazidaReport(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_LEVANTAMENTOS_ARV,
+                new HistoricoLevantamentos(getShell(), false));
+
+        //Dipensa Trimestral
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_TRIMESTRAL,
+                new DispensaTrimestralReport(getShell(), false));
+
+        //Dipensa Semestral
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_SEMESTRAL,
+                new DispensaSemestralReport(getShell(), false));
+        // Linhas Terapeuticas
+        reportGUIs.put(GenericReportGuiInterface.REPORT_LINHAS_TERAPEUTICAS,
+                new RegimeTerapeuticoReport(getShell(), false));
+        // Pacientes em Segunda Linha
+        reportGUIs.put(GenericReportGuiInterface.REPORT_SECOND_LINE,
+                new SecondLineReport(getShell(), false));
+        // Avaliacao 3 Meses pacientes em Segunda Linha
+        reportGUIs.put(GenericReportGuiInterface.REPORT_SEGUNDA_LINHA_AVALIACAO,
+                new AvaliacaoSegundasLinhas(getShell(), false));
+        // Pacientes sem check DT
+        reportGUIs.put(GenericReportGuiInterface.REPORT_LISTA_PACIENTES_SEMDT,
+                new PacientesSemDT(getShell(), false));
+        // Cohort DT
+        reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_DISPENSA_TRIMESTRAL,
+                new CohortDispensaTrimestral(getShell(), false));
+
+        // Patient Reports
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,
+                new PatientHistory(getShell(), false));
+        reportGUIs.put(
+                GenericReportGuiInterface.REPORT_EPISODES_STARTED_OR_ENDED,
+                new EpisodesStartedOrEndedReportGUI(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING,
+                new PackageTracking(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
+                new PacientesReferidos(getShell(), false));
+
+        // Stock Reports
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,
+                new MonthlyStockReceipt(getShell(), false));
+        reportGUIs.put(
+                GenericReportGuiInterface.REPORT_DAILY_DISPENSING_TOTALS,
+                new DailyDispensingTotals(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE,
+                new StockTakeReportGUI(getShell(), false));
         
-        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_SEMESTRAL, new DispensaSemestralReport(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED,
+                new DrugsDispensed(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS,
+                new CohortDrugCollections(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_RECEIPT_ISSUE,
+                new MonthlyReceiptsAndIssues(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE,
+                new ARVDrugUsage(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_APSS,
+                new MissedAppointmentsAPSS(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_NEW,
+                new MissedAppointmentsNew(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_CHAMADAS,
+                new MissedAppointmentsChamadas(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_DT,
+                new MissedAppointmentsDT(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_LOST_TO_FOLLOW_UP_RETURNED,
+                new LostToFollowUpReturned(getShell(), false));
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY, new PatientHistory(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STARTED_OR_ENDED,new EpisodesStartedOrEndedReportGUI(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING, new PackageTracking(getShell(), false));
+        // Clinic Management Reports
+        PackageProcessingReportGUI packsCreated = new PackageProcessingReportGUI(
+                getShell(), false);
+        packsCreated.setPackageStage(PackageLifeStage.PACKED);
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_CREATED,
+                packsCreated);
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS, new MonthlyStockReceipt(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_DAILY_DISPENSING_TOTALS, new DailyDispensingTotals(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE, new StockTakeReportGUI(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED, new DrugsDispensed(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS, new CohortDrugCollections(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_RECEIPT_ISSUE, new MonthlyReceiptsAndIssues(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE, new ARVDrugUsage(getShell(), false));
+        PackageProcessingReportGUI packsLeft = new PackageProcessingReportGUI(
+                getShell(), false);
+        packsLeft.setPackageStage(PackageLifeStage.SCANNED_OUT);
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_LEAVING,
+                packsLeft);
 
-		PackageProcessingReportGUI packsCreated = new PackageProcessingReportGUI(getShell(), false);
-		
-		packsCreated.setPackageStage(PackageLifeStage.PACKED);
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_CREATED, packsCreated);
+        PackageProcessingReportGUI packsRec = new PackageProcessingReportGUI(
+                getShell(), false);
+        packsRec.setPackageStage(PackageLifeStage.SCANNED_IN);
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_RECEIVED,
+                packsRec);
 
-		PackageProcessingReportGUI packsLeft = new PackageProcessingReportGUI(getShell(), false);
-		
-		packsLeft.setPackageStage(PackageLifeStage.SCANNED_OUT);
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_LEAVING, packsLeft);
+        PackageProcessingReportGUI packsCollected = new PackageProcessingReportGUI(
+                getShell(), false);
+        packsCollected.setPackageStage(PackageLifeStage.PICKED_UP);
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_COLLECTED,
+                packsCollected);
 
-		PackageProcessingReportGUI packsRec = new PackageProcessingReportGUI(getShell(), false);
-		
-		packsRec.setPackageStage(PackageLifeStage.SCANNED_IN);
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_RECEIVED,packsRec);
+        reportGUIs.put(
+                GenericReportGuiInterface.REPORT_PACKAGES_AWAITING_PICKUP,
+                new PackagesAwaiting(getShell(), false));
 
-		PackageProcessingReportGUI packsCollected = new PackageProcessingReportGUI(getShell(), false);
-		
-		packsCollected.setPackageStage(PackageLifeStage.PICKED_UP);
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_COLLECTED, packsCollected);
+        reportGUIs.put(
+                GenericReportGuiInterface.REPORT_PATIENTS_EXPECTED_ON_A_DAY,
+                new PatientsExpected(getShell(), false));
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_AWAITING_PICKUP, new PackagesAwaiting(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS,
+                new MissedAppointments(getShell(), false));
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENTS_EXPECTED_ON_A_DAY, new PatientsExpected(getShell(), false));
+        // M & E Reports
+        reportGUIs.put(GenericReportGuiInterface.REPORT_INDICADORES_MENSAIS,
+                new IndicadoresMesnsais(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DRUG_COMBINATIONS,
+                new DrugCombinations(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STATS,
+                new EpisodeStats(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG,
+                new TransactionLog(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIBING_DOCTORS,
+                new PrescribingDoctors(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PEPFAR,
+                new PepfarReportGUI(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_CLINIC_INDICATORS,
+                new ClinicIndicators(getShell(), false));
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS, new MissedAppointments(getShell(), false));
+        Iterator<Map.Entry<String, GenericReportGui>> reportGUIsItr = reportGUIs
+                .entrySet().iterator();
 
-		// M & E Reports
-		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUG_COMBINATIONS, new DrugCombinations(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STATS, new EpisodeStats(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG, new TransactionLog(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIBING_DOCTORS, new PrescribingDoctors(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PEPFAR, new PepfarReportGUI(getShell(), false));
-		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_CLINIC_INDICATORS, new ClinicIndicators(getShell(), false));
+        while (reportGUIsItr.hasNext()) {
+            Map.Entry<String, GenericReportGui> nextPair = reportGUIsItr.next();
 
-		Iterator<Map.Entry<String, GenericReportGui>> reportGUIsItr = reportGUIs.entrySet().iterator();
+            switch (nextPair.getValue().getReportType()) {
+                case GenericReportGuiInterface.REPORTTYPE_PATIENT:
+                    TableItem ti = new TableItem(tblPatientReports, SWT.NONE);
+                    ti.setText(nextPair.getKey());
 
-		while (reportGUIsItr.hasNext()) {
-			Map.Entry<String, GenericReportGui> nextPair = reportGUIsItr.next();
+                    break;
+                case GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT:
+                    TableItem ti2 = new TableItem(tblClinicManagementReports,
+                            SWT.NONE);
+                    ti2.setText(nextPair.getKey());
 
-			switch (nextPair.getValue().getReportType()) {
-			case GenericReportGuiInterface.REPORTTYPE_PATIENT:
-				TableItem ti = new TableItem(tblPatientReports, SWT.NONE);
-				ti.setText(nextPair.getKey());
+                    break;
+                case GenericReportGuiInterface.REPORTTYPE_STOCK:
+                    TableItem ti3 = new TableItem(tblStockReports, SWT.NONE);
+                    ti3.setText(nextPair.getKey());
 
-				break;
-			case GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT:
-				TableItem ti2 = new TableItem(tblClinicManagementReports,
-						SWT.NONE);
-				ti2.setText(nextPair.getKey());
+                    break;
+                case GenericReportGuiInterface.REPORTTYPE_MONITORINGANDEVALUATION:
+                    TableItem ti4 = new TableItem(tblMandEReports, SWT.NONE);
+                    ti4.setText(nextPair.getKey());
 
-				break;
-			case GenericReportGuiInterface.REPORTTYPE_STOCK:
-				TableItem ti3 = new TableItem(tblStockReports, SWT.NONE);
-				ti3.setText(nextPair.getKey());
+                    break;
+                case GenericReportGuiInterface.REPORTTYPE_MIA:
+                    TableItem ti5 = new TableItem(tblMiaReports, SWT.NONE);
+                    ti5.setText(nextPair.getKey());
 
-				break;
-			case GenericReportGuiInterface.REPORTTYPE_MONITORINGANDEVALUATION:
-				TableItem ti4 = new TableItem(tblMandEReports, SWT.NONE);
-				ti4.setText(nextPair.getKey());
+                    break;
 
-				break;
-			case GenericReportGuiInterface.REPORTTYPE_MIA:
-				TableItem ti5 = new TableItem(tblMiaReports, SWT.NONE);
-				ti5.setText(nextPair.getKey());
+            }
+        }
+    }
 
-				break;
-				
-			}
-		}
-	}
+    @Override
+    protected void createCompOptions() {
+        // create the composites
+        // Std Options composite ResourceUtils.getColor(iDartColor.RED)uced for
+        // this
+        // class.
+        getCompOptions().setBounds(new Rectangle(0, 0, 0, 0));
+        createMyGroups();
+    }
 
-	@Override
-	protected void createCompOptions() {
-		// create the composites
-		// Std Options composite ResourceUtils.getColor(iDartColor.RED)uced for
-		// this
-		// class.
-		getCompOptions().setBounds(new Rectangle(0, 0, 0, 0));
-		createMyGroups();
-	}
+    /**
+     * This method initializes compButtons
+     *
+     */
+    protected void createCompButtons() {
+        compButton = new Composite(getShell(), SWT.NONE);
+        compButton.setBounds(new Rectangle(100, 520, 700, 40));
+        RowLayout rowLayout = new RowLayout();
+        rowLayout.wrap = false;
+        rowLayout.pack = false;
+        rowLayout.justify = true;
+        rowLayout.type = SWT.HORIZONTAL;
+        rowLayout.spacing = 0;
+        compButton.setLayout(rowLayout);
 
-	/**
-	 * This method initializes compButtons
-	 * 
-	 */
-	protected void createCompButtons() {
-		compButton = new Composite(getShell(), SWT.NONE);
-		compButton.setBounds(new Rectangle(100, 520, 700, 40));
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.wrap = false;
-		rowLayout.pack = false;
-		rowLayout.justify = true;
-		rowLayout.type = SWT.HORIZONTAL;
-		rowLayout.spacing = 0;
-		compButton.setLayout(rowLayout);
-//		btnIedeaExport = new Button(compButton, SWT.NONE);
-//		btnIedeaExport.setText(Messages
-//				.getString("NewReports.button.export.iedea")); //$NON-NLS-1$
-//		btnIedeaExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//		btnIedeaExport.setLayoutData(new RowData(200, 30));
-//		btnIedeaExport.setToolTipText(Messages
-//				.getString("NewReports.button.export.tooltip.iedea")); //$NON-NLS-1$
-//		btnIedeaExport
-//				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//					@Override
-//					public void widgetSelected(
-//							org.eclipse.swt.events.SelectionEvent e) {
-//						cmdIedeaExportsSelected();
-//					}
-//				});
+        btnDataExport = new Button(compButton, SWT.NONE);
+        btnDataExport.setText(Messages.getString("NewReports.button.export")); //$NON-NLS-1$
+        btnDataExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnDataExport.setLayoutData(new RowData(200, 30));
+        btnDataExport.setToolTipText(Messages
+                .getString("NewReports.button.export.tooltip")); //$NON-NLS-1$
+        btnDataExport
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                                cmdDataExportsSelected();
+                            }
+                });
 
-		btnDataExport = new Button(compButton, SWT.NONE);
-		btnDataExport.setText(Messages.getString("NewReports.button.export")); //$NON-NLS-1$
-		btnDataExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnDataExport.setLayoutData(new RowData(200, 30));
-		btnDataExport.setToolTipText(Messages
-				.getString("NewReports.button.export.tooltip")); //$NON-NLS-1$
-		btnDataExport
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdDataExportsSelected();
-					}
-				});
+        btnDataQuality = new Button(compButton, SWT.NONE);
+        btnDataQuality.setText(Messages
+                .getString("NewReports.button.dataQuality")); //$NON-NLS-1$
+        btnDataQuality.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnDataQuality.setLayoutData(new RowData(200, 30));
+        btnDataQuality.setToolTipText(Messages
+                .getString("NewReports.button.dataQuality.tooltip")); //$NON-NLS-1$
+        btnDataQuality
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                                cmdDataQualitySelected();
+                            }
+                });
+        compButton.layout();
+    }
 
-		btnDataQuality = new Button(compButton, SWT.NONE);
-		btnDataQuality.setText(Messages
-				.getString("NewReports.button.dataQuality")); //$NON-NLS-1$
-		btnDataQuality.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnDataQuality.setLayoutData(new RowData(200, 30));
-		btnDataQuality.setToolTipText(Messages
-				.getString("NewReports.button.dataQuality.tooltip")); //$NON-NLS-1$
-		btnDataQuality
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdDataQualitySelected();
-					}
-				});
-		compButton.layout();
-	}
+    /**
+     * Deselects all previously selected values in the tables
+     *
+     */
+    private void clearSelections() {
+        for (int i = 0; i < tblClinicManagementReports.getItemCount(); i++) {
+            tblClinicManagementReports.deselect(i);
+        }
 
-	/**
-	 * Deselects all previously selected values in the tables
-	 * 
-	 */
-	private void clearSelections() {
-		for (int i = 0; i < tblClinicManagementReports.getItemCount(); i++) {
-			tblClinicManagementReports.deselect(i);
-		}
+        for (int i = 0; i < tblMandEReports.getItemCount(); i++) {
+            tblMandEReports.deselect(i);
+        }
 
-		for (int i = 0; i < tblMandEReports.getItemCount(); i++) {
-			tblMandEReports.deselect(i);
-		}
+        for (int i = 0; i < tblPatientReports.getItemCount(); i++) {
+            tblPatientReports.deselect(i);
+        }
 
-		for (int i = 0; i < tblPatientReports.getItemCount(); i++) {
-			tblPatientReports.deselect(i);
-		}
+        for (int i = 0; i < tblStockReports.getItemCount(); i++) {
+            tblStockReports.deselect(i);
+        }
 
-		for (int i = 0; i < tblStockReports.getItemCount(); i++) {
-			tblStockReports.deselect(i);
-		}
-		
-		for (int i = 0; i < tblMiaReports.getItemCount(); i++) {
-			tblMiaReports.deselect(i);
-		}
+        for (int i = 0; i < tblMiaReports.getItemCount(); i++) {
+            tblMiaReports.deselect(i);
+        }
 
-	}
+    }
 
-	public void cmdIedeaExportsSelected() {
-		DirectoryDialog dlg = new DirectoryDialog(getShell());
-		dlg.setText("Select a folder to save the export files in");
-		dlg.setMessage("Select a directory");
-		final String dir = dlg.open();
-		if (dir == null) {
-			return;
-		}
+    public void cmdIedeaExportsSelected() {
+        DirectoryDialog dlg = new DirectoryDialog(getShell());
+        dlg.setText("Select a folder to save the export files in");
+        dlg.setMessage("Select a directory");
+        final String dir = dlg.open();
+        if (dir == null) {
+            return;
+        }
 
-		final IedeaExporter iedeaExporter = new IedeaExporter();
-		try {
-			new ProgressMonitorDialog(null).run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						iedeaExporter.setMonitor(monitor);
-						iedeaExporter.generate(dir);
-					} catch (TaskException e) {
-						throw new InvocationTargetException(e);
-					}
-				}
-			});
-			MessageDialog
-			.openInformation(null, "Completed", "Tier.net export successful");
-		} catch (InvocationTargetException e) {
-			MessageUtil.showError(e, "Error running export", 
-					e.getMessage());
-		} catch (InterruptedException e) {
-			MessageDialog
-			.openInformation(null, "Cancelled", e.getMessage());
-		}
-	}
+        final IedeaExporter iedeaExporter = new IedeaExporter();
+        try {
+            new ProgressMonitorDialog(null).run(true, true, new IRunnableWithProgress() {
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                        InterruptedException {
+                    try {
+                        iedeaExporter.setMonitor(monitor);
+                        iedeaExporter.generate(dir);
+                    } catch (TaskException e) {
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            });
+            MessageDialog
+                    .openInformation(null, "Completed", "Tier.net export successful");
+        } catch (InvocationTargetException e) {
+            MessageUtil.showError(e, "Error running export",
+                    e.getMessage());
+        } catch (InterruptedException e) {
+            MessageDialog
+                    .openInformation(null, "Cancelled", e.getMessage());
+        }
+    }
 
-	public void cmdDataExportsSelected() {
-		new DataExport(getShell());
-	}
+    public void cmdDataExportsSelected() {
+        new DataExport(getShell());
+    }
 
-	public void cmdDataQualitySelected() {
-		new DataQuality(getShell());
-	}
+    public void cmdDataQualitySelected() {
+        new DataQuality(getShell());
+    }
 
-	@Override
-	protected void setLogger() {
-		setLog(Logger.getLogger(this.getClass()));
-	}
+    @Override
+    protected void setLogger() {
+        setLog(Logger.getLogger(this.getClass()));
+    }
 
-	@Override
-	protected void cmdCloseSelectedWidget() {
-		cmdCloseSelected();
-	}
+    @Override
+    protected void cmdCloseSelectedWidget() {
+        cmdCloseSelected();
+    }
 
 }
