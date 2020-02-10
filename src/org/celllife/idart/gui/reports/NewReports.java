@@ -53,6 +53,7 @@ import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.reportParameters.PatientsExpected;
 import org.celllife.idart.gui.reportParameters.PepfarReportGUI;
 import org.celllife.idart.gui.reportParameters.PrescribingDoctors;
+import org.celllife.idart.gui.reportParameters.PrescriptionsWithNoEncounter;
 import org.celllife.idart.gui.reportParameters.RegisteredIdart;
 import org.celllife.idart.gui.reportParameters.StockTakeReportGUI;
 import org.celllife.idart.gui.reportParameters.TransactionLog;
@@ -419,6 +420,8 @@ public class NewReports extends GenericAdminGui {
          */
         reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
                 new MmiaReportMISAU(getShell(), false));
+      
+      	reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
 
         reportGUIs.put(GenericReportGuiInterface.REPORT_LIVRO_ELETRONICO_ARV,
                 new LivroEletronicoDispensaARV(getShell(), false));
@@ -612,21 +615,6 @@ public class NewReports extends GenericAdminGui {
         rowLayout.type = SWT.HORIZONTAL;
         rowLayout.spacing = 0;
         compButton.setLayout(rowLayout);
-//		btnIedeaExport = new Button(compButton, SWT.NONE);
-//		btnIedeaExport.setText(Messages
-//				.getString("NewReports.button.export.iedea")); //$NON-NLS-1$
-//		btnIedeaExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//		btnIedeaExport.setLayoutData(new RowData(200, 30));
-//		btnIedeaExport.setToolTipText(Messages
-//				.getString("NewReports.button.export.tooltip.iedea")); //$NON-NLS-1$
-//		btnIedeaExport
-//				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//					@Override
-//					public void widgetSelected(
-//							org.eclipse.swt.events.SelectionEvent e) {
-//						cmdIedeaExportsSelected();
-//					}
-//				});
 
         btnDataExport = new Button(compButton, SWT.NONE);
         btnDataExport.setText(Messages.getString("NewReports.button.export")); //$NON-NLS-1$

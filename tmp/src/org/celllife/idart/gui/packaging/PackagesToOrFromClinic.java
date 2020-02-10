@@ -491,4 +491,10 @@ public class PackagesToOrFromClinic extends GenericReportGui {
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
 	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		// TODO Auto-generated method stub
+		
+	}
 }

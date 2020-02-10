@@ -52,21 +52,11 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class CotrimoxazolReport extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Constructor
@@ -107,21 +97,12 @@ public class CotrimoxazolReport extends GenericReportGui {
 		buildCompdHeader(REPORT_TPC, icoImage);
 	}
 
-
-
-
-
-
 	/**
 	 * This method initializes grpDateInfo
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-		
-		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -137,48 +118,24 @@ public class CotrimoxazolReport extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
 			return;
-		}
-
-		else {
-			try {
-				
+		} else { 
 			
-				
+			try {
+
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 				 
-
-
-				
-				
-				
 				Date theStartDate = calendarStart.getCalendar().getTime(); 
 			
 				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
 				
-			
-				
-				
-
-				
 				//theStartDate = sdf.parse(strTheDate);
 				
-				 
-				
-			
-
-	
-				
-				CCotrimoxazolReport report = new CCotrimoxazolReport(
-						getShell(), theStartDate, theEndDate);
+				CCotrimoxazolReport report = new CCotrimoxazolReport(getShell(), theStartDate, theEndDate);
 				viewReport(report);
 			} catch (Exception e) {
-				getLog()
-				.error(
-						"Exception while running Cotrimoxazol report",
-						e);
+				getLog().error("Exception while running Cotrimoxazol report",e);
 			}
 		}
 
@@ -237,8 +194,6 @@ public class CotrimoxazolReport extends GenericReportGui {
 			@Override
 			public void dateChanged(SWTCalendarEvent calendarEvent) {
 				Date date = calendarEvent.getCalendar().getTime();
-				
-				
 			}
 		});
 	}
@@ -305,5 +260,9 @@ public class CotrimoxazolReport extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
 	}
 }

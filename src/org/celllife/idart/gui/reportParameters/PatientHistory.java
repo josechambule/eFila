@@ -287,4 +287,8 @@ public class PatientHistory extends GenericReportGui {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
+
 }

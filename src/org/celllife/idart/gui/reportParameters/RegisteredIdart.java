@@ -52,21 +52,11 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class RegisteredIdart extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Constructor
@@ -92,8 +82,6 @@ public class RegisteredIdart extends GenericReportGui {
 	}
 
 	private void createMyGroups() {
-
-
 		createGrpDateInfo();
 	}
 
@@ -106,24 +94,14 @@ public class RegisteredIdart extends GenericReportGui {
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
 		//buildCompdHeader(REPORT_IDART, icoImage);
 		buildCompdHeader("Registados a partir do iDART", icoImage);
-		
 	}
-
-
-
-
-
 
 	/**
 	 * This method initializes grpDateInfo
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-		
-		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -213,7 +191,7 @@ public class RegisteredIdart extends GenericReportGui {
 	
 	private void createGrpDateRange() {
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Período:");
+		grpDateRange.setText("Perï¿½odo:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -221,7 +199,7 @@ public class RegisteredIdart extends GenericReportGui {
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Data Início:");
+		lblStartDate.setText("Data Inï¿½cio:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
@@ -307,5 +285,9 @@ public class RegisteredIdart extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
 	}
 }

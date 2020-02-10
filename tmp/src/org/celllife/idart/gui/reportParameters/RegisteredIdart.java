@@ -52,21 +52,11 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class RegisteredIdart extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Constructor
@@ -92,8 +82,6 @@ public class RegisteredIdart extends GenericReportGui {
 	}
 
 	private void createMyGroups() {
-
-
 		createGrpDateInfo();
 	}
 
@@ -106,24 +94,14 @@ public class RegisteredIdart extends GenericReportGui {
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
 		//buildCompdHeader(REPORT_IDART, icoImage);
 		buildCompdHeader("Registados a partir do iDART", icoImage);
-		
 	}
-
-
-
-
-
 
 	/**
 	 * This method initializes grpDateInfo
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-		
-		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -307,5 +285,9 @@ public class RegisteredIdart extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
 	}
 }

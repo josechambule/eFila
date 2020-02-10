@@ -51,7 +51,6 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class MmiaReportMISAU extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
@@ -62,9 +61,6 @@ public class MmiaReportMISAU extends GenericReportGui {
 
 	private CCombo cmbStockCenter;
 
-
-
-	
 	/**
 	 * Constructor
 	 *
@@ -134,55 +130,8 @@ public class MmiaReportMISAU extends GenericReportGui {
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-	/*	grpDateInfo = new Group(getShell(), SWT.NONE);
-		grpDateInfo.setBounds(new org.eclipse.swt.graphics.Rectangle(160, 180,
-				280, 100));
-
-		lblInstructions = new Label(grpDateInfo, SWT.NONE);
-		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(60,
-				20, 160, 20));
-		lblInstructions.setText("Select a Month and Year:");
-		lblInstructions.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		cmbMonth = new CCombo(grpDateInfo, SWT.BORDER);
-		cmbMonth.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 50, 100,
-				20));
-		cmbMonth.setEditable(false);
-		cmbMonth.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		String months[] = { "January", "February", "March", "April", "May",
-				"June", "July", "August", "September", "October", "November",
-		"December" };
-		for (int i = 0; i < 12; i++) {
-			this.cmbMonth.add(months[i]);
-		}
-
-		int intMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-		cmbMonth.setText(getMonthName(intMonth));
-		cmbMonth.setEditable(false);
-		cmbMonth.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-		cmbMonth.setVisibleItemCount(12);
-
-		// cmdYear
-		cmbYear = new CCombo(grpDateInfo, SWT.BORDER);
-		cmbYear.setBounds(new org.eclipse.swt.graphics.Rectangle(160, 50, 80,
-				20));
-		cmbYear.setEditable(false);
-		cmbYear.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-		cmbYear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		// get the current date12
-		Calendar rightNow = Calendar.getInstance();
-		int currentYear = rightNow.get(Calendar.YEAR);
-		for (int i = currentYear - 2; i <= currentYear + 1; i++) {
-			this.cmbYear.add(Integer.toString(i));
-		}
-		cmbYear.setText(String.valueOf(Calendar.getInstance()
-				.get(Calendar.YEAR)));*/
-		
 		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -314,8 +263,6 @@ public class MmiaReportMISAU extends GenericReportGui {
 			@Override
 			public void dateChanged(SWTCalendarEvent calendarEvent) {
 				Date date = calendarEvent.getCalendar().getTime();
-				
-				
 			}
 		});
 	}
@@ -382,5 +329,11 @@ public class MmiaReportMISAU extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		// TODO Auto-generated method stub
+		
 	}
 }

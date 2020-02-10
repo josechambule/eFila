@@ -158,4 +158,8 @@ public class NonEkapaPatientsReportGUI extends GenericReportGui {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
+
 }

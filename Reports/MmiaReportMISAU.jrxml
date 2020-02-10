@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaReportMISAU" pageWidth="612" pageHeight="842" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" isIgnorePagination="true">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaReportMISAU" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" isIgnorePagination="true">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -55,7 +55,7 @@
 	<parameter name="monthStart" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="monthEnd" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\eclipse.OLD\\wp\\idart\\Reports\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["//home//machabane//eclipse-workspace//eFila//Reports//"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="dateEnd" class="java.util.Date"/>
 	<parameter name="totalpacientesfarmacia" class="java.lang.String"/>
@@ -139,13 +139,7 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement key="line-3" mode="Opaque" x="214" y="-1" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-24" mode="Opaque" x="264" y="-1" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
+					<reportElement key="line-3" mode="Opaque" x="410" y="-1" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
 					<graphicElement fill="Solid">
 						<pen lineWidth="2.0"/>
 					</graphicElement>
@@ -170,6 +164,12 @@ order by d.pediatric asc]]>
 				</line>
 				<line>
 					<reportElement key="line-2" mode="Opaque" x="0" y="0" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-2" mode="Opaque" x="42" y="-2" width="1" height="26" forecolor="#000000" backcolor="#000000"/>
 					<graphicElement fill="Solid">
 						<pen lineWidth="2.0"/>
 					</graphicElement>
@@ -239,7 +239,7 @@ order by d.pediatric asc]]>
 					<text><![CDATA[REGIME TERAPEUTICO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="265" y="2" width="49" height="27"/>
+					<reportElement x="268" y="2" width="46" height="27"/>
 					<textElement/>
 					<text><![CDATA[TOTAL DOENTES]]></text>
 				</staticText>
@@ -289,7 +289,7 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<line>
-					<reportElement key="line-4" mode="Opaque" x="448" y="18" width="1" height="70" forecolor="#000000" backcolor="#000000">
+					<reportElement key="line-4" mode="Opaque" x="458" y="17" width="1" height="251" forecolor="#000000" backcolor="#000000">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<graphicElement fill="Solid">
@@ -351,7 +351,16 @@ order by d.pediatric asc]]>
 					</graphicElement>
 				</line>
 				<staticText>
-					<reportElement x="350" y="18" width="94" height="13">
+					<reportElement x="466" y="19" width="61" height="14">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="359" y="36" width="85" height="16">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					</reportElement>
@@ -460,68 +469,31 @@ order by d.pediatric asc]]>
 						<pen lineWidth="1.0"/>
 					</graphicElement>
 				</line>
-				<staticText>
-					<reportElement x="350" y="135" width="94" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<textField>
+					<reportElement x="487" y="36" width="48" height="16">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Dispensa para 6 Meses (DS)]]></text>
-				</staticText>
-				<line>
-					<reportElement x="347" y="103" width="202" height="1">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesinicio}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="487" y="56" width="48" height="16">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement x="347" y="133" width="202" height="1">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
-				<staticText>
-					<reportElement x="350" y="120" width="95" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Dispensa para 3 Meses (DT)]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="104" width="95" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Dispensa Mensal (DM)]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="3" width="193" height="13">
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesmanter}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="487" y="76" width="48" height="16">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
-					<textElement textAlignment="Center">
-						<font isBold="true"/>
-					</textElement>
-					<text><![CDATA[Tipo de doentes em TARV]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="60" width="94" height="13"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Trânsito]]></text>
-				</staticText>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesalterar}]]></textFieldExpression>
+				</textField>
 				<line>
 					<reportElement key="line-4" mode="Opaque" x="448" y="104" width="1" height="60" forecolor="#000000" backcolor="#000000">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -530,15 +502,14 @@ order by d.pediatric asc]]>
 						<pen lineWidth="2.0"/>
 					</graphicElement>
 				</line>
-				<line>
-					<reportElement x="347" y="164" width="202" height="1">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<textField>
+					<reportElement x="487" y="116" width="48" height="16">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesppe}]]></textFieldExpression>
+				</textField>
 				<staticText>
 					<reportElement x="350" y="166" width="193" height="13">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -558,64 +529,20 @@ order by d.pediatric asc]]>
 						<pen lineWidth="1.0"/>
 					</graphicElement>
 				</line>
-				<staticText>
-					<reportElement x="350" y="181" width="94" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<textField>
+					<reportElement x="487" y="220" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Adultos]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="196" width="94" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{mesesdispensados}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="487" y="248" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Pediátricos 0 aos 4 anos]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="211" width="94" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Pediátricos 5 aos 9 anos]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="350" y="226" width="94" height="13">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Pediátricos 10 aos 14 anos]]></text>
-				</staticText>
-				<line>
-					<reportElement key="line-4" mode="Opaque" x="346" y="1" width="1" height="341" forecolor="#000000" backcolor="#000000">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					</reportElement>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement x="347" y="195" width="202" height="1">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{pacientesEmTarv}]]></textFieldExpression>
+				</textField>
 				<line>
 					<reportElement x="347" y="210" width="202" height="1">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -652,6 +579,11 @@ order by d.pediatric asc]]>
 					</textElement>
 					<text><![CDATA[Pediátricos 10 aos 14 anos]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="487" y="191" width="48" height="16"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientestransito}]]></textFieldExpression>
+				</textField>
 				<line>
 					<reportElement x="347" y="255" width="202" height="1">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -700,8 +632,8 @@ order by d.pediatric asc]]>
 					</textElement>
 					<text><![CDATA[Pediátricos 10 aos 14 anos]]></text>
 				</staticText>
-				<staticText>
-					<reportElement x="350" y="301" width="94" height="13">
+				<textField>
+					<reportElement x="487" y="140" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -715,56 +647,41 @@ order by d.pediatric asc]]>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement x="347" y="300" width="202" height="1">
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesds}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="487" y="165" width="48" height="16">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement x="348" y="315" width="202" height="1">
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesdt}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="372" y="3" width="170" height="15">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<graphicElement>
-						<pen lineWidth="1.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-2" mode="Opaque" x="60" y="1" width="1" height="28" forecolor="#000000" backcolor="#000000"/>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-4" mode="Opaque" x="549" y="0" width="1" height="342" forecolor="#000000" backcolor="#000000">
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Quantificação dos doentes]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="487" y="96" width="48" height="16">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacienteptv}]]></textFieldExpression>
+				</textField>
 				<line>
-					<reportElement key="line-3" mode="Opaque" x="264" y="1" width="1" height="28" forecolor="#000000" backcolor="#000000"/>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-3" mode="Opaque" x="0" y="1" width="1" height="28" forecolor="#000000" backcolor="#000000"/>
-					<graphicElement fill="Solid">
-						<pen lineWidth="2.0"/>
-					</graphicElement>
-				</line>
-				<line>
-					<reportElement key="line-3" mode="Opaque" x="314" y="1" width="1" height="29" forecolor="#000000" backcolor="#000000"/>
+					<reportElement key="line-4" mode="Opaque" x="345" y="1" width="1" height="269" forecolor="#000000" backcolor="#000000">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
 					<graphicElement fill="Solid">
 						<pen lineWidth="2.0"/>
 					</graphicElement>
@@ -996,7 +913,7 @@ MAPA MENSAL DE INFORMAÇÃO ARV]]></text>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<graphicElement fill="Solid"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{path}+ java.io.File.separator + "Simbolo_Moz.jpg"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{path}+ java.io.File.separator + "moz.png"]]></imageExpression>
 			</image>
 			<line>
 				<reportElement key="line-28" x="493" y="100" width="1" height="38" backcolor="#000000"/>

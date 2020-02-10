@@ -21,9 +21,7 @@ public class RegimeTerapeutico {
 	private boolean active;
 	private String regimenomeespecificado;
 	private String codigoregime;
-	private String regimeesquemaidart;
-//        private String pediatrico;
-        
+	private String regimeesquemaidart;        
         /*
         * 
         * Removi 2 atributos: linhaT e regimenDrugs
@@ -73,14 +71,6 @@ public class RegimeTerapeutico {
 	public void setRegimeesquema(String regimeesquema) {
 		this.regimeesquema = regimeesquema;
 	}
-
-//   public String getPediatrico() {
-//		return pediatrico;
-//	}
-
-//	public void setPediatrico(String pediatrico) {
-//		this.pediatrico = pediatrico;
-//	}
         
 	public RegimeTerapeutico(int regimeid, String regimeesquema, boolean active,
                 String regimenomeespecificado, String codigoregime,String regimeesquemaidart,String pediatrico) {
@@ -89,7 +79,6 @@ public class RegimeTerapeutico {
 		this.regimeesquema = regimeesquema;
 		this.active = active;
                 this.codigoregime = codigoregime;
-//                this.pediatrico = pediatrico;
                 this.regimeesquemaidart = regimeesquemaidart;
                 this.regimenomeespecificado=regimenomeespecificado;
 	}

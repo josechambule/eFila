@@ -463,7 +463,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             regToSave.setActive(rdBtnActive.getSelection());
         else
             regToSave.setActive(rdBtnInactive.getSelection());
-
+      
         regToSave.setRegimeesquema(txtDrugGroupName.getText().trim());
         regToSave.setRegimenomeespecificado(txtRegimeEspecifico.getText());
         regToSave.setCodigoregime(txtCodigoRegime.getText());
@@ -940,8 +940,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 //            return true;
         } else if (!newRegimen.getCodigoregime().equalsIgnoreCase(localRegimen.getCodigoregime())) {
             return true;
-//        } else if (!newRegimen.getPediatrico().equalsIgnoreCase(localRegimen.getPediatrico())) {
-//            return true;
         } else if (!newRegimen.isActive() == localRegimen.isActive()) {
             return true;
         } else if (!newRegimen.getRegimeesquemaidart().equalsIgnoreCase(localRegimen.getRegimeesquemaidart())) {

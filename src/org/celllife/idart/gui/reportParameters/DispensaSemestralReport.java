@@ -293,4 +293,10 @@ public class DispensaSemestralReport extends GenericReportGui {
 
         calendarStart.addSWTCalendarListener(listener);
     }
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		// TODO Auto-generated method stub
+		
+	}
 }

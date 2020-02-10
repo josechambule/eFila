@@ -40,6 +40,7 @@ public interface GenericReportGuiInterface {
 	static String REPORT_COHORT_COLLECTIONS = Messages.getString("reports.cohortCollections");  //$NON-NLS-1$
 	static String REPORT_MIA = Messages.getString("reports.mmia");  //$NON-NLS-1$
 	static String REPORT_MIAMISAU = Messages.getString("reports.mmiamisau");  //$NON-NLS-1$
+	static String REPORT_PRESCRICOES_SEM_DISPENSAS = Messages.getString("reports.prescricoes.dispensa"); 
 	static String REPORT_MMIA = Messages.getString("reports.mmmia");  //$NON-NLS-1$
 	static String REPORT_IDART = Messages.getString("reports.idart");  //$NON-NLS-1$
 	static String REPORT_TPC = Messages.getString("reports.idart.tpc");  //$NON-NLS-1$

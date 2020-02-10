@@ -305,4 +305,8 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 
 		return true;
 	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
 }

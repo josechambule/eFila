@@ -294,4 +294,8 @@ public class PackageTracking extends GenericReportGui {
 	protected void setLogger() {
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
+
 }
