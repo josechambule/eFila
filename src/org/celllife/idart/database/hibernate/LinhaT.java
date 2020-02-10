@@ -22,7 +22,7 @@ public class LinhaT {
 		this.linhanome = linhanome;
 		this.active = active;
 	}
-
+	
 	public int getLinhaid() {
 		return linhaid;
 	}

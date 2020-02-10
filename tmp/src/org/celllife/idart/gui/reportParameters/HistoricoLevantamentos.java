@@ -48,21 +48,13 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class HistoricoLevantamentos extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 	
 	private Group grpTipoTarv;
 
-
 	private SWTCalendar calendarStart;
 
 	private SWTCalendar calendarEnd;
-
-
-
-
-
-
 
 	private Button chkBtnInicio;
 
@@ -110,21 +102,12 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		buildCompdHeader(REPORT_LEVANTAMENTOS_ARV, icoImage);
 	}
 
-
-
-
-
-
 	/**
 	 * This method initializes grpDateInfo
 	 *
 	 */
 	private void createGrpDateInfo() {
-
-		
-		
 		createGrpDateRange();
-
 	}
 
 	/**
@@ -140,60 +123,39 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
 			return;
 		}
 		
 		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
 		{
-			
-			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv",
-					"Seleccione pelo menos um tipo TARV.");
+			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
-		}
-
-		else {
-			try {
-				
+		} else {
 			
-				
+			try {
+
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 				 
-
-
-				
-				
-				
 				Date theStartDate = calendarStart.getCalendar().getTime(); 
 			
 				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
 				
-			
-				
-				
-
-				
 				//theStartDate = sdf.parse(strTheDate);
 				
-				 
-				
-			
-
-	
-				
-				HHistoricoLevantamentos report = new HHistoricoLevantamentos(
-						getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
+				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
 				viewReport(report);
 			} catch (Exception e) {
-				getLog()
-				.error(
-						"Exception while running Historico levantamento report",
-						e);
+				getLog().error("Exception while running Historico levantamento report",e);
 			}
 		}
 
+	}
+	
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		System.out.println("Hello cmdViewReportXlsWidgetSelected");  
 	}
 
 	/**
@@ -246,10 +208,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		chkBtnManutencao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnManutencao.setSelection(false);
 		
-		
-		
-	
-		
 		//chk button Alterar
 		chkBtnAlteraccao= new Button(grpTipoTarv, SWT.CHECK);
 		chkBtnAlteraccao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
@@ -257,8 +215,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		chkBtnAlteraccao.setText("Alteração");
 		chkBtnAlteraccao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnAlteraccao.setSelection(false);
-		
-		
 		
 		grpDateRange = new Group(getShell(), SWT.NONE);
 		grpDateRange.setText("Período:");

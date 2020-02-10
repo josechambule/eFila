@@ -247,4 +247,8 @@ public class DailyDispensingTotals extends GenericReportGui {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
+
 }

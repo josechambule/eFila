@@ -399,4 +399,8 @@ public class PatientVisitsReport extends GenericReportGui {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+	}
+
 }

@@ -452,12 +452,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             regToSave.setRegimeid(localRegimen.getRegimeid());
         }
 
-        if (cmbRegimePediatrico.getText().contentEquals("Sim")) {
-            regToSave.setPediatrico("T");
-        } else {
-            regToSave.setPediatrico("F");
-        }
-
         boolean isRegimenActive;
 
         isRegimenActive = cmbEstadoRegime.getText().contentEquals("Activo");
@@ -849,11 +843,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         } else {
             cmbEstadoRegime.select(1);
         }
-        if (!localRegimen.getPediatrico().equalsIgnoreCase("T")) {
-            cmbRegimePediatrico.select(1);
-        } else {
-            cmbRegimePediatrico.select(0);
-        }
 
     }
 
@@ -975,9 +964,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             return true;
         } else if (!newRegimen.getCodigoregime().equalsIgnoreCase(localRegimen.getCodigoregime())) {
             return true;
-        } else if (!newRegimen.getPediatrico().equalsIgnoreCase(localRegimen.getPediatrico())) {
-            return true;     
-        }else if (!newRegimen.isActive() == localRegimen.isActive()) {
+        } else if (!newRegimen.isActive() == localRegimen.isActive()) {
             return true;
         } else if (!newRegimen.getRegimeesquemaidart().equalsIgnoreCase(localRegimen.getRegimeesquemaidart())) {
             return true;

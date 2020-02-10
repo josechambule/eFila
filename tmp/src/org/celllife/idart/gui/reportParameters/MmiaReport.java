@@ -54,7 +54,6 @@ import org.vafada.swtcalendar.SWTCalendarListener;
  */
 public class MmiaReport extends GenericReportGui {
 	
-	
 	private Group grpDateRange;
 
 	private SWTCalendar calendarStart;
@@ -64,8 +63,6 @@ public class MmiaReport extends GenericReportGui {
 	private Group grpPharmacySelection;
 
 	private CCombo cmbStockCenter;
-
-
 
 	/**
 	 * Constructor
@@ -412,5 +409,9 @@ public class MmiaReport extends GenericReportGui {
 	public void addStartDateChangedListener(SWTCalendarListener listener) {
 
 		calendarStart.addSWTCalendarListener(listener);
+	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
 	}
 }

@@ -19,6 +19,8 @@ import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
+import model.manager.reports.HistoricoLevantamentoXLS;
+
 /**
  * Esta classe efectua conexao com a BD postgres e tem metodo para a manipulacao
  * dos dados
@@ -2571,20 +2573,225 @@ public class ConexaoJDBC {
         return query;
 
     }
+	
+	/**
+	 * 
+	 * @param i
+	 * @param m
+	 * @param a
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 * @throws SQLException  
+	 * @throws ClassNotFoundException 
+	 */
+	public List<HistoricoLevantamentoXLS> getQueryHistoricoLevantamentosXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException  {
+		
+		conecta(iDartProperties.hibernateUsername, 
+				iDartProperties.hibernatePassword);
+		
+		Vector<String> v = new Vector<String>();
 
-    public void insere_sync_temp_dispense() {
+		if (i)
+			v.add("Inicia");
+		if (m)
+			v.add("Manter");
+		if (a)
+			v.add("Alterar");
 
-        delete_sync_temp_dispense();
-        try {
-            conecta(iDartProperties.hibernateUsername,
-                    iDartProperties.hibernatePassword);
-        } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+		String condicao = "(\'";
+
+		if (v.size() == 3) {
+			for (int j = 0; j < v.size() - 1; j++)
+
+				condicao += v.get(j) + "\' , \'";
+
+			condicao += v.get(v.size() - 1) + "\')";
+		}
+
+		if (v.size() == 2) {
+			for (int j = 0; j < v.size() - 1; j++)
+
+				condicao += v.get(j) + "\' , \'";
+
+			condicao += v.get(v.size() - 1) + "\')";
+		}
+
+		if (v.size() == 1) {
+
+			condicao += v.get(0) + "\')";
+		}
+
+		String query = ""
+
+				+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
+				+ " dispensas_e_prescricoes.tipotarv,  "
+				+ "   dispensas_e_prescricoes.regime, "
+				//+ "   dispensas_e_prescricoes.linhanome, "
+				+ " CASE "
+				+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' " 
+				+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
+				+ " ELSE 'DM' "
+				+"  END AS tipodispensa, "
+				+ "   dispensas_e_prescricoes.datalevantamento,"
+				+ "    dispensas_e_prescricoes.dataproximolevantamento "
+				+ "    FROM "
+				+ "  (SELECT   "
+
+				+ "  dispensa_packege.nid , "
+				+ "    prescription_package.tipotarv,  "
+				+ "    prescription_package.regime, "
+	            //+ " prescription_package.linhanome, "
+	            + " prescription_package.dispensatrimestral, "
+	            + " prescription_package.dispensasemestral, " 
+				+ "    dispensa_packege.datalevantamento, "
+				+ "    dispensa_packege.dataproximolevantamento "
+				+ " 	FROM  "
+
+				+ " 	( "
+				+ "   SELECT  "
+
+				+ " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
+				//+ "linhat.linhanome AS linhanome, "
+				+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime "
+
+				+ " 	 FROM  "
+
+				+ " 	 prescription,  " + " package , regimeterapeutico, linhat "
+
+				+ "  WHERE   "
+
+				+ " prescription.id = package.prescription  "
+
+				+ "  AND  " + " 	 prescription.ppe=\'F\' "
+
+				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
+				//+ "AND linhat.linhaid = prescription.linhaid "
+				+ " AND   "
+
+				+ "  	 prescription.reasonforupdate IN "
+				+ condicao
+
+				+ " 	 )as prescription_package,  "
+
+				+ " 	 (  "
+				+ " 	 SELECT  "
+
+				+ " 	 packagedruginfotmp.patientid as nid,  "
+				+ " 	 packagedruginfotmp.packageid,"
+				+ " 	 packagedruginfotmp.dispensedate as datalevantamento,"
+				+ "  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento "
+
+				+ "  	 FROM "
+				+ "  	 package, packagedruginfotmp  "
+
+				+ " 	 WHERE  "
+
+				+ " 	 package.packageid=packagedruginfotmp.packageid  "
+				+ " 	 AND  "
+
+				+ "  					 packagedruginfotmp.dispensedate::timestamp::date >=  "
+				+ "  \'"
+				+ startDate
+				+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+				+ "   \'"
+				+ endDate
+				+ "\'::timestamp::date  "
+				+ " 	) as dispensa_packege,"
+				+ "     ( "
+				+ "     select packagedruginfotmp.patientid,  "
+
+				+ " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
+
+				+ " 	 FROM "
+				+ " 	 package, packagedruginfotmp  "
+
+				+ "  WHERE  "
+
+				+ "  package.packageid=packagedruginfotmp.packageid  "
+				+ " 	 AND  "
+
+				+ " 			 packagedruginfotmp.dispensedate::timestamp::date >=  "
+				+ "  \'"
+				+ startDate
+				+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+				+ "   \'"
+				+ endDate
+				+ "\'::timestamp::date  "
+
+				+ "   group by packagedruginfotmp.patientid "
+
+				+ "       ) as ultimadatahora  "
+
+				+ "  	 WHERE  "
+				+ "  	 dispensa_packege.packageid=prescription_package.packageid  "
+
+				+ " 	 and "
+				+ "    dispensa_packege.datalevantamento=ultimadatahora.lastdispense "
+				+ "    ) as dispensas_e_prescricoes "
+				+ "     ,"
+				+ "     patient "
+
+				+ "    where "
+
+				+ "    dispensas_e_prescricoes.nid=patient.patientid";
+		
+		List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
+		ResultSet rs = st.executeQuery(query);
+		
+		if (rs != null) { 
+			
+			while(rs.next()) {
+				HistoricoLevantamentoXLS levantamentoXLS = new HistoricoLevantamentoXLS();
+				levantamentoXLS.setPatientIdentifier(rs.getString("nid"));
+				levantamentoXLS.setNome(rs.getString("nome"));
+				levantamentoXLS.setApelido(rs.getString("apelido"));
+				levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
+				levantamentoXLS.setRegimeTerapeutico(rs.getString("regime")); 
+				levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
+				levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
+				levantamentoXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+				
+				levantamentoXLSs.add(levantamentoXLS);
+			}
+			rs.close();
+		}
+		
+		st.close();
+		conn_db.close();
+		
+		return levantamentoXLSs;
+		
+	}
+	
+	public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
+		
+		String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" + 
+				" FROM prescription pr\r\n" + 
+				" INNER JOIN patient pa ON pa.id=pr.patient\r\n" + 
+				" WHERE pr.id NOT IN (\r\n" + 
+				" SELECT prescription FROM package\r\n" + 
+				")\r\n" + 
+				" AND pr.date::timestamp::date >= '"+startDate+"'::timestamp::date\r\n" + 
+				" AND pr.date::timestamp::date <= '"+endDate+"'::timestamp::date\r\n" + 
+				" AND pr.current='T';";
+		
+		return query;
+	}
+
+	public void insere_sync_temp_dispense() {
+
+		delete_sync_temp_dispense();
+		try {
+			conecta(iDartProperties.hibernateUsername,
+					iDartProperties.hibernatePassword);
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//ConexaoODBC conn = new ConexaoODBC();
 		//ResultSet data = conn.result_for_sync_dispense();

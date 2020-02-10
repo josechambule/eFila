@@ -55,6 +55,7 @@ import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.reportParameters.PatientsExpected;
 import org.celllife.idart.gui.reportParameters.PepfarReportGUI;
 import org.celllife.idart.gui.reportParameters.PrescribingDoctors;
+import org.celllife.idart.gui.reportParameters.PrescriptionsWithNoEncounter;
 import org.celllife.idart.gui.reportParameters.RegisteredIdart;
 import org.celllife.idart.gui.reportParameters.StockTakeReportGUI;
 import org.celllife.idart.gui.reportParameters.TransactionLog;
@@ -175,24 +176,19 @@ public class NewReports extends GenericAdminGui {
 	private void createGrpMia() {
 		grpMia = new Group(getShell(), SWT.NONE);
 		grpMia.setBounds(new Rectangle(625, 80, 240, 250));
-		grpMia.setText(Messages
-				.getString("NewReports.section.mmia")); //$NON-NLS-1$
+		grpMia.setText(Messages.getString("NewReports.section.mmia")); //$NON-NLS-1$
 		grpMia.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
 		lblPicMiaReports = new Label(grpMia, SWT.NONE);
-		lblPicMiaReports.setBounds(new org.eclipse.swt.graphics.Rectangle(
-				10, 0, 50, 43));
-		lblPicMiaReports.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_PATIENTHISTORY));
+		lblPicMiaReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
+		lblPicMiaReports.setImage(ResourceUtils.getImage(iDartImage.REPORT_PATIENTHISTORY));
 
 		tblMiaReports = new Table(grpMia, SWT.BORDER);
 		tblMiaReports.setBounds(new Rectangle(10, 50, 200, 180));
 		tblMiaReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-		TableColumn tblColReportsAvailable = new TableColumn(tblMiaReports,
-				SWT.NONE);
-		tblColReportsAvailable.setText(Messages
-				.getString("NewReports.table.title")); //$NON-NLS-1$
+		TableColumn tblColReportsAvailable = new TableColumn(tblMiaReports,SWT.NONE);
+		tblColReportsAvailable.setText(Messages.getString("NewReports.table.title")); //$NON-NLS-1$
 		tblColReportsAvailable.setWidth(270);
 
 		tblMiaReports.addMouseListener(new MouseAdapter() {
@@ -216,15 +212,12 @@ public class NewReports extends GenericAdminGui {
 	private void createGrpPatientReports() {
 		grpPatientReports = new Group(getShell(), SWT.NONE);
 		grpPatientReports.setBounds(new Rectangle(25, 80, 275, 200));
-		grpPatientReports.setText(Messages
-				.getString("NewReports.section.patient")); //$NON-NLS-1$
+		grpPatientReports.setText(Messages.getString("NewReports.section.patient")); //$NON-NLS-1$
 		grpPatientReports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
 		lblPicPatientReports = new Label(grpPatientReports, SWT.NONE);
-		lblPicPatientReports.setBounds(new org.eclipse.swt.graphics.Rectangle(
-				10, 0, 50, 43));
-		lblPicPatientReports.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_PATIENTHISTORY));
+		lblPicPatientReports.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
+		lblPicPatientReports.setImage(ResourceUtils.getImage(iDartImage.REPORT_PATIENTHISTORY));
 
 		tblPatientReports = new Table(grpPatientReports, SWT.BORDER);
 		tblPatientReports.setBounds(new Rectangle(20, 50, 235, 130));
@@ -412,108 +405,86 @@ private void createGrpClinicManagementReports() {
 		 * MmiaReport(getShell(), false));
 		 */
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
-				new MmiaReportMISAU(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU, new MmiaReportMISAU(getShell(), false));
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_IDART,
-				new RegisteredIdart(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TPC,
-				new CotrimoxazolReport(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_IDART, new RegisteredIdart(getShell(), false));
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TPI,
-				new IsoniazidaReport(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_TPC, new CotrimoxazolReport(getShell(), false));
 		
-		reportGUIs.put(GenericReportGuiInterface.REPORT_LEVANTAMENTOS_ARV,
-				new HistoricoLevantamentos(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_TPI, new IsoniazidaReport(getShell(), false));
 		
-        //Dipensa Trimestral
-        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_TRIMESTRAL,
-		new DispensaTrimestralReport(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_LEVANTAMENTOS_ARV, new HistoricoLevantamentos(getShell(), false));
+		
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_TRIMESTRAL, new DispensaTrimestralReport(getShell(), false));
         
-      //Dipensa Semestral
-        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_SEMESTRAL,
-		new DispensaSemestralReport(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_DISPENSA_SEMESTRAL, new DispensaSemestralReport(getShell(), false));
 
-		// Patient Reports
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,
-				new PatientHistory(getShell(), false));
-		reportGUIs.put(
-				GenericReportGuiInterface.REPORT_EPISODES_STARTED_OR_ENDED,
-				new EpisodesStartedOrEndedReportGUI(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING,
-				new PackageTracking(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY, new PatientHistory(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STARTED_OR_ENDED,new EpisodesStartedOrEndedReportGUI(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING, new PackageTracking(getShell(), false));
 
-		// Stock Reports
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,
-				new MonthlyStockReceipt(getShell(), false));
-		reportGUIs.put(
-				GenericReportGuiInterface.REPORT_DAILY_DISPENSING_TOTALS,
-				new DailyDispensingTotals(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE,
-				new StockTakeReportGUI(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED,
-				new DrugsDispensed(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS,
-				new CohortDrugCollections(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_RECEIPT_ISSUE,
-				new MonthlyReceiptsAndIssues(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE,
-				new ARVDrugUsage(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS, new MonthlyStockReceipt(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_DAILY_DISPENSING_TOTALS, new DailyDispensingTotals(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE, new StockTakeReportGUI(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED, new DrugsDispensed(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS, new CohortDrugCollections(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_RECEIPT_ISSUE, new MonthlyReceiptsAndIssues(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE, new ARVDrugUsage(getShell(), false));
 
-		// Clinic Management Reports
-
-		PackageProcessingReportGUI packsCreated = new PackageProcessingReportGUI(
-				getShell(), false);
+		PackageProcessingReportGUI packsCreated = new PackageProcessingReportGUI(getShell(), false);
+		
 		packsCreated.setPackageStage(PackageLifeStage.PACKED);
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_CREATED,
-				packsCreated);
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_CREATED, packsCreated);
 
-		PackageProcessingReportGUI packsLeft = new PackageProcessingReportGUI(
-				getShell(), false);
+		PackageProcessingReportGUI packsLeft = new PackageProcessingReportGUI(getShell(), false);
+		
 		packsLeft.setPackageStage(PackageLifeStage.SCANNED_OUT);
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_LEAVING,
-				packsLeft);
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_LEAVING, packsLeft);
 
-		PackageProcessingReportGUI packsRec = new PackageProcessingReportGUI(
-				getShell(), false);
+		PackageProcessingReportGUI packsRec = new PackageProcessingReportGUI(getShell(), false);
+		
 		packsRec.setPackageStage(PackageLifeStage.SCANNED_IN);
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_RECEIVED,
-				packsRec);
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_RECEIVED,packsRec);
 
-		PackageProcessingReportGUI packsCollected = new PackageProcessingReportGUI(
-				getShell(), false);
+		PackageProcessingReportGUI packsCollected = new PackageProcessingReportGUI(getShell(), false);
+		
 		packsCollected.setPackageStage(PackageLifeStage.PICKED_UP);
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_COLLECTED,
-				packsCollected);
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_COLLECTED, packsCollected);
 
-		reportGUIs.put(
-				GenericReportGuiInterface.REPORT_PACKAGES_AWAITING_PICKUP,
-				new PackagesAwaiting(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGES_AWAITING_PICKUP, new PackagesAwaiting(getShell(), false));
 
-		reportGUIs.put(
-				GenericReportGuiInterface.REPORT_PATIENTS_EXPECTED_ON_A_DAY,
-				new PatientsExpected(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENTS_EXPECTED_ON_A_DAY, new PatientsExpected(getShell(), false));
 
-		reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS,
-				new MissedAppointments(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS, new MissedAppointments(getShell(), false));
 
 		// M & E Reports
-		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUG_COMBINATIONS,
-				new DrugCombinations(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STATS,
-				new EpisodeStats(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG,
-				new TransactionLog(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIBING_DOCTORS,
-				new PrescribingDoctors(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_PEPFAR,
-				new PepfarReportGUI(getShell(), false));
-		reportGUIs.put(GenericReportGuiInterface.REPORT_CLINIC_INDICATORS,
-				new ClinicIndicators(getShell(), false));
+		reportGUIs.put(GenericReportGuiInterface.REPORT_DRUG_COMBINATIONS, new DrugCombinations(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STATS, new EpisodeStats(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG, new TransactionLog(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIBING_DOCTORS, new PrescribingDoctors(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_PEPFAR, new PepfarReportGUI(getShell(), false));
+		
+		reportGUIs.put(GenericReportGuiInterface.REPORT_CLINIC_INDICATORS, new ClinicIndicators(getShell(), false));
 
-		Iterator<Map.Entry<String, GenericReportGui>> reportGUIsItr = reportGUIs
-				.entrySet().iterator();
+		Iterator<Map.Entry<String, GenericReportGui>> reportGUIsItr = reportGUIs.entrySet().iterator();
 
 		while (reportGUIsItr.hasNext()) {
 			Map.Entry<String, GenericReportGui> nextPair = reportGUIsItr.next();

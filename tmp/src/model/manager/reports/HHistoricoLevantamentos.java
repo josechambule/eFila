@@ -56,23 +56,16 @@ public class HHistoricoLevantamentos extends AbstractJasperReport {
 
 	@Override
 	protected Map<String, Object> getParameterMap() throws ReportException {
-
-
-
-
 		
 		// Set the parameters for the report
-				Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 				
-
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					"yyyy-MM-dd");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 		map.put("date", theStartDate);
 		map.put("dateFormat", dateFormat.format(theStartDate));
 		map.put("monthStart", dateFormat.format(theStartDate));
 		//calStart.add(Calendar.MONTH, 1);
-
 
 		map.put("monthEnd", dateFormat.format(theEndDate));
 		map.put("dateEnd", theEndDate);
@@ -80,20 +73,13 @@ public class HHistoricoLevantamentos extends AbstractJasperReport {
 		map.put("mes", mesPortugues(theStartDate));
 		map.put("mes2",mesPortugues(theEndDate));
 
-ConexaoJDBC con=new ConexaoJDBC();
+		ConexaoJDBC con=new ConexaoJDBC();
 		String query= con.getQueryHistoricoLevantamentos(this.inicio, this.manutencao, this.alteraccao,dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 		
-
-
-		
-		
 		map.put("query",query);
-	
 		map.put("path", getReportPath());
 		map.put("provincia","Zambézia");
 		map.put("distrito","Nicoadala");
-		
-
 		map.put("facilityName", LocalObjects.currentClinic.getClinicName());
 
 		return map;
