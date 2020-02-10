@@ -808,9 +808,9 @@ public class AddDrug extends GenericFormGui {
             localDrug.setForm(AdministrationManager.getForm(getHSession(), cmbForm.getText()));
             localDrug.setTipoDoenca(cmbtipoDoenca.getText());
             if (rdBtnActive.getSelection())
-                localDrug.setActive(rdBtnActive.getSelection());
+                localDrug.setActive(true);
             else
-                localDrug.setActive(rdBtnInactive.getSelection());
+                localDrug.setActive(false);
             double amnt = 0;
             int times = 0;
 

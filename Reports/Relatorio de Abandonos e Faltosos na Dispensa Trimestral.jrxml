@@ -10,7 +10,7 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="path" class="java.lang.String">
 		<parameterDescription><![CDATA[Path for the report files]]></parameterDescription>
-		<defaultValueExpression><![CDATA["C://Users//colaco//Documents//Projectos CCS//Conteudos Idart//idart//Reports"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="clinic" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Masiphumelele"]]></defaultValueExpression>
