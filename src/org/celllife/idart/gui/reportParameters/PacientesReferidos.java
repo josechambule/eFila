@@ -192,6 +192,11 @@ public class PacientesReferidos extends GenericReportGui {
 
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+
+	}
+
 	/**
 	 * This method is called when the user presses "Close" button
 	 *

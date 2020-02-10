@@ -371,6 +371,11 @@ public class CohortDispensaTrimestral extends GenericReportGui {
 		}
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+
+	}
+
 	private EntitySet getPatientSet(ExcelReportObjectDT report) {
 	//	String patientQuery = "select e.patient.id from Episode e where e.startDate between :startDate and :endDate" +
 	//	" and e.startReason = :startReason";

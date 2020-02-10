@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.6963904734899635"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="104"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -47,7 +47,7 @@
 	<parameter name="totalpacienteManuntencaoTransporte" class="java.lang.String"/>
 	<parameter name="dateStart" class="java.util.Date"/>
 	<parameter name="path" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\colaco.nhango\\Documents\\Git\\eFila\\Reports"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="totalpacienteCumulativo" class="java.lang.String"/>
 	<queryString>

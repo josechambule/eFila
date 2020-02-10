@@ -304,13 +304,13 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         lblEstadoRegime.setText(Messages.getString("adddruggroup.estado.regime.title")); //$NON-NLS-1$
 
         rdBtnActive = new Button(grpRegimen, SWT.RADIO);
-        rdBtnActive.setBounds(new Rectangle(160, 95, 110, 20));
+        rdBtnActive.setBounds(new Rectangle(160, 70, 80, 20));
         rdBtnActive.setText("Activo");
         rdBtnActive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         rdBtnActive.setSelection(true);
 
         rdBtnInactive = new Button(grpRegimen, SWT.RADIO);
-        rdBtnInactive.setBounds(new Rectangle(160, 95, 220, 20));
+        rdBtnInactive.setBounds(new Rectangle(270, 70, 80, 20));
         rdBtnInactive.setText("Inactivo");
         rdBtnInactive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         rdBtnInactive.setSelection(false);
@@ -460,9 +460,9 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         }
 
         if (rdBtnActive.getSelection())
-            regToSave.setActive(rdBtnActive.getSelection());
+            regToSave.setActive(true);
         else
-            regToSave.setActive(rdBtnInactive.getSelection());
+            regToSave.setActive(false);
       
         regToSave.setRegimeesquema(txtDrugGroupName.getText().trim());
         regToSave.setRegimenomeespecificado(txtRegimeEspecifico.getText());
@@ -931,18 +931,17 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 
     /**
      * @param newRegimen
+     *
      * @return
      */
     private boolean changesMade(RegimeTerapeutico newRegimen) {
         if (!newRegimen.getRegimeesquema().equalsIgnoreCase(localRegimen.getRegimeesquema())) {
             return true;
-//        } else if (!newRegimen.getLinhaT().getLinhanome().equalsIgnoreCase(localRegimen.getLinhaT().getLinhanome())) {
-//            return true;
+        } else if (newRegimen.isActive() != localRegimen.isActive()) {
+            return true;
         } else if (!newRegimen.getCodigoregime().equalsIgnoreCase(localRegimen.getCodigoregime())) {
             return true;
-        } else if (!newRegimen.isActive() == localRegimen.isActive()) {
-            return true;
-        } else if (!newRegimen.getRegimeesquemaidart().equalsIgnoreCase(localRegimen.getRegimeesquemaidart())) {
+        } else if (!newRegimen.getRegimenomeespecificado().equalsIgnoreCase(localRegimen.getRegimenomeespecificado())) {
             return true;
         } else if (!newRegimen.getRegimenDrugs().containsAll(localRegimen.getRegimenDrugs())
                 && newRegimen.getRegimenDrugs().size() != localRegimen.getRegimenDrugs().size()) {

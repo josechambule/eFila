@@ -134,7 +134,7 @@ public class PrescriptionObjectAssociated extends GenericOthersGui {
                 12, 120, 26));
         drugBarCodeSearch.setText("Procurar");
         drugBarCodeSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
+        drugBarCodeSearch.setEnabled(false);
         drugBarCodeSearch
                 .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
                     @Override
@@ -448,7 +448,6 @@ public class PrescriptionObjectAssociated extends GenericOthersGui {
     private void cmdClearWidgetSelected() {
         clearForm();
         txtDrugName.setFocus();
-        drugBarCodeSearch.setEnabled(true);
     }
 
     private void cmdCancelWidgetSelected() {
@@ -525,6 +524,7 @@ public class PrescriptionObjectAssociated extends GenericOthersGui {
         txtTake.setEnabled(enable);
         txtTimes.setEnabled(enable);
         btnAddDrug.setEnabled(enable);
+//        drugBarCodeSearch.setEnabled(enable);
     }
 
     @Override

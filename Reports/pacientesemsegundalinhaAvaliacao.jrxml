@@ -6,12 +6,12 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="java.util.*"/>
 	<import value="org.apache.commons.lang.time.*"/>
+	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="path" class="java.lang.String">
 		<parameterDescription><![CDATA[Path for the report files]]></parameterDescription>
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="clinic" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Masiphumelele"]]></defaultValueExpression>
@@ -38,7 +38,7 @@
 		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\colaco\\Documents\\Projectos CCS\\Sub\\idart\\idart\\Reports\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports//"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select distinct p.id as id,p.patientId as patientid, p.dateOfBirth AS dob,
@@ -525,18 +525,18 @@ group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,pr.date,rt.regimeesque
 			</subreport>
 			<subreport>
 				<reportElement x="537" y="2" width="75" height="18"/>
-				<subreportParameter name="parentpackid"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patientId">
+					<subreportParameterExpression><![CDATA[$F{patientid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parentpackid"/>
 				<subreportParameter name="path">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="pickdate">
 					<subreportParameterExpression><![CDATA[$P{date}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="patientId">
-					<subreportParameterExpression><![CDATA[$F{patientid}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "PackageDrugsSegundaLinha90dias.jasper"]]></subreportExpression>
@@ -557,18 +557,18 @@ group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,pr.date,rt.regimeesque
 			</textField>
 			<subreport>
 				<reportElement x="701" y="2" width="75" height="17"/>
-				<subreportParameter name="parentpackid"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="patientId">
+					<subreportParameterExpression><![CDATA[$F{patientid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="parentpackid"/>
 				<subreportParameter name="path">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="pickdate">
 					<subreportParameterExpression><![CDATA[$P{date}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="patientId">
-					<subreportParameterExpression><![CDATA[$F{patientid}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "PackageDrugsSegundaLinha.jasper"]]></subreportExpression>

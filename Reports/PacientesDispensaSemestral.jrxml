@@ -47,7 +47,7 @@
 	<parameter name="totalpacienteManuntencaoTransporte" class="java.lang.String"/>
 	<parameter name="dateStart" class="java.util.Date"/>
 	<parameter name="path" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\colaco.nhango\\Documents\\Git\\eFila\\Reports"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="totalpacienteCumulativo" class="java.lang.String"/>
 	<queryString>
