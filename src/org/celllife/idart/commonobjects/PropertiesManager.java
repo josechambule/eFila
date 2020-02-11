@@ -19,7 +19,7 @@ public class PropertiesManager {
 	private static enum Props{
 		SMS("sms.properties"),
 		IDART("idart.properties");
-		
+
 		private final String path;
 
 		private Props(String path) {

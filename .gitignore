@@ -16,3 +16,10 @@ Reports/tmpPackageProcessing.csv
 /nbproject/private/
 /build/
 *.class
+/Reports/
+out/
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws

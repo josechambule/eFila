@@ -29,6 +29,9 @@ import javax.swing.RepaintManager;
 import net.sourceforge.barbecue.BarcodeFactory;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.PrinterProperties;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 
 /**
  */
@@ -350,8 +353,20 @@ public class PrintLayoutUtils {
 			b.setBarHeight(20);
 			b.setResolution(70);
 			disableDoubleBuffering(b);
-			
-			g2d.scale(0.7, 1);
+			Double x = 0.0;
+			Double y = 0.0;
+
+			if (isNumeric(PrinterProperties.labelBarCodeScalax) && isNumeric(PrinterProperties.labelBarCodeScalay)) {
+				x = Double.parseDouble(PrinterProperties.labelBarCodeScalax);
+				y = Double.parseDouble(PrinterProperties.labelBarCodeScalay);
+			} else {
+				MessageBox box = new MessageBox(null, SWT.ICON_ERROR | SWT.OK);
+				box.setMessage(" Por favor verificar as configurações da impressora de etiquetas");
+				box.setText(" Por favor verificar as configurações da impressora de etiquetas - Barcode Configuration");
+				box.open();
+			}
+
+			g2d.scale(x,y);
 			
 			// print barcode in center of printableWidth
 			b.draw(g2d, (printableWidth - b.getWidth()) / 2, ypos);
@@ -370,5 +385,14 @@ public class PrintLayoutUtils {
 	public static void enableDoubleBuffering(Component c) {
 		RepaintManager currentManager = RepaintManager.currentManager(c);
 		currentManager.setDoubleBufferingEnabled(true);
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

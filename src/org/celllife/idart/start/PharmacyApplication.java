@@ -1,5 +1,5 @@
 /*
- * 
+ *
  * iDART: The Intelligent Dispensing of Antiretroviral Treatment
  * Copyright (C) 2006 Cell-Life
  *
@@ -24,10 +24,7 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.celllife.idart.commonobjects.CommonObjects;
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.PropertiesManager;
-import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.commonobjects.*;
 import org.celllife.idart.database.ConnectException;
 import org.celllife.idart.database.DatabaseEmptyException;
 import org.celllife.idart.database.DatabaseException;
@@ -62,337 +59,371 @@ import model.manager.PatientManager;
 import model.manager.StockManager;
 
 /**
+ *
  */
 public class PharmacyApplication {
 
-	private static Logger log = Logger.getLogger(PharmacyApplication.class);
-	private static Load loginLoad;
+    private static Logger log = Logger.getLogger(PharmacyApplication.class);
+    private static Load loginLoad;
 
-	/**
-	 * Method main.
-	 * sacur
-	 * @param args
-	 * String[]
-	 */
-	
-public static void main(String[] args) {
-		
-DOMConfigurator.configure("log4j.xml");
-		
-		// used for gui testing
-		System.setProperty("org.eclipse.swtbot.search.defaultKey",
-				iDartProperties.SWTBOT_KEY);
+    /**
+     * Method main.
+     * sacur
+     *
+     * @param args String[]
+     */
 
-		log.info("");
-		log.info("*********************");
-		log.info("iDART " + iDartProperties.idartVersionNumber + " starting");
-		log.info("*********************");
-		log.info("");
+    public static void main(String[] args) {
 
-		createDisplay();
-		openSplash();
-		loadConstants();
-		performStartupChecks();
-		doInitialisationTasks();
-		launch(args);
-		
-	}
+        DOMConfigurator.configure("log4j.xml");
 
-	private static void createDisplay() {
-		if (Display.getCurrent() == null) {
-			new Display();
-		}
-	}
+        // used for gui testing
+        System.setProperty("org.eclipse.swtbot.search.defaultKey",
+                iDartProperties.SWTBOT_KEY);
 
-	private static void launch(String[] args) {
+        log.info("");
+        log.info("*********************");
+        log.info("iDART " + iDartProperties.idartVersionNumber + " starting");
+        log.info("*********************");
+        log.info("");
 
-		closeSplash();
+        createDisplay();
+        openSplash();
+        loadConstants();
+        performStartupChecks();
+        doInitialisationTasks();
+        launch(args);
 
-		if (args != null && args.length > 0) {
-			String option = args[0];
-			args = Arrays.copyOfRange(args, 1, args.length);
-			TaskManager.runTask(option, args);
-		}
-		runIDART();
-	}
+    }
 
-	private static void performStartupChecks() {
-		try {
-			if (!DatabaseTools._().checkDatabase()) {
-				startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
-			}
-		} catch (ConnectException e) {
-			startSetupWizard(DatabaseWizard.PAGE_CONNECTION_DETAILS);
-		} catch (DatabaseEmptyException e) {
-			startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
-		} catch (DatabaseException e) {
-			String msg = "Error while checking database consistency: ";
-			log.error(msg, e);
-			showStartupErrorDialog(msg + e.getMessage());
-			System.exit(1);
-		}
-		
-		loginLoad.updateProgress(30);
-		
-		try {
-			DatabaseTools._().update();
-		} catch (DatabaseException e) {
-			String msg = "Error while updating the database: "
-				+ e.getMessage();
-			if (DatabaseTools._().isOldVersion()) {
-				msg = "Database needs to be manually updated to version 3.5.0.\n"
-					+ "Please run the necessary update scripts and try again.";
-			}
-			log.error(msg, e);
-			showStartupErrorDialog(msg);
-			System.exit(1);
-		}
-		
-		try {
-			HibernateUtil.setValidation(true);
-		} catch (Exception e) {
-			String msg = "Error while checking database consistency: ";
-			log.error(msg, e);
-			showStartupErrorDialog(msg + e.getMessage());
-			System.exit(1);
-		}
-		
-		loginLoad.updateProgress(50);
-	}
+    private static void createDisplay() {
+        if (Display.getCurrent() == null) {
+            new Display();
+        }
+    }
 
-	private static void exit(int exitStatus) {
-		closeSplash();
-		System.exit(exitStatus);
-	}
+    private static void launch(String[] args) {
 
-	private static void runIDART() {
-		boolean userExited;
-		GenericWelcome welcome = null;
-		JobScheduler scheduler = new JobScheduler();
-		EventManager events = new EventManager();
-		events.register();
-		do {
-			Login loginScreen = new Login();
+        closeSplash();
 
-			if (loginScreen.isSuccessfulLogin()) {
-				startEkapaJob(scheduler);
-				startSmsJobs(scheduler);
-				
-				try {
-					String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
-					if(role != null && role.equalsIgnoreCase("StudyWorker")){
-						welcome = new StudyWorkerWelcome();
-					} else if(role != null && role.equalsIgnoreCase("ReportsWorker")){
-						welcome = new ReportWorkerWelcome();
-					} else {
-						if (LocalObjects.currentClinic == LocalObjects.mainClinic) {
-							welcome = new PharmacyWelcome();
-						} else {
-							welcome = new ClinicWelcome();
-						}
-					}
-				} catch (Exception e) {
-					log.error("iDART CRASH: - Fatal Error caused by Exception:", e);
+        if (args != null && args.length > 0) {
+            String option = args[0];
+            args = Arrays.copyOfRange(args, 1, args.length);
+            TaskManager.runTask(option, args);
+        }
+        runIDART();
+    }
 
-					MessageUtil.showError(e, "iDART Error",	MessageUtil.getCrashMessage());
-					closeAllShells();
-					exit(1);
+    private static void performStartupChecks() {
+        try {
+            if (!DatabaseTools._().checkDatabase()) {
+                startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
+            }
+        } catch (ConnectException e) {
+            startSetupWizard(DatabaseWizard.PAGE_CONNECTION_DETAILS);
+        } catch (DatabaseEmptyException e) {
+            startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
+        } catch (DatabaseException e) {
+            String msg = "Error while checking database consistency: ";
+            log.error(msg, e);
+            showStartupErrorDialog(msg + e.getMessage());
+            System.exit(1);
+        }
 
-					log.fatal(e.getMessage(), e);
-				}
-				log.debug("Logged out..");
+        loginLoad.updateProgress(30);
 
-				if (welcome == null) {
-					closeAllShells();
-					userExited = true;
-				} else {
-					userExited = false;
-				}
-			} else {
-				userExited = true;
-			}
+        try {
+            DatabaseTools._().update();
+        } catch (DatabaseException e) {
+            String msg = "Error while updating the database: "
+                    + e.getMessage();
+            if (DatabaseTools._().isOldVersion()) {
+                msg = "Database needs to be manually updated to version 3.5.0.\n"
+                        + "Please run the necessary update scripts and try again.";
+            }
+            log.error(msg, e);
+            showStartupErrorDialog(msg);
+            System.exit(1);
+        }
 
-		} while (!userExited && welcome != null && welcome.isTimedOut());
+        try {
+            HibernateUtil.setValidation(true);
+        } catch (Exception e) {
+            String msg = "Error while checking database consistency: ";
+            log.error(msg, e);
+            showStartupErrorDialog(msg + e.getMessage());
+            System.exit(1);
+        }
 
-		scheduler.shutdown();
-		events.deRegister();
-		log.info("");
-		log.info("*********************");
-		log.info("iDART " + iDartProperties.idartVersionNumber + " exited");
-		log.info("*********************");
-		log.info("");
-	}
+        loginLoad.updateProgress(50);
+    }
 
-	private static void startSmsJobs(JobScheduler scheduler) {
-		if (iDartProperties.isCidaStudy) {
-			String cidaGroupName = "cida";
-			if (!scheduler.hasJob(cidaGroupName, SmsSchedulerJob.JOB_NAME)) {
-				scheduler.scheduleOnceOff(SmsSchedulerJob.JOB_NAME, cidaGroupName, SmsSchedulerJob.class);
-			}
-			if (!scheduler.hasJob(cidaGroupName, SmsRetrySchedulerJob.JOB_NAME)) {
-				scheduler.schedule(SmsRetrySchedulerJob.JOB_NAME, cidaGroupName, SmsRetrySchedulerJob.class, 60);
-			}
-		}
-	}
+    private static void exit(int exitStatus) {
+        closeSplash();
+        System.exit(exitStatus);
+    }
 
-	private static void startEkapaJob(JobScheduler scheduler) {
-		if (iDartProperties.isEkapaVersion) {
-			if (!scheduler.hasJob(EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.JOB_NAME)) {
-				scheduler.schedule( EkapaSubmitJob.JOB_NAME, EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.class, 2);
-			}
-		}
-	}
+    private static void runIDART() {
+        boolean userExited;
+        GenericWelcome welcome = null;
+        JobScheduler scheduler = new JobScheduler();
+        EventManager events = new EventManager();
+        events.register();
+        do {
+            Login loginScreen = new Login();
 
-	private static void closeAllShells() {
-		Display display = Display.getCurrent();
+            if (loginScreen.isSuccessfulLogin()) {
+                startEkapaJob(scheduler);
+                startSmsJobs(scheduler);
 
-		if (display != null) {
-			for (Shell s : display.getShells()){
-				if (s != null) {
-					s.dispose();
-				}
-			}
-			display.dispose();
-		}
-	}
+                try {
+                    String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
+                    if (role != null && role.equalsIgnoreCase("StudyWorker")) {
+                        welcome = new StudyWorkerWelcome();
+                    } else if (role != null && role.equalsIgnoreCase("ReportsWorker")) {
+                        welcome = new ReportWorkerWelcome();
+                    } else {
+                        if (LocalObjects.currentClinic == LocalObjects.mainClinic) {
+                            welcome = new PharmacyWelcome();
+                        } else {
+                            welcome = new ClinicWelcome();
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("iDART CRASH: - Fatal Error caused by Exception:", e);
 
-	private static void openSplash() {
-		loginLoad = new Load();
-	}
+                    MessageUtil.showError(e, "iDART Error", MessageUtil.getCrashMessage());
+                    closeAllShells();
+                    exit(1);
 
-	private static void loadConstants() {
-		try {
-			iDartProperties.setiDartProperties();
+                    log.fatal(e.getMessage(), e);
+                }
+                log.debug("Logged out..");
 
-			if (log.isTraceEnabled()) {
-				try {
-					log.trace("Current iDART properties: \n"
-							+ iDartProperties.printProperties());
-				} catch (Exception e1) {
-					log.error("Error printing properties", e1);
-				}
-			}
-		} catch (Exception e) {
-			log.error("Unable to load idart.properties file.",e);
-			showStartupErrorDialog("Unable to load properties from idart.properties file." +
-			" Please ensure it exists.");
-			System.exit(1);
-		}
-		
-		try {
-			PropertiesManager.sms();
-			
-			if (log.isTraceEnabled()) {
-				try {
-					log.trace("Current properties: \n"
-							+ PropertiesManager.printProperties());
-				} catch (Exception e1) {
-					log.error("Error printing properties", e1);
-				}
-			}
-		} catch (Exception e) {
-			log.error("Unable to load sms.properties file.", e);
-			showStartupErrorDialog("Unable to load properties from sms.properties file." +
-					" Please ensure it exists.");
-			System.exit(1);
-		}
-		loginLoad.updateProgress(10);
-	}
+                if (welcome == null) {
+                    closeAllShells();
+                    userExited = true;
+                } else {
+                    userExited = false;
+                }
+            } else {
+                userExited = true;
+            }
 
-	private static void startSetupWizard(int startPage) {
-		closeSplash();
-		DatabaseWizard wizard = new DatabaseWizard(startPage);
-		Shell shell = new Shell();
-		WizardDialog dialog = new WizardDialog(shell, wizard);
-		int returnCode = dialog.open();
-		if (returnCode == Window.CANCEL) {
-			showStartupErrorDialog("Startup failed. Unable to initialise the database.\n"
-					+ "Check the error logs in the iDART folder for more information.");
-			System.exit(1);
-		}
-	}
+        } while (!userExited && welcome != null && welcome.isTimedOut());
 
-	private static void closeSplash() {
-		if (loginLoad.isOpen()) {
-			loginLoad.killMe();
-		}
-	}
+        scheduler.shutdown();
+        events.deRegister();
+        log.info("");
+        log.info("*********************");
+        log.info("iDART " + iDartProperties.idartVersionNumber + " exited");
+        log.info("*********************");
+        log.info("");
+    }
 
-	/**
-	 * Method doInitialisationTasks.
-	 * 
-	 * @return boolean
-	 */
-	private static boolean doInitialisationTasks() {
-		Session hSession = HibernateUtil.getNewSession();
-		Transaction tx = null;
-		try {
-			log.info("Starting Initialisation Tasks");
-			tx = hSession.beginTransaction();
+    private static void startSmsJobs(JobScheduler scheduler) {
+        if (iDartProperties.isCidaStudy) {
+            String cidaGroupName = "cida";
+            if (!scheduler.hasJob(cidaGroupName, SmsSchedulerJob.JOB_NAME)) {
+                scheduler.scheduleOnceOff(SmsSchedulerJob.JOB_NAME, cidaGroupName, SmsSchedulerJob.class);
+            }
+            if (!scheduler.hasJob(cidaGroupName, SmsRetrySchedulerJob.JOB_NAME)) {
+                scheduler.schedule(SmsRetrySchedulerJob.JOB_NAME, cidaGroupName, SmsRetrySchedulerJob.class, 60);
+            }
+        }
+    }
 
-			setPatientAttributes();
-			CommonObjects.loadLanguages();
-			
-			loginLoad.updateProgress(5);
+    private static void startEkapaJob(JobScheduler scheduler) {
+        if (iDartProperties.isEkapaVersion) {
+            if (!scheduler.hasJob(EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.JOB_NAME)) {
+                scheduler.schedule(EkapaSubmitJob.JOB_NAME, EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.class, 2);
+            }
+        }
+    }
 
-			// set default clinic
-			LocalObjects.mainClinic = AdministrationManager
-			.getMainClinic(hSession);
-			LocalObjects.nationalIdentifierType = AdministrationManager
-					.getNationalIdentifierType(hSession);
-			
-			loginLoad.updateProgress(5);
+    private static void closeAllShells() {
+        Display display = Display.getCurrent();
 
-			LocalObjects.pharmacy = AdministrationManager
-			.getPharmacyDetails(hSession);
-			// do some database queries while loading
-			PatientManager.checkPregnancies(hSession);
-			
-			loginLoad.updateProgress(5);
+        if (display != null) {
+            for (Shell s : display.getShells()) {
+                if (s != null) {
+                    s.dispose();
+                }
+            }
+            display.dispose();
+        }
+    }
 
-			// update units remaining for stock
-			StockManager.updateStockLevels(hSession);
-			
-			loginLoad.updateProgress(5);
+    private static void openSplash() {
+        loginLoad = new Load();
+    }
 
-			hSession.flush();
-			tx.commit();
-			log.info("Finishing Initialisation Tasks");
-			return true;
-		} catch (HibernateException e) {
-			if (tx != null) {
-				tx.rollback();
-			}
-			log.error("Hibernate error during startup tasks.", e);
-			return false;
-		} finally {
-			try {
-				hSession.close();
-			} catch (Exception e) {
-			}
-		}
-	}
+    private static void loadConstants() {
+        try {
+            iDartProperties.setiDartProperties();
 
-	private static void setPatientAttributes() {
-		Session sess = HibernateUtil.getNewSession();
-		Transaction tx = sess.beginTransaction();
-		
-		PatientManager.checkPatientAttributes(sess);
-		
-		tx.commit();
-		sess.flush();
-		sess.close();
-	}
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current iDART properties: \n"
+                            + iDartProperties.printProperties());
+                } catch (Exception e1) {
+                    log.error("Error printing properties", e1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to load idart.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from idart.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
 
-	/**
-	 * Method showStartupErrorDialog.
-	 * 
-	 * @param message
-	 *            String
-	 */
-	private static void showStartupErrorDialog(String message) {
-		closeSplash();
-		new LoginErr(message);
-	}
+        try {
+            PrinterProperties.setPrinterProperties();
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current iDART Printers properties: \n"
+                            + PrinterProperties.printProperties());
+
+                } catch (Exception e1) {
+                    log.error("Error printing properties", e1);
+                }
+            } else {
+                String formatlabel = null;
+
+                if (PrinterProperties.labelprintPageFormat.equalsIgnoreCase("1"))
+                    formatlabel = "PORTRAIT";
+                else if (PrinterProperties.labelprintPageFormat.equalsIgnoreCase("0"))
+                    formatlabel = "LANDSCAPE";
+                else
+                    formatlabel = "EMPTY";
+
+                log.info("Current iDART Printers properties: {labelprintHeight= " + PrinterProperties.labelprintHeight +
+                        ", labelprintWidth= " + PrinterProperties.labelprintWidth +
+                        ", labelBarCodeScalay= " + PrinterProperties.labelBarCodeScalay +
+                        ", labelBarCodeScalax= " + PrinterProperties.labelBarCodeScalax +
+                        ", labelprintPageFormat= " + formatlabel +
+                        "}");
+            }
+        } catch (Exception e) {
+            log.error("Unable to load printer.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from printer.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
+
+        try {
+            PropertiesManager.sms();
+
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current properties: \n"
+                            + PropertiesManager.printProperties());
+                } catch (Exception e1) {
+                    log.error("Error printing properties", e1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to load sms.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from sms.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
+        loginLoad.updateProgress(10);
+    }
+
+    private static void startSetupWizard(int startPage) {
+        closeSplash();
+        DatabaseWizard wizard = new DatabaseWizard(startPage);
+        Shell shell = new Shell();
+        WizardDialog dialog = new WizardDialog(shell, wizard);
+        int returnCode = dialog.open();
+        if (returnCode == Window.CANCEL) {
+            showStartupErrorDialog("Startup failed. Unable to initialise the database.\n"
+                    + "Check the error logs in the iDART folder for more information.");
+            System.exit(1);
+        }
+    }
+
+    private static void closeSplash() {
+        if (loginLoad.isOpen()) {
+            loginLoad.killMe();
+        }
+    }
+
+    /**
+     * Method doInitialisationTasks.
+     *
+     * @return boolean
+     */
+    private static boolean doInitialisationTasks() {
+        Session hSession = HibernateUtil.getNewSession();
+        Transaction tx = null;
+        try {
+            log.info("Starting Initialisation Tasks");
+            tx = hSession.beginTransaction();
+
+            setPatientAttributes();
+            CommonObjects.loadLanguages();
+
+            loginLoad.updateProgress(5);
+
+            // set default clinic
+            LocalObjects.mainClinic = AdministrationManager
+                    .getMainClinic(hSession);
+            LocalObjects.nationalIdentifierType = AdministrationManager
+                    .getNationalIdentifierType(hSession);
+
+            loginLoad.updateProgress(5);
+
+            LocalObjects.pharmacy = AdministrationManager
+                    .getPharmacyDetails(hSession);
+            // do some database queries while loading
+            PatientManager.checkPregnancies(hSession);
+
+            loginLoad.updateProgress(5);
+
+            // update units remaining for stock
+            StockManager.updateStockLevels(hSession);
+
+            loginLoad.updateProgress(5);
+
+            hSession.flush();
+            tx.commit();
+            log.info("Finishing Initialisation Tasks");
+            return true;
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            log.error("Hibernate error during startup tasks.", e);
+            return false;
+        } finally {
+            try {
+                hSession.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private static void setPatientAttributes() {
+        Session sess = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
+
+        PatientManager.checkPatientAttributes(sess);
+
+        tx.commit();
+        sess.flush();
+        sess.close();
+    }
+
+    /**
+     * Method showStartupErrorDialog.
+     *
+     * @param message String
+     */
+    private static void showStartupErrorDialog(String message) {
+        closeSplash();
+        new LoginErr(message);
+    }
 
 }

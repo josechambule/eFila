@@ -173,10 +173,6 @@ public class iDartProperties {
 	public static String illegalPatientIdChars = "'`^";
 	public static String illegalPatientIdRegex = "["+illegalPatientIdChars+"]+";
 
-	public static String labelprintWidth="216.0";
-	public static String labelprintHeight="135.0";
-	public static String labelprintPageFormat="1";
-	
 	/**
 	 */
 	public enum LabelType {
@@ -256,9 +252,6 @@ public class iDartProperties {
 		intValueOfAlternativeBarcodeEndChar = setIntegerProperty("intValueOfAlternativeBarcodeEndChar");
 		
 		isCidaStudy = setBooleanProperty("cidaStudy");
-		labelprintPageFormat = setStringProperty("labelprintPageFormat");
-		labelprintWidth = setStringProperty("labelprintWidth");
-		labelprintHeight = setStringProperty("labelprintHeight");
 
 		String labelTypeString = setStringProperty("labelType");
 		// Should paeds labels have quantities blank by default?
@@ -270,8 +263,7 @@ public class iDartProperties {
 			}
 		}
 
-		PatientBarcodeParser
-		.initialisePatientBarcodeParser(patientBarcodeRegex);
+		PatientBarcodeParser.initialisePatientBarcodeParser(patientBarcodeRegex);
 	}
 
 	public static String getPropertiesString() {
@@ -348,8 +340,7 @@ public class iDartProperties {
 		sb.append("\n");
 		sb.append("eKapa_user=" + eKapa_user);
 		sb.append("\n");
-		sb.append("intValueOfAlternativeBarcodeEndChar="
-				+ intValueOfAlternativeBarcodeEndChar);
+		sb.append("intValueOfAlternativeBarcodeEndChar="+ intValueOfAlternativeBarcodeEndChar);
 		sb.append("\n");
 		sb.append("cidaStudy=" + isCidaStudy);
 		sb.append("\n");
