@@ -1683,7 +1683,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 		column = new TableColumn(tblPrescriptionInfo, SWT.NONE);
 		column.setText("Etiquetas");
-		column.setWidth(50);
+		column.setWidth(53);
 		column.setResizable(true);
 
 		column = new TableColumn(tblPrescriptionInfo, SWT.NONE);
@@ -3005,9 +3005,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				return;
 			}
 
-
-
-
 			String facility = newPack.getClinic().getClinicName().trim();
 
 			// Location
@@ -3026,9 +3023,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 				m.open();	
 				return;
 			}
-
-
-
 
 			// Regimen
 			String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
