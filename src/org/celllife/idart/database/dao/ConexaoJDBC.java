@@ -20,6 +20,7 @@ import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
 import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.SecondLinePatients;
 
 /**
  * Esta classe efectua conexao com a BD postgres e tem metodo para a manipulacao
@@ -2791,6 +2792,68 @@ public class ConexaoJDBC {
 		
 		return levantamentoXLSs;
 		
+	}
+	
+	public List<SecondLinePatients> getSecondLinePatients (String startDate, String endDate) throws ClassNotFoundException, SQLException {
+		
+		conecta(iDartProperties.hibernateUsername, 
+				iDartProperties.hibernatePassword);
+		
+		String query = "SELECT DISTINCT p.id AS id," +
+			        " p.patientId AS patientid," +
+			        " p.dateOfBirth AS dob," +
+			        " p.firstnames AS nome," +
+			        " p.lastname AS apelido," +
+			        " c.clinicName AS clinic," +
+			        " p.cellphone AS cellno," +
+			        " date_part('year', age(p.dateofbirth))::Integer AS age," +
+			        " (p.address1 ||' '||p.address2||' '||p.address3) AS endereco," +
+			        " CASE" +
+			            " WHEN (p.sex = \'F\'" + 
+			                  " OR p.sex = \'f\') THEN \'Feminino\'" +
+			            " WHEN (p.sex = \'M\'" +
+			                  " OR p.sex = \'m\') THEN \'Masculino\'" +
+			            " ELSE \'Outro\'" +
+			        " END AS sex," +
+			        " rt.regimeesquema AS esquematerapeutico," +
+			        " l.linhanome AS linhaterapeutica," +
+			        " pr.reasonforupdate AS tipoPaciente" +
+					" FROM Patient AS p" +
+					" INNER JOIN clinic c ON c.id = p.clinic" +
+					" INNER JOIN prescription pr ON pr.patient = p.id" +
+					" INNER JOIN regimeterapeutico rt ON rt.regimeid = pr.regimeid" +
+					" INNER JOIN linhat l ON l.linhaid = pr.linhaid" +
+					" WHERE (l.linhanome LIKE '%2%')" +
+					" AND pg_catalog.date(pr.date) BETWEEN '"+ startDate +"' AND '"+endDate+"'" +
+					" GROUP BY p.id," +
+						 " c.clinicname," +
+						 " l.linhanome," +
+						 " pr.reasonforupdate," +
+						 " rt.regimeesquema;"; 
+		
+		List<SecondLinePatients> secondLinePatients = new ArrayList<SecondLinePatients>();
+		ResultSet rs = st.executeQuery(query);
+		
+		if (rs != null) {
+			
+			while(rs.next()) {
+				SecondLinePatients linePatients = new SecondLinePatients();
+				linePatients.setPatientIdentifier(rs.getString("patientid"));
+				linePatients.setNome(rs.getString("nome"));
+				linePatients.setIdade(rs.getInt("age"));
+				linePatients.setTherapeuticScheme(rs.getString("esquematerapeutico"));
+				linePatients.setLine(rs.getString("linhaterapeutica"));
+				linePatients.setArtType(rs.getString("tipoPaciente"));
+				
+				secondLinePatients.add(linePatients);
+			}
+			rs.close();
+		}
+		
+		st.close();
+		conn_db.close();
+		
+		return secondLinePatients; 
 	}
 	
 	public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {

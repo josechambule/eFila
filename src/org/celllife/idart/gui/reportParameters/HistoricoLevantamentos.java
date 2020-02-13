@@ -183,7 +183,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
-		System.out.println("Hello cmdViewReportXlsWidgetSelected");
 				
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
 			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
@@ -220,7 +219,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 					
 					if(historicoLevantamentoXLS.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("TemplateHistoricoLevantamento.xls");
+						FileInputStream currentXls = new FileInputStream("HistoricoLevantamento.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -255,7 +254,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls"));
+						  out = new FileOutputStream(new File("HistoricoLevantamento.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 12;
@@ -293,7 +292,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
 						}
 						
-						for(int i = 0; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
+						for(int i = 1; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
 				            sheet.autoSizeColumn(i);
 				        }
 						
@@ -307,8 +306,8 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
-						mNoPages.setText("Report Has No Pages");
-						mNoPages.setMessage("The report you are trying to generate does not contain any data. \n\nPlease check the input values you have entered (such as dates) for this report, and try again.");
+						mNoPages.setText("O relatório não possui páginas");
+						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 						mNoPages.open();
 					}
 										
