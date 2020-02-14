@@ -250,7 +250,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 
 						  for(int i=12; i<= sheet.getLastRowNum(); i++) 
 						  { 
-							Row row = sheet.getRow(i);
+							HSSFRow row = sheet.getRow(i);
 						  	deleteRow(sheet,row);  
 						  }
 						 
@@ -261,33 +261,33 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						
 						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
 							
-							Row row = sheet.createRow(rowNum++);
+							HSSFRow row = sheet.createRow(rowNum++);
 							
-							Cell createCellNid = row.createCell(1);
+							HSSFCell createCellNid = row.createCell(1);
 							createCellNid.setCellValue(xls.getPatientIdentifier());
 							createCellNid.setCellStyle(cellStyle); 
 							
-							Cell createCellNome = row.createCell(2);
+							HSSFCell createCellNome = row.createCell(2);
 							createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
 							createCellNome.setCellStyle(cellStyle);
 	
-							Cell createCellTipoTarv = row.createCell(3);
+							HSSFCell createCellTipoTarv = row.createCell(3);
 							createCellTipoTarv.setCellValue(xls.getTipoTarv());
 							createCellTipoTarv.setCellStyle(cellStyle);
 	
-							Cell createCellRegimeTerapeutico = row.createCell(4); 
+							HSSFCell createCellRegimeTerapeutico = row.createCell(4); 
 							createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
 							createCellRegimeTerapeutico.setCellStyle(cellStyle);
 	
-							Cell createCellTipoDispensa = row.createCell(5); 
+							HSSFCell createCellTipoDispensa = row.createCell(5); 
 							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
 							createCellTipoDispensa.setCellStyle(cellStyle);
 	
-							Cell createCellDataLevantamento = row.createCell(6); 
+							HSSFCell createCellDataLevantamento = row.createCell(6); 
 							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
 							createCellDataLevantamento.setCellStyle(cellStyle);
 	
-							Cell createCellDataProximoLevantamento = row.createCell(7);
+							HSSFCell createCellDataProximoLevantamento = row.createCell(7);
 							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
 						}
@@ -325,7 +325,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		int lastRowNum = sheet.getLastRowNum();
 		if (lastRowNum > 0) {
 			int rowIndex = row.getRowNum();
-			Row removingRow = sheet.getRow(rowIndex);
+			HSSFRow removingRow = sheet.getRow(rowIndex);
 			if (removingRow != null) {
 				sheet.removeRow(removingRow);
 				System.out.println("Deleting.... ");

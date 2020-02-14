@@ -474,11 +474,6 @@ public class Login implements GenericGuiInterface {
 			User theUser = AdministrationManager.getUserByName(hSession,
 					cmbUsers.getText());
 	
-			
-	
-			
-	
-			
 			if (theUser == null) {
 				successfulLogin = false;
 				MessageDialog.openError(loginShell, Messages
