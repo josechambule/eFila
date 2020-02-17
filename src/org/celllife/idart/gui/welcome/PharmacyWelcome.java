@@ -1,6 +1,8 @@
 package org.celllife.idart.gui.welcome;
 
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.generalAdmin.GeneralAdmin;
 import org.celllife.idart.gui.patientAdmin.PatientAdmin;
 import org.celllife.idart.gui.reports.NewReports;
@@ -23,7 +25,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  */
 public class PharmacyWelcome extends GenericWelcome {
-
+	
 	public PharmacyWelcome() {
 		super();
 	}
@@ -38,8 +40,8 @@ public class PharmacyWelcome extends GenericWelcome {
 		// generalAdmin
 		Label lblPicGeneralAdmin = new Label(compOptions, SWT.NONE);
 		lblPicGeneralAdmin.setBounds(new Rectangle(40, 0, 50, 43));
-		lblPicGeneralAdmin.setImage(ResourceUtils
-				.getImage(iDartImage.GENERALADMIN));
+		lblPicGeneralAdmin.setImage(ResourceUtils.getImage(iDartImage.GENERALADMIN));
+		lblPicGeneralAdmin.setVisible(false); 
 		lblPicGeneralAdmin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
@@ -51,9 +53,9 @@ public class PharmacyWelcome extends GenericWelcome {
 		btnGeneralAdmin.setData(iDartProperties.SWTBOT_KEY, Screens.GENERAL_ADMIN.getAccessButtonId());
 		btnGeneralAdmin.setBounds(new Rectangle(0, 50, 130, 40));
 		btnGeneralAdmin.setText(Messages.getString("pharmacywelcome.button.generaladmin.text")); //$NON-NLS-1$
-		btnGeneralAdmin
-		.setToolTipText(Messages.getString("pharmacywelcome.button.generaladmin.tooltip")); //$NON-NLS-1$
+		btnGeneralAdmin.setToolTipText(Messages.getString("pharmacywelcome.button.generaladmin.tooltip")); //$NON-NLS-1$
 		btnGeneralAdmin.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		btnGeneralAdmin.setVisible(false); 
 		btnGeneralAdmin
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -62,7 +64,12 @@ public class PharmacyWelcome extends GenericWelcome {
 				new GeneralAdmin(shell);
 			}
 		});
-
+		
+		if (getUserPermission() == 'A') {
+			lblPicGeneralAdmin.setVisible(true); 
+			btnGeneralAdmin.setVisible(true); 
+		}
+		
 		// patientAdmin
 		Label lblPicPatientAdmin = new Label(compOptions, SWT.NONE);
 		lblPicPatientAdmin.setBounds(new Rectangle(200, 0, 50, 43));
@@ -74,6 +81,8 @@ public class PharmacyWelcome extends GenericWelcome {
 				new PatientAdmin(shell);
 			}
 		});
+		
+		
 
 		Button btnPatientAdmin = new Button(compOptions, SWT.NONE);
 		btnPatientAdmin.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_ADMIN.getAccessButtonId());
@@ -142,6 +151,9 @@ public class PharmacyWelcome extends GenericWelcome {
 				new NewReports(shell);
 			}
 		});
-
 	}
+	
+    public char getUserPermission() {
+        return LocalObjects.getUser(HibernateUtil.getNewSession()).getPermission();
+    }
 }

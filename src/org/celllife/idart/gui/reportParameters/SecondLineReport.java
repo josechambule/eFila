@@ -74,12 +74,6 @@ public class SecondLineReport extends GenericReportGui {
 
 	private SWTCalendar calendarEnd;
 	
-	private Button chkBtnInicio;
-
-	private Button chkBtnManutencao;
-	
-	private Button chkBtnAlteraccao;
-	
 	private List<SecondLinePatients> secondLinePatients;
 	
     private FileOutputStream out = null;
@@ -240,30 +234,30 @@ public class SecondLineReport extends GenericReportGui {
 					
 					for (SecondLinePatients xls : secondLinePatients) { 
 						
-						Row row = sheet.createRow(rowNum++);
+						HSSFRow row = sheet.createRow(rowNum++);
 						
-						Cell createCellNid = row.createCell(1);
+						HSSFCell createCellNid = row.createCell(1);
 						createCellNid.setCellValue(xls.getPatientIdentifier());
 						createCellNid.setCellStyle(cellStyle); 
 						
 						
-						Cell createCellNome = row.createCell(2);
+						HSSFCell createCellNome = row.createCell(2);
 						createCellNome.setCellValue(xls.getNome());
 						createCellNome.setCellStyle(cellStyle);
 
-						Cell createCellAge = row.createCell(3);
+						HSSFCell createCellAge = row.createCell(3);
 						createCellAge.setCellValue(xls.getIdade());
 						createCellAge.setCellStyle(cellStyle);
 
-						Cell createCellTherapeuticScheme = row.createCell(4); 
+						HSSFCell createCellTherapeuticScheme = row.createCell(4); 
 						createCellTherapeuticScheme.setCellValue(xls.getTherapeuticScheme());
 						createCellTherapeuticScheme.setCellStyle(cellStyle);
 
-						Cell createCellLine = row.createCell(5); 
+						HSSFCell createCellLine = row.createCell(5); 
 						createCellLine.setCellValue(xls.getLine());
 						createCellLine.setCellStyle(cellStyle);
 
-						Cell createCellArtType = row.createCell(6); 
+						HSSFCell createCellArtType = row.createCell(6); 
 						createCellArtType.setCellValue(xls.getArtType());
 						createCellArtType.setCellStyle(cellStyle);
 					}
