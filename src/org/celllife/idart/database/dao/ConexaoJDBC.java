@@ -17,6 +17,7 @@ import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
 import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.SecondLinePatients;
 
 /**
  * Esta classe efectua conexao com a BD postgres e tem metodo para a manipulacao
@@ -3278,9 +3279,6 @@ public class ConexaoJDBC {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
-        //ConexaoODBC conn = new ConexaoODBC();
-        //ResultSet data = conn.result_for_sync_dispense();
 
         /*		if (data != null) {
          try {

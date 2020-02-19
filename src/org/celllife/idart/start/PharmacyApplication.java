@@ -78,8 +78,7 @@ public class PharmacyApplication {
         DOMConfigurator.configure("log4j.xml");
 
         // used for gui testing
-        System.setProperty("org.eclipse.swtbot.search.defaultKey",
-                iDartProperties.SWTBOT_KEY);
+        System.setProperty("org.eclipse.swtbot.search.defaultKey",iDartProperties.SWTBOT_KEY);
 
         log.info("");
         log.info("*********************");

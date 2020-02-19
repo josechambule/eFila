@@ -183,7 +183,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
-		System.out.println("Hello cmdViewReportXlsWidgetSelected");
 				
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
 			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
@@ -220,7 +219,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 					
 					if(historicoLevantamentoXLS.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("TemplateHistoricoLevantamento.xls");
+						FileInputStream currentXls = new FileInputStream("HistoricoLevantamento.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -251,49 +250,49 @@ public class HistoricoLevantamentos extends GenericReportGui {
 
 						  for(int i=12; i<= sheet.getLastRowNum(); i++) 
 						  { 
-							Row row = sheet.getRow(i);
+							HSSFRow row = sheet.getRow(i);
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls"));
+						  out = new FileOutputStream(new File("HistoricoLevantamento.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 12;
 						
 						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
 							
-							Row row = sheet.createRow(rowNum++);
+							HSSFRow row = sheet.createRow(rowNum++);
 							
-							Cell createCellNid = row.createCell(1);
+							HSSFCell createCellNid = row.createCell(1);
 							createCellNid.setCellValue(xls.getPatientIdentifier());
 							createCellNid.setCellStyle(cellStyle); 
 							
-							Cell createCellNome = row.createCell(2);
+							HSSFCell createCellNome = row.createCell(2);
 							createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
 							createCellNome.setCellStyle(cellStyle);
 	
-							Cell createCellTipoTarv = row.createCell(3);
+							HSSFCell createCellTipoTarv = row.createCell(3);
 							createCellTipoTarv.setCellValue(xls.getTipoTarv());
 							createCellTipoTarv.setCellStyle(cellStyle);
 	
-							Cell createCellRegimeTerapeutico = row.createCell(4); 
+							HSSFCell createCellRegimeTerapeutico = row.createCell(4); 
 							createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
 							createCellRegimeTerapeutico.setCellStyle(cellStyle);
 	
-							Cell createCellTipoDispensa = row.createCell(5); 
+							HSSFCell createCellTipoDispensa = row.createCell(5); 
 							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
 							createCellTipoDispensa.setCellStyle(cellStyle);
 	
-							Cell createCellDataLevantamento = row.createCell(6); 
+							HSSFCell createCellDataLevantamento = row.createCell(6); 
 							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
 							createCellDataLevantamento.setCellStyle(cellStyle);
 	
-							Cell createCellDataProximoLevantamento = row.createCell(7);
+							HSSFCell createCellDataProximoLevantamento = row.createCell(7);
 							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
 						}
 						
-						for(int i = 0; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
+						for(int i = 1; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
 				            sheet.autoSizeColumn(i);
 				        }
 						
@@ -307,8 +306,8 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
-						mNoPages.setText("Report Has No Pages");
-						mNoPages.setMessage("The report you are trying to generate does not contain any data. \n\nPlease check the input values you have entered (such as dates) for this report, and try again.");
+						mNoPages.setText("O relatório não possui páginas");
+						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 						mNoPages.open();
 					}
 										
@@ -326,7 +325,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		int lastRowNum = sheet.getLastRowNum();
 		if (lastRowNum > 0) {
 			int rowIndex = row.getRowNum();
-			Row removingRow = sheet.getRow(rowIndex);
+			HSSFRow removingRow = sheet.getRow(rowIndex);
 			if (removingRow != null) {
 				sheet.removeRow(removingRow);
 				System.out.println("Deleting.... ");
