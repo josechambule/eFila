@@ -1562,7 +1562,7 @@ public class AddPrescription extends GenericFormGui implements
 
         // Generate a new prescription id
         cmdUpdatePrescriptionId();
-        cmbDuration.setText("1 meses");
+        cmbDuration.setText("1 mes");
         cmbDispensaTrimestral.select(1);
         cmbDispensaSemestral.select(1);
 
@@ -1585,7 +1585,7 @@ public class AddPrescription extends GenericFormGui implements
 
         // Generate a new prescription id
         cmdUpdatePrescriptionId();
-        cmbDuration.setText("1 mês");
+        cmbDuration.setText("1 mes");
 
         btnSearch.setEnabled(false);
         btnEkapaSearch.setEnabled(false);

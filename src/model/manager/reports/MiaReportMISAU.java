@@ -1,6 +1,7 @@
 package model.manager.reports;
 
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,143 +10,183 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 import model.manager.excel.conversion.exceptions.ReportException;
 
 import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.User;
 import org.eclipse.swt.widgets.Shell;
 
 public class MiaReportMISAU extends AbstractJasperReport {
-	
-	private final StockCenter stockCenter;
-	private final Date theEndDate;
-	private Date theStartDate;
-	
+
+    private final StockCenter stockCenter;
+    private final Date theEndDate;
+    private Date theStartDate;
 
 
-	public MiaReportMISAU(Shell parent, StockCenter stockCenter, Date theStartDate, Date theEndDate) {
-		super(parent);
-		this.stockCenter = stockCenter;
-		this.theStartDate=theStartDate;
-		this.theEndDate = theEndDate;
-	}
+    public MiaReportMISAU(Shell parent, StockCenter stockCenter, Date theStartDate, Date theEndDate) {
+        super(parent);
+        this.stockCenter = stockCenter;
+        this.theStartDate = theStartDate;
+        this.theEndDate = theEndDate;
+    }
 
-	@Override
-	protected void generateData() throws ReportException {
-	}
+    @Override
+    protected void generateData() throws ReportException {
+    }
 
-	@Override
-	protected Map<String, Object> getParameterMap() throws ReportException {
-		
-		ConexaoJDBC conn = new ConexaoJDBC();
+    @Override
+    protected Map<String, Object> getParameterMap() throws ReportException {
 
-		Map<String, Object> map = new HashMap<String, Object>();
-				
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			
-			//Total de pacientes que levantaram arv 20 a 20
-			int totalpacientesfarmacia = conn.totalPacientesFarmacia(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-		
-			int totalpacientesinicio = conn.totalPacientesInicio(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-			int totalpacientestransito = conn.totalPacientesEmTransito(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-			int totalpacientesmanter = conn.totalPacientesManter(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-            int totalpacientesalterar =conn.totalPacientesAlterar(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
- 				
- 			int totalpacientesppe =conn.totalPacientesPPE(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-  			
-  			int totalpacienteptv =conn.totalPacientes_PTV(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-			int mesesdispensados=conn.mesesDispensados(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-			int pacientesEmTarv=conn.pacientesActivosEmTarv(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-            int mesesdispensadosparaDT = conn.mesesDispensadosParaDT(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            
-            int mesesdispensadosparaDS = conn.mesesDispensadosParaDS(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-			
-		map.put("stockCenterId", new Integer(stockCenter.getId()));
-		map.put("date", theStartDate);
-		map.put("dateFormat", dateFormat.format(theStartDate));
-		map.put("monthStart", dateFormat.format(theStartDate));
-		
-		User localUser = LocalObjects.getUser(getHSession());
-		
-		map.put("username",localUser.getUsername());
-		map.put("monthEnd", dateFormat.format(theEndDate));
-		map.put("dateEnd", theEndDate);
-		map.put("stockCenterName", stockCenter.getStockCenterName());
-		map.put("path", getReportPath());
+        ConexaoJDBC conn = new ConexaoJDBC();
 
-		map.put("facilityName", LocalObjects.currentClinic.getClinicName());
-		map.put("pharmacist1", LocalObjects.pharmacy.getPharmacist());
-		map.put("pharmacist2", LocalObjects.pharmacy.getAssistantPharmacist());
-		map.put("totalpacientesfarmacia", String.valueOf(totalpacientesfarmacia)); 
-		map.put("totalpacientesinicio",String.valueOf(totalpacientesinicio));
-		map.put("totalpacientestransito",String.valueOf(totalpacientestransito));
-		map.put("totalpacientesmanter",String.valueOf(totalpacientesmanter)); 
-		map.put("totalpacientesalterar",String.valueOf(totalpacientesalterar));
-		map.put("totalpacientesppe",String.valueOf(totalpacientesppe));
-		map.put("totalpacienteptv",String.valueOf(totalpacienteptv));
-		map.put("mesesdispensados",String.valueOf(mesesdispensados));
-		map.put("pacientesEmTarv",String.valueOf(pacientesEmTarv));
-		map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date())); 
-		map.put("mes", mesPortugues(theStartDate));
-		map.put("mes2",mesPortugues(theEndDate));
-		map.put("totalpacientesdt",String.valueOf(mesesdispensadosparaDT));
-		map.put("totalpacientesds",String.valueOf(mesesdispensadosparaDS));
+        Map<String, Object> map = new HashMap<String, Object>();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return map;
-	}
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            //Total de pacientes que levantaram arv 20 a 20
+            Map mapaDoMMIA = conn.MMIA(dateFormat.format(theStartDate),dateFormat.format(theEndDate));
+
+            int totalpacientestransito = Integer.parseInt(mapaDoMMIA.get("totalpacientestransito").toString());
+            int totalpacientesinicio = Integer.parseInt(mapaDoMMIA.get("totalpacientesinicio").toString());
+            int totalpacientesmanter = Integer.parseInt(mapaDoMMIA.get("totalpacientesmanter").toString());
+            int totalpacientesalterar = Integer.parseInt(mapaDoMMIA.get("totalpacientesalterar").toString());
+            int totalpacientestransferidoDe = Integer.parseInt(mapaDoMMIA.get("totalpacientestransferidoDe").toString());
+            int mesesdispensadosparaDM = Integer.parseInt(mapaDoMMIA.get("mesesdispensadosparaDM").toString());
+            int mesesdispensadosparaDT = Integer.parseInt(mapaDoMMIA.get("mesesdispensadosparaDT").toString());
+            int mesesdispensadosparaDS = Integer.parseInt(mapaDoMMIA.get("mesesdispensadosparaDS").toString());
+            int totalpacientesmanterTransporte = Integer.parseInt(mapaDoMMIA.get("totalpacientesmanterTransporte").toString());
+            int totalpacientesppe = Integer.parseInt(mapaDoMMIA.get("totalpacientesppe").toString());
+            int totallinhas1 = Integer.parseInt(mapaDoMMIA.get("totallinhas1").toString());
+            int totallinhas2 = Integer.parseInt(mapaDoMMIA.get("totallinhas2").toString());
+            int totallinhas3 = Integer.parseInt(mapaDoMMIA.get("totallinhas3").toString());
+            int totalpacientesprep = Integer.parseInt(mapaDoMMIA.get("totalpacientesprep").toString());
+            int totalpacientesCE = Integer.parseInt(mapaDoMMIA.get("totalpacientesCE").toString());
+            int totalpacienteptv = Integer.parseInt(mapaDoMMIA.get("totalpacienteptv").toString());
+            int mesesdispensados =mesesdispensadosparaDM + mesesdispensadosparaDS + mesesdispensadosparaDT;
+            int pacientesEmTarv = Integer.parseInt(mapaDoMMIA.get("pacientesEmTarv").toString());
+            int adultosEmTarv = Integer.parseInt(mapaDoMMIA.get("adultosEmTarv").toString());
+            int pediatrico04EmTARV = Integer.parseInt(mapaDoMMIA.get("pediatrico04EmTARV").toString());
+            int pediatrico59EmTARV = Integer.parseInt(mapaDoMMIA.get("pediatrico59EmTARV").toString());
+            int pediatrico1014EmTARV = Integer.parseInt(mapaDoMMIA.get("pediatrico1014EmTARV").toString());
+
+            map.put("stockCenterId", new Integer(stockCenter.getId()));
+            map.put("date", theStartDate);
+            map.put("dateFormat", dateFormat.format(theStartDate));
+            map.put("monthStart", dateFormat.format(theStartDate));
+
+            User localUser = LocalObjects.getUser(getHSession());
+
+            map.put("username", localUser.getUsername());
+            map.put("monthEnd", dateFormat.format(theEndDate));
+            map.put("dateEnd", theEndDate);
+            map.put("stockCenterName", stockCenter.getStockCenterName());
+            map.put("path", getReportPath());
+//		    map.put("totalpacientesfarmacia", String.valueOf(totalpacientesfarmacia));
+            map.put("facilityName", LocalObjects.currentClinic.getClinicName());
+            map.put("pharmacist1", LocalObjects.pharmacy.getPharmacist());
+            map.put("pharmacist2", LocalObjects.pharmacy.getAssistantPharmacist());
+            map.put("totalpacientesinicio", String.valueOf(totalpacientesinicio));
+            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter + totalpacientesmanterTransporte));
+            map.put("totalpacientesalterar", String.valueOf(totalpacientesalterar));
+            map.put("totalpacientestransito", String.valueOf(totalpacientestransito));
+            map.put("totalpacientestransferidoDe", String.valueOf(totalpacientestransferidoDe));
+
+            map.put("totalpacientesdm", String.valueOf(mesesdispensadosparaDM));
+            map.put("totalpacientesdt", String.valueOf(mesesdispensadosparaDT));
+            map.put("totalpacientesds", String.valueOf(mesesdispensadosparaDS));
+            map.put("mesesdispensados", String.valueOf(mesesdispensados));
+
+            map.put("totalpacientesadulto", String.valueOf(adultosEmTarv));
+            map.put("totalpacientes04", String.valueOf(pediatrico04EmTARV));
+            map.put("totalpacientes59", String.valueOf(pediatrico59EmTARV));
+            map.put("totalpacientes1014", String.valueOf(pediatrico1014EmTARV));
+
+            map.put("totallinhas1", String.valueOf(totallinhas1));
+            map.put("totallinhas2", String.valueOf(totallinhas2));
+            map.put("totallinhas3", String.valueOf(totallinhas3));
+            map.put("totallinhas", String.valueOf(totallinhas3 + totallinhas2 + totallinhas1));
+
+            map.put("totalpacientesppe", String.valueOf(totalpacientesppe));
+            map.put("pacientesEmTarv", String.valueOf(pacientesEmTarv));
+
+            map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+            map.put("mes", mesPortugues(theStartDate));
+            map.put("mes2", mesPortugues(theEndDate));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return map;
+    }
 
 
-	@Override
-	protected String getReportFileName() {
-		return "MmiaReportMISAU";
-	}
-	
+    @Override
+    protected String getReportFileName() {
+        return "MmiaReportNovoMISAU";
+    }
 
 
-	private String mesPortugues(Date data ) {
-		
-		String mes="";
-		
-		Calendar calendar = new GregorianCalendar();
-		 Date trialTime = data;
-		 calendar.setTime(trialTime);
-		 
+    private String mesPortugues(Date data) {
 
-		int mesint =calendar.get(Calendar.MONTH);
-		
-		System.out.println(mesint);
-		
-		switch(mesint) {
-			case 0: mes="Janeiro";break;
-			case 1: mes="Fevereiro";break;
-			case 2: mes="Março";break;
-			case 3: mes="Abril";break;
-			case 4: mes="Maio";break;
-			case 5: mes="Junho";break;
-			case 6: mes="Julho";break;
-			case 7: mes="Agosto";break;
-			case 8: mes="Setembro";break;
-			case 9: mes="Outubro";break;
-			case 10: mes="Novembro";break;
-			case 11: mes="Dezembro";break;
-			default:mes="";break;
-		}
-		
-		return mes;
-	}
+        String mes = "";
+
+        Calendar calendar = new GregorianCalendar();
+        Date trialTime = data;
+        calendar.setTime(trialTime);
+
+
+        int mesint = calendar.get(Calendar.MONTH);
+
+        System.out.println(mesint);
+
+        switch (mesint) {
+            case 0:
+                mes = "Janeiro";
+                break;
+            case 1:
+                mes = "Fevereiro";
+                break;
+            case 2:
+                mes = "Março";
+                break;
+            case 3:
+                mes = "Abril";
+                break;
+            case 4:
+                mes = "Maio";
+                break;
+            case 5:
+                mes = "Junho";
+                break;
+            case 6:
+                mes = "Julho";
+                break;
+            case 7:
+                mes = "Agosto";
+                break;
+            case 8:
+                mes = "Setembro";
+                break;
+            case 9:
+                mes = "Outubro";
+                break;
+            case 10:
+                mes = "Novembro";
+                break;
+            case 11:
+                mes = "Dezembro";
+                break;
+            default:
+                mes = "";
+                break;
+        }
+
+        return mes;
+    }
 }

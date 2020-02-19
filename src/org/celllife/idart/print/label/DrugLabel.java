@@ -140,7 +140,7 @@ public class DrugLabel implements Printable, DefaultLabel {
 
 		// Check to see if next Appointment date should appear on Label
 		if (!nextAppointmentDate.equals("")) {
-			this.nextAppointmentDate = "Próximo Levantamento:"
+			this.nextAppointmentDate = "PrÃ³ximo Levantamento:"
 					+ nextAppointmentDate;
 		}
 
