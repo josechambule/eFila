@@ -264,7 +264,7 @@ class SWTUtil {
         try {
             return new URL(url_name);
         } catch (MalformedURLException e) {
-            throw new RuntimeException("URL da Imagem n„o encontrado " + url_name, e);
+            throw new RuntimeException("URL da Imagem n√£o encontrado " + url_name, e);
         }
     }
     

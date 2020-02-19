@@ -73,8 +73,6 @@ public class Drug implements Comparable<Drug> {
 
 	private String stockCode;
 	
-	private char pediatric;
-
 	@OneToMany(mappedBy = "drug")
 	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
 		org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
@@ -128,7 +126,6 @@ public class Drug implements Comparable<Drug> {
 		this.sideTreatment = sideTreatment;
 		this.defaultAmnt = defaultAmnt;
 		this.defaultTimes = defaultTimes;
-		this.pediatric=pediatric;
 	}
 
 	/**
@@ -415,14 +412,6 @@ public class Drug implements Comparable<Drug> {
 
 	public String getTipoDoenca() {
 		return tipoDoenca;
-	}
-
-	public char getPediatric() {
-		return pediatric;
-	}
-
-	public void setPediatric(char pediatric) {
-		this.pediatric = pediatric;
 	}
 
 	public boolean isActive() {

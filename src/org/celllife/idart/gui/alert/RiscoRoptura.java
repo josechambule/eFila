@@ -1,7 +1,7 @@
 package org.celllife.idart.gui.alert;
 
 /**
- * Esta classe cria um objecto com atributos que irão compor a tabela de alerta de níveis de stock
+ * Esta classe cria um objecto com atributos que io compor a tabela de alerta de nÃ­veis de stock
  * @author EdiasJambaia
  * @since Setembro 2014
  */

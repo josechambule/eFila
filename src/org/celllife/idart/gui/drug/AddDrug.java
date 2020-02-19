@@ -477,7 +477,7 @@ public class AddDrug extends GenericFormGui {
                     | SWT.YES | SWT.NO);
             mSave.setText(isAddnotUpdate ? "Registar novo medicamento" : "Actualizar Detalhes");
             mSave
-                    .setMessage(isAddnotUpdate ? "Quer mesmo registar estem medicamento na base de dados?"
+                    .setMessage(isAddnotUpdate ? "Quer mesmo registar este medicamento na base de dados?"
                             : "Quer salvar as mudanças efectuadas sobres este medicamento?");
 
             switch (mSave.open()) {

@@ -135,28 +135,6 @@ public class BatchInformation extends GenericFormGui {
 
 	private int totalDispensedQty = 0;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param parent
-	 *            Shell
-	 * @param ti
-	 * @param pdiList
-	 *            List<PackageDrugInfo>
-	 * @param clinic
-	 * @param patId
-	 * @param patientName
-	 *            String
-	 * @param prescriptionId
-	 * @param cNotes
-	 *            String
-	 * @param repeats
-	 *            int
-	 * @param weeksupply
-	 *            int
-	 * @param hSession
-	 *            Session
-	 */
 
 	public BatchInformation(Session hSession, Shell parent,
 			StockCenter stockCenter, Drug drug, Packages currentPackage,
@@ -203,7 +181,6 @@ public class BatchInformation extends GenericFormGui {
 		grpDrugInfo.setText("Informação do medicamento");
 		grpDrugInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-		// lblDispensingInstructions1 & txtDispensingInstructions1
 		lblDispensingInstructions1 = new Label(grpDrugInfo, SWT.NONE);
 		lblDispensingInstructions1.setBounds(new Rectangle(17, 24, 181, 20));
 		lblDispensingInstructions1.setText("Instruções de toma (linha 1):");
@@ -215,7 +192,6 @@ public class BatchInformation extends GenericFormGui {
 		txtDispensingInstructions1.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 
-		// lblDispensingInstructions2 & txtDispensingInstructions2
 		lblDispensingInstructions2 = new Label(grpDrugInfo, SWT.NONE);
 		lblDispensingInstructions2.setBounds(new Rectangle(17, 49, 181, 20));
 		lblDispensingInstructions2.setText("Instruções de toma (linha 2):");
@@ -227,8 +203,6 @@ public class BatchInformation extends GenericFormGui {
 		txtDispensingInstructions2.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 
-		// lblBarcode & txtBarcode
-		// lblDrugName & txtDrugName
 		lblDrugName = new Label(grpDrugInfo, SWT.NONE);
 		lblDrugName.setBounds(new Rectangle(18, 74, 160, 20));
 		lblDrugName.setText("Nome do medicamento:");
@@ -415,14 +389,11 @@ public class BatchInformation extends GenericFormGui {
 								.getId());
 					}
 
-					ti.setText(4, myString[0]);
-					ti
-					.setBackground(4, ResourceUtils
-							.getColor(iDartColor.GRAY));
+//					ti.setText(4, myString[0]);
+					ti.setText(4, String.valueOf(localDrug.getPackSize()));
+					ti.setBackground(4, ResourceUtils.getColor(iDartColor.GRAY));
 					ti.setText(5, myString[1]);
-					ti
-					.setBackground(5, ResourceUtils
-							.getColor(iDartColor.GRAY));
+					ti.setBackground(5, ResourceUtils.getColor(iDartColor.GRAY));
 					ti.setText(7, String.valueOf(thisStock.getId()));
 					ti.setData(thisStock);
 				} else {
@@ -602,9 +573,7 @@ public class BatchInformation extends GenericFormGui {
 
 		int[] currentLevelForDrug = StockManager.getTotalStockLevelsForDrug(
 				getHSession(), localDrug, localStockCenter);
-		txtPacksInStock.setText(currentLevelForDrug[0]
-		                                            + (currentLevelForDrug[1] != 0 ? " (" + currentLevelForDrug[1]
-		                                                                                                        + ")" : ""));
+		txtPacksInStock.setText(currentLevelForDrug[0] + (currentLevelForDrug[1] != 0 ? " (" + currentLevelForDrug[1] + ")" : ""));
 		getBatches();
 		prepopulateQuantities();
 	}
