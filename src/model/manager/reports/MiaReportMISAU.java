@@ -96,9 +96,9 @@ public class MiaReportMISAU extends AbstractJasperReport {
             map.put("totalpacientestransito", String.valueOf(totalpacientestransito));
             map.put("totalpacientestransferidoDe", String.valueOf(totalpacientestransferidoDe));
 
-            map.put("totalpacientesdm", String.valueOf(mesesdispensadosparaDM));
-            map.put("totalpacientesdt", String.valueOf(mesesdispensadosparaDT));
-            map.put("totalpacientesds", String.valueOf(mesesdispensadosparaDS));
+            map.put("mesesdispensadosparaDM", String.valueOf(mesesdispensadosparaDM));
+            map.put("mesesdispensadosparaDT", String.valueOf(mesesdispensadosparaDT));
+            map.put("mesesdispensadosparaDS", String.valueOf(mesesdispensadosparaDS));
             map.put("mesesdispensados", String.valueOf(mesesdispensados));
 
             map.put("totalpacientesadulto", String.valueOf(adultosEmTarv));
@@ -112,6 +112,8 @@ public class MiaReportMISAU extends AbstractJasperReport {
             map.put("totallinhas", String.valueOf(totallinhas3 + totallinhas2 + totallinhas1));
 
             map.put("totalpacientesppe", String.valueOf(totalpacientesppe));
+            map.put("totalpacientesCE", String.valueOf(totalpacientesCE));
+            map.put("totalpacientesprep", String.valueOf(totalpacientesprep));
             map.put("pacientesEmTarv", String.valueOf(pacientesEmTarv));
 
             map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));

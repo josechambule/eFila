@@ -207,6 +207,7 @@ public class ConexaoJDBC {
         map.put("totallinhas1", totallinhas1);
         map.put("totallinhas2", totallinhas2);
         map.put("totallinhas3", totallinhas3);
+        map.put("totallinhas", totallinhas1+totallinhas2+totallinhas3);
         map.put("totalpacientesprep", totalpacientesprep);
         map.put("totalpacientesCE", totalpacientesCE);
         map.put("totalpacienteptv", totalpacienteptv);
@@ -3705,4 +3706,7 @@ public class ConexaoJDBC {
         return jatemFilaInicio;
 
     }
+
+//    public List<SecondLinePatients> getSecondLinePatients(String format, String format1) {
+//    }
 }
