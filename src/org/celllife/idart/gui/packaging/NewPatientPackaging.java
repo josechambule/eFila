@@ -3358,7 +3358,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                                     // before printing the labels, save pdi List
                                     if (postOpenMrsEncounterStatus) {
-                                        TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+//                                        TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
                                         getHSession().flush();
                                     }
 
@@ -3694,7 +3694,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                             // before printing the labels, save pdi List
                             if (postOpenMrsEncounterStatus) {
-                                TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+//                                TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
                                 getHSession().flush();
                             }
 

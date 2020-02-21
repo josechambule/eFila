@@ -120,12 +120,12 @@ public class DestroyStock extends GenericFormGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = "Destroy Unusable Stock";
+		String headerTxt = "Destruir o Stock não usado";
 		iDartImage icoImage = iDartImage.DRUGALLERGY;
 		buildCompHeader(headerTxt, icoImage);
 		Label lblInstructions = new Label(getCompHeader(), SWT.CENTER);
 		lblInstructions.setBounds(new Rectangle(176, 55, 260, 20));
-		lblInstructions.setText("All fields marked with * are compulsory");
+		lblInstructions.setText("Todos campos marcados com * são obrigatórios");
 		lblInstructions.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_10_ITALIC));
 	}
@@ -149,7 +149,7 @@ public class DestroyStock extends GenericFormGui {
 
 		Label lblPharmacy = new Label(compPharmacySelection, SWT.NONE);
 		lblPharmacy.setBounds(new Rectangle(0, 5, 149, 20));
-		lblPharmacy.setText("Select a Pharmacy:");
+		lblPharmacy.setText("Seleccione a farmacia:");
 		lblPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbPharmacy = new CCombo(compPharmacySelection, SWT.BORDER);
 		cmbPharmacy.setBounds(new org.eclipse.swt.graphics.Rectangle(155, 5,
@@ -166,7 +166,7 @@ public class DestroyStock extends GenericFormGui {
 					localStockCenter = aPharmacy;
 				} else {
 					getLog().warn(
-							"Could not find a pharmacy with name "
+							"Não foi possivel encontrar esta farmacia "
 							+ cmbPharmacy.getText());
 				}
 				cmdParameterSelectionChanged();
@@ -206,13 +206,13 @@ public class DestroyStock extends GenericFormGui {
 
 		Group grpDrugInfo = new Group(getShell(), SWT.NONE);
 		grpDrugInfo.setBounds(new Rectangle(165, 116, 565, 118));
-		grpDrugInfo.setText("Drug Information");
+		grpDrugInfo.setText("Informação do Medicamento");
 		grpDrugInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		// lblDrugName & txtDrugName
 		Label lblDrugName = new Label(grpDrugInfo, SWT.NONE);
 		lblDrugName.setBounds(new Rectangle(17, 24, 120, 20));
-		lblDrugName.setText("Drug Name:");
+		lblDrugName.setText("Nome do medicamento:");
 		lblDrugName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		txtDrugName = new Text(grpDrugInfo, SWT.BORDER);
 		txtDrugName.setBounds(new Rectangle(212, 25, 235, 20));
@@ -231,7 +231,7 @@ public class DestroyStock extends GenericFormGui {
 
 		btnSearch = new Button(grpDrugInfo, SWT.NONE);
 		btnSearch.setBounds(new Rectangle(451, 18, 100, 30));
-		btnSearch.setText("Drug Search");
+		btnSearch.setText("Procurar");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -245,7 +245,7 @@ public class DestroyStock extends GenericFormGui {
 
 		Label lblPacksInStock = new Label(grpDrugInfo, SWT.NONE);
 		lblPacksInStock.setBounds(new Rectangle(18, 54, 160, 20));
-		lblPacksInStock.setText("Total Packs in Stock:");
+		lblPacksInStock.setText("Total em stock:");
 		lblPacksInStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPacksInStock = new Text(grpDrugInfo, SWT.BORDER);
@@ -256,7 +256,7 @@ public class DestroyStock extends GenericFormGui {
 
 		Label lblPackSize = new Label(grpDrugInfo, SWT.NONE);
 		lblPackSize.setBounds(new Rectangle(18, 79, 160, 20));
-		lblPackSize.setText("One Pack Contains:");
+		lblPackSize.setText("Um frasco contém:");
 		lblPackSize.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPackSize = new Text(grpDrugInfo, SWT.BORDER);
@@ -280,7 +280,7 @@ public class DestroyStock extends GenericFormGui {
 	private void createGrpStockInfo() {
 
 		Group grpBatchInfo = new Group(getShell(), SWT.NONE);
-		grpBatchInfo.setText("Batch Information");
+		grpBatchInfo.setText("Informação do Lote");
 		grpBatchInfo.setBounds(new Rectangle(29, 245, 831, 368));
 		grpBatchInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -290,11 +290,10 @@ public class DestroyStock extends GenericFormGui {
 		lblBatchTableInfo.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8_ITALIC));
 		lblBatchTableInfo
-		.setText("The amount received, dispensed, destroyed and in stock for each"
-				+ " batch is shown in packs with the number of  pills in brackets  \n"
-				+ "'10 (5)' means 10 packs and 5 loose pills, while '10' means 10 packs and no loose pills.\n" +
-						"\nNote: this table does not show stock adjustments but if a stock take was done then the 'In Stock'" +
-						"value will take this into consideration.");
+		.setText("A quantia recebida, distribuída, destruída para cada lote em um \n" +
+				"stock é mostrado em embalagens com o número de unidades entre parênteses \n"+
+				"isto é, '10(5)' significa 10 pacotes e 5 unidades soltas, enquanto que '10' significa 10 pacotes e nenhuma unidade solta. \n" +
+				"\n Nota: esta tabela não mostra ajustes de estoque.");
 		lblBatchTableInfo.setForeground(ResourceUtils.getColor(iDartColor.RED));
 
 		createTblStock(grpBatchInfo);
@@ -302,7 +301,7 @@ public class DestroyStock extends GenericFormGui {
 		// lblReasonForDisposal & txtReasonForDisposal
 		Label lblReasonForDisposal = new Label(grpBatchInfo, SWT.NONE);
 		lblReasonForDisposal.setBounds(new Rectangle(140, 320, 170, 25));
-		lblReasonForDisposal.setText("* Reason for Disposal: ");
+		lblReasonForDisposal.setText("* Notas da operação: ");
 		lblReasonForDisposal.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_12));
 
@@ -337,52 +336,52 @@ public class DestroyStock extends GenericFormGui {
 		tblStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		TableColumn clmBatch = new TableColumn(tblStock, SWT.NONE);
-		clmBatch.setText("Batch");
+		clmBatch.setText("Lote");
 		clmBatch.setWidth(60);
 		clmBatch.setResizable(true);
 
 		TableColumn clmShelfNo = new TableColumn(tblStock, SWT.NONE);
-		clmShelfNo.setText("Shelf");
+		clmShelfNo.setText("Prateleira");
 		clmShelfNo.setWidth(50);
 		clmShelfNo.setResizable(true);
 
 		TableColumn clmManufacturer = new TableColumn(tblStock, SWT.NONE);
-		clmManufacturer.setText("Manufacturer");
+		clmManufacturer.setText("Fabricante");
 		clmManufacturer.setWidth(90);
 		clmManufacturer.setResizable(true);
 
 		TableColumn clmExpiry = new TableColumn(tblStock, SWT.NONE);
-		clmExpiry.setText("Expiry Date");
+		clmExpiry.setText("Data de Validade");
 		clmExpiry.setWidth(72);
 		clmExpiry.setResizable(true);
 
 		TableColumn clmUnitsReceived = new TableColumn(tblStock, SWT.NONE);
-		clmUnitsReceived.setText("Received");
+		clmUnitsReceived.setText("Recebido");
 		clmUnitsReceived.setWidth(60);
 		clmUnitsReceived.setResizable(true);
 
 		TableColumn clmUnitsDispensed = new TableColumn(tblStock, SWT.NONE);
-		clmUnitsDispensed.setText("Dispensed");
+		clmUnitsDispensed.setText("Dispensado");
 		clmUnitsDispensed.setWidth(70);
 		clmUnitsDispensed.setResizable(true);
 
 		TableColumn clmUnitsDestroyed = new TableColumn(tblStock, SWT.NONE);
-		clmUnitsDestroyed.setText("Destroyed");
+		clmUnitsDestroyed.setText("Destruido");
 		clmUnitsDestroyed.setWidth(70);
 		clmUnitsDestroyed.setResizable(true);
 
 		TableColumn clmUnitsOnHand = new TableColumn(tblStock, SWT.NONE);
-		clmUnitsOnHand.setText("In Stock");
+		clmUnitsOnHand.setText("em Stock");
 		clmUnitsOnHand.setWidth(60);
 		clmUnitsOnHand.setResizable(true);
 
 		TableColumn clmUnitsToDispose = new TableColumn(tblStock, SWT.NONE);
-		clmUnitsToDispose.setText("Packs to Destroy");
+		clmUnitsToDispose.setText("Frascos por Destruir");
 		clmUnitsToDispose.setWidth(104);
 		clmUnitsToDispose.setResizable(true);
 
 		TableColumn clmLooseUnitsToDispose = new TableColumn(tblStock, SWT.NONE);
-		clmLooseUnitsToDispose.setText("Loose Pills to Destroy");
+		clmLooseUnitsToDispose.setText("Unidades soltas por Destruir");
 		clmLooseUnitsToDispose.setWidth(130);
 		clmLooseUnitsToDispose.setResizable(true);
 
@@ -562,10 +561,10 @@ public class DestroyStock extends GenericFormGui {
 			MessageBox noDrug = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
 
-			noDrug.setText("Drug not in Database");
-			noDrug.setMessage("There is no drug with this name ("
-					+ txtDrugName.getText() + ") in the "
-					+ cmbPharmacy.getText().trim() + " database.");
+			noDrug.setText("Medicamento não esta na base de dados");
+			noDrug.setMessage("Não existe um medicamento com este nome ("
+					+ txtDrugName.getText() + ") em "
+					+ cmbPharmacy.getText().trim() + " na base de dados.");
 			noDrug.open();
 			txtDrugName.setFocus();
 			txtDrugName.setText("");
@@ -626,7 +625,7 @@ public class DestroyStock extends GenericFormGui {
 	 * 
 	 * @param d
 	 *            Drug
-	 * @param c
+	 * @param stockCenter
 	 *            Clinic
 	 */
 	private void loadStockTable(Drug d, StockCenter stockCenter) {
@@ -699,10 +698,10 @@ public class DestroyStock extends GenericFormGui {
 						|| (Integer.parseInt(ti.getText(9)) < 0)) {
 					MessageBox invalidStock = new MessageBox(getShell(), SWT.OK
 							| SWT.ICON_ERROR);
-					invalidStock.setText("Invalid quantity to destroy");
+					invalidStock.setText("Quantidade invalida para destruir");
 					invalidStock
-					.setMessage("Cannot destroy negative number of stock."
-							+ "Please enter a valid quantity.");
+					.setMessage("Não pode destruir quantidades acima do que exixte no stock."
+							+ "Por favor, introduza uma quantidade válida.");
 					invalidStock.open();
 					clearTable();
 					return false;
@@ -717,9 +716,9 @@ public class DestroyStock extends GenericFormGui {
 										.getText(9)) > getPills(ti.getText(7))))) {
 					MessageBox invalidStock = new MessageBox(getShell(), SWT.OK
 							| SWT.ICON_ERROR);
-					invalidStock.setText("Invalid quantity to destroy");
+					invalidStock.setText("Quantidade invalida para destruir");
 					invalidStock
-					.setMessage("Cannot destroy more pills than the available amount");
+					.setMessage("Não pode destruir quantidades de unidades acima do que exixte no stock");
 					invalidStock.open();
 					clearTable();
 					return false;
@@ -729,20 +728,18 @@ public class DestroyStock extends GenericFormGui {
 						.parseInt(txtPackSize.getText()))) {
 					MessageBox invalidStock = new MessageBox(getShell(), SWT.OK
 							| SWT.ICON_ERROR);
-					invalidStock.setText("Invalid quantity to destroy");
+					invalidStock.setText("Quantidade invalida para destruir");
 					invalidStock
-					.setMessage("The number of loose pills selected is more than the pack size. Please choose to "
-							+ "destroy a pack instead.");
+					.setMessage("Não pode destruir quantidades de unidades acima do que exixte no frasco. Neste caso, pode destruir somente o frasco.");
 					invalidStock.open();
 					clearTable();
 					return false;
 				} else if (txtReasonForDisposal.getText().trim().equals("")) {
 					MessageBox noDisposalReason = new MessageBox(getShell(),
 							SWT.OK | SWT.ICON_ERROR);
-					noDisposalReason.setText("No Reason For Disposal");
+					noDisposalReason.setText("Nenhuma nota da operação foi adicionada");
 					noDisposalReason
-					.setMessage("Cannot destroy stock because a reason for disposal has not been entered."
-							+ "Please enter a reason for disposal.");
+					.setMessage("Não pode efectuar uma destruição sem uma nota da operação");
 					noDisposalReason.open();
 					txtReasonForDisposal.setFocus();
 					return false;
@@ -756,9 +753,9 @@ public class DestroyStock extends GenericFormGui {
 			} catch (NumberFormatException ne) {
 				MessageBox invalidStock = new MessageBox(getShell(), SWT.OK
 						| SWT.ICON_ERROR);
-				invalidStock.setText("Invalid quantity to destroy");
+				invalidStock.setText("Quantidade invalida para destruir");
 				invalidStock
-				.setMessage("Please enter a valid quantity to destroy for batch "
+				.setMessage("Introduza a quantidade certa para destruir no lote "
 						+ ti.getText(0));
 				invalidStock.open();
 				clearTable();
@@ -770,10 +767,10 @@ public class DestroyStock extends GenericFormGui {
 		// Check if changes were made
 		if (!changesMade) {
 			MessageBox msg = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-			msg.setText("No Quantities Entered.");
+			msg.setText("Nenhuma quantidade foi introduzida");
 			msg
-			.setMessage("You have not entered quantities that need to be destroyed (neither full units nor loose pills)"
-					+ "\n\nPlease enter the quantity of drugs to destroy.");
+			.setMessage("Não foi introduzida nenhuma quantidade para destruir)"
+					+ "\n\nPor favor, introduza quantidades para destruir.");
 			msg.open();
 			return false;
 
@@ -819,18 +816,18 @@ public class DestroyStock extends GenericFormGui {
 
 					MessageBox saved = new MessageBox(getShell(), SWT.OK
 							| SWT.ICON_INFORMATION);
-					saved.setText("Database Updated");
+					saved.setText("Base de dados actualizada");
 					saved
-					.setMessage("The pills have been successfully destroyed.");
+					.setMessage("Operação efectuada com sucesso.");
 					saved.open();
 					cmdCancelWidgetSelected();
 
 				} catch (HibernateException he) {
 					MessageBox saved = new MessageBox(getShell(), SWT.OK
 							| SWT.ICON_ERROR);
-					saved.setText("Database Error");
+					saved.setText("Erro na base de dados");
 					saved
-					.setMessage("Could not destroy all pills. Please try again");
+					.setMessage("Não foi possivel terninar a operação, por favor volte a tentar.");
 					saved.open();
 
 					if (tx != null) {
