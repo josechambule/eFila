@@ -91,7 +91,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
             map.put("pharmacist1", LocalObjects.pharmacy.getPharmacist());
             map.put("pharmacist2", LocalObjects.pharmacy.getAssistantPharmacist());
             map.put("totalpacientesinicio", String.valueOf(totalpacientesinicio));
-            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter + totalpacientesmanterTransporte));
+            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));
             map.put("totalpacientesalterar", String.valueOf(totalpacientesalterar));
             map.put("totalpacientestransito", String.valueOf(totalpacientestransito));
             map.put("totalpacientestransferidoDe", String.valueOf(totalpacientestransferidoDe));
