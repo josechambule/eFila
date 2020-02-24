@@ -1,20 +1,20 @@
 /*
  * iDART: The Intelligent Dispensing of Antiretroviral Treatment
  * Copyright (C) 2006 Cell-Life
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License version
  * 2 for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package org.celllife.idart.gui.deletions;
@@ -166,10 +166,10 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	 */
 	@Override
 	protected void createShell() {
-		String shellTxt = "Stock, Prescription and Package Deletions";
+		String shellTxt = "Remover Stock";
 		Rectangle bounds = new Rectangle(25, 0, 900, 700);
 		buildShell(shellTxt, bounds);
-		
+
 		patientIDListener = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -180,19 +180,21 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			}
 		};
 
-		
+
 		createGrpDeletionTypeSelection();
 		createGrpPatientInfo();
 		createGrpPackageInfo();
+		//createGrpDrugInfo();
+		//createGrpStockBatchSelection();
 	}
 
 	/**
 	 * This method initializes compHeader
-	 * 
+	 *
 	 */
 	@Override
 	protected void createCompHeader() {
-		String txt = "Stock, Prescription and Package Deletions";
+		String txt = "Remover Stock";
 		iDartImage icoImage = iDartImage.REDOPACKAGE;
 		buildCompHeader(txt, icoImage);
 	}
@@ -200,10 +202,11 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	private void createGrpDeletionTypeSelection() {
 
 		// grpDeletionTypeSelection
+
 		grpDeletionTypeSelection = new Group(getShell(), SWT.NONE);
 		grpDeletionTypeSelection
-		.setBounds(new org.eclipse.swt.graphics.Rectangle(30, 80, 840,
-				100));
+				.setBounds(new org.eclipse.swt.graphics.Rectangle(30, 80, 840,
+						100));
 
 		lblPackage = new Label(grpDeletionTypeSelection, SWT.NONE);
 		lblPackage.setBounds(new org.eclipse.swt.graphics.Rectangle(100, 15,
@@ -212,20 +215,21 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		lblPackage.setImage(ResourceUtils.getImage(iDartImage.PACKAGEDELETE));
 
 		rdBtnPackage = new Button(grpDeletionTypeSelection, SWT.RADIO);
+		rdBtnPackage.setEnabled(true);
 		rdBtnPackage.setBounds(30, 60, 180, 20);
 		rdBtnPackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnPackage.setText("Undo Created Package");
+		rdBtnPackage.setText("Remover Dispensa do Paciente");
 		rdBtnPackage.setSelection(true);
 		rdBtnPackage
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				if (rdBtnPackage.getSelection()) {
-					switchDeletionType();
-				}
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						if (rdBtnPackage.getSelection()) {
+							switchDeletionType();
+						}
+					}
+				});
 
 		lblItem = new Label(grpDeletionTypeSelection, SWT.NONE);
 		lblItem.setBounds(new org.eclipse.swt.graphics.Rectangle(310, 15, 50,
@@ -234,19 +238,21 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		lblItem.setImage(ResourceUtils.getImage(iDartImage.DRUGALLERGY));
 
 		rdBtnItem = new Button(grpDeletionTypeSelection, SWT.RADIO);
+		rdBtnItem.setEnabled(false);
 		rdBtnItem.setBounds(230, 60, 190, 20);
 		rdBtnItem.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnItem.setText("Redo Single Item in Package");
+		rdBtnItem.setText("Refazer um item no stock");
+		rdBtnItem.setSelection(false);
 		rdBtnItem
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				if (rdBtnItem.getSelection()) {
-					switchDeletionType();
-				}
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						if (rdBtnItem.getSelection()) {
+							switchDeletionType();
+						}
+					}
+				});
 
 		lblStock = new Label(grpDeletionTypeSelection, SWT.NONE);
 		lblStock.setBounds(new org.eclipse.swt.graphics.Rectangle(510, 15, 50,
@@ -257,17 +263,18 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		rdBtnStock = new Button(grpDeletionTypeSelection, SWT.RADIO);
 		rdBtnStock.setBounds(430, 60, 180, 20);
 		rdBtnStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnStock.setText("Delete Incorrect Stock Batch");
+		rdBtnStock.setText("Remover Stock Incorreto");
+		rdBtnStock.setSelection(false);
 		rdBtnStock
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				if (rdBtnStock.getSelection()) {
-					switchDeletionType();
-				}
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						if (rdBtnStock.getSelection()) {
+							switchDeletionType();
+						}
+					}
+				});
 		lblPrescription = new Label(grpDeletionTypeSelection, SWT.NONE);
 		lblPrescription.setBounds(new org.eclipse.swt.graphics.Rectangle(710,
 				15, 50, 43));
@@ -276,25 +283,27 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				.getImage(iDartImage.PRESCRIPTIONDELETE));
 
 		rdBtnPrescription = new Button(grpDeletionTypeSelection, SWT.RADIO);
+		rdBtnPrescription.setEnabled(true);
 		rdBtnPrescription.setBounds(630, 60, 185, 20);
 		rdBtnPrescription.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnPrescription.setText("Delete Incorrect Prescription");
+		rdBtnPrescription.setText("Remover Prescrição");
+		rdBtnPrescription.setSelection(false);
 		rdBtnPrescription
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				if (rdBtnPrescription.getSelection()) {
-					switchDeletionType();
-				}
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						if (rdBtnPrescription.getSelection()) {
+							switchDeletionType();
+						}
+					}
+				});
 
 	}
 
 	/**
 	 * This method initializes grpPackageInfo
-	 * 
+	 *
 	 */
 	private void createGrpPatientInfo() {
 
@@ -326,25 +335,25 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		btnSearch = new Button(grpPatientInfo, SWT.NONE);
 		btnSearch.setBounds(new org.eclipse.swt.graphics.Rectangle(350, 10,
 				100, 30));
-		btnSearch.setText("Patient Search");
+		btnSearch.setText("Pesquisar");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch
-		.setToolTipText("Press this button to search for an existing patient.");
+				.setToolTipText("Pressiona o Botao para pesquisar o Paciente.");
 
 		btnSearch
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdSearchWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdSearchWidgetSelected();
+					}
+				});
 
 	}
 
 	/**
 	 * This method initializes createGrpDrugInfo
-	 * 
+	 *
 	 */
 	private void createGrpDrugInfo() {
 
@@ -357,7 +366,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		lblPatientId = new Label(grpPatientInfo, SWT.NONE);
 		lblPatientId.setBounds(new org.eclipse.swt.graphics.Rectangle(20, 20,
 				60, 20));
-		lblPatientId.setText("Drug:");
+		lblPatientId.setText("Medicamento:");
 		lblPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPatientId = new Text(grpPatientInfo, SWT.BORDER);
@@ -372,65 +381,65 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		btnSearch = new Button(grpPatientInfo, SWT.NONE);
 		btnSearch.setBounds(new org.eclipse.swt.graphics.Rectangle(350, 10,
 				100, 30));
-		btnSearch.setText("Drug Search");
+		btnSearch.setText("Pesquisar");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch
-		.setToolTipText("Press this button to search for the drug for which you wish to delete a stock batch.");
+				.setToolTipText("Pressione no botao para pesquisar o medicamento que pretende remover do Stock.");
 
 		btnSearch
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdDrugSearchWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdDrugSearchWidgetSelected();
+					}
+				});
 
 	}
 
 	/**
 	 * This method initializes compButtons
-	 * 
+	 *
 	 */
 	@Override
 	protected void createCompButtons() {
 
 		btnClear = new Button(getCompButtons(), SWT.NONE);
-		btnClear.setText("Clear");
+		btnClear.setText("Limpar");
 		btnClear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnClear
-		.setToolTipText("Press this button to close this screen.\nThe information you've entered here will be lost.");
+				.setToolTipText("Press this button to close this screen.\nThe information you've entered here will be lost.");
 		btnClear
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				packageToRemove = null;
-				prescriptionToRemove = null;
-				stockToRemove = null;
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						packageToRemove = null;
+						prescriptionToRemove = null;
+						stockToRemove = null;
 
-				clearForm();
-			}
-		});
+						clearForm();
+					}
+				});
 
 		btnClose = new Button(getCompButtons(), SWT.NONE);
-		btnClose.setText("Close");
+		btnClose.setText("Fechar");
 		btnClose.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnClose
-		.setToolTipText("Press this button to close this screen.\nThe information you've entered here will be lost.");
+				.setToolTipText("Press this button to close this screen.\nThe information you've entered here will be lost.");
 		btnClose
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdCloseWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdCloseWidgetSelected();
+					}
+				});
 	}
 
 	/**
 	 * This method is called when the user presses the 'Close' button
-	 * 
+	 *
 	 */
 	private void cmdCloseWidgetSelected() {
 		closeShell(true);
@@ -439,14 +448,14 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	private void cmdSearchWidgetSelected() {
 
 		boolean showInactivePatients = rdBtnPrescription.getSelection();
-		
+
 		String patientId = PatientBarcodeParser.getPatientId(txtPatientId
 				.getText().trim());
-		
+
 		PatientSearch search = new PatientSearch(getShell(), getHSession());
 		search.setShowInactive(showInactivePatients);
 		PatientIdentifier identifier = search.search(patientId);
-		
+
 		if (identifier != null) {
 			// First clear the form and fields
 			packageToRemove = null;
@@ -471,7 +480,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	private void cmdDrugSearchWidgetSelected() {
 
 		Search drugSearch = new Search(getHSession(), getShell(),
-				CommonObjects.DRUG);
+				CommonObjects.DRUG) {};
 
 		if (drugSearch.getValueSelected() != null) {
 
@@ -496,10 +505,10 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 					| SWT.OK);
 			mb.setText("No Packages to Remove");
 			mb
-			.setMessage("Patient '"
-					+ localPatient.getPatientId()
-					+ "' does not have any packages that can be removed from the database at this point.\n\n "
-					+ "Only the most recent package for a patient can be removed.");
+					.setMessage("Patient '"
+							+ localPatient.getPatientId()
+							+ "' does not have any packages that can be removed from the database at this point.\n\n "
+							+ "Only the most recent package for a patient can be removed.");
 			mb.open();
 			txtPatientId.setText("");
 			txtPackageId.setFocus();
@@ -507,12 +516,12 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		else if (rdBtnItem.getSelection()
 				&& ((packageToRemove.getPackagedDrugs().size() + packageToRemove
-						.getAccumulatedDrugs().size()) <= 1)) {
+				.getAccumulatedDrugs().size()) <= 1)) {
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_WARNING
 					| SWT.OK);
 			mb.setText("Cannot Remove Last Item In Package");
 			mb
-			.setMessage("There is only 1 item in this package, so you cannot remove this simgle item.\n\nTo remove the entire package, select Undo Created Package.");
+					.setMessage("There is only 1 item in this package, so you cannot remove this simgle item.\n\nTo remove the entire package, select Undo Created Package.");
 			mb.open();
 			txtPatientId.setText("");
 			txtPackageId.setFocus();
@@ -526,17 +535,17 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	private void getPatientsPrescriptions() {
 
 		prescriptionToRemove = PackageManager
-		.getMostRecentPrescriptionWithoutPackages(getHSession(),
-				localPatient);
+				.getMostRecentPrescriptionWithoutPackages(getHSession(),
+						localPatient);
 
 		if (prescriptionToRemove == null) {
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("No Prescription to Remove");
+			mb.setText("Não existem prescrições para Remover");
 			mb
-			.setMessage("Patient '"
-					+ localPatient.getPatientId()
-					+ "' does not have any prescription that can be removed from the database at this point. \n\nThe only prescriptions that "
-					+ "can be removed are those for which no packages have been created.");
+					.setMessage("O paciente com o NID '"
+							+ localPatient.getPatientId()
+							+ "' não tem alguma prescrição que pode ser removida. \n\n Não é possivel remover "
+							+ " prescrições que não tem dispensa.");
 			mb.open();
 			txtPatientId.setText("");
 			txtPackageId.setFocus();
@@ -556,12 +565,11 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		if ((stockToRemove == null) || (stockToRemove.size() == 0)) {
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("No Stock to Remove");
+			mb.setText("Não existem stock por remover");
 			mb
-			.setMessage("Drug '"
-					+ txtPatientId.getText()
-					+ "' does not have any batches that can be removed from the database at this point. \n\nThe only batches that "
-					+ "can be removed are those from which nothing has been dispensed.");
+					.setMessage("O Medicamento '"
+							+ txtPatientId.getText()
+							+ "' não tem nenhum lote que pode ser removido neste momento.");
 			mb.open();
 			txtPatientId.setText("");
 
@@ -580,16 +588,16 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		txtPackageId.setText(packageToRemove.getPackageId());
 		String date = (new SimpleDateFormat("dd/MM/yyyy 'at' h:mm a"))
-		.format(packageToRemove.getPackDate());
+				.format(packageToRemove.getPackDate());
 		txtDatePacked.setText(date);
 
 		List<PackagedDrugs> drugsInPackage = packageToRemove.getPackagedDrugs();
 
 		java.util.Set<AccumulatedDrugs> accumInPackage = packageToRemove
-		.getAccumulatedDrugs();
+				.getAccumulatedDrugs();
 
 		TableItem[] t = new TableItem[drugsInPackage.size()
-		                              + accumInPackage.size()];
+				+ accumInPackage.size()];
 
 		for (int j = 0; j < drugsInPackage.size(); j++) {
 			PackagedDrugs pd = drugsInPackage.get(j);
@@ -632,11 +640,11 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		txtPackageId.setText(prescriptionToRemove.getPrescriptionId());
 		String date = (new SimpleDateFormat("dd/MM/yyyy 'at' h:mm a"))
-		.format(prescriptionToRemove.getDate());
+				.format(prescriptionToRemove.getDate());
 		txtDatePacked.setText(date);
 
 		List<PrescribedDrugs> drugsInScript = prescriptionToRemove
-		.getPrescribedDrugs();
+				.getPrescribedDrugs();
 
 		TableItem[] t = new TableItem[drugsInScript.size()];
 
@@ -650,8 +658,8 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 			if (new BigDecimal(pd.getAmtPerTime()).scale() == 0) {
 				tempAmtPerTime = ""
-					+ new BigDecimal(pd.getAmtPerTime()).unscaledValue()
-					.intValue();
+						+ new BigDecimal(pd.getAmtPerTime()).unscaledValue()
+						.intValue();
 			} else {
 				tempAmtPerTime = "" + pd.getAmtPerTime();
 			}
@@ -661,14 +669,14 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 			Form theForm = pd.getDrug().getForm();
 			if (theForm.getFormLanguage1().equals("")) // is a cream, no amount
-				// per time
+			// per time
 			{
 				itemText[1] = theForm.getActionLanguage1() + " "
-				+ pd.getTimesPerDay() + " times a day.";
+						+ pd.getTimesPerDay() + " times a day.";
 			} else {
 				itemText[1] = theForm.getActionLanguage1() + " "
-				+ tempAmtPerTime + " " + theForm.getFormLanguage1()
-				+ " " + pd.getTimesPerDay() + " times a day.";
+						+ tempAmtPerTime + " " + theForm.getFormLanguage1()
+						+ " " + pd.getTimesPerDay() + " times a day.";
 			}
 
 			t[j].setText(itemText);
@@ -731,7 +739,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			// before we try anything, lets ask the user for their password
 			ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
 					getShell(), getHSession());
-			passwordDialog.setMessage("Please enter your Password");
+			passwordDialog.setMessage("Por favor, coloque a sua senha");
 			// if password verified
 			String messg = passwordDialog.open();
 			if (messg.equalsIgnoreCase("verified")) {
@@ -777,7 +785,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 	/**
 	 * This method closes and reopens a session. It should be used in screens
 	 * that don't close after a write
-	 * 
+	 *
 	 */
 	public void closeAndReopenSession() {
 
@@ -793,7 +801,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * This method initializes group
-	 * 
+	 *
 	 */
 	private void createGrpPackageInfo() {
 
@@ -802,13 +810,13 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		}
 		grpPackageInfo = new Group(getShell(), SWT.NONE);
 		grpPackageInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpPackageInfo.setText("Package To Remove:");
+		grpPackageInfo.setText("Dispensa por Remover:");
 		grpPackageInfo.setBounds(new org.eclipse.swt.graphics.Rectangle(30,
 				260, 840, 330));
 
 		lblPackageId = new Label(grpPackageInfo, SWT.NONE);
 		lblPackageId.setBounds(new Rectangle(260, 30, 100, 20));
-		lblPackageId.setText("Package ID:");
+		lblPackageId.setText("Prescricao:");
 		lblPackageId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPackageId = new Text(grpPackageInfo, SWT.BORDER);
@@ -818,7 +826,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		lblDatePacked = new Label(grpPackageInfo, SWT.NONE);
 		lblDatePacked.setBounds(new Rectangle(260, 55, 100, 20));
-		lblDatePacked.setText("Date Packed:");
+		lblDatePacked.setText("Data Dispensa:");
 		lblDatePacked.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtDatePacked = new Text(grpPackageInfo, SWT.BORDER);
@@ -828,7 +836,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		lblDrugsInPackage = new Label(grpPackageInfo, SWT.CENTER);
 		lblDrugsInPackage.setBounds(new Rectangle(230, 100, 380, 15));
-		lblDrugsInPackage.setText("Drugs in This Package:");
+		lblDrugsInPackage.setText("Medicamentos Dispensados:");
 		lblDrugsInPackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		createTblDrugsInPackage();
@@ -839,25 +847,25 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		btnRemovePackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRemovePackage.setEnabled(false);
 		if (rdBtnPackage.getSelection()) {
-			btnRemovePackage.setText("Remove this Package");
+			btnRemovePackage.setText("Remover a Dispensa");
 		} else if (rdBtnItem.getSelection()) {
-			btnRemovePackage.setText("Remove this Drug");
+			btnRemovePackage.setText("Remover o Medicamento");
 		}
 		btnRemovePackage
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdRemoveSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdRemoveSelected();
+					}
+				});
 		txtPatientId.setText("");
 
 	}
 
 	/**
 	 * This method initializes tblDrugsInPackage
-	 * 
+	 *
 	 */
 	private void createTblDrugsInPackage() {
 
@@ -871,28 +879,28 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		TableColumn tblColDrugSource = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColDrugSource.setText("Dispensed / Accum");
+		tblColDrugSource.setText("Observacao");
 		tblColDrugSource.setWidth(125);
 
 		TableColumn tblColDrugName = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColDrugName.setText("Drug Name");
+		tblColDrugName.setText("Medicamento");
 		tblColDrugName.setWidth(380);
 
 		TableColumn tblColQuantity = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColQuantity.setText("Qty");
+		tblColQuantity.setText("Qtd");
 		tblColQuantity.setWidth(80);
 
 		TableColumn tblColBatchNo = new TableColumn(tblDrugsInPackage, SWT.NONE);
-		tblColBatchNo.setText("Batch No");
+		tblColBatchNo.setText("Lote No");
 		tblColBatchNo.setWidth(125);
 
 	}
 
 	/**
 	 * This method initializes group
-	 * 
+	 *
 	 */
 	private void createGrpPrescriptionInfo() {
 
@@ -901,13 +909,13 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		}
 		grpPackageInfo = new Group(getShell(), SWT.NONE);
 		grpPackageInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpPackageInfo.setText("Prescription To Remove:");
+		grpPackageInfo.setText("Prescrição por Remover:");
 		grpPackageInfo.setBounds(new org.eclipse.swt.graphics.Rectangle(30,
 				260, 840, 330));
 
 		lblPackageId = new Label(grpPackageInfo, SWT.NONE);
 		lblPackageId.setBounds(new Rectangle(260, 30, 100, 20));
-		lblPackageId.setText("Prescription ID:");
+		lblPackageId.setText("Nº da Prescrição:");
 		lblPackageId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtPackageId = new Text(grpPackageInfo, SWT.BORDER);
@@ -917,7 +925,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		lblDatePacked = new Label(grpPackageInfo, SWT.NONE);
 		lblDatePacked.setBounds(new Rectangle(260, 55, 100, 20));
-		lblDatePacked.setText("Date Captured");
+		lblDatePacked.setText("Data de Criação");
 		lblDatePacked.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtDatePacked = new Text(grpPackageInfo, SWT.BORDER);
@@ -927,7 +935,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		lblDrugsInPackage = new Label(grpPackageInfo, SWT.CENTER);
 		lblDrugsInPackage.setBounds(new Rectangle(230, 100, 380, 15));
-		lblDrugsInPackage.setText("Drugs on the Prescription:");
+		lblDrugsInPackage.setText("Medicamentos da Prescrição:");
 		lblDrugsInPackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		createTblDrugsInPrescription();
@@ -936,16 +944,16 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		btnRemovePackage.setBounds(new org.eclipse.swt.graphics.Rectangle(330,
 				290, 170, 30));
 		btnRemovePackage.setEnabled(false);
-		btnRemovePackage.setText("Remove this Prescription");
+		btnRemovePackage.setText("Remover esta Prescricção");
 		btnRemovePackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRemovePackage
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdRemoveSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdRemoveSelected();
+					}
+				});
 
 		txtPatientId.setText("");
 
@@ -953,7 +961,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * This method initializes group
-	 * 
+	 *
 	 */
 	private void createGrpStockBatchSelection() {
 
@@ -962,7 +970,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		}
 		grpPackageInfo = new Group(getShell(), SWT.NONE);
 		grpPackageInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpPackageInfo.setText("Available Batches for Drug:");
+		grpPackageInfo.setText("Lotes Disponiveis:");
 		grpPackageInfo.setBounds(new org.eclipse.swt.graphics.Rectangle(30,
 				260, 840, 330));
 
@@ -972,16 +980,16 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		btnRemovePackage.setBounds(new org.eclipse.swt.graphics.Rectangle(330,
 				290, 170, 30));
 		btnRemovePackage.setEnabled(false);
-		btnRemovePackage.setText("Remove Selected Batch");
+		btnRemovePackage.setText("Remover Lote Seleccionado");
 		btnRemovePackage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRemovePackage
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdRemoveSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdRemoveSelected();
+					}
+				});
 
 		txtPatientId.setText("");
 
@@ -989,7 +997,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * This method initializes tblDrugsInPackage
-	 * 
+	 *
 	 */
 	private void createTblStockForDrug() {
 
@@ -1003,36 +1011,36 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		TableColumn tblColDrugName = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColDrugName.setText("Date Received");
+		tblColDrugName.setText("Data Entrada");
 		tblColDrugName.setWidth(100);
 
 		TableColumn tblColQuantity = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColQuantity.setText("Qty");
+		tblColQuantity.setText("Qtd");
 		tblColQuantity.setWidth(60);
 
 		TableColumn tblColBatchNo = new TableColumn(tblDrugsInPackage, SWT.NONE);
-		tblColBatchNo.setText("Batch No");
+		tblColBatchNo.setText("N.o Lote");
 		tblColBatchNo.setWidth(120);
 
 		TableColumn tblColManufacturer = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColManufacturer.setText("Manufacturer");
+		tblColManufacturer.setText("Fabricante");
 		tblColManufacturer.setWidth(120);
 
 		TableColumn tblColExpiryDate = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColExpiryDate.setText("Expiry Date");
+		tblColExpiryDate.setText("Data Validade");
 		tblColExpiryDate.setWidth(100);
 
 		TableColumn tblColClinic = new TableColumn(tblDrugsInPackage, SWT.NONE);
-		tblColClinic.setText("Pharmacy");
+		tblColClinic.setText("Farmacia");
 		tblColClinic.setWidth(100);
 	}
 
 	/**
 	 * This method initializes tblDrugsInPackage
-	 * 
+	 *
 	 */
 	private void createTblDrugsInPrescription() {
 
@@ -1046,12 +1054,12 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		TableColumn tblColDrugName = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColDrugName.setText("Drug Name");
+		tblColDrugName.setText("Medicamento");
 		tblColDrugName.setWidth(380);
 
 		TableColumn tblColQuantity = new TableColumn(tblDrugsInPackage,
 				SWT.NONE);
-		tblColQuantity.setText("Dosage");
+		tblColQuantity.setText("Dosagem");
 		tblColQuantity.setWidth(265);
 
 	}
@@ -1075,7 +1083,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * Method fieldsOk.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private boolean fieldsOk() {
@@ -1084,11 +1092,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			if (txtPackageId.getText().equals("")) {
 				MessageBox mb = new MessageBox(getShell());
 
-				mb.setText("No Package To Remove");
+				mb.setText("Não tem dispensa por remover");
 				mb
-				.setMessage("There is no package that can be removed. Please "
-						+ "enter a patient number (or use the Search button) to load a "
-						+ "possible package that can be removed.");
+						.setMessage("Não exixtem dispensas por remover para este paciente.");
 				mb.open();
 				return false;
 			}
@@ -1100,11 +1106,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		else if (rdBtnPrescription.getSelection()) {
 			if (txtPackageId.getText().equals("")) {
 				MessageBox mb = new MessageBox(getShell());
-				mb.setText("No Prescription To Remove");
+				mb.setText("Não tem prescrição por remover");
 				mb
-				.setMessage("There is no prescription that can be removed. Please "
-						+ "enter a patient number (or use the Search button) to load a "
-						+ "possible prescription that can be removed.");
+						.setMessage("Não existem prescrições por remover para este paciente.");
 				mb.open();
 				return false;
 			}
@@ -1116,16 +1120,16 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		else if (rdBtnStock.getSelection()) {
 			if (tblDrugsInPackage.getItemCount() == 0) {
 				MessageBox mb = new MessageBox(getShell());
-				mb.setText("No Stock Batch To Remove");
-				mb.setMessage("Please " + "use the Drug Search button to load "
-						+ "possible batches that can be removed.");
+				mb.setText("Não existem lotes por remover");
+				mb.setMessage("Por favor " + "use o botao procurar medicamento para encontrar o lote "
+						+ "que pretende remover.");
 				mb.open();
 				return false;
 			} else if (tblDrugsInPackage.getSelection().length == 0) {
 				MessageBox mb = new MessageBox(getShell());
-				mb.setText("No Stock Batch Selected");
+				mb.setText("Não foi seleccionado nenhum lote");
 				mb
-				.setMessage("Please select a stock batch to remove by clicking a row in the table");
+						.setMessage("Seleccione o lote apresentado na tabela para remover");
 				mb.open();
 				return false;
 			}
@@ -1137,21 +1141,17 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			if (tblDrugsInPackage.getItemCount() == 0) {
 				MessageBox mb = new MessageBox(getShell());
 
-				mb.setText("No Drug To Remove");
+				mb.setText("Sem medicamento para remover");
 				mb
-				.setMessage("There are no drugs that can be removed. Please "
-						+ "enter a patient number (or use the Search button) to load a "
-						+ "possible package with drugs that can be removed.");
+						.setMessage("Não existe nehum medicamento para ser removido.");
 				mb.open();
 				return false;
 			} else if (tblDrugsInPackage.getSelection().length == 0) {
 				MessageBox mb = new MessageBox(getShell());
 
-				mb.setText("No Drug To Remove");
+				mb.setText("Sem medicamento para remover");
 				mb
-				.setMessage("No drug has been selected from the package. Please "
-						+ "select a drug to be removed from the list of drugs in "
-						+ "the table. ");
+						.setMessage("Nenhum medicamento seleccionado para remoção. ");
 				mb.open();
 				return false;
 			}
@@ -1192,7 +1192,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * Method printSummaryLabel.
-	 * 
+	 *
 	 * @param thePatient
 	 *            Patient
 	 * @param thePackage
@@ -1203,7 +1203,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		StockCenter stockCenter;
 		if (packageToRemove.getPackagedDrugs().size() > 0) {
 			stockCenter = packageToRemove.getPackagedDrugs().get(0).getStock()
-			.getStockCenter();
+					.getStockCenter();
 		} else {
 			getLog().error("There are no drugs in this package");
 			return;
@@ -1221,7 +1221,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		// Obtaining next appointment date
 		Appointment app = PatientManager
-		.getLatestActiveAppointmentForPatient(thePatient);
+				.getLatestActiveAppointmentForPatient(thePatient);
 
 		// First get list of drugs for label
 		List<String> drugList = new ArrayList<String>();
@@ -1244,8 +1244,8 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 					.size() + 1))
 					+ " of a " + duration + " month script");
 			sml
-			.setBoldIssuesString(((prescription.getPackages().size() + 1) >= Integer
-					.parseInt((duration.split(" "))[0])) ? true : false);
+					.setBoldIssuesString(((prescription.getPackages().size() + 1) >= Integer
+							.parseInt((duration.split(" "))[0])) ? true : false);
 		} else {
 			sml.setIssuesString(String.valueOf((prescription.getPackages()
 					.size() + 1))
@@ -1270,15 +1270,15 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			MessageBox deletePillcount = new MessageBox(getShell(), SWT.YES
 					| SWT.NO | SWT.ICON_QUESTION);
 			deletePillcount
-			.setMessage("A Pill Count was recorded when the package was created."
-					+ "\n\nWould you like to delete this Pill Count?");
-			deletePillcount.setText("Delete Pill Count");
+					.setMessage("Estas unidades ja forma gravadas."
+							+ "\n\nPretende remover estas unidades?");
+			deletePillcount.setText("Remover as unidades");
 
 			switch (deletePillcount.open()) {
-			case SWT.YES:
-				pillCountDelete = true;
+				case SWT.YES:
+					pillCountDelete = true;
 
-				break;
+					break;
 			}
 		}
 
@@ -1289,23 +1289,23 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			DeletionsManager.removePackage(getHSession(), packageToRemove);
 
 			boolean shouldRemoveARVStartDate = DeletionsManager
-			.isFirstPackageOnNewPatientEpisode(packageToRemove);
+					.isFirstPackageOnNewPatientEpisode(packageToRemove);
 			boolean patientHasArvStartDate = (localPatient
 					.getAttributeByName(PatientAttribute.ARV_START_DATE) == null ? false
-							: true);
+					: true);
 			if (shouldRemoveARVStartDate && patientHasArvStartDate) {
 				MessageBox deleteARVStartDate = new MessageBox(getShell(),
 						SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 				deleteARVStartDate
-				.setMessage("The patient is a new patient and now contains no ARV packages."
-						+ "\n\nWould you like to remove the ARV start date for this patient.");
+						.setMessage("The patient is a new patient and now contains no ARV packages."
+								+ "\n\nWould you like to remove the ARV start date for this patient.");
 				deleteARVStartDate.setText("Remove ARV Start Date?");
 
 				switch (deleteARVStartDate.open()) {
-				case SWT.YES:
-					Patient p = packageToRemove.getPrescription().getPatient();
-					p.removePatientAttribute(PatientAttribute.ARV_START_DATE);
-					break;
+					case SWT.YES:
+						Patient p = packageToRemove.getPrescription().getPatient();
+						p.removePatientAttribute(PatientAttribute.ARV_START_DATE);
+						break;
 				}
 			}
 
@@ -1318,12 +1318,11 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 			tx.commit();
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Package Deletion Successful");
+			mb.setText("Dispensa Removida com Sucesso");
 			mb
-			.setMessage("This package was successfully removed from the database."
-					+ (pillCountDelete ? "Pill counts recorded at package creation time were also deleted."
-							: "")
-							+ "\n\nTo re-package this set of drugs for this patient, go back to the Patient Packaging page.");
+					.setMessage("A dispensa foi removida com sucesso."
+							+ (pillCountDelete ? " Comprimidos foram tambem removidos da dispensa."
+							: ""));
 			mb.open();
 
 		} catch (HibernateException he) {
@@ -1332,11 +1331,11 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				tx.rollback();
 			}
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Package Deletion Unsuccessful");
+			mb.setText("Não foi possivel remover esta dispensa.");
 			mb
-			.setMessage("There was a problem removing this package from the database.");
+					.setMessage("Ocorreu um erro ao remover esta dispensa.");
 			mb.open();
-			getLog().error("Package Deletion Unsuccessful", he);
+			getLog().error("Não foi possivel remover esta dispensa", he);
 
 		}
 		if (getHSession() != null) {
@@ -1377,13 +1376,13 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 						| SWT.NO);
 				summaryLabel.setText("Print Summary Label?");
 				summaryLabel
-				.setMessage("Would you like to print a new Script Summary Label?.");
+						.setMessage("Would you like to print a new Script Summary Label?.");
 				switch (summaryLabel.open()) {
-				case SWT.YES:
-					printSummaryLabel(localPatient, packageToRemove);
-					break;
-				case SWT.NO:
-					break;
+					case SWT.YES:
+						printSummaryLabel(localPatient, packageToRemove);
+						break;
+					case SWT.NO:
+						break;
 				}
 
 				getHSession().flush();
@@ -1391,7 +1390,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				MessageBox mb = new MessageBox(getShell());
 				mb.setText("Package Deletion Successful");
 				mb
-				.setMessage("This drug was successfully removed from the package.");
+						.setMessage("This drug was successfully removed from the package.");
 				mb.open();
 
 			} catch (HibernateException he) {
@@ -1399,7 +1398,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				MessageBox mb = new MessageBox(getShell());
 				mb.setText("Drug Deletion Unsuccessful");
 				mb
-				.setMessage("There was a problem removing this drug from the package.");
+						.setMessage("There was a problem removing this drug from the package.");
 				mb.open();
 				if (tx != null) {
 					tx.rollback();
@@ -1411,7 +1410,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			MessageBox mb = new MessageBox(getShell());
 			mb.setText("No Drug Selected");
 			mb
-			.setMessage("Please select an accumulated or dispensed drug from the table.");
+					.setMessage("Please select an accumulated or dispensed drug from the table.");
 			mb.open();
 		}
 	}
@@ -1427,9 +1426,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			getHSession().flush();
 			tx.commit();
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Prescription Deletion Successful");
+			mb.setText("A prescrição foi removida com sucesso.");
 			mb
-			.setMessage("This prescription was successfully removed from the database.");
+					.setMessage("Esta prescição foi removida com sucesso.");
 			mb.open();
 
 		} catch (HibernateException he) {
@@ -1438,9 +1437,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				tx.rollback();
 			}
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Prescription Deletion Unsuccessful");
+			mb.setText("A prescrição não foi removida");
 			mb
-			.setMessage("There was a problem removing this prescription from the database.");
+					.setMessage("Aconteceu um problema ao remover esta prescrição.");
 			mb.open();
 			getLog().error(he);
 		}
@@ -1462,9 +1461,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 			getHSession().flush();
 			tx.commit();
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Stock Batch Deletion Successful");
+			mb.setText("O Lote foi removido com sucesso");
 			mb
-			.setMessage("This stock batch was successfully removed from the database.");
+					.setMessage("Este Lote foi removido com sucesso.");
 			mb.open();
 
 		} catch (HibernateException he) {
@@ -1473,9 +1472,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 				tx.rollback();
 			}
 			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Stock Batch Deletion Unsuccessful");
+			mb.setText("O Lote não foi removido");
 			mb
-			.setMessage("There was a problem removing this stock batch from the database.");
+					.setMessage("Aconteceu um problema ao remover este Lote.");
 			mb.open();
 			getLog().error(he);
 
@@ -1493,7 +1492,7 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 	/**
 	 * Method getShell.
-	 * 
+	 *
 	 * @return Shell
 	 */
 	@Override

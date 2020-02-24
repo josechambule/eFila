@@ -45,42 +45,24 @@ public class DispensaTrimestral extends AbstractJasperReport {
     @Override
     protected Map<String, Object> getParameterMap() throws ReportException {
         ConexaoJDBC conn = new ConexaoJDBC();
-        Integer novosDT = 0;
-        Integer manterDT = 0;
-        Integer transporteDT = 0;
+
         // Set the parameters for the report
         Map<String, Object> map = new HashMap<>();
 
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            //Total de pacientes que levantaram arv 20 a 20
-            String totalpacientesnovos = String.valueOf(conn.totalPacientesNovosDispensaTrimestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate)));
-            System.out.println("Total de pacientes novos dispensa trimestral " + totalpacientesnovos);
-            
-            if(!totalpacientesnovos.isEmpty() && totalpacientesnovos != null)
-                novosDT = Integer.parseInt(totalpacientesnovos);
+            Map mapaDispensaTrimestral = conn.DispensaTrimestral(dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 
-            String totalpacientesmanter = String.valueOf(conn.totalPacientesManterDispensaTrimestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate)));
-            System.out.println("Total de pacientes a manter arv " + totalpacientesmanter);
+            int totalpacientesmanter = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesmanter").toString());
+            int totalpacientesnovos = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesnovos").toString());
+            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteManuntencaoTransporte").toString());
+            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteCumulativo").toString());
 
-            if(!totalpacientesmanter.isEmpty() && totalpacientesmanter != null)
-                manterDT = Integer.parseInt(totalpacientesmanter);
-            
-            String totalpacientesTransporte = String.valueOf(conn.totalPacientesManuntencaoTransporteDispensaTrimestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate)));
-            System.out.println("Total de pacientes a transportar arv " + totalpacientesTransporte);
-
-            if(!totalpacientesTransporte.isEmpty() && totalpacientesTransporte != null)
-                transporteDT = Integer.parseInt(totalpacientesTransporte);
-            
-           // String totalpacientesCumulativo = String.valueOf(conn.totalPacientesCumulativoDispensaTrimestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate)));
-            Integer totalpacientesCumulativo = novosDT + manterDT + transporteDT;
-            System.out.println("Total de pacientes Cumulativo " + totalpacientesCumulativo);
-            
-            map.put("totalpacientesmanter", totalpacientesmanter);
-            map.put("totalpacientesnovos", totalpacientesnovos);
-            map.put("totalpacienteManuntencaoTransporte", totalpacientesTransporte);
-            map.put("totalpacienteCumulativo", totalpacientesCumulativo.toString());
+            map.put("totalpacientesnovos", String.valueOf(totalpacientesnovos));
+            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));
+            map.put("totalpacienteManuntencaoTransporte", String.valueOf(totalpacienteManuntencaoTransporte));
+            map.put("totalpacienteCumulativo", String.valueOf(totalpacienteCumulativo));
             map.put("facilityName", LocalObjects.currentClinic.getClinicName());
             map.put("dateStart",  theStartDate);
             map.put("dateEnd", theEndDate);

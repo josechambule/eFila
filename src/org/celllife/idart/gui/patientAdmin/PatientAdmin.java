@@ -313,34 +313,34 @@ public class PatientAdmin extends GenericAdminGui {
 		});
 
 		// lblPicPatientVisitsandStats
-		lblPicPatientVisitsandStats = new Label(compOptionsInner, SWT.NONE);
-		lblPicPatientVisitsandStats.setLayoutData(gdPic);
-		lblPicPatientVisitsandStats.setImage(ResourceUtils
-				.getImage(iDartImage.PAVAS));
-		lblPicPatientVisitsandStats.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdViewPAVASWidgetSelected2();
-			}
-		});
+//		lblPicPatientVisitsandStats = new Label(compOptionsInner, SWT.NONE);
+//		lblPicPatientVisitsandStats.setLayoutData(gdPic);
+//		lblPicPatientVisitsandStats.setImage(ResourceUtils
+//				.getImage(iDartImage.PAVAS));
+//		lblPicPatientVisitsandStats.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseUp(MouseEvent mu) {
+//				cmdViewPAVASWidgetSelected2();
+//			}
+//		});
 
 		// btnPatientVisitsandStats
-		btnPatientVisitsandStats = new Button(compOptionsInner, SWT.NONE);
-		btnPatientVisitsandStats.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
-		btnPatientVisitsandStats.setLayoutData(gdBtn);
-		btnPatientVisitsandStats.setText(Messages.getString("PatientAdmin.button.patientVisits")); //$NON-NLS-1$
-		btnPatientVisitsandStats
-		.setToolTipText(Messages.getString("PatientAdmin.button.patientVisits.tooltip")); //$NON-NLS-1$
-		btnPatientVisitsandStats.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_10));
-		btnPatientVisitsandStats
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdViewPAVASWidgetSelected2();
-			}
-		});
+//		btnPatientVisitsandStats = new Button(compOptionsInner, SWT.NONE);
+//		btnPatientVisitsandStats.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
+//		btnPatientVisitsandStats.setLayoutData(gdBtn);
+//		btnPatientVisitsandStats.setText(Messages.getString("PatientAdmin.button.patientVisits")); //$NON-NLS-1$
+//		btnPatientVisitsandStats
+//		.setToolTipText(Messages.getString("PatientAdmin.button.patientVisits.tooltip")); //$NON-NLS-1$
+//		btnPatientVisitsandStats.setFont(ResourceUtils
+//				.getFont(iDartFont.VERASANS_10));
+//		btnPatientVisitsandStats
+//		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(
+//					org.eclipse.swt.events.SelectionEvent e) {
+//				cmdViewPAVASWidgetSelected2();
+//			}
+//		});
 
 		compOptions.layout();
 		compOptionsInner.layout();
