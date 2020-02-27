@@ -37,8 +37,16 @@ import org.celllife.idart.database.hibernate.Regimen;
 import org.celllife.idart.database.hibernate.SimpleDomain;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.messages.Messages;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.fieldassist.ComboContentAdapter;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.SimpleContentProposalProvider;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.hibernate.Session;
 
 /**
@@ -62,7 +70,7 @@ public class CommonObjects {
 	public static final int STOCK_TAKE = 8;
 
 	public static final int STOCK_CENTER = 9;
-	
+
 	public static final int NATION = 10;
 
 	public static final int ATC = 11;
@@ -70,14 +78,14 @@ public class CommonObjects {
 	public static final int REGIMESACTIVOS = 12;
 
 	public static final int ASSOCIATEDDRUGS = 13;
-        
+
 	public static String timesPerDayLanguage1 = "times per day";
 
 	public static String timesPerDayLanguage2 = "ngemini";
 
 	public static String timesPerDayLanguage3 = "keur per dag";
 
-	
+
 	public static final String NEXT_APPOINTMENT_KEY = "NEXT_APPOINTMENT";
 
 	/**
@@ -94,7 +102,7 @@ public class CommonObjects {
 
 	/**
 	 * Method populateStockCenters.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -103,7 +111,7 @@ public class CommonObjects {
 	public static void populateStockCenters(Session sess, CCombo combo) {
 
 		List<StockCenter> stockCenterList = AdministrationManager
-		.getStockCenters(sess);
+				.getStockCenters(sess);
 
 		if (stockCenterList != null) {
 			String preferredName = "";
@@ -127,7 +135,7 @@ public class CommonObjects {
 
 	/**
 	 * Method populateClinics.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -139,7 +147,7 @@ public class CommonObjects {
 
 	/**
 	 * Method populateClinics.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -148,7 +156,7 @@ public class CommonObjects {
 	 *            boolean
 	 */
 	public static void populateClinics(Session sess, CCombo combo,
-			boolean includeMainClinic) {
+									   boolean includeMainClinic) {
 
 		for (Clinic c : AdministrationManager.getClinics(sess)) {
 			String str = c.getClinicName();
@@ -161,7 +169,7 @@ public class CommonObjects {
 		if (!includeMainClinic) {
 			// shouldn't be able to access the mainclinic here
 			String mainClinicName = AdministrationManager
-			.getDefaultClinicName(sess);
+					.getDefaultClinicName(sess);
 			if (combo.indexOf(mainClinicName) != -1) {
 				combo.remove(mainClinicName);
 			}
@@ -171,7 +179,7 @@ public class CommonObjects {
 		} else {
 
 			String defaultClinicName = AdministrationManager
-			.getDefaultClinicName(sess);
+					.getDefaultClinicName(sess);
 
 			if (combo.indexOf(defaultClinicName) != -1) {
 				combo.setText(defaultClinicName);
@@ -194,7 +202,7 @@ public class CommonObjects {
 	 * This method is used whenever a combo box of the available provinces is
 	 * shown on a GUI. It first checks if the LocalObjects.provinces list can be
 	 * used (to ResourceUtils.getColor(iDartColor.RED)uce hits to the database)
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -207,9 +215,9 @@ public class CommonObjects {
 		if (sdList != null) {
 			for (String s : sdList) {
 				if(s != null){
-					combo.add(s);	
+					combo.add(s);
 				}
-				
+
 			}
 		}
 
@@ -221,12 +229,12 @@ public class CommonObjects {
 
 	}
 
-	
-	
+
+
 	public static String getReportParameter(Session sess, String name) {
 
 		List<SimpleDomain> sdList = AdministrationManager
-		.getReportParameters(sess);
+				.getReportParameters(sess);
 
 		if (sdList != null) {
 			for (SimpleDomain s : sdList) {
@@ -241,7 +249,7 @@ public class CommonObjects {
 
 	/**
 	 * Method populatePrescriptionDuration.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -267,7 +275,7 @@ public class CommonObjects {
 
 	/**
 	 * Method populateClinicalStage.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -276,7 +284,7 @@ public class CommonObjects {
 	public static void populateClinicalStage(Session sess, CCombo combo) {
 
 		List<SimpleDomain> sdList = AdministrationManager
-		.getClinicalStages(sess);
+				.getClinicalStages(sess);
 
 		if (sdList != null) {
 			for (SimpleDomain s : sdList) {
@@ -293,14 +301,14 @@ public class CommonObjects {
 
 	/**
 	 * Method populatePrescriptionUpdateReasons.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
 	 *            CCombo
 	 */
 	public static void populatePrescriptionUpdateReasons(Session sess,
-			CCombo combo) {
+														 CCombo combo) {
 
 		List<SimpleDomain> sdList = AdministrationManager.getReasonForUpdate(sess);
 
@@ -322,16 +330,16 @@ public class CommonObjects {
 	 * shown on a GUI. It first checks if the LocalObjects.activationReasons
 	 * list can be used (to ResourceUtils.getColor(iDartColor.RED)uce hits to
 	 * the database)
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
 	 * @param
 	 */
-	public static void populateActivationReasons(Session sess, CCombo combo) { 
+	public static void populateActivationReasons(Session sess, CCombo combo) {
 
 		List<SimpleDomain> sdList = AdministrationManager
-		.getActivationReasons(sess);
+				.getActivationReasons(sess);
 
 		if (sdList != null) {
 			for (SimpleDomain s : sdList) {
@@ -355,7 +363,7 @@ public class CommonObjects {
 	 * shown on a GUI. It first checks if the LocalObjects.activationReasons
 	 * list can be used (to ResourceUtils.getColor(iDartColor.RED)uce hits to
 	 * the database)
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -363,7 +371,7 @@ public class CommonObjects {
 	public static void populateDeactivationReasons(Session sess, CCombo combo) {
 
 		List<SimpleDomain> sdList = AdministrationManager
-		.getDeactivationReasons(sess);
+				.getDeactivationReasons(sess);
 
 		if (sdList != null) {
 			for (SimpleDomain s : sdList) {
@@ -379,7 +387,7 @@ public class CommonObjects {
 	/**
 	 * This method is used whenever a combo box of the regimens is shown on a
 	 * GUI.
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -402,9 +410,9 @@ public class CommonObjects {
 	 * @param combo
 	 * @param inclueTodasLinhas
 	 */
-	
+
 	public static void populateLinha(Session sess, CCombo combo,
-			boolean inclueTodasLinhas) {
+									 boolean inclueTodasLinhas) {
 
 		List<LinhaT> linhas= AdministrationManager.getAllLinhas(sess);
 
@@ -426,9 +434,9 @@ public class CommonObjects {
 		}
 
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -457,7 +465,7 @@ public class CommonObjects {
 	 * This method is used whenever a combo box of the available doctors is
 	 * shown on a GUI. It first checks if the LocalObjects.doctors list can be
 	 * used (to ResourceUtils.getColor(iDartColor.RED)uce hits to the database)
-	 * 
+	 *
 	 * @param sess
 	 *            Session
 	 * @param combo
@@ -465,7 +473,7 @@ public class CommonObjects {
 	 *            boolean
 	 */
 	public static void populateDoctors(Session sess, CCombo combo,
-			boolean includeAllDoctors) {
+									   boolean includeAllDoctors) {
 
 		List<Doctor> doctors = AdministrationManager.getAllDoctors(sess);
 
@@ -487,16 +495,16 @@ public class CommonObjects {
 		}
 
 	}
-	
+
 	/*
-	 * 
-	 * 
+	 *
+	 *
 	 * Popula regimes no formulario de prescricao de medicamentos
 	 */
 
-	
+
 	public static void populateRegimesTerapeuticos(Session sess, CCombo combo,
-			boolean inclueTodosRegimes) {
+												   boolean inclueTodosRegimes) {
 
 		List<RegimeTerapeutico> regimes = AdministrationManager.getAllRegimes(sess);
 
@@ -518,11 +526,35 @@ public class CommonObjects {
 		}
 
 	}
-	
-	
+
+	public static void populateRegimesTerapeuticosCombo(Session sess, Combo combo,
+														boolean inclueTodosRegimes) {
+
+		List<RegimeTerapeutico> regimes = AdministrationManager.getAllRegimes(sess);
+
+		for (RegimeTerapeutico r : regimes) {
+
+			if (inclueTodosRegimes) {
+				combo.add(r.getRegimeesquema());
+			} else {
+				if (r.isActive()) {
+					combo.add(r.getRegimeesquema());
+				}
+			}
+		}
+
+		if (combo.getItemCount() > 0) {
+			// Set the combo box to blank -> ensures that user
+			// is forced to enter the information
+			combo.setText("");
+		}
+
+	}
+
+
 	/**
 	 * Method findMonth.
-	 * 
+	 *
 	 * @param strMonth
 	 *            String
 	 * @return String
@@ -562,7 +594,7 @@ public class CommonObjects {
 
 	/**
 	 * checks if the given date is valid
-	 * 
+	 *
 	 * @param day
 	 * @param month
 	 * @param year
@@ -577,48 +609,48 @@ public class CommonObjects {
 		try {
 			switch (month) {
 
-			case Calendar.FEBRUARY:
-				if (day >= 1 & day <= 29) {
-					GregorianCalendar greg = new GregorianCalendar();
-					if (day == 29 & greg.isLeapYear(year)) {
+				case Calendar.FEBRUARY:
+					if (day >= 1 & day <= 29) {
+						GregorianCalendar greg = new GregorianCalendar();
+						if (day == 29 & greg.isLeapYear(year)) {
+							result = true;
+						} else {
+							if (day == 29) {
+								result = false;
+							} else {
+								result = true;
+							}
+						}
+					} else {
+						result = false;
+					}
+					break;
+
+				case Calendar.SEPTEMBER:
+				case Calendar.APRIL:
+				case Calendar.JUNE:
+				case Calendar.NOVEMBER:
+
+					if (day >= 1 & day <= 30) {
 						result = true;
 					} else {
-						if (day == 29) {
-							result = false;
-						} else {
-							result = true;
-						}
+						result = false;
 					}
-				} else {
-					result = false;
-				}
-				break;
+					break;
 
-			case Calendar.SEPTEMBER:
-			case Calendar.APRIL:
-			case Calendar.JUNE:
-			case Calendar.NOVEMBER:
-
-				if (day >= 1 & day <= 30) {
-					result = true;
-				} else {
-					result = false;
-				}
-				break;
-
-			case Calendar.JANUARY:
-			case Calendar.MARCH:
-			case Calendar.MAY:
-			case Calendar.JULY:
-			case Calendar.AUGUST:
-			case Calendar.OCTOBER:
-			case Calendar.DECEMBER:
-				if (day >= 1 & day <= 31) {
-					result = true;
-				} else {
-					result = false;
-				}
-				break;
+				case Calendar.JANUARY:
+				case Calendar.MARCH:
+				case Calendar.MAY:
+				case Calendar.JULY:
+				case Calendar.AUGUST:
+				case Calendar.OCTOBER:
+				case Calendar.DECEMBER:
+					if (day >= 1 & day <= 31) {
+						result = true;
+					} else {
+						result = false;
+					}
+					break;
 			}
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -631,7 +663,7 @@ public class CommonObjects {
 
 	public static void populateRegimens(Session session, CCombo cmbRegimen) {
 		List<SimpleDomain> regimens = AdministrationManager
-		.getRegimens(session);
+				.getRegimens(session);
 		String[] items = new String[regimens.size()];
 		for (int i = 0; i < regimens.size(); i++) {
 			items[i] = regimens.get(i).getValue();
@@ -639,13 +671,13 @@ public class CommonObjects {
 		cmbRegimen.setItems(items);
 	}
 
-         /*
- * 
- * Este metodo popula o ccombo linha terapeutica  - Idart antigo 
- * Modified by : Colaco Nhongo
- * Modifica date: 14/01/2017
- */      
-      
+	/*
+	 *
+	 * Este metodo popula o ccombo linha terapeutica  - Idart antigo
+	 * Modified by : Colaco Nhongo
+	 * Modifica date: 14/01/2017
+	 */
+
 	public static void populateLinhas(Session session, CCombo cmbLine) {
 		List<LinhaT> lines = AdministrationManager
 				.getAllLinhas(session);
@@ -654,7 +686,7 @@ public class CommonObjects {
 			items[i] = lines.get(i).getLinhanome();
 		}
 		cmbLine.setItems(items);
-		
+
 	}
 
 	public static void populateDiseases (Session session, CCombo cmbDisease) {
@@ -669,12 +701,12 @@ public class CommonObjects {
 
 	}
 
-        public static void populateComboRegimenStatus(Session session, CCombo cmbLine) {
+	public static void populateComboRegimenStatus(Session session, CCombo cmbLine) {
 		String[] items = new String[2];
 		items[0] =Messages.getString("addRegimen.field.active");
-                items[1] = Messages.getString("addRegimen.field.inactive");
+		items[1] = Messages.getString("addRegimen.field.inactive");
 		cmbLine.setItems(items);
-		
+
 	}
 
 	public static void populateComboDrugStatus(Session session, CCombo cmbLine) {
@@ -685,11 +717,11 @@ public class CommonObjects {
 
 	}
 
-        public static void populateYesNo(Session hSession, CCombo genericYesNo) {
+	public static void populateYesNo(Session hSession, CCombo genericYesNo) {
 		genericYesNo.add("Sim");
-                genericYesNo.add("Nao");
+		genericYesNo.add("Nao");
 	}
-        
+
 	/**
 	 * Este metodo popula o ccombo de motivo de mudanca de ARV
 	 * @param hSession
@@ -697,48 +729,105 @@ public class CommonObjects {
 	 * @param b
 	 */
 	public static void populateMotivoMudanca(Session hSession, CCombo cmbMotivoMudanca, boolean b) {
-	
 
-			List<Motivomudanca> motivos = AdministrationManager.getAllMotivos(hSession);
 
-			for (Motivomudanca m : motivos) {
+		List<Motivomudanca> motivos = AdministrationManager.getAllMotivos(hSession);
 
-				if (b) {
+		for (Motivomudanca m : motivos) {
+
+			if (b) {
+				cmbMotivoMudanca.add(m.getMotivo());
+			} else {
+				if (m.isActive()) {
 					cmbMotivoMudanca.add(m.getMotivo());
-				} else {
-					if (m.isActive()) {
-						cmbMotivoMudanca.add(m.getMotivo());
-					}
 				}
 			}
+		}
 
-			if (cmbMotivoMudanca.getItemCount() > 0) {
-				// Set the combo box to blank -> ensures that user
-				// is forced to enter the information
-				cmbMotivoMudanca.setText("");
-			}
+		if (cmbMotivoMudanca.getItemCount() > 0) {
+			// Set the combo box to blank -> ensures that user
+			// is forced to enter the information
+			cmbMotivoMudanca.setText("");
+		}
 
-		
-		
+
+
 	}
-	
+
 	public static void populateDispensaTrimestral(Session hSession, CCombo cmbDispensaTrimestral) {
 		cmbDispensaTrimestral.add("Sim");
-        cmbDispensaTrimestral.add("Nao");
+		cmbDispensaTrimestral.add("Nao");
 	}
-	
+
 	public static void populateDispensaSemestral(Session hSession, CCombo cmbDispensaSemestral) {
 		cmbDispensaSemestral.add("Sim");
 		cmbDispensaSemestral.add("Nao");
 	}
-	
+
 	public static void populateTipoDispensaTrimestral(Session hSession, CCombo cmbDispensaTrimestral){
 		cmbDispensaTrimestral.add("Novo");
-        cmbDispensaTrimestral.add("Manuntencao");
+		cmbDispensaTrimestral.add("Manuntencao");
 	}
-	
+
 	public static void populateTipoDispensaSemestral(Session hSession, CCombo cmbTipoDispensaSemestral){
 		cmbTipoDispensaSemestral.add("Novo");
 		cmbTipoDispensaSemestral.add("Manuntencao");
 	}
+
+	// Autocomplete for Tex Field and Combobox
+	public static  void enableContentProposal(Control control)
+	{
+		String[] items =  null;
+		SimpleContentProposalProvider proposalProvider = null;
+		ContentProposalAdapter proposalAdapter = null;
+		if (control instanceof Combo)
+		{
+			Combo combo = (Combo) control;
+			proposalProvider = new SimpleContentProposalProvider(combo.getItems());
+			proposalAdapter = new ContentProposalAdapter(
+					combo,
+					new ComboContentAdapter(),
+					proposalProvider,
+					getActivationKeystroke(),
+					getAutoactivationChars());
+		}
+		else if (control instanceof Text)
+		{
+
+			Text text = (Text) control;
+			proposalProvider = new SimpleContentProposalProvider(items);
+			proposalAdapter = new ContentProposalAdapter(
+					text,
+					new TextContentAdapter(),
+					proposalProvider,
+					getActivationKeystroke(),
+					getAutoactivationChars());
+		}
+		proposalProvider.setFiltering(true);
+		proposalAdapter.setPropagateKeys(true);
+		proposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+
+	}
+
+
+
+	// this logic is  from swt addons project
+	static char[] getAutoactivationChars() {
+		String LCL = "abcdefghijklmnopqrstuvwxyz";
+		String UCL = LCL.toUpperCase();
+		String NUMS = "0123456789";
+		// To enable content proposal on deleting a char
+
+		String delete = new String(new char[] { 8 });
+		String allChars = LCL + UCL + NUMS + delete;
+		return allChars.toCharArray();
+	}
+
+	static KeyStroke getActivationKeystroke() {
+		KeyStroke instance = KeyStroke.getInstance(
+				new Integer(SWT.CTRL).intValue(), new Integer(' ').intValue());
+		return instance;
+	}
+
+
 }

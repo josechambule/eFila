@@ -9,12 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Regimen;
-import org.celllife.idart.database.hibernate.RegimenDrugs;
+import org.celllife.idart.database.hibernate.*;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -139,7 +134,7 @@ public class PrescriptionManager {
 	}
 
 	/**
-	 * @param pack
+	 * @param pres
 	 * @return a string of the form d4t 30, EFV 600 etc
 	 * @throws HibernateException
 	 */
@@ -177,6 +172,21 @@ public class PrescriptionManager {
 				episode.getStartDate()).setDate("endDate",
 				episode.getStopDate()).setMaxResults(1).uniqueResult();
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Doctor getProvider(Session session) throws HibernateException {
+		Doctor id = null;
+		List<Doctor> doc = null;
+		doc = session.createQuery(
+				"select doctor from Doctor as doctor "
+						+ "where doctor.firstname = 'Provider' OR doctor.firstname = 'Provedor' limit 1").list();
+
+		Iterator<Doctor> iter = doc.iterator();
+		if (iter.hasNext()) {
+			id = iter.next();
+		}
+		return id;
 	}
 
 }

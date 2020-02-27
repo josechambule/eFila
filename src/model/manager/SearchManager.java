@@ -632,8 +632,8 @@ public class SearchManager {
      *
      * @param sess                      Session
      * @param search
-     * @param includeSideTreatmentDrugs boolean
-     * @param includeZeroDrugs          boolean
+     * @param sess boolean
+     * @param search          boolean
      * @return List<Drug>
      * @throws HibernateException
      */

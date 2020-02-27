@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+
+    <mapping class="migracao.entidades.EncounterProvider"/>
+    <mapping class="migracao.entidades.Provider"/>
+    <mapping class="migracao.entidades.CareSetting"/>
+    <mapping class="migracao.entidades.EncounterRole"/>
+    <mapping class="migracao.entidades.Form"/>
+    <mapping class="migracao.entidades.VisitType"/>
+    <mapping class="migracao.entidades.Encounter"/>
+    <mapping class="migracao.entidades.ConceptClass"/>
+    <mapping class="migracao.entidades.Concept"/>
+    <mapping class="migracao.entidades.PersonAddress"/>
+    <mapping class="migracao.entidades.Person"/>
+    <mapping class="migracao.entidades.Location"/>
+    <mapping class="migracao.entidades.Users"/>
+    <mapping class="migracao.entidades.EncounterType"/>
+    <mapping class="migracao.entidades.PatientIdentifier"/>
+    <mapping class="migracao.entidades.Obs"/>
+    <mapping class="migracao.entidades.Orders"/>
+    <mapping class="migracao.entidades.OrderType"/>
+    <mapping class="migracao.entidades.Tribe"/>
+    <mapping class="migracao.entidades.ConceptDatatype"/>
+    <mapping class="migracao.entidades.Patient"/>
+    <mapping class="migracao.entidades.Drug"/>
+    <mapping class="migracao.entidades.PersonName"/>
+    <mapping class="migracao.entidades.PatientIdentifierType"/>
+    <mapping class="migracao.entidades.Program"/>
+    <mapping class="migracao.entidades.PatientProgram"/>
+    <mapping class="migracao.entidades.ConceptName"/>
+    <mapping class="migracao.entidades.Visit"/>
+    <mapping class="migracao.entidades.GlobalProperty"/>
+  </session-factory>
+</hibernate-configuration>

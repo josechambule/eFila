@@ -277,6 +277,24 @@ public class PharmacyApplication {
         }
 
         try {
+            JdbcProperties.setJdbcProperties();
+
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current iDART properties: \n"
+                            + JdbcProperties.jdbcProperties());
+                } catch (Exception e1) {
+                    log.error("Error printing properties", e1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to load jdbc.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from jdbc.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
+
+        try {
             PrinterProperties.setPrinterProperties();
             if (log.isTraceEnabled()) {
                 try {

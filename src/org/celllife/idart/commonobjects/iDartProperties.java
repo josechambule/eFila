@@ -94,11 +94,13 @@ public class iDartProperties {
 
 	public static String roundUpForms = "";
 
-	public static String hibernateConnectionUrl = "http://192.168.100.1:5432/idart";
+	public static String hibernateConnectionUrl = "http://localhost:5432/idart";
 
-	public static String hibernatePassword = "";
+	public static String hibernatePassword = "postgres";
 
-	public static String hibernateUsername = "";
+	public static String hibernateUsername = "postgres";
+
+	public static String hibernateDatabase = "pharm";
 
 	public static String hibernateDriver = "org.postgresql.Driver";
 	
@@ -169,7 +171,12 @@ public class iDartProperties {
 	public static boolean enableDrugEditor = true;
 	
 	public static boolean isCidaStudy = false;
-	
+
+	public static final String ZIPFILEPASSWORD = "!cdc2020#";
+	public static String hibernateTableImport = "sync_temp_patients";
+	public static boolean FARMAC = false;
+	public static String hibernateTableExport = "sync_temp_dispense";
+
 	public static String illegalPatientIdChars = "'`^";
 	public static String illegalPatientIdRegex = "["+illegalPatientIdChars+"]+";
 
@@ -214,6 +221,7 @@ public class iDartProperties {
 		summaryLabelDefault = setBooleanProperty("summaryLabelDefault");
 		dispenseDirectlyDefault = setBooleanProperty("dispenseDirectlyDefault");
 		printSideTreatmentLabels = setBooleanProperty("printSideTreatmentLabels");
+		FARMAC = setBooleanProperty("FARMAC");
 		printDrugLabels = setBooleanProperty("printDrugLabels");
 		patientNameOnDrugLabel = setBooleanProperty("patientNameOnDrugLabel");
 		patientNameOnReports = setBooleanProperty("patientNameOnReports");
@@ -239,6 +247,7 @@ public class iDartProperties {
 		hibernateConnectionUrl = setStringProperty("encrypted_hibernate_url");
 		hibernatePassword = setStringProperty("encrypted_hibernate_password");
 		hibernateUsername = setStringProperty("encrypted_hibernate_username");
+		hibernateDatabase = setStringProperty("hibernateDatabase");
 		updateScriptDir = setStringProperty("update_script_dir");
 		importDateFormat = setStringProperty("importDateFormat");
 		updateUrl = setStringProperty("updateUrl");
@@ -324,6 +333,8 @@ public class iDartProperties {
 		sb.append("\n");
 		sb.append("encrypted_hibernate_username="+hibernateUsername);
 		sb.append("\n");
+		sb.append("hibernateDatabase="+hibernateDatabase);
+		sb.append("\n");
 		sb.append("update_script_dir="+updateScriptDir);
 		sb.append("\n");
 		sb.append("importDateFormat="+importDateFormat);
@@ -343,6 +354,7 @@ public class iDartProperties {
 		sb.append("intValueOfAlternativeBarcodeEndChar="+ intValueOfAlternativeBarcodeEndChar);
 		sb.append("\n");
 		sb.append("cidaStudy=" + isCidaStudy);
+		sb.append("FARMAC=" + FARMAC);
 		sb.append("\n");
 
 		switch (labelType) {

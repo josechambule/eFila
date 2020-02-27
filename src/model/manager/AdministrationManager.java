@@ -1283,6 +1283,12 @@ public class AdministrationManager {
                 "from IdentifierType where id = 0").uniqueResult();
     }
 
+    public static IdentifierType getCRAMIdentifierType(Session hSession) {
+        // FIXME: figure out a way to identify the national id type
+        return (IdentifierType) hSession.createQuery(
+                "from IdentifierType where name = 'CRAM'").uniqueResult();
+    }
+
     //Insere regime terapeutico
     public static void saveRegimeTerapeutico(Session s, RegimeTerapeutico regimeTerapeutico)
             throws HibernateException {
