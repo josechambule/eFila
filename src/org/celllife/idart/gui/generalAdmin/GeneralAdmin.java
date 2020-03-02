@@ -21,6 +21,8 @@ package org.celllife.idart.gui.generalAdmin;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 
+import migracao.swingreverse.MainPanel;
+import migracao.swingreverse.RestorePatientFarmac;
 import model.manager.excel.reports.in.PatientSheet;
 
 import org.apache.log4j.Logger;
@@ -399,7 +401,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnGenerateTemplate.setText(Messages.getString("GeneralAdmin.button.generateTemplate.title")); //$NON-NLS-1$
         btnGenerateTemplate
                 .setToolTipText(Messages.getString("GeneralAdmin.button.generateTemplate.tooltip")); //$NON-NLS-1$
-        btnGenerateTemplate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 35,
+        btnGenerateTemplate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 40,
                 235, 30));
         btnGenerateTemplate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnGenerateTemplate
@@ -432,43 +434,46 @@ public class GeneralAdmin extends GenericAdminGui {
 
         btnImportPatients.setEnabled(false);
 
-        // Actuliazado - harmonizacao -- btnImportPatientsSESP
-//        Button btnImportPatientsSESP = new Button(grpImport, SWT.NONE);
-//        btnImportPatientsSESP.setText(Messages.getString("GeneralAdmin.button.importPatients.title2")); //$NON-NLS-1$
-//        btnImportPatientsSESP
-//                .setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip2")); //$NON-NLS-1$
-//        btnImportPatientsSESP.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-//                110, 235, 30));
-//        btnImportPatientsSESP.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//        btnImportPatientsSESP
-//                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//                    @Override
-//                    public void widgetSelected(
-//                            org.eclipse.swt.events.SelectionEvent e) {
-//
-//                                cmd_importPatientsSESP();
-//                            }
-//                });
-//        btnImportPatientsSESP.setEnabled(false);
-//
-         // Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
+        // Importar Pacientes : Alterado Colaco 14-08-2018
+        if (iDartProperties.FARMAC) {
+            // Importar Pacientes do ficheiro  : Alterado Colaco 14-08-2018
             Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
-            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
             btnImportPatientsOpenMRS
-                    .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+                    .setToolTipText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
             btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                    110, 235, 30));
+                    100, 235, 27));
             btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
             btnImportPatientsOpenMRS
                     .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
                         @Override
                         public void widgetSelected(
                                 org.eclipse.swt.events.SelectionEvent e) {
-//                            MainPanel importPatients = new MainPanel();
-//                            importPatients.createAndShowGUI();
+                            RestorePatientFarmac restorePatientFarmac = new RestorePatientFarmac();
+                            restorePatientFarmac.createAndShowGUI();
                         }
                     });
             btnImportPatientsOpenMRS.setEnabled(true);
+        } else {
+            // Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
+            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
+            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS
+                    .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+                    100, 235, 27));
+            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnImportPatientsOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            MainPanel importPatients = new MainPanel();
+                            importPatients.createAndShowGUI();
+                        }
+                    });
+            btnImportPatientsOpenMRS.setEnabled(true);
+        }
         
     }
 

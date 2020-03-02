@@ -396,7 +396,7 @@ Aviada]]></text>
 					<subreportParameterExpression><![CDATA[]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression class="java.lang.String"><![CDATA[$P{path} + java .io.File.separator + "PackageDrugsFILA.jasper"]]></subreportExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{path} + java.io.File.separator + "PackageDrugsFILA.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

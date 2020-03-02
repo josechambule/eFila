@@ -37,8 +37,7 @@ import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -153,8 +152,8 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         createRegimenGroup();
         createGrpDrugs();
 
-        enableFields(false);
-        txtDrugGroupName.setFocus();
+        enableFields(true);
+
     }
 
     /**
@@ -219,6 +218,8 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             }
         });
 
+//        txtCodigoRegime.setFocus();
+
         // Regime Terapeutico
         lblDrugGroupName = new Label(grpRegimen, SWT.NONE);
         lblDrugGroupName.setBounds(new Rectangle(30, 45, 110, 20));
@@ -228,12 +229,13 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         txtDrugGroupName = new Text(grpRegimen, SWT.BORDER);
         txtDrugGroupName.setBounds(new Rectangle(160, 45, 220, 20));
         txtDrugGroupName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        txtDrugGroupName.addKeyListener(new KeyAdapter() {
+        txtDrugGroupName.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+            }
+
             @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.character == SWT.CR) {
-                    cmdSearchWidgetSelected();
-                }
+            public void focusLost(FocusEvent focusEvent) {
+                cmdSearchWidgetSelected();
             }
         });
 
@@ -250,13 +252,11 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 
         // if this is adding a new regimen, set
         if (!isAddnotUpdate) {
+            btnSearch.setEnabled(true);
             btnSearch.setText(Messages.getString("adddruggroup.button.drugadd.title")); //$NON-NLS-1$
             btnSearch.setToolTipText(Messages.getString("adddruggroup.button.drugadd.tooltip")); //$NON-NLS-1$
-        } // we're updating a regimen
-        else {
-            btnSearch.setText(Messages.getString("adddruggroup.button.drugsearch.title")); //$NON-NLS-1$
-            btnSearch.setToolTipText(Messages.getString("adddruggroup.button.drugsearch.tooltip")); //$NON-NLS-1$
-
+        }else {
+            btnSearch.setVisible(false);
         }
 
         // Estado do Regime Terapeutico
@@ -590,7 +590,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         intDrugTableSize = 1;
 
         localRegimen = null;
-        enableFields(false);
+//        enableFields(false);
 
     }
 
@@ -615,6 +615,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
 //            result = false;
 //            return result;
 //        }
+
         if (txtDrugGroupName.getText().trim().equals(EMPTY)) { //$NON-NLS-1$
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
@@ -622,6 +623,15 @@ public class AddRegimeTerapeutico extends GenericFormGui {
             missing
                     .setMessage(Messages.getString("adddruggroup.drug.group.blank")); //$NON-NLS-1$
             missing.open();
+            txtDrugGroupName.setFocus();
+            result = false;
+        } else if (isAddnotUpdate && DrugManager.regimeTerapeuticoNameExists(getHSession(),
+                txtDrugGroupName.getText().trim()) && !isAddnotUpdate ) {
+            MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            mb.setText(Messages.getString("adddruggroup.drug.grp.exists")); //$NON-NLS-1$
+            mb
+                    .setMessage(MessageFormat.format(Messages.getString("adddruggroup.drug.grp.name"), txtDrugGroupName.getText().trim())); //$NON-NLS-1$
+            mb.open();
             txtDrugGroupName.setFocus();
             result = false;
         } else if ((!isAddnotUpdate && !(localRegimen.getRegimeesquema().equalsIgnoreCase(txtDrugGroupName.getText().trim()))) && DrugManager.regimenNameExists(getHSession(), txtDrugGroupName
@@ -729,26 +739,27 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         if (isAddnotUpdate) {
 
             if (txtDrugGroupName.getText().trim().equals(EMPTY)) { //$NON-NLS-1$
-                MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
+                MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR  | SWT.OK);
                 mb.setText(Messages.getString("adddruggroup.drug.entered")); //$NON-NLS-1$
                 mb.setMessage(Messages.getString("adddruggroup.drug.enetered.error")); //$NON-NLS-1$
                 mb.open();
                 txtDrugGroupName.setFocus();
             } else if (DrugManager.regimeTerapeuticoNameExists(getHSession(),
                     txtDrugGroupName.getText().trim())) {
-                MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
+                MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
                 mb.setText(Messages.getString("adddruggroup.drug.grp.exists")); //$NON-NLS-1$
                 mb
                         .setMessage(MessageFormat.format(Messages.getString("adddruggroup.drug.grp.name"), txtDrugGroupName.getText().trim())); //$NON-NLS-1$
                 mb.open();
-                txtCodigoRegime.setFocus();
+                txtDrugGroupName.setFocus();
             } else {
                 enableFields(true);
-                txtCodigoRegime.setFocus();
+                txtDrugGroupName.setFocus();
             }
 
         } // else, we're updating an existing drug group, so open up a search GUI
         else {
+
             Search regimenSearch = new Search(getHSession(), getShell(), CommonObjects.REGIMEN);
 
             if (regimenSearch.getValueSelected() != null) {
@@ -773,7 +784,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
      * localRegimen object to get the values
      */
     public void loadRegimenDetails() {
-        btnSearch.setEnabled(true);
         txtDrugGroupName.setText(localRegimen.getRegimeesquema());
         txtCodigoRegime.setText(localRegimen.getCodigoregime());
         txtRegimeEspecifico.setText(localRegimen.getRegimenomeespecificado());
@@ -844,7 +854,6 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         lblPicAddDrug.setEnabled(enable);
         btnAddDrug.setEnabled(enable);
         btnRemoveDrug.setEnabled(enable);
-        btnSearch.setEnabled(!enable);
         btnSaveDrugGroup.setEnabled(enable);
         rdBtnActive.setEnabled(enable);
         rdBtnInactive.setEnabled(enable);
@@ -897,19 +906,21 @@ public class AddRegimeTerapeutico extends GenericFormGui {
      * @return
      */
     private boolean changesMade(RegimeTerapeutico newRegimen) {
-        if (!newRegimen.getRegimeesquema().equalsIgnoreCase(localRegimen.getRegimeesquema())) {
-            return true;
-        } else if (newRegimen.isActive() != localRegimen.isActive()) {
-            return true;
-        } else if (!newRegimen.getCodigoregime().equalsIgnoreCase(localRegimen.getCodigoregime())) {
-            return true;
-        } else if (!newRegimen.getRegimenomeespecificado().equalsIgnoreCase(localRegimen.getRegimenomeespecificado())) {
-            return true;
-        } else if (!newRegimen.getRegimenDrugs().containsAll(localRegimen.getRegimenDrugs())
-                && newRegimen.getRegimenDrugs().size() != localRegimen.getRegimenDrugs().size()) {
-            return true;
+        if(newRegimen !=null && localRegimen !=null) {
+            if (!newRegimen.getRegimeesquema().equalsIgnoreCase(localRegimen.getRegimeesquema())) {
+                return true;
+            } else if (newRegimen.isActive() != localRegimen.isActive()) {
+                return true;
+            } else if (!newRegimen.getCodigoregime().equalsIgnoreCase(localRegimen.getCodigoregime())) {
+                return true;
+            } else if (!newRegimen.getRegimenomeespecificado().equalsIgnoreCase(localRegimen.getRegimenomeespecificado())) {
+                return true;
+            } else if (!newRegimen.getRegimenDrugs().containsAll(localRegimen.getRegimenDrugs())
+                    && newRegimen.getRegimenDrugs().size() != localRegimen.getRegimenDrugs().size()) {
+                return true;
+            }
         }
-        return false;
+            return false;
 
     }
 

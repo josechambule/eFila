@@ -73,7 +73,7 @@ GenericFormGuiInterface {
 
 	/**
 	 * This method is called during the class initialisation and should be used
-	 * to call the {@link GenericFormGui#buildCompHeader(String, String)}
+	 * to call the
 	 * method.
 	 *
 	 * @see GenericFormGui#buildCompHeader(String, iDartImage)
@@ -108,7 +108,7 @@ GenericFormGuiInterface {
 
 	/**
 	 * Method buildShell.
-	 * @param shellTxt String
+	 * @param bounds String
 	 * @param bounds Rectangle
 	 */
 	public void buildShell(String shellTitle, Rectangle bounds) {
@@ -239,8 +239,8 @@ GenericFormGuiInterface {
 
 		// lblBackGround
 		Label lblBg = new Label(getCompHeader(), SWT.NONE | SWT.SHADOW_IN);
-		lblBg.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+//		lblBg.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+		lblBg.setBackground(ResourceUtils.getColor(iDartColor.RED));
 		fdata = new FormData();
 		fdata.left = new FormAttachment(lblHeader, -6, SWT.LEFT);
 		fdata.top = new FormAttachment(lblHeader, -6, SWT.TOP);

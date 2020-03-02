@@ -124,8 +124,8 @@ new Rectangle(0, 0, 900, 700));
 
 		// lblHeader
 		lblHeader = new Label(getCompHeader(), SWT.CENTER | SWT.SHADOW_IN);
-		lblHeader.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+//		lblHeader.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+		lblHeader.setBackground(ResourceUtils.getColor(iDartColor.GRAY));
 		// lblHeader.setForeground(ResourceUtils.getColor(iDartColor.WHITE));
 		lblHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_14));
 		lblHeader.setBounds(new Rectangle(60, 11, 600, 30));
@@ -134,8 +134,8 @@ new Rectangle(0, 0, 900, 700));
 		// lblBackGround
 		Label lblBg = new Label(getCompHeader(), SWT.CENTER | SWT.SHADOW_IN);
 		lblBg.setBounds(new Rectangle(60, 6, 600, 30));
-		lblBg.setBackground(ResourceUtils
-				.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+//		lblBg.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_NORMAL_SHADOW_BACKGROUND));
+		lblBg.setBackground(ResourceUtils.getColor(iDartColor.GRAY));
 
 	}
 

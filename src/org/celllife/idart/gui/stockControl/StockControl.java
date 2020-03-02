@@ -21,6 +21,10 @@ package org.celllife.idart.gui.stockControl;
 
 import java.sql.Connection;
 
+import migracao.swingreverse.ExportDispenses;
+import migracao.swingreverse.ImportarDispensasFarmac;
+import migracao.swingreverse.SyncDispensasFarmac;
+import migracao.swingreverse.SyncPacientesFarmac;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
@@ -81,6 +85,10 @@ public class StockControl extends GenericAdminGui {
 	private Label lblSync;
 
 	private Button btnSync;
+
+	private Label lblDispenseToOpenmrs;
+
+	private Button btnDispenseToOpenmrs;
 
 	private Label lblDestroyStock;
 
@@ -186,50 +194,8 @@ public class StockControl extends GenericAdminGui {
 					}
 				});
 
-		lblDispenseToPatients = new Label(compOptions, SWT.NONE);
-		lblDispenseToPatients.setBounds(new Rectangle(50, 180, 50, 43));
-		lblDispenseToPatients.setImage(ResourceUtils
-				.getImage(iDartImage.PATIENTARRIVES));
-
-		lblDispenseToPatients.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				// Desactivar scan out pakagers
-				// cmdDispenseToPatientsSelected();
-			}
-
-			@Override
-			public void mouseDown(MouseEvent md) {
-			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent dc) {
-			}
-		});
-
-		btnDispenseToPatients = new Button(compOptions, SWT.NONE);
-		btnDispenseToPatients.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
-		btnDispenseToPatients.setBounds(new Rectangle(105, 182, 260, 40));
-		btnDispenseToPatients.setText(Messages
-				.getString("StockControl.button.scanOut")); //$NON-NLS-1$
-		btnDispenseToPatients.setToolTipText(Messages
-				.getString("StockControl.button.scanOut.tooltip")); //$NON-NLS-1$
-		btnDispenseToPatients
-				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdDispenseToPatientsSelected();
-					}
-				});
-
-		// Desactivar scan out pakagers
-		btnDispenseToPatients.setEnabled(false);
-
-		if (iDartProperties.downReferralMode
-				.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
+// Intro FARMAC
+		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) && !iDartProperties.FARMAC) {
 
 			// lblDistributePackages
 			lblDistributePackages = new Label(compOptions, SWT.NONE);
@@ -242,7 +208,8 @@ public class StockControl extends GenericAdminGui {
 				@Override
 				public void mouseUp(MouseEvent mu) {
 
-					cmdDistributePackagesToClinicSelected();
+					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
+					syncPacientesFarmac.createAndShowGUI();
 				}
 
 				@Override
@@ -256,83 +223,157 @@ public class StockControl extends GenericAdminGui {
 
 			// btnDistributePackages
 			btnDistributePackagesToClinic = new Button(compOptions, SWT.NONE);
-			btnDistributePackagesToClinic.setBounds(new Rectangle(105, 262,
-					260, 40));
-			String label = Messages
-					.getString("StockControl.button.scanDownRefer"); //$NON-NLS-1$
+			btnDistributePackagesToClinic.setBounds(new Rectangle(105, 262, 260, 40));
+			btnDistributePackagesToClinic.setText("Exportar Pacientes Referidos para FARMAC");
+			btnDistributePackagesToClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+			btnDistributePackagesToClinic.setToolTipText(Messages.getString("FExportar Pacientes Referidos para FARMAC")); //$NON-NLS-1$
 
-			btnDistributePackagesToClinic.setText(label);
-
-			btnDistributePackagesToClinic.setFont(ResourceUtils
-					.getFont(iDartFont.VERASANS_8));
-			btnDistributePackagesToClinic.setToolTipText(Messages
-					.getString("StockControl.button.scanDownRefer.tooltip")); //$NON-NLS-1$
-
-			btnDistributePackagesToClinic
-					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-						@Override
-						public void widgetSelected(
-								org.eclipse.swt.events.SelectionEvent e) {
-							cmdDistributePackagesToClinicSelected();
-						}
-					});
+			btnDistributePackagesToClinic.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				@Override
+				public void widgetSelected(
+						org.eclipse.swt.events.SelectionEvent e) {
+					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
+					syncPacientesFarmac.createAndShowGUI();
+				}
+			});
 
 		}
 
-		// Return Uncollected Packages
-		lblSync = new Label(compOptions, SWT.NONE);
-		if (iDartProperties.downReferralMode
-				.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
-			lblSync.setBounds(new Rectangle(50, 340, 50, 43));
+		// Enviar Dispensas para OpenMRS : Alterado Colaco 06-07-2016
+		if (!iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) || !iDartProperties.FARMAC) {
+			lblDispenseToOpenmrs = new Label(compOptions, SWT.NONE);
+			lblDispenseToOpenmrs.setBounds(new Rectangle(50, 180, 50, 43));
+			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
+
+			lblDispenseToOpenmrs.addMouseListener(new MouseListener() {
+
+				@Override
+				public void mouseUp(MouseEvent mu) {
+					ExportDispenses exportDispenses = new ExportDispenses();
+					exportDispenses.createAndShowGUIExport();
+				}
+
+				@Override
+				public void mouseDown(MouseEvent md) {
+				}
+
+				@Override
+				public void mouseDoubleClick(MouseEvent dc) {
+				}
+			});
+
+			btnDispenseToOpenmrs = new Button(compOptions, SWT.NONE);
+			btnDispenseToOpenmrs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+			btnDispenseToOpenmrs.setBounds(new Rectangle(105, 182, 260, 40));
+			btnDispenseToOpenmrs.setText("Enviar Dispensas para OpenMRS"); //$NON-NLS-1$
+			btnDispenseToOpenmrs.setToolTipText(Messages.getString("Clique este menu para enviar as dispensas do iDART para OpenMRS")); //$NON-NLS-1$
+			btnDispenseToOpenmrs.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				@Override
+				public void widgetSelected(
+						org.eclipse.swt.events.SelectionEvent e) {
+					ExportDispenses exportDispenses = new ExportDispenses();
+					exportDispenses.createAndShowGUIExport();
+				}
+			});
+
+			if (getUserPermission() != 'C') {
+				btnDispenseToOpenmrs.setEnabled(false);
+			}else
+				btnDispenseToOpenmrs.setEnabled(true);
+
 		} else {
-			lblSync.setBounds(new Rectangle(50, 260, 50, 43));
+			lblDispenseToOpenmrs = new Label(compOptions, SWT.NONE);
+			lblDispenseToOpenmrs.setBounds(new Rectangle(50, 180, 50, 43));
+			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
+
+			lblDispenseToOpenmrs.addMouseListener(new MouseListener() {
+
+				@Override
+				public void mouseUp(MouseEvent mu) {
+					SyncDispensasFarmac syncDispensasFarmac = new SyncDispensasFarmac();
+					syncDispensasFarmac.createAndShowGUI();
+				}
+
+				@Override
+				public void mouseDown(MouseEvent md) {
+				}
+
+				@Override
+				public void mouseDoubleClick(MouseEvent dc) {
+				}
+			});
+
+			btnDispenseToOpenmrs = new Button(compOptions, SWT.NONE);
+			btnDispenseToOpenmrs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+			btnDispenseToOpenmrs.setBounds(new Rectangle(105, 182, 260, 40));
+			btnDispenseToOpenmrs.setText("Exportar Dispensas para US"); //$NON-NLS-1$
+			btnDispenseToOpenmrs.setToolTipText(Messages.getString("Clique este menu para enviar as dispensas do iDART a Unidade Sanotaria")); //$NON-NLS-1$
+			btnDispenseToOpenmrs.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				@Override
+				public void widgetSelected(
+						org.eclipse.swt.events.SelectionEvent e) {
+					SyncDispensasFarmac syncDispensasFarmac = new SyncDispensasFarmac();
+					syncDispensasFarmac.createAndShowGUI();
+				}
+			});
+
+			btnDispenseToOpenmrs.setEnabled(true);
 		}
-		lblSync.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
-		lblSync.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseUp(MouseEvent mu) {
-
-				cmdSync();
+		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) && !iDartProperties.FARMAC) {
+			// Return Uncollected Packages
+			lblSync = new Label(compOptions, SWT.NONE);
+			if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
+				lblSync.setBounds(new Rectangle(50, 340, 50, 43));
+			} else {
+				lblSync.setBounds(new Rectangle(50, 260, 50, 43));
 			}
 
-			@Override
-			public void mouseDown(MouseEvent md) {
-			}
+			lblSync.setImage(ResourceUtils
+					.getImage(iDartImage.PACKAGERETURN));
+			lblSync.addMouseListener(new MouseListener() {
 
-			@Override
-			public void mouseDoubleClick(MouseEvent dc) {
-			}
-		});
+				@Override
+				public void mouseUp(MouseEvent mu) {
 
-		btnSync = new Button(compOptions, SWT.NONE);
-		btnSync.setText("Sincronizar Dispensas com o SESP"); //$NON-NLS-1$
-		if (iDartProperties.downReferralMode
-				.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
+					ImportarDispensasFarmac importarDispensasFarmac = new ImportarDispensasFarmac();
+					importarDispensasFarmac.createAndShowGUIExport();
+				}
+
+				@Override
+				public void mouseDown(MouseEvent md) {
+				}
+
+				@Override
+				public void mouseDoubleClick(MouseEvent dc) {
+				}
+			});
+
+			btnSync = new Button(compOptions, SWT.NONE);
+			btnSync.setText("FARMAC:Carregar Dispensas"); //$NON-NLS-1$
+
 			btnSync.setBounds(new Rectangle(105, 342, 260, 40));
-		} else {
-			btnSync.setBounds(new Rectangle(105, 262, 260, 40));
+
+			btnSync.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+			btnSync
+					.setToolTipText("FARMAC: Carregar Dispensas"); //$NON-NLS-1$
+			btnSync.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseUp(MouseEvent mu) {
+
+					ImportarDispensasFarmac importarDispensasFarmac = new ImportarDispensasFarmac();
+					importarDispensasFarmac.createAndShowGUIExport();
+				}
+
+				@Override
+				public void mouseDown(MouseEvent md) {
+				}
+
+				@Override
+				public void mouseDoubleClick(MouseEvent dc) {
+				}
+			});
 		}
-		btnSync.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnSync.setToolTipText("Clique este menu para sincronizar as bases de dados iDART e SESP"); //$NON-NLS-1$
-		btnSync.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-
-				cmdSync();
-			}
-
-			@Override
-			public void mouseDown(MouseEvent md) {
-			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent dc) {
-			}
-		});
-
-		btnSync.setEnabled(Boolean.FALSE);
-
+//
 		// lblStockArrives
 		lblStockArrives = new Label(compOptions, SWT.NONE);
 		lblStockArrives.setBounds(new Rectangle(415, 22, 50, 43));
@@ -450,8 +491,11 @@ public class StockControl extends GenericAdminGui {
 			}
 		});
 
-		// Desactivar btnReturnStock
-		btnSync.setEnabled(false);
+		if (getUserPermission() != 'A') {
+			btnSync.setEnabled(false);
+		}else
+			btnSync.setEnabled(true);
+
 		// lblStockTake
 		lblStockTake = new Label(compOptions, SWT.NONE);
 		lblStockTake.setBounds(new Rectangle(415, 260, 50, 43));

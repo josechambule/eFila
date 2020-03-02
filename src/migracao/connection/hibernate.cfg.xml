@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+
+    <mapping class="org.celllife.idart.database.hibernate.Patient"/>
+    <mapping class="org.celllife.idart.database.hibernate.Clinic"/>
+    <mapping class="org.celllife.idart.database.hibernate.NationalClinics"/>
+    <mapping class="org.celllife.idart.database.hibernate.Episode"/>
+    <mapping class="org.celllife.idart.database.hibernate.IdentifierType"/>
+    <mapping class="org.celllife.idart.database.hibernate.Appointment"/>
+    <mapping class="org.celllife.idart.database.hibernate.PatientAttribute"/>
+    <mapping class="org.celllife.idart.database.hibernate.AttributeType"/>
+    <mapping class="org.celllife.idart.database.hibernate.PatientIdentifier"/>
+    <mapping class="org.celllife.idart.database.hibernate.Pregnancy"/>
+    <mapping class="org.celllife.idart.database.hibernate.Prescription"/>
+    <mapping class="org.celllife.idart.database.hibernate.Doctor"/>
+    <mapping class="org.celllife.idart.database.hibernate.PrescribedDrugs"/>
+    <mapping class="org.celllife.idart.database.hibernate.Drug"/>
+    <mapping class="org.celllife.idart.database.hibernate.Form"/>
+    <mapping class="org.celllife.idart.database.hibernate.AtcCode"/>
+    <mapping class="org.celllife.idart.database.hibernate.User"/>
+    <mapping class="org.celllife.idart.database.hibernate.Packages"/>
+    <mapping class="org.celllife.idart.database.hibernate.PackagedDrugs"/>
+    <mapping class="org.celllife.idart.database.hibernate.tmp.PackageDrugInfo"/>
+    <mapping class="org.celllife.idart.database.hibernate.Stock"/>
+    <mapping class="org.celllife.idart.database.hibernate.StockCenter"/>
+    <mapping class="org.celllife.idart.database.hibernate.ChemicalDrugStrength"/>
+    <mapping class="org.celllife.idart.database.hibernate.ChemicalCompound"/>
+    <mapping class="org.celllife.idart.database.hibernate.AccumulatedDrugs"/>
+    <mapping class="org.celllife.idart.database.hibernate.PillCount"/>
+    <mapping class="org.celllife.idart.database.hibernate.StockAdjustment"/>
+    <mapping class="org.celllife.idart.database.hibernate.StockTake"/>
+    <mapping class="org.celllife.idart.database.hibernate.LinhaT"/>
+    <mapping class="org.celllife.idart.database.hibernate.RegimeTerapeutico"/>
+    <mapping class="org.celllife.idart.database.hibernate.RegimenDrugs"/>
+    <mapping class="org.celllife.idart.database.hibernate.AlternatePatientIdentifier"/>
+    <mapping class="org.celllife.idart.database.hibernate.SyncTempPatient"/>
+    <mapping class="org.celllife.idart.database.hibernate.SyncTempDispense"/>
+  </session-factory>
+</hibernate-configuration>

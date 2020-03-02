@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PillCount;
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.tmp.DeletedItem;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
@@ -29,79 +27,79 @@ public class TemporaryRecordsManager {
 //	 * @return boolean
 //	 * @throws HibernateException
 //	 */
-//	public static boolean savePackageDrugInfosToDB(Session s, List<PackageDrugInfo> pdList) throws HibernateException {
-//		log.info("Saving package drug infos.");
-//		for (PackageDrugInfo pdi : pdList) {
-//			if (pdi.getId() == 0) {
-//				try{
-//					s.save(pdi);
-//				}catch(Exception e){
-//					System.out.println("Erro 1: "+e.getMessage());
-//				}
-//				//Para farmac Insere dispensas para US
-//				if (iDartProperties.FARMAC) {
-//					savePackageDrugInfosFarmac(s, pdi);
-//				}
-//			}
-//		}
-//		return true;
-//	}
-//
-//	public static boolean savePackageDrugInfosFarmac(Session sess, PackageDrugInfo pdi) throws HibernateException {
-//		log.info("Saving package drug infos FARMAC");
-//		SyncTempDispense dispenseFarmac = new SyncTempDispense();
-//		dispenseFarmac.setDate(pdi.getPackagedDrug().getParentPackage().getPrescription().getDate());
-//		dispenseFarmac.setClinicalstage(pdi.getPackagedDrug().getParentPackage().getPrescription().getClinicalStage());
-//		dispenseFarmac.setCurrent(pdi.getPackagedDrug().getParentPackage().getPrescription().getCurrent());
-//		dispenseFarmac.setReasonforupdate(pdi.getPackagedDrug().getParentPackage().getPrescription().getReasonForUpdate());
-//		dispenseFarmac.setDuration(pdi.getPackagedDrug().getParentPackage().getPrescription().getDuration());
-//		dispenseFarmac.setDoctor(pdi.getPackagedDrug().getParentPackage().getPrescription().getDoctor().getId());
-//		dispenseFarmac.setEnddate(pdi.getPackagedDrug().getParentPackage().getPrescription().getEndDate());
-//		dispenseFarmac.setRegimeid(pdi.getPackagedDrug().getParentPackage().getPrescription().getRegimeTerapeutico().getRegimeesquema());
-//		dispenseFarmac.setLinhaid(pdi.getPackagedDrug().getParentPackage().getPrescription().getLinha().getLinhanome());
-//		dispenseFarmac.setNotes(pdi.getPackagedDrug().getParentPackage().getPrescription().getNotes());
-//		dispenseFarmac.setMotivomudanca(pdi.getPackagedDrug().getParentPackage().getPrescription().getMotivoMudanca());
-//		dispenseFarmac.setWeight(pdi.getPackagedDrug().getParentPackage().getPrescription().getWeight());
-//		dispenseFarmac.setAf(pdi.getPackagedDrug().getParentPackage().getPrescription().getAf());
-//		dispenseFarmac.setCa(pdi.getPackagedDrug().getParentPackage().getPrescription().getCa());
-//		dispenseFarmac.setCcr(pdi.getPackagedDrug().getParentPackage().getPrescription().getCcr());
-//		dispenseFarmac.setPpe(pdi.getPackagedDrug().getParentPackage().getPrescription().getPpe());
-//		dispenseFarmac.setPtv(pdi.getPackagedDrug().getParentPackage().getPrescription().getPtv());
-//		dispenseFarmac.setTb(pdi.getPackagedDrug().getParentPackage().getPrescription().getTb());
-//		dispenseFarmac.setFr(pdi.getPackagedDrug().getParentPackage().getPrescription().getFr());
-//		dispenseFarmac.setGaac(pdi.getPackagedDrug().getParentPackage().getPrescription().getGaac());
-//		dispenseFarmac.setSaaj(pdi.getPackagedDrug().getParentPackage().getPrescription().getSaaj());
-//		dispenseFarmac.setTpc(pdi.getPackagedDrug().getParentPackage().getPrescription().getTpc());
-//		dispenseFarmac.setTpi(pdi.getPackagedDrug().getParentPackage().getPrescription().getTpi());
-//		dispenseFarmac.setPatient(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getId());
-//		dispenseFarmac.setDispensatrimestral(pdi.getPackagedDrug().getParentPackage().getPrescription().getDispensaTrimestral());
-//		dispenseFarmac.setTipodt(pdi.getPackagedDrug().getParentPackage().getPrescription().getTipoDT());
-//		dispenseFarmac.setDrugtypes(pdi.getPackagedDrug().getParentPackage().getPrescription().getDrugTypes());
-//		dispenseFarmac.setDatainicionoutroservico(pdi.getPackagedDrug().getParentPackage().getPrescription().getDatainicionoutroservico());
-//		dispenseFarmac.setModified(pdi.getPackagedDrug().getParentPackage().getPrescription().getModified());
-//		dispenseFarmac.setPatientid(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getPatientId());
-//		dispenseFarmac.setPatientfirstname(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getFirstNames());
-//		dispenseFarmac.setPatientlastname(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getLastname());
-//		dispenseFarmac.setPickupdate(pdi.getPickupDate());
-//		dispenseFarmac.setQtyinhand(pdi.getQtyInHand());
-//		dispenseFarmac.setQtyinlastbatch(pdi.getQtyInLastBatch());
-//		dispenseFarmac.setSummaryqtyinhand(pdi.getSummaryQtyInHand());
-//		dispenseFarmac.setTimesperday(pdi.getTimesPerDay());
-//		dispenseFarmac.setWeekssupply(pdi.getWeeksSupply());
-//		dispenseFarmac.setSyncTempDispenseid(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getRace());
-//		dispenseFarmac.setExpirydate(pdi.getExpiryDate());
-//		dispenseFarmac.setDateexpectedstring(pdi.getDateExpectedString());
-//		dispenseFarmac.setDrugname(pdi.getDrugName());
-//		dispenseFarmac.setDispensedate(pdi.getDispenseDate());
-//		try {
-//			sess.save(dispenseFarmac);
-//		} catch (Exception e) {
-//			System.err.println("Erro ao gravar " + e.getMessage());
-//		}
-//
-//		return true;
-//
-//	}
+	public static boolean savePackageDrugInfosToDB(Session s, List<PackageDrugInfo> pdList) throws HibernateException {
+		log.info("Saving package drug infos.");
+		for (PackageDrugInfo pdi : pdList) {
+			if (pdi.getId() == 0) {
+				try{
+					s.save(pdi);
+				}catch(Exception e){
+					System.out.println("Erro 1: "+e.getMessage());
+				}
+				//Para farmac Insere dispensas para US
+				if (iDartProperties.FARMAC) {
+					savePackageDrugInfosFarmac(s, pdi);
+				}
+			}
+		}
+		return true;
+	}
+
+	public static boolean savePackageDrugInfosFarmac(Session sess, PackageDrugInfo pdi) throws HibernateException {
+		log.info("Saving package drug infos FARMAC");
+		SyncTempDispense dispenseFarmac = new SyncTempDispense();
+		dispenseFarmac.setDate(pdi.getPackagedDrug().getParentPackage().getPrescription().getDate());
+		dispenseFarmac.setClinicalstage(pdi.getPackagedDrug().getParentPackage().getPrescription().getClinicalStage());
+		dispenseFarmac.setCurrent(pdi.getPackagedDrug().getParentPackage().getPrescription().getCurrent());
+		dispenseFarmac.setReasonforupdate(pdi.getPackagedDrug().getParentPackage().getPrescription().getReasonForUpdate());
+		dispenseFarmac.setDuration(pdi.getPackagedDrug().getParentPackage().getPrescription().getDuration());
+		dispenseFarmac.setDoctor(pdi.getPackagedDrug().getParentPackage().getPrescription().getDoctor().getId());
+		dispenseFarmac.setEnddate(pdi.getPackagedDrug().getParentPackage().getPrescription().getEndDate());
+		dispenseFarmac.setRegimeid(pdi.getPackagedDrug().getParentPackage().getPrescription().getRegimeTerapeutico().getRegimeesquema());
+		dispenseFarmac.setLinhaid(pdi.getPackagedDrug().getParentPackage().getPrescription().getLinha().getLinhanome());
+		dispenseFarmac.setNotes(pdi.getPackagedDrug().getParentPackage().getPrescription().getNotes());
+		dispenseFarmac.setMotivomudanca(pdi.getPackagedDrug().getParentPackage().getPrescription().getMotivoMudanca());
+		dispenseFarmac.setWeight(pdi.getPackagedDrug().getParentPackage().getPrescription().getWeight());
+		dispenseFarmac.setAf(pdi.getPackagedDrug().getParentPackage().getPrescription().getAf());
+		dispenseFarmac.setCa(pdi.getPackagedDrug().getParentPackage().getPrescription().getCa());
+		dispenseFarmac.setCcr(pdi.getPackagedDrug().getParentPackage().getPrescription().getCcr());
+		dispenseFarmac.setPpe(pdi.getPackagedDrug().getParentPackage().getPrescription().getPpe());
+		dispenseFarmac.setPtv(pdi.getPackagedDrug().getParentPackage().getPrescription().getPtv());
+		dispenseFarmac.setTb(pdi.getPackagedDrug().getParentPackage().getPrescription().getTb());
+		dispenseFarmac.setFr(pdi.getPackagedDrug().getParentPackage().getPrescription().getFr());
+		dispenseFarmac.setGaac(pdi.getPackagedDrug().getParentPackage().getPrescription().getGaac());
+		dispenseFarmac.setSaaj(pdi.getPackagedDrug().getParentPackage().getPrescription().getSaaj());
+		dispenseFarmac.setTpc(pdi.getPackagedDrug().getParentPackage().getPrescription().getTpc());
+		dispenseFarmac.setTpi(pdi.getPackagedDrug().getParentPackage().getPrescription().getTpi());
+		dispenseFarmac.setPatient(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getId());
+		dispenseFarmac.setDispensatrimestral(pdi.getPackagedDrug().getParentPackage().getPrescription().getDispensaTrimestral());
+		dispenseFarmac.setTipodt(pdi.getPackagedDrug().getParentPackage().getPrescription().getTipoDT());
+		dispenseFarmac.setDrugtypes(pdi.getPackagedDrug().getParentPackage().getPrescription().getDrugTypes());
+		dispenseFarmac.setDatainicionoutroservico(pdi.getPackagedDrug().getParentPackage().getPrescription().getDatainicionoutroservico());
+		dispenseFarmac.setModified(pdi.getPackagedDrug().getParentPackage().getPrescription().getModified());
+		dispenseFarmac.setPatientid(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getPatientId());
+		dispenseFarmac.setPatientfirstname(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getFirstNames());
+		dispenseFarmac.setPatientlastname(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getLastname());
+		dispenseFarmac.setPickupdate(pdi.getPickupDate());
+		dispenseFarmac.setQtyinhand(pdi.getQtyInHand());
+		dispenseFarmac.setQtyinlastbatch(pdi.getQtyInLastBatch());
+		dispenseFarmac.setSummaryqtyinhand(pdi.getSummaryQtyInHand());
+		dispenseFarmac.setTimesperday(pdi.getTimesPerDay());
+		dispenseFarmac.setWeekssupply(pdi.getWeeksSupply());
+		dispenseFarmac.setSyncTempDispenseid(pdi.getPackagedDrug().getParentPackage().getPrescription().getPatient().getRace());
+		dispenseFarmac.setExpirydate(pdi.getExpiryDate());
+		dispenseFarmac.setDateexpectedstring(pdi.getDateExpectedString());
+		dispenseFarmac.setDrugname(pdi.getDrugName());
+		dispenseFarmac.setDispensedate(pdi.getDispenseDate());
+		try {
+			sess.save(dispenseFarmac);
+		} catch (Exception e) {
+			System.err.println("Erro ao gravar " + e.getMessage());
+		}
+
+		return true;
+
+	}
 
 	/**
 	 * Method saveAdherenceRecordsToDB.

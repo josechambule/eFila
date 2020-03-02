@@ -34,7 +34,6 @@ import model.manager.DrugManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.reports.PatientHistoryReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.function.AndRule;
 import org.celllife.function.DateRuleFactory;
@@ -96,19 +95,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import static org.celllife.idart.commonobjects.CommonObjects.enableContentProposal;
 
 public class AddPrescription extends GenericFormGui implements
         iDARTChangeListener {
@@ -205,9 +196,9 @@ public class AddPrescription extends GenericFormGui implements
 
     // cotrimoxazol & isoniazida
     /*private Button chkBtnTPI;
-	
+
      private Button chkBtnTPC;
-	
+
      private Label tpi_tpc;*/
     private Patient thePatient;
 
@@ -257,7 +248,7 @@ public class AddPrescription extends GenericFormGui implements
 
     private Text txtWeight;
 
-    private CCombo cmbRegime;
+    private Combo cmbRegime;
 
     private Button btnRemoveDrug;
 
@@ -309,7 +300,7 @@ public class AddPrescription extends GenericFormGui implements
                 checkFirstPrescription();
                 loadPatientDetails();
                 enableFields(true);
-                //cmbLinha.setEnabled(Boolean.FALSE);  
+                //cmbLinha.setEnabled(Boolean.FALSE);
                 txtPatientId.setEnabled(false);
                 btnSearch.setEnabled(false);
                 btnEkapaSearch.setEnabled(false);
@@ -689,8 +680,8 @@ public class AddPrescription extends GenericFormGui implements
 //		lblPTV.setBounds(new Rectangle(320, 40, 50, 20));
 //		lblPTV.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 //		lblPTV.setText("PTV");
-//		
-//		
+//
+//
 //		Label lblPPE = new Label(grpPatientID, SWT.NONE);
 //		lblPPE.setBounds(new Rectangle(320, 60, 50, 20));
 //		lblPPE.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -722,7 +713,7 @@ public class AddPrescription extends GenericFormGui implements
 //			public void mouseUp(MouseEvent mu) {
 //				if(rdBtnPPE.getSelection())
 //					rdBtnPPE.setSelection(false);
-//					
+//
 //			}
 //		});
         /*
@@ -1010,38 +1001,39 @@ public class AddPrescription extends GenericFormGui implements
         lblRegime.setText("*  Regime:");
         lblRegime.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-        cmbRegime = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
+        cmbRegime = new Combo(grpParticulars, SWT.BORDER );
         cmbRegime.setBounds(new Rectangle(450, 95, 130, 20));
         cmbRegime.setVisibleItemCount(10);
         cmbRegime.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbRegime.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 //			   POPULA OS REGIMES
-        CommonObjects.populateRegimesTerapeuticos(getHSession(), cmbRegime, false);
+        CommonObjects.populateRegimesTerapeuticosCombo(getHSession(), cmbRegime, false);
         cmbRegime.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 cmbRegime.removeAll();
-                CommonObjects.populateRegimesTerapeuticos(getHSession(), cmbRegime, false);
+                CommonObjects.populateRegimesTerapeuticosCombo(getHSession(), cmbRegime, false);
                 cmbRegime.setVisibleItemCount(Math.min(cmbRegime.getItemCount(), 25));
             }
         });
+
+        enableContentProposal(cmbRegime);
         //cmbRegime.setFocus();
-        cmbRegime.setEnabled(false);
 
         /*Adicionado pr Colaco Nhongo - Botao para pesquisar o Regime Terapeutico*/
         // Inicio
-        btnSearchDrugsGroup = new Button(grpParticulars, SWT.NONE);
-        btnSearchDrugsGroup.setBounds(new Rectangle(585, 94, 30, 24));
-        btnSearchDrugsGroup.setImage(ResourceUtils.getImage(iDartImage.SEARCH_ICON_16));
-        btnSearchDrugsGroup.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnSearchDrugsGroup.setToolTipText("Pressione neste botão para pesquisar o Regime Terapeutico");
-
-        btnSearchDrugsGroup.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-                cmdDrugGroupSearchWidgetSelected();
-            }
-        });
+//        btnSearchDrugsGroup = new Button(grpParticulars, SWT.NONE);
+//        btnSearchDrugsGroup.setBounds(new Rectangle(585, 94, 30, 24));
+//        btnSearchDrugsGroup.setImage(ResourceUtils.getImage(iDartImage.SEARCH_ICON_16));
+//        btnSearchDrugsGroup.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+//        btnSearchDrugsGroup.setToolTipText("Pressione neste botão para pesquisar o Regime Terapeutico");
+//
+//        btnSearchDrugsGroup.addSelectionListener(new SelectionAdapter() {
+//            @Override
+//            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+//                cmdDrugGroupSearchWidgetSelected();
+//            }
+//        });
 // Fim
 
         // Linha Terapeutica
@@ -1223,17 +1215,17 @@ public class AddPrescription extends GenericFormGui implements
          tpi_tpc.setBounds(new Rectangle(200, 135, 150, 20));
          tpi_tpc.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
          tpi_tpc.setText("O Paciente também levantou:");
-		
-		
-		
+
+
+
          chkBtnTPC = new Button(grpDrugs, SWT.CHECK);
          chkBtnTPC.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
          chkBtnTPC.setBounds(new Rectangle(350, 135, 100, 20));
          chkBtnTPC.setText("Cotrimoxazol");
          chkBtnTPC.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
          chkBtnTPC.setSelection(false);
-		
-		
+
+
          chkBtnTPI = new Button(grpDrugs, SWT.CHECK);
          chkBtnTPI.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
          chkBtnTPI.setBounds(new Rectangle(450, 135, 100, 20));
@@ -2402,7 +2394,7 @@ public class AddPrescription extends GenericFormGui implements
                                 }
                             }
 
-                            // de-normalise table to speed up reports 
+                            // de-normalise table to speed up reports
                             if (localPrescription.containsARVDrug()) {
                                 localPrescription.setDrugTypes("ARV");
                             }
@@ -2535,21 +2527,21 @@ public class AddPrescription extends GenericFormGui implements
                                 }
                             }
 
-                            // de-normalise table to speed up reports 
+                            // de-normalise table to speed up reports
                             if (localPrescription.containsARVDrug()) {
                                 localPrescription.setDrugTypes("ARV");
                             }
 
                             if (patientsPrescriptions.size() > 0) {
-                                    PackageManager.saveNewPrescription(getHSession(), localPrescription, deletedPrescription);
-                                    getHSession().flush();
-                                    tx.commit();
-                                    getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
-                                    MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
-                                    done.setText("Base de dados actualizada");
-                                    done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
-                                    done.open();
-                                    saveSuccessful = true;
+                                PackageManager.saveNewPrescription(getHSession(), localPrescription, deletedPrescription);
+                                getHSession().flush();
+                                tx.commit();
+                                getLog().info("Saved Prescription for Patient: " + localPrescription.getPatient().getId());
+                                MessageBox done = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
+                                done.setText("Base de dados actualizada");
+                                done.setMessage("Prescrição '".concat(localPrescription.getPrescriptionId()).concat("' foi adicionado ao paciente '").concat(localPrescription.getPatient().getPatientId()).concat("'."));
+                                done.open();
+                                saveSuccessful = true;
                             } else if (patientsPrescriptions.size() == 0) {
                                 PackageManager.saveNewPrescription(getHSession(), localPrescription, deletedPrescription);
                                 getHSession().flush();
@@ -3015,8 +3007,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbDispensaSemestral.setEnabled(enable);
         cmbDispensaTrimestral.setEnabled(enable);
         cmbDuration.setEnabled(enable);
-        // cmbRegime.setEnabled(enable);
-        btnSearchDrugsGroup.setEnabled(enable);
+        cmbRegime.setEnabled(enable);
         txtWeight.setEnabled(enable);
         txtAreaNotes.setEnabled(enable);
 
@@ -3054,7 +3045,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbUpdateReason.setBackground(theColour);
         cmbDoctor.setBackground(theColour);
         cmbDuration.setBackground(theColour);
-        //cmbRegime.setBackground(theColour);
+        cmbRegime.setBackground(theColour);
         cmbMotivoMudanca.setBackground(theColour);
     }
 
