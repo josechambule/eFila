@@ -233,22 +233,22 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						cellStyle.setAlignment(HorizontalAlignment.CENTER);
 
 												
-						HSSFRow healthFacility = sheet.getRow(8); 
+						HSSFRow healthFacility = sheet.getRow(10); 
 						HSSFCell healthFacilityCell = healthFacility.createCell(2); 
 						healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
 						healthFacilityCell.setCellStyle(cellStyle); 
 						
-						HSSFRow reportPeriod = sheet.getRow(8);
+						HSSFRow reportPeriod = sheet.getRow(10);
 						HSSFCell reportPeriodCell = reportPeriod.createCell(6);
 						reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
 						reportPeriodCell.setCellStyle(cellStyle); 
 
-						HSSFRow reportYear = sheet.getRow(9);
+						HSSFRow reportYear = sheet.getRow(11);
 						HSSFCell reportYearCell = reportYear.createCell(6);
 						reportYearCell.setCellValue(sdfYear.format(theStartDate));
 						reportYearCell.setCellStyle(cellStyle); 
 
-						  for(int i=12; i<= sheet.getLastRowNum(); i++) 
+						  for(int i=14; i<= sheet.getLastRowNum(); i++) 
 						  { 
 							HSSFRow row = sheet.getRow(i);
 						  	deleteRow(sheet,row);  
@@ -257,7 +257,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						  out = new FileOutputStream(new File("HistoricoLevantamento.xls"));
 						  workbook.write(out); 
 						
-						int rowNum = 12;
+						int rowNum = 14;
 						
 						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
 							
@@ -328,7 +328,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			HSSFRow removingRow = sheet.getRow(rowIndex);
 			if (removingRow != null) {
 				sheet.removeRow(removingRow);
-				System.out.println("Deleting.... ");
 			}
 		}
 	}

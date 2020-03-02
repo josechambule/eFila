@@ -19,6 +19,7 @@ import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
+import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.HistoricoLevantamentoXLS;
 import model.manager.reports.SecondLinePatients;
 
@@ -2792,6 +2793,154 @@ public class ConexaoJDBC {
 		
 		return levantamentoXLSs;
 		
+	}
+	
+	
+	public List<AbsenteeForSupportCall> getAbsenteeForSupportCallQuartelyDispensation(String miniumDaysLate, String maximumDaysLate, String reportDate, String clinicId) throws ClassNotFoundException, SQLException {
+		
+		conecta(iDartProperties.hibernateUsername, 
+				iDartProperties.hibernatePassword);
+		
+		String query = "SELECT pat.patientid as patID, "+
+		"(pat.lastname||', '|| pat.firstnames) AS name, "+
+		"pat.nextofkinname AS supportername, "+
+		"pat.nextofkinphone AS supporterphone,"+
+		"pat.cellphone AS cellno, "+
+		"date_part('year',age(pat.dateofbirth)) AS age, "+
+		"app.appointmentDate::date AS dateexpected, "+
+		"('"+ reportDate +"'::date-app.appointmentDate::date)::integer AS dayssinceexpected, "+
+		"CASE "+
+		    "WHEN (('"+ reportDate +"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
+		    "ELSE "+
+			"CASE "+
+			    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
+		              "ELSE null "+
+		    	"END "+
+		"END "+
+		  "AS datelostfollowup, "+
+		  "CASE "+
+		    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
+		    "ELSE null "+
+		  "END "+
+		  "AS datereturn, "+
+		"MAX(app.appointmentDate) AS ultimaData "+
+		"FROM patient as pat, appointment AS app, patientidentifier as pi,identifiertype AS idt "+
+		"WHERE app.patient = pat.id "+
+		"AND idt.name = 'NID' "+
+		"AND pi.value = pat.patientid "+
+		"AND idt.id = pi.type_id "+
+		"AND "+ clinicId +" = pat.clinic "+
+		"AND app.appointmentDate is not null "+
+		"AND (app.visitDate is null) "+
+		"AND ('"+ reportDate +"'::date - app.appointmentDate::date) between '"+ miniumDaysLate +"' and '"+ maximumDaysLate +"' "+
+		"AND exists (select prescription.id "+
+		"FROM prescription "+
+		"WHERE prescription.patient = pat.id "+
+		"AND prescription.dispensatrimestral = 1 "+
+		"AND (('"+ reportDate +"' between prescription.date and prescription.endDate)or(('"+ reportDate +"' > prescription.date)) and (prescription.endDate is null))) "+
+		"AND exists (select id from episode where episode.patient = pat.id "+
+		"AND (('"+ reportDate +"' between episode.startdate and episode.stopdate)or(('" + reportDate + "' > episode.startdate)) and (episode.stopdate is null))) "+
+		"GROUP BY 1,2,3,4,5,6,7,8,9,10 "+
+		"ORDER BY patID asc";
+		
+		List<AbsenteeForSupportCall> absenteeForSupportCalls = new ArrayList<AbsenteeForSupportCall>();
+		ResultSet rs = st.executeQuery(query);
+		
+		if (rs != null) { 
+			
+			while(rs.next()) {
+				AbsenteeForSupportCall absenteeForSupportCall = new AbsenteeForSupportCall(); 
+				absenteeForSupportCall.setPatientIdentifier(rs.getString("patid"));  
+				absenteeForSupportCall.setNome(rs.getString("name"));
+				absenteeForSupportCall.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+				absenteeForSupportCall.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+				absenteeForSupportCall.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+				absenteeForSupportCall.setContacto(rs.getString("cellno"));
+				
+				absenteeForSupportCalls.add(absenteeForSupportCall);
+			}
+			rs.close();
+		}
+		
+		st.close();
+		conn_db.close();
+		
+		return absenteeForSupportCalls;
+		
+	}
+	
+	public List<AbsenteeForSupportCall> getAbsenteeForSupportCallHold (String miniumDaysLate, String maximumDaysLate, String reportDate, String clinicId) throws ClassNotFoundException, SQLException {
+		
+		conecta(iDartProperties.hibernateUsername,  
+				iDartProperties.hibernatePassword);
+		
+		String query = "SELECT "+
+		"pat.patientid AS patID, "+
+		"(pat.lastname||', '|| pat.firstnames) AS name, "+
+		"pat.nextofkinname AS supportername, "+
+		"pat.nextofkinphone AS supporterphone, "+
+		"pat.cellphone AS cellno, "+
+		"date_part('year',age(pat.dateofbirth)) AS age, "+
+		"app.appointmentDate::date AS dateexpected, "+
+		"('"+ reportDate +"'::date-app.appointmentDate::date)::integer AS dayssinceexpected, "+
+		"CASE "+
+		    "WHEN (('"+ reportDate +"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
+		    "ELSE "+
+			"CASE "+
+			    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
+		              "ELSE NULL "+
+		    	"END "+
+		"END "+
+		  "AS datelostfollowup, "+
+		  "CASE "+
+		    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
+		    "ELSE NULL "+
+		  "END "+
+		  "AS datereturn, "+
+		"MAX(app.appointmentDate) AS ultimaData "+
+		"FROM patient AS pat, appointment AS app, patientidentifier AS pi,identifiertype AS idt "+
+		"WHERE app.patient = pat.id "+
+		"AND idt.name = 'NID' "+
+		"AND pi.value = pat.patientid "+
+		"AND idt.id = pi.type_id "+
+		"AND '" + clinicId + "' = pat.clinic "+
+		"AND app.appointmentDate IS NOT NULL "+
+		"AND (app.visitDate IS NULL) "+
+		"AND ('"+ reportDate +"'::date - app.appointmentDate::date) BETWEEN '"+ miniumDaysLate +"' AND '" + maximumDaysLate + "' "+
+		"AND EXISTS (select prescription.id "+
+		"FROM prescription "+
+		"WHERE prescription.patient = pat.id "+
+		"AND prescription.dispensatrimestral = 0 "+
+		"AND prescription.reasonforupdate = 'Inicia' "+
+		"AND (('"+ reportDate +"' BETWEEN prescription.date and prescription.endDate) OR (('"+ reportDate +"' > prescription.date)) AND (prescription.endDate IS NULL))) "+
+		"AND exists (SELECT id FROM episode WHERE episode.patient = pat.id "+
+		"AND (('" + reportDate + "' BETWEEN episode.startdate AND episode.stopdate) OR (('"+ reportDate +"' > episode.startdate)) AND (episode.stopdate IS NULL))) "+
+		"GROUP BY 1,2,3,4,5,6,7,8,9,10 "+
+		"ORDER BY patID ASC";
+		
+		List<AbsenteeForSupportCall> absenteeForSupportCallsHold = new ArrayList<AbsenteeForSupportCall>();
+		ResultSet rs = st.executeQuery(query);
+		
+		if (rs != null) { 
+			
+			while(rs.next()) {
+				AbsenteeForSupportCall absenteeForSupportCallHold = new AbsenteeForSupportCall(); 
+				absenteeForSupportCallHold.setPatientIdentifier(rs.getString("patid"));  
+				absenteeForSupportCallHold.setNome(rs.getString("name"));
+				absenteeForSupportCallHold.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+				absenteeForSupportCallHold.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+				absenteeForSupportCallHold.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+				absenteeForSupportCallHold.setContacto(rs.getString("cellno"));
+				
+				absenteeForSupportCallsHold.add(absenteeForSupportCallHold);
+			}
+			rs.close();
+		}
+		
+		st.close();
+		conn_db.close();
+		
+		return absenteeForSupportCallsHold;
 	}
 	
 	public List<SecondLinePatients> getSecondLinePatients (String startDate, String endDate) throws ClassNotFoundException, SQLException {
