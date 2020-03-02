@@ -8,6 +8,7 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableItem;
 import org.hibernate.HibernateException;
@@ -91,11 +92,11 @@ public class DrugManager {
             throws HibernateException {
         boolean result = false;
         List<RegimeTerapeutico> results;
-      SQLQuery query = session.createSQLQuery(
+        SQLQuery query = session.createSQLQuery(
                 "select rt.* from drug d " +
-						"inner join regimendrugs rg on rg.drug = d.id " +
+                        "inner join regimendrugs rg on rg.drug = d.id " +
                         "inner join regimeterapeutico rt on rg.regimen = rt.regimeid " +
-                        "where upper(d.name) = '"+drugName.toUpperCase()+"'");
+                        "where upper(d.name) = '" + drugName.toUpperCase() + "'");
 
         query.addEntity(RegimeTerapeutico.class);
         results = query.list();
@@ -630,6 +631,16 @@ public class DrugManager {
             throws HibernateException {
         sess.save(theRegToSave);
 
+    }
+
+    public static void updateRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
+            throws HibernateException {
+        Session session = HibernateUtil.getNewSession();
+        session.beginTransaction();
+        session.merge(theRegToSave);
+        session.getTransaction().commit();
+        session.flush();
+        session.close();
     }
 
     /**

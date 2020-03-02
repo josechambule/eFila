@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaRegimesReport" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error">
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="1.4483218986834392"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="date" class="java.util.Date" isForPrompting="false">
@@ -17,53 +17,45 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["C:\\Users\\colaco.nhango\\Documents\\Git\\eFila\\Reports\\"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="totallinhas1" class="java.lang.String"/>
+	<parameter name="totallinhas2" class="java.lang.String"/>
+	<parameter name="totallinhas3" class="java.lang.String"/>
+	<parameter name="totallinhas" class="java.lang.String"/>
+	<parameter name="pacientesEmTarv" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select abc.regimeesquema, abc.count, abc2.count2 from (
-select
-regimeesquema, count(*)
-from (select* from prescription,regimeterapeutico, package
-where prescription.regimeid=regimeterapeutico.regimeid AND
-	  	 prescription.ppe='F'
-
-  		  AND regimeterapeutico.active=true and prescription.id=package.prescription
-
-  		  AND
-
-  		   package.pickupdate::timestamp::date >=
-$P{monthStart}::timestamp::date  AND  package.pickupdate::timestamp::date <=
-	   $P{monthEnd}::timestamp::date  order by pediatrico asc) as tabela
-	    group by regimeesquema
-) AS abc
-
-full OUTER JOIN (select
-regimeesquema, count(*) as count2
-from (select* from prescription,regimeterapeutico, package
-where prescription.regimeid=regimeterapeutico.regimeid AND
-	  	 prescription.ppe='F'
-
-  		  AND regimeterapeutico.active=true and prescription.id=package.prescription
-AND package.weekssupply=8
-  		   AND
-  		   package.pickupdate::timestamp::date >=
-	$P{monthStart}::timestamp::date - INTEGER '30' AND  package.pickupdate::timestamp::date <=
-	    $P{monthEnd}::timestamp::date - INTEGER '30'  order by pediatrico asc) as tabela
-	    group by regimeesquema
-) as abc2 on abc.regimeesquema=abc2.regimeesquema]]>
+		<![CDATA[SELECT  distinct rt.regimeesquema,rt.codigoregime, count(rt.regimeesquema)
+FROM (select max(pre.date) predate, pat.id
+from package pa
+inner join packageddrugs pds on pds.parentpackage = pa.id
+inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
+inner join prescription pre on pre.id = pa.prescription
+inner join patient pat ON pre.patient=pat.id
+where (pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd}) OR
+(pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dateEnd})
+GROUP BY 2 order by 2) pack
+inner join prescription p on p.date = pack.predate and p.patient=pack.id
+inner join regimeterapeutico rt on rt.regimeid = p.regimeid
+INNER JOIN (SELECT MAX (startdate),patient, episode.startreason
+			 from episode WHERE stopdate is null
+			 GROUP BY 2,3
+) visit on visit.patient = pack.id
+where visit.startreason not like '%ansito%' and visit.startreason not like '%ternidade%'
+group by 1,2 order by 1]]>
 	</queryString>
 	<field name="regimeesquema" class="java.lang.String"/>
+	<field name="codigoregime" class="java.lang.String"/>
 	<field name="count" class="java.lang.Long"/>
-	<field name="count2" class="java.lang.Long"/>
 	<group name="total_pacientes">
 		<groupExpression><![CDATA[null]]></groupExpression>
 		<groupHeader>
 			<band/>
 		</groupHeader>
 		<groupFooter>
-			<band height="60">
+			<band height="92">
 				<staticText>
 					<reportElement mode="Opaque" x="141" y="0" width="123" height="23" backcolor="#D0D8FC"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="12" isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Total:]]></text>
 				</staticText>
@@ -79,23 +71,6 @@ AND package.weekssupply=8
 						<pen lineWidth="2.0"/>
 					</graphicElement>
 				</line>
-				<textField pattern="">
-					<reportElement mode="Opaque" x="265" y="0" width="49" height="23" backcolor="#E4E4F4"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$P{totalpacientesfarmacia}]]></textFieldExpression>
-				</textField>
-				<subreport>
-					<reportElement x="0" y="24" width="365" height="36"/>
-					<subreportParameter name="totalpacientesfarmacia"/>
-					<subreportParameter name="username"/>
-					<subreportParameter name="monthEnd"/>
-					<subreportParameter name="dateEnd"/>
-					<subreportParameter name="date"/>
-					<subreportParameter name="dataelaboracao"/>
-					<subreportParameter name="monthStart"/>
-					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "MmiaLinhasSubReportNovaVersao.jasper"]]></subreportExpression>
-				</subreport>
 				<line>
 					<reportElement key="line-3" mode="Opaque" x="140" y="0" width="1" height="23" forecolor="#000000" backcolor="#000000"/>
 					<graphicElement fill="Solid">
@@ -114,10 +89,135 @@ AND package.weekssupply=8
 						<pen lineWidth="2.0"/>
 					</graphicElement>
 				</line>
-				<textField pattern="">
-					<reportElement mode="Opaque" x="316" y="0" width="49" height="23" backcolor="#E4E4F4"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textField>
+					<reportElement mode="Opaque" x="265" y="0" width="48" height="23" backcolor="#D0D8FC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{pacientesEmTarv}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="263" y="75" width="51" height="16" backcolor="#E4E4F4"/>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="267" y="35" width="43" height="13"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totallinhas1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="62" width="263" height="12" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[3ª Linhas   ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="49" width="263" height="12" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[2ª Linhas   ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="138" y="75" width="126" height="16" backcolor="#D0D8FC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="24" width="364" height="11" forecolor="#FFFFFF" backcolor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Linhas Terapêuicas]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="137" y="75" width="1" height="17" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<textField>
+					<reportElement x="267" y="77" width="43" height="13"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totallinhas}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="1" y="48" width="365" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<textField>
+					<reportElement x="267" y="49" width="43" height="12"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totallinhas2}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="74" width="365" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<textField>
+					<reportElement x="267" y="62" width="43" height="12"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{totallinhas3}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="35" width="263" height="13" backcolor="#AFCAF5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[1ª Linhas   ]]></text>
+				</staticText>
+				<line>
+					<reportElement x="1" y="61" width="364" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="0" y="24" width="1" height="51" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="137" y="91" width="229" height="1"/>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="365" y="24" width="1" height="68" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="314" y="35" width="1" height="56" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement key="line-3" mode="Opaque" x="264" y="35" width="1" height="56" forecolor="#000000" backcolor="#000000"/>
+					<graphicElement fill="Solid">
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</line>
 			</band>
 		</groupFooter>
 	</group>
@@ -139,9 +239,11 @@ AND package.weekssupply=8
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="61" y="0" width="199" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[ $F{regimeesquema}]]></textFieldExpression>
+				<reportElement x="65" y="0" width="198" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{regimeesquema}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-3" mode="Opaque" x="0" y="0" width="1" height="20" forecolor="#000000" backcolor="#000000"/>
@@ -163,7 +265,9 @@ AND package.weekssupply=8
 			</line>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement x="267" y="2" width="44" height="16"/>
-				<textElement/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression class="java.lang.Long"><![CDATA[$F{count}]]></textFieldExpression>
 			</textField>
 			<line>
@@ -172,6 +276,13 @@ AND package.weekssupply=8
 					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement x="1" y="2" width="59" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{codigoregime}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

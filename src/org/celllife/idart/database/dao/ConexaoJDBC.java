@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package org.celllife.idart.database.dao;
 
 import java.sql.Connection;
@@ -8,7 +9,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -28,7 +31,6 @@ import model.manager.reports.SecondLinePatients;
  * dos dados
  *
  * @author EdiasJambaia
- *
  */
 public class ConexaoJDBC {
 
@@ -52,13 +54,13 @@ public class ConexaoJDBC {
         // String url = "jdbc:postgresql://192.168.0.105/pharm?charSet=LATIN1";
         String url = iDartProperties.hibernateConnectionUrl;
 
-		// System.out.println(" url "+iDartProperties.hibernateConnectionUrl);
+        // System.out.println(" url "+iDartProperties.hibernateConnectionUrl);
         log.info("Conectando ao banco de dados\nURL = " + url);
 
         // Carregar o driver
         Class.forName("org.postgresql.Driver");
 
-		// Conectar com o servidor de banco de dados
+        // Conectar com o servidor de banco de dados
         conn_db = DriverManager.getConnection(url, usr, pwd);
 
         log.info("Conectado...Criando a declara��o");
@@ -66,6 +68,318 @@ public class ConexaoJDBC {
         st = conn_db.createStatement();
 
     }
+
+    /**
+     * Mapa para pacientes e desagregacao no MMIA
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public Map MMIA(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT  distinct visit.patient,p.reasonforupdate, p.dispensatrimestral, " +
+                "p.dispensasemestral, p.prep,p.ptv,p.dc,p.ppe,p.ce,l.linhanome, " +
+                "EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int dateofbirth, visit.startreason, " +
+                "CASE " +
+                "	WHEN pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
+                "	ELSE 'Transporte' " +
+                "END  tipodt " +
+                "FROM (select max(pre.date) predate, pat.id " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription p on p.date = pack.predate and p.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "inner join package pa on pa.prescription = p.id " +
+                "inner join linhat l on l.linhaid = p.linhaid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id ";
+
+        int totalpacientestransito = 0;
+        int totalpacientesinicio = 0;
+        int totalpacientesmanter = 0;
+        int totalpacientesalterar = 0;
+        int totalpacientestransferidoDe = 0;
+        int totalpacientesmanterTransporte = 0;
+
+        int mesesdispensadosparaDM = 0;
+        int mesesdispensadosparaDT = 0;
+        int mesesdispensadosparaDS = 0;
+
+        int totalpacientesppe = 0;
+        int totalpacientesprep = 0;
+        int totalpacientesCE = 0;
+        int totalpacienteptv = 0;
+        int totalpacientedc = 0;
+
+        int totallinhas1 = 0;
+        int totallinhas2 = 0;
+        int totallinhas3 = 0;
+
+        int pacientesEmTarv = 0;
+        int adultosEmTarv = 0;
+        int pediatrico04EmTARV = 0;
+        int pediatrico59EmTARV = 0;
+        int pediatrico1014EmTARV = 0;
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                boolean nonuspatient = rs.getString("startreason").contains("nsito") || rs.getString("startreason").contains("ternidade");
+
+                // Paciente Transito ou Inicio na Maternidade
+                if (nonuspatient) {
+                    totalpacientestransito++;
+                } else
+                    pacientesEmTarv++;
+
+                // Tipo de Pacinte
+                if (!nonuspatient && rs.getString("reasonforupdate").contains("Inicia")) {
+                    totalpacientesinicio++;
+                } else if (!nonuspatient && (rs.getString("reasonforupdate").contains("Manter") || rs.getString("reasonforupdate").contains("Reiniciar"))) {
+                    totalpacientesmanter++;
+                } else if (!nonuspatient && rs.getString("reasonforupdate").contains("Alterar")) {
+                    totalpacientesalterar++;
+                } else if (!nonuspatient && rs.getString("reasonforupdate").contains("ransfer")) {
+                    totalpacientestransferidoDe++;
+                }
+
+                // Manuntencao Transporte
+                if (!nonuspatient && rs.getString("tipodt").contains("Transporte")) {
+                    totalpacientesmanterTransporte++;
+                }
+
+                // Dispensa Trimenstral ou Semestral
+                if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 0) {
+                    mesesdispensadosparaDM++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 1 && rs.getInt("dispensasemestral") == 0) {
+                    mesesdispensadosparaDT++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 1) {
+                    mesesdispensadosparaDS++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 1) {
+                    mesesdispensadosparaDS++;
+                }
+
+                // Sector de Levantamento
+                if (!nonuspatient && !rs.getString("prep").equalsIgnoreCase("F")) {
+                    totalpacientesprep++;
+                }
+                if (!nonuspatient && !rs.getString("ptv").equalsIgnoreCase("F")) {
+                    totalpacienteptv++;
+                }
+                if (!nonuspatient && !rs.getString("dc").equalsIgnoreCase("F")) {
+                    totalpacientedc++;
+                }
+                if (!nonuspatient && !rs.getString("ppe").equalsIgnoreCase("F")) {
+                    totalpacientesppe++;
+                }
+                if (!nonuspatient && !rs.getString("ce").equalsIgnoreCase("F")) {
+                    totalpacientesCE++;
+                }
+                // linha Terapeutica
+                if (!nonuspatient && rs.getString("linhanome").contains("1")) {
+                    totallinhas1++;
+                } else if (!nonuspatient && rs.getString("linhanome").contains("2")) {
+                    totallinhas2++;
+                } else if (!nonuspatient && rs.getString("linhanome").contains("3")) {
+                    totallinhas3++;
+                }
+
+                // idade
+                if (!nonuspatient && rs.getInt("dateofbirth") >= 15) {
+                    adultosEmTarv++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 0 && rs.getInt("dateofbirth") <= 4) {
+                    pediatrico04EmTARV++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 5 && rs.getInt("dateofbirth") <= 9) {
+                    pediatrico59EmTARV++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 10 && rs.getInt("dateofbirth") <= 14) {
+                    pediatrico1014EmTARV++;
+                }
+            }
+            rs.close();
+        }
+
+        map.put("totalpacientestransito", totalpacientestransito);
+        map.put("totalpacientesinicio", totalpacientesinicio);
+        map.put("totalpacientesmanter", totalpacientesmanter);
+        map.put("totalpacientesalterar", totalpacientesalterar);
+        map.put("totalpacientestransferidoDe", totalpacientestransferidoDe);
+        map.put("mesesdispensadosparaDM", mesesdispensadosparaDM);
+        map.put("mesesdispensadosparaDT", mesesdispensadosparaDT);
+        map.put("mesesdispensadosparaDS", mesesdispensadosparaDS);
+        map.put("totalpacientesmanterTransporte", totalpacientesmanterTransporte);
+        map.put("totalpacientesppe", totalpacientesppe);
+        map.put("totallinhas1", totallinhas1);
+        map.put("totallinhas2", totallinhas2);
+        map.put("totallinhas3", totallinhas3);
+        map.put("totallinhas", totallinhas1 + totallinhas2 + totallinhas3);
+        map.put("totalpacientesprep", totalpacientesprep);
+        map.put("totalpacientesCE", totalpacientesCE);
+        map.put("totalpacienteptv", totalpacienteptv);
+        map.put("totalpacientedc", totalpacientedc);
+        map.put("pacientesEmTarv", pacientesEmTarv);
+        map.put("adultosEmTarv", adultosEmTarv);
+        map.put("pediatrico04EmTARV", pediatrico04EmTARV);
+        map.put("pediatrico59EmTARV", pediatrico59EmTARV);
+        map.put("pediatrico1014EmTARV", pediatrico1014EmTARV);
+        return map;
+
+    }
+
+    /**
+     * Mapa para pacientes e desagregacao no Relatorio de DT
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public Map DispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT 	distinct pat.patientid, pat.firstnames, " +
+                "		pat.lastname, " +
+                "		pg_catalog.date(pre.date) dataprescricao, " +
+                "		pg_catalog.date(pack.pickupdate) dataLevantamento, " +
+                "		pack.dateexpectedstring proximoLevantamento , " +
+                "		reg.regimeesquema, " +
+                "		CASE " +
+                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipodt " +
+                "			ELSE 'Transporte' " +
+                "		END  tipodt " +
+                "FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription pre on pre.date = pack.predate and pre.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id " +
+                "WHERE pre.dispensatrimestral = 1 " +
+                "order by 8 ";
+
+        int totalpacientesmanter = 0;
+        int totalpacientesnovos = 0;
+        int totalpacienteManuntencaoTransporte = 0;
+        int totalpacienteCumulativo = 0;
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                totalpacienteCumulativo++;
+                // Tipo de Pacinte
+                if (rs.getString("tipodt").contains("Novo")) {
+                    totalpacientesnovos++;
+                } else if ((rs.getString("tipodt").contains("Manunte"))) {
+                    totalpacientesmanter++;
+                } else if (rs.getString("tipodt").contains("Transporte")) {
+                    totalpacienteManuntencaoTransporte++;
+                }
+            }
+            rs.close();
+        }
+
+        map.put("totalpacientesnovos", totalpacientesnovos);
+        map.put("totalpacientesmanter", totalpacientesmanter);
+        map.put("totalpacienteManuntencaoTransporte", totalpacienteManuntencaoTransporte);
+        map.put("totalpacienteCumulativo", totalpacienteCumulativo);
+        return map;
+
+    }
+
+    /**
+     * Mapa para pacientes e desagregacao no Relatorio de Ds
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public Map DispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT 	distinct pat.patientid, pat.firstnames, " +
+                "		pat.lastname, " +
+                "		pg_catalog.date(pre.date) dataprescricao, " +
+                "		pg_catalog.date(pack.pickupdate) dataLevantamento, " +
+                "		pack.dateexpectedstring proximoLevantamento , " +
+                "		reg.regimeesquema, " +
+                "		CASE " +
+                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipodt " +
+                "			ELSE 'Transporte' " +
+                "		END  tipodt " +
+                "FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription pre on pre.date = pack.predate and pre.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id " +
+                "WHERE pre.dispensasemestral = 1 " +
+                "order by 8 ";
+
+        int totalpacientesmanter = 0;
+        int totalpacientesnovos = 0;
+        int totalpacienteManuntencaoTransporte = 0;
+        int totalpacienteCumulativo = 0;
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                totalpacienteCumulativo++;
+                // Tipo de Pacinte
+                if (rs.getString("tipodt").contains("Novo")) {
+                    totalpacientesnovos++;
+                } else if ((rs.getString("tipodt").contains("Manunte"))) {
+                    totalpacientesmanter++;
+                } else if (rs.getString("tipodt").contains("Transporte")) {
+                    totalpacienteManuntencaoTransporte++;
+                }
+            }
+            rs.close();
+        }
+
+        map.put("totalpacientesnovos", totalpacientesnovos);
+        map.put("totalpacientesmanter", totalpacientesmanter);
+        map.put("totalpacienteManuntencaoTransporte", totalpacienteManuntencaoTransporte);
+        map.put("totalpacienteCumulativo", totalpacienteCumulativo);
+        return map;
+
+    }
+
 
     /**
      * Total de pacientes novos que iniciam dispensa trimestral
@@ -82,7 +396,7 @@ public class ConexaoJDBC {
                 + " FROM ( SELECT patient, dispensatrimestral, date "
                 + " FROM prescription "
                 + " WHERE dispensatrimestral=1 AND tipodt = 'Novo' "
-                + " AND pg_catalog.date(date) >= " + "\'" + startDate + "\'" 
+                + " AND pg_catalog.date(date) >= " + "\'" + startDate + "\'"
                 + " AND pg_catalog.date(date) <=" + " \'" + endDate + "\'"
                 + " group by patient, dispensatrimestral, date ) v ";
 
@@ -143,22 +457,21 @@ public class ConexaoJDBC {
 
         String query = " SELECT count(*) soma "
                 + " FROM ( SELECT distinct pat.id "
-                + "         FROM (select max(pa.pickupdate) pickupdate, pa.prescription, pdit.dateexpectedstring\n"
-                + "                 FROM package pa " 
-                + "                 INNER JOIN packageddrugs pds on pds.parentpackage = pa.id " 
-                + "                 INNER JOIN packagedruginfotmp pdit on pdit.packageddrug = pds.id " 
+                + "         FROM (select max(pre.date) predate,  pat.id "
+                + "                 FROM package pa "
+                + "                 INNER JOIN packageddrugs pds on pds.parentpackage = pa.id "
+                + "                 INNER JOIN prescription pre on pre.id = pa.prescription "
+                + "                 INNER JOIN packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "                  INNER JOIN patient pat ON pre.patient=pat.id "
                 + "                 WHERE pg_catalog.date(pa.pickupdate) < " + "\'" + startDate + "\'" + " AND pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= " + "\'" + endDate + "\'"
-                + "             GROUP BY 2,3"
+                + "             GROUP BY 2"
                 + ") pack "
-                + " INNER JOIN prescription pre on pre.id = pack.prescription\n" 
-                + " INNER JOIN patient pat ON pre.patient=pat.id\n" 
-                + " INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid\n" 
+                + " INNER JOIN prescription pre on pre.date = pack.predate and pre.patient=pack.id "
+                + " INNER JOIN patient pat ON pre.patient=pat.id\n"
+                + " INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid\n"
                 + " WHERE pre.dispensatrimestral = 1 and length(TRIM(pre.tipodt)) > 0 and pre.tipodt is not null"
                 + " group by  pat.id ) v ";
 
-
-
-        
         int total = 0;
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         ResultSet rs = st.executeQuery(query);
@@ -183,24 +496,24 @@ public class ConexaoJDBC {
      */
     public int totalPacientesManuntencaoTransporteDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
 
-          String query = " SELECT count(*) soma "
+        String query = " SELECT count(*) soma "
                 + " FROM ( SELECT distinct pat.id "
-                + "         FROM (select max(pa.pickupdate) pickupdate, pa.prescription, pdit.dateexpectedstring\n"
-                + "                 FROM package pa " 
-                + "                 INNER JOIN packageddrugs pds on pds.parentpackage = pa.id " 
-                + "                 INNER JOIN packagedruginfotmp pdit on pdit.packageddrug = pds.id " 
+                + "         FROM (select max(pre.date) predate,  pat.id "
+                + "                 FROM package pa "
+                + "                 INNER JOIN packageddrugs pds on pds.parentpackage = pa.id "
+                + "                 INNER JOIN prescription pre on pre.id = pa.prescription "
+                + "                 INNER JOIN packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "                  INNER JOIN patient pat ON pre.patient=pat.id "
                 + "                 WHERE pg_catalog.date(pa.pickupdate) < " + "\'" + startDate + "\'" + " AND pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= " + "\'" + endDate + "\'"
-                + "             GROUP BY 2,3"
+                + "             GROUP BY 2"
                 + ") pack "
-                + " INNER JOIN prescription pre on pre.id = pack.prescription\n" 
-                + " INNER JOIN patient pat ON pre.patient=pat.id\n" 
-                + " INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid\n" 
-                + " WHERE pre.dispensasemestral = 1 and length(TRIM(pre.tipods)) > 0 and pre.tipods is not null"
+                + " INNER JOIN prescription pre on pre.date = pack.predate and pre.patient=pack.id "
+                + " INNER JOIN patient pat ON pre.patient=pat.id\n"
+                + " INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid\n"
+                + " WHERE pre.dispensasemestral = 1 and length(TRIM(pre.tipodt)) > 0 and pre.tipodt is not null"
                 + " group by  pat.id ) v ";
 
 
-
-        
         int total = 0;
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         ResultSet rs = st.executeQuery(query);
@@ -272,7 +585,7 @@ public class ConexaoJDBC {
                 + " FROM prescription pr"
                 + " inner join package pack on pack.prescription = pr.id "
                 + " inner join packageddrugs packdrug on packdrug.parentPackage = pack.id "
-                + " WHERE (pr.dispensatrimestral=1 and pr.tipodt = 'Manuntencao')"
+                + " WHERE (pr.dispensatrimestral=1 and pr.tipodt like '%Manunte%')"
                 + " AND pg_catalog.date(pr.date) >= " + "\'" + startDate + "\'" + " AND pg_catalog.date(pr.date) <=" + " \'" + endDate + "\'"
                 + " group by  pr.patient, pr.dispensatrimestral,pr.date ) v ";
 
@@ -300,7 +613,7 @@ public class ConexaoJDBC {
      */
     public int totalPacientesManterDispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
 
-       String query = " SELECT count(*) soma "
+        String query = " SELECT count(*) soma "
                 + " FROM ( SELECT distinct pr.patient, pr.dispensasemestral, pr.date "
                 + " FROM prescription pr"
                 + " inner join package pack on pack.prescription = pr.id "
@@ -339,10 +652,10 @@ public class ConexaoJDBC {
         // Carregar o driver
         Class.forName("org.postgresql.Driver");
 
-		// Conectar com o servidor de banco de dados
+        // Conectar com o servidor de banco de dados
         conn_db = DriverManager.getConnection(url, usr, pwd);
 
-		// st = conn_db.createStatement();
+        // st = conn_db.createStatement();
         return conn_db;
 
     }
@@ -381,7 +694,7 @@ public class ConexaoJDBC {
                 + "(pt.id = p.patient) " + "AND " + "(pt.patientid=\'"
                 + patientid + "\') " + "AND " + "(rt.regimeid=p.regimeid))";
 
-		// ResultSet rs =
+        // ResultSet rs =
         // st.executeQuery("select id, current, duration, reasonforupdate, notes, patientid from PrescriptioToPatient where patientid=\'"+patientid+"\'");
         List<PrescriptionToPatient> ptp = new ArrayList();
         ResultSet rs = st.executeQuery(query);
@@ -427,7 +740,51 @@ public class ConexaoJDBC {
     }
 
     /**
-     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws SQLException
+     */
+    public int mesesDispensadosParaDM(String startDate, String endDate) throws SQLException {
+
+        int mesesPacientes = 0;
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.dispensatrimestral = 0 AND  pre.dispensasemestral = 0 and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+            while (rs.next()) {
+                // numero de semanas dispensadas por 4 para obter numero de meses dispensados
+//                mesesPacientes = rs.getInt("soma") / 4;
+                mesesPacientes = rs.getInt("nrPacientesTarv");
+            }
+            rs.close(); //
+        }
+        return mesesPacientes;
+    }
+
+    /**
      * @param startDate
      * @param endDate
      * @return
@@ -437,25 +794,36 @@ public class ConexaoJDBC {
 
         int mesesPacientes = 0;
 
-        String query = " SELECT count(weekssupply) soma "
-                + " FROM ( SELECT "
-                + " distinct pr.patient, package.weekssupply"
-                + " FROM package "
-                + " inner join packageddrugs on packageddrugs.parentpackage = package.id "
-                + " inner join prescription pr on pr.id = package.prescription "
-                + " WHERE pr.dispensatrimestral = 1 "
-                + " AND pg_catalog.date(package.pickupdate) >= " + "\'" + startDate + "\'"
-                + " AND pg_catalog.date(package.pickupdate) <=" + " \'" + endDate + "\'"
-                + " GROUP BY pr.patient) v";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.dispensatrimestral = 1 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
         ResultSet rs = st.executeQuery(query);
 
         if (rs != null) {
             while (rs.next()) {
                 // numero de semanas dispensadas por 4 para obter numero de meses dispensados
-                mesesPacientes = rs.getInt("soma") / 4;
+//                mesesPacientes = rs.getInt("soma") / 4;
+                mesesPacientes = rs.getInt("nrPacientesTarv");
 
-                //mesesPacientes = mesesPacientes + 1;
             }
             rs.close(); //
         }
@@ -463,7 +831,6 @@ public class ConexaoJDBC {
     }
 
     /**
-     *
      * @param startDate
      * @param endDate
      * @return
@@ -473,25 +840,35 @@ public class ConexaoJDBC {
 
         int mesesPacientes = 0;
 
-        String query = "SELECT count(weekssupply) soma "
-                + " FROM ( SELECT "
-                + " distinct pr.patient, package.weekssupply"
-                + " FROM package "
-                + " inner join packageddrugs on packageddrugs.parentpackage = package.id "
-                + " inner join prescription pr on pr.id = package.prescription "
-                + " WHERE pr.dispensasemestral = 1 AND "
-                + " AND pg_catalog.date(package.pickupdate) >= " + "\'" + startDate + "\'"
-                + " AND pg_catalog.date(package.pickupdate) <=" + " \'" + endDate + "\'"
-                + " GROUP BY pr.patient) v";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.dispensasemestral = 1 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
         ResultSet rs = st.executeQuery(query);
 
         if (rs != null) {
             while (rs.next()) {
                 // numero de semanas dispensadas por 4 para obter numero de meses dispensados
-                mesesPacientes = rs.getInt("soma") / 4;
-
-                //   mesesPacientes = mesesPacientes + 1;
+//                mesesPacientes = rs.getInt("soma") / 4;
+                mesesPacientes = rs.getInt("nrPacientesTarv");
             }
             rs.close(); //
         }
@@ -525,7 +902,7 @@ public class ConexaoJDBC {
                         rs.getInt("consumo_max_ult_3meses"),
                         rs.getInt("saldos"),
                         rs.getInt("consumo_max_ult_3meses") * 3
-                        - rs.getInt("saldos"));
+                                - rs.getInt("saldos"));
 
                 riscos.add(rr);
                 System.out.println(" \n");
@@ -618,22 +995,27 @@ public class ConexaoJDBC {
     public int pacientesActivosEmTarv(String startDate, String endDate)
             throws SQLException, ClassNotFoundException {
 
-        String query = "SELECT COUNT(*) AS nrPacientesTarv "
-                + "FROM ( "
-                + "SELECT packagedruginfotmp.patientid, "
-                + "MAX(packagedruginfotmp.dispensedate) AS lastdispense, "
-                + "to_timestamp(packagedruginfotmp.dateexpectedstring, 'DD Mon YYYY') as dataproximolevantamento "
-                + "FROM package, packagedruginfotmp, patient "
-                + "WHERE package.packageid = packagedruginfotmp.packageid "
-                + "AND ('"
-                + endDate
-                + "'::TIMESTAMP::DATE) - (packagedruginfotmp.dispensedate::TIMESTAMP::DATE) < 60 "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='"
-                + endDate
-                + "'::TIMESTAMP::DATE "
-                + "AND packagedruginfotmp.patientid = patient.patientid "
-                + "GROUP BY packagedruginfotmp.patientid, dataproximolevantamento "
-                + ") AS pacientesTarv";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR  " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
@@ -653,6 +1035,141 @@ public class ConexaoJDBC {
         return numeroDePacientesEmTarv;
     }
 
+    public int pacientesLinhasActivosEmTarv(String startDate, String endDate, int linha)
+            throws SQLException, ClassNotFoundException {
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "inner join linhat l on l.linhaid = pre.linhaid " +
+                "where (l.linhanome like '%" + linha + "%') and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR  " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+
+        int numeroDePacientesEmTarv = 0;
+
+        if (rs != null) {
+            while (rs.next()) {
+                numeroDePacientesEmTarv = rs.getInt("nrPacientesTarv");
+            }
+
+            rs.close();
+        }
+
+        return numeroDePacientesEmTarv;
+    }
+
+    public int pacientesActivosEmTarvMaiorIdade(String startDate, String endDate, int idade)
+            throws SQLException, ClassNotFoundException {
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where ( EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int >=" + idade + ")" +
+                "and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR  " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "')) " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+
+        int numeroDePacientesEmTarv = 0;
+
+        if (rs != null) {
+            while (rs.next()) {
+                numeroDePacientesEmTarv = rs.getInt("nrPacientesTarv");
+            }
+
+            rs.close();
+        }
+
+        return numeroDePacientesEmTarv;
+    }
+
+    public int pacientesActivosEmTarvFaixaEtaria(String startDate, String endDate, int minYears, int maxYears)
+            throws SQLException, ClassNotFoundException {
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int >= " + minYears +
+                "and EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int <= " + maxYears + ")" +
+                "and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR  " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "')) " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+
+        int numeroDePacientesEmTarv = 0;
+
+        if (rs != null) {
+            while (rs.next()) {
+                numeroDePacientesEmTarv = rs.getInt("nrPacientesTarv");
+            }
+
+            rs.close();
+        }
+
+        return numeroDePacientesEmTarv;
+    }
+
+
     /**
      * Total de pacientes que iniciaram o tratamento de ARV num periodo
      *
@@ -666,25 +1183,32 @@ public class ConexaoJDBC {
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND regimeterapeutico.active=true "
-                + "AND prescription.reasonforupdate='Inicia' "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.reasonforupdate='Inicia' and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
-        conecta(iDartProperties.hibernateUsername,
-                iDartProperties.hibernatePassword);
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
 
         ResultSet rs = st.executeQuery(query);
         if (rs != null) {
 
             while (rs.next()) {
 
-                total++;
+                total = rs.getInt("nrPacientesTarv");
 
             }
             rs.close(); //
@@ -697,18 +1221,24 @@ public class ConexaoJDBC {
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package, episode "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND episode.patient=prescription.patient "
-                + "AND episode.startreason='Em Transito' "
-                + "AND regimeterapeutico.active=true "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='"
-                + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='"
-                + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "' " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason like '%nsito%' or visit.startreason like '%aternidade%'" +
+                ") as pacienteTarv";
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
@@ -718,7 +1248,7 @@ public class ConexaoJDBC {
 
             while (rs.next()) {
 
-                total++;
+                total = rs.getInt("nrPacientesTarv");
 
             }
             rs.close(); //
@@ -821,85 +1351,28 @@ public class ConexaoJDBC {
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND regimeterapeutico.active=true " + "AND " + "( "
-                + "prescription.reasonforupdate='Manter' "
-                + "OR prescription.reasonforupdate='Transfer de' "
-                + "OR prescription.reasonforupdate='Reiniciar' " + ") "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC ";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pre.reasonforupdate='Manter' OR pre.reasonforupdate = 'Reiniciar') and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR  " +
+                "((pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) - pg_catalog.date(pa.pickupdate)) > 50 " +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "')) " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
-        /*
-         * String query=" SELECT  DISTINCT " +" dispensa_packege.patientid "
-         * +"	FROM "
-         * 
-         * +"	(SELECT "
-         * 
-         * +"	prescription.id, package.packageid "
-         * 
-         * +" FROM "
-         * 
-         * +" prescription, " +" 	package "
-         * 
-         * +" WHERE "
-         * 
-         * +" prescription.id = package.prescription "
-         * 
-         * +" AND " +"  prescription.ppe=\'F\'  "
-         * 
-         * +" AND  "
-         * 
-         * +
-         * " (prescription.reasonforupdate=\'Manter\' OR prescription.reasonforupdate=\'Transfer de\' OR prescription.reasonforupdate=\'Reiniciar\')  "
-         * 
-         * +" )as prescription_package, "
-         * 
-         * +" ( " +" SELECT "
-         * 
-         * 
-         * +" packagedruginfotmp.patientid, " +" packagedruginfotmp.packageid,"
-         * + "packagedruginfotmp.dispensedate "
-         * 
-         * +" FROM " +" package, packagedruginfotmp "
-         * 
-         * +" WHERE "
-         * 
-         * +" package.packageid=packagedruginfotmp.packageid " +" AND "
-         * 
-         * +"				 packagedruginfotmp.dispensedate::timestamp::date >= " +
-         * "\'"+startDate+
-         * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <= "
-         * + " \'"+endDate+"\'::timestamp::date" +" ) as dispensa_packege ,"
-         * 
-         * + " (" + "     select packagedruginfotmp.patientid,  "
-         * 
-         * + " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
-         * 
-         * 
-         * + " 	 FROM " + " 	 package, packagedruginfotmp  "
-         * 
-         * + "  	 WHERE  "
-         * 
-         * + "	 package.packageid=packagedruginfotmp.packageid  " + "	 AND  "
-         * 
-         * + "					 packagedruginfotmp.dispensedate::timestamp::date >=  " +
-         * "\'"+startDate+
-         * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-         * + " \'"+endDate+"\'::timestamp::date  "
-         * 
-         * + "  group by packagedruginfotmp.patientid "
-         * 
-         * + "     ) as ultimadatahora "
-         * 
-         * + "	 WHERE  " +
-         * "	 dispensa_packege.packageid=prescription_package.packageid  " +
-         * "	  and  " +
-         * "  dispensa_packege.dispensedate=ultimadatahora.lastdispense";
-         */
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
 
@@ -908,7 +1381,7 @@ public class ConexaoJDBC {
 
             while (rs.next()) {
 
-                total++;
+                total = rs.getInt("nrPacientesTarv");
 
             }
             rs.close(); //
@@ -916,6 +1389,105 @@ public class ConexaoJDBC {
         return total;
 
     }
+
+    /**
+     * Total de pacientes na manutencao Transporte de ARV num periodo
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesTransporte(String startDate, String endDate)
+            throws ClassNotFoundException, SQLException {
+        int total = 0;
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate,  pat.id, pa.prescription, pdit.dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pre.dispensatrimestral = 1 OR pre.dispensasemestral = 1)" +
+                "and pg_catalog.date(pa.pickupdate) < '" + startDate + "' and  " +
+                "pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "' " +
+                "GROUP BY 2,3,4) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "where visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                total = rs.getInt("nrPacientesTarv");
+
+            }
+            rs.close();
+        }
+        return total;
+
+    }
+
+    /**
+     * Total de pacientes trabsferidos de num periodo
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesTransferidoDe(String startDate, String endDate)
+            throws ClassNotFoundException, SQLException {
+        int total = 0;
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.reasonforupdate like '%ransfer%' and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                total = rs.getInt("nrPacientesTarv");
+
+            }
+            rs.close(); //
+        }
+        return total;
+
+    }
+
 
     /**
      * PARA MMIA PERSONALIZADO
@@ -1010,82 +1582,24 @@ public class ConexaoJDBC {
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND regimeterapeutico.active=true "
-                + "AND prescription.reasonforupdate='Alterar' "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.reasonforupdate='Alterar' and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
-        /*
-         * String query=" SELECT  DISTINCT " +" dispensa_packege.patientid "
-         * +"	FROM "
-         * 
-         * +"	(SELECT "
-         * 
-         * +"	prescription.id, package.packageid "
-         * 
-         * +" FROM "
-         * 
-         * +" prescription, " +" 	package "
-         * 
-         * +" WHERE "
-         * 
-         * +" prescription.id = package.prescription "
-         * 
-         * +" AND " +"  prescription.ppe=\'F\'  "
-         * 
-         * +" AND  "
-         * 
-         * +" prescription.reasonforupdate=\'Alterar\'  "
-         * 
-         * +" )as prescription_package, "
-         * 
-         * +" ( " +" SELECT "
-         * 
-         * 
-         * +" packagedruginfotmp.patientid, " +" packagedruginfotmp.packageid,"
-         * + " packagedruginfotmp.dispensedate "
-         * 
-         * +" FROM " +" package, packagedruginfotmp "
-         * 
-         * +" WHERE "
-         * 
-         * +" package.packageid=packagedruginfotmp.packageid " +" AND "
-         * 
-         * +"				 packagedruginfotmp.dispensedate::timestamp::date >= " +
-         * "\'"+startDate+
-         * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <= "
-         * + " \'"+endDate+"\'::timestamp::date" +" ) as dispensa_packege ,"
-         * 
-         * + " (" + "     select packagedruginfotmp.patientid,  "
-         * 
-         * + " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
-         * 
-         * 
-         * + " 	 FROM " + " 	 package, packagedruginfotmp  "
-         * 
-         * + "  	 WHERE  "
-         * 
-         * + "	 package.packageid=packagedruginfotmp.packageid  " + "	 AND  "
-         * 
-         * + "					 packagedruginfotmp.dispensedate::timestamp::date >=  " +
-         * "\'"+startDate+
-         * "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-         * + " \'"+endDate+"\'::timestamp::date  "
-         * 
-         * + "  group by packagedruginfotmp.patientid "
-         * 
-         * + "     ) as ultimadatahora "
-         * 
-         * + "	 WHERE  " +
-         * "	 dispensa_packege.packageid=prescription_package.packageid  " +
-         * "	  and  " +
-         * "  dispensa_packege.dispensedate=ultimadatahora.lastdispense";
-         */
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
 
@@ -1094,7 +1608,7 @@ public class ConexaoJDBC {
 
             while (rs.next()) {
 
-                total++;
+                total = rs.getInt("nrPacientesTarv");
 
             }
             rs.close(); //
@@ -1198,15 +1712,23 @@ public class ConexaoJDBC {
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND regimeterapeutico.active=true "
-                + "AND prescription.ppe='T' "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.ppe='T' and pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "' " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
@@ -1214,13 +1736,104 @@ public class ConexaoJDBC {
         ResultSet rs = st.executeQuery(query);
         if (rs != null) {
             while (rs.next()) {
-                total++;
+                total = rs.getInt("nrPacientesTarv");
             }
             rs.close(); //
         }
         return total;
 
     }
+
+    /**
+     * Total de pacientes PrEP
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesPrEP(String startDate, String endDate)
+            throws ClassNotFoundException, SQLException {
+        int total = 0;
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.prep='T' and pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "' " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                total = rs.getInt("nrPacientesTarv");
+            }
+            rs.close(); //
+        }
+        return total;
+
+    }
+
+    /**
+     * Total de pacientes CE
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public int totalPacientesCriancasExpostas(String startDate, String endDate)
+            throws ClassNotFoundException, SQLException {
+        int total = 0;
+
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.ce='T' and pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "' " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                total = rs.getInt("nrPacientesTarv");
+            }
+            rs.close(); //
+        }
+        return total;
+
+    }
+
 
     /**
      * Total de pacientes PPE
@@ -1231,19 +1844,27 @@ public class ConexaoJDBC {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public int totalPacientes_PTV(String startDate, String endDate)
+    public int totalPacientes_PTV(Date startDate, Date endDate)
             throws ClassNotFoundException, SQLException {
         int total = 0;
 
-        String query = "SELECT * FROM prescription,regimeterapeutico, package "
-                + "WHERE prescription.regimeid=regimeterapeutico.regimeid "
-                + "AND regimeterapeutico.active=true "
-                + "AND prescription.ptv='T' "
-                + "AND prescription.id=package.prescription "
-                + "AND package.pickupdate::TIMESTAMP::DATE >='" + startDate
-                + "'::TIMESTAMP::DATE "
-                + "AND  package.pickupdate::TIMESTAMP::DATE <='" + endDate
-                + "'::TIMESTAMP::DATE " + "ORDER BY pediatrico ASC";
+        String query = "SELECT count(*) nrPacientesTarv " +
+                "FROM ( " +
+                "SELECT  distinct visit.patient " +
+                "FROM (select max(pa.pickupdate) pickupdate, pat.id, pa.prescription " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where pre.ptv='T' and pg_catalog.date(pa.pickupdate) >= '" + startDate + "'" +
+                "and pg_catalog.date(pa.pickupdate) <= '" + endDate + "' " +
+                "GROUP BY 2,3) pack " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null  " +
+                "			 GROUP BY 2,3" +
+                ") visit on visit.patient = pack.id " +
+                "WHERE visit.startreason not like '%nsito%' and visit.startreason not like '%aternidade%'" +
+                ") as pacienteTarv";
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
@@ -2104,7 +2725,7 @@ public class ConexaoJDBC {
      * @throws SQLException
      */
     public void inserPacienteIdart(String nid, String nomes, String apelido,
-            Date dataderegisto) throws ClassNotFoundException, SQLException {
+                                   Date dataderegisto) throws ClassNotFoundException, SQLException {
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
 
@@ -2477,7 +3098,7 @@ public class ConexaoJDBC {
     }
 
     public String getQueryHistoricoLevantamentos(boolean i, boolean m,
-            boolean a, String startDate, String endDate) {
+                                                 boolean a, String startDate, String endDate) {
 
         Vector<String> v = new Vector<String>();
 
@@ -2604,438 +3225,224 @@ public class ConexaoJDBC {
         return query;
 
     }
-	
-	/**
-	 * 
-	 * @param i
-	 * @param m
-	 * @param a
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 * @throws SQLException  
-	 * @throws ClassNotFoundException 
-	 */
-	public List<HistoricoLevantamentoXLS> getQueryHistoricoLevantamentosXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException  {
-		
-		conecta(iDartProperties.hibernateUsername, 
-				iDartProperties.hibernatePassword);
-		
-		Vector<String> v = new Vector<String>();
 
-		if (i)
-			v.add("Inicia");
-		if (m)
-			v.add("Manter");
-		if (a)
-			v.add("Alterar");
+    /**
+     * @param i
+     * @param m
+     * @param a
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public List<HistoricoLevantamentoXLS> getQueryHistoricoLevantamentosXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException {
 
-		String condicao = "(\'";
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
 
-		if (v.size() == 3) {
-			for (int j = 0; j < v.size() - 1; j++)
+        Vector<String> v = new Vector<String>();
 
-				condicao += v.get(j) + "\' , \'";
+        if (i)
+            v.add("Inicia");
+        if (m)
+            v.add("Manter");
+        if (a)
+            v.add("Alterar");
 
-			condicao += v.get(v.size() - 1) + "\')";
-		}
+        String condicao = "(\'";
 
-		if (v.size() == 2) {
-			for (int j = 0; j < v.size() - 1; j++)
+        if (v.size() == 3) {
+            for (int j = 0; j < v.size() - 1; j++)
 
-				condicao += v.get(j) + "\' , \'";
+                condicao += v.get(j) + "\' , \'";
 
-			condicao += v.get(v.size() - 1) + "\')";
-		}
+            condicao += v.get(v.size() - 1) + "\')";
+        }
 
-		if (v.size() == 1) {
+        if (v.size() == 2) {
+            for (int j = 0; j < v.size() - 1; j++)
 
-			condicao += v.get(0) + "\')";
-		}
+                condicao += v.get(j) + "\' , \'";
 
-		String query = ""
+            condicao += v.get(v.size() - 1) + "\')";
+        }
 
-				+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
-				+ " dispensas_e_prescricoes.tipotarv,  "
-				+ "   dispensas_e_prescricoes.regime, "
-				//+ "   dispensas_e_prescricoes.linhanome, "
-				+ " CASE "
-				+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' " 
-				+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
-				+ " ELSE 'DM' "
-				+"  END AS tipodispensa, "
-				+ "   dispensas_e_prescricoes.datalevantamento,"
-				+ "    dispensas_e_prescricoes.dataproximolevantamento "
-				+ "    FROM "
-				+ "  (SELECT   "
+        if (v.size() == 1) {
 
-				+ "  dispensa_packege.nid , "
-				+ "    prescription_package.tipotarv,  "
-				+ "    prescription_package.regime, "
-	            //+ " prescription_package.linhanome, "
-	            + " prescription_package.dispensatrimestral, "
-	            + " prescription_package.dispensasemestral, " 
-				+ "    dispensa_packege.datalevantamento, "
-				+ "    dispensa_packege.dataproximolevantamento "
-				+ " 	FROM  "
+            condicao += v.get(0) + "\')";
+        }
 
-				+ " 	( "
-				+ "   SELECT  "
+        String query = ""
 
-				+ " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
-				//+ "linhat.linhanome AS linhanome, "
-				+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime "
+                + " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
+                + " dispensas_e_prescricoes.tipotarv,  "
+                + "   dispensas_e_prescricoes.regime, "
+                //+ "   dispensas_e_prescricoes.linhanome, "
+                + " CASE "
+                + " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' "
+                + " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
+                + " ELSE 'DM' "
+                + "  END AS tipodispensa, "
+                + "   dispensas_e_prescricoes.datalevantamento,"
+                + "    dispensas_e_prescricoes.dataproximolevantamento "
+                + "    FROM "
+                + "  (SELECT   "
 
-				+ " 	 FROM  "
+                + "  dispensa_packege.nid , "
+                + "    prescription_package.tipotarv,  "
+                + "    prescription_package.regime, "
+                //+ " prescription_package.linhanome, "
+                + " prescription_package.dispensatrimestral, "
+                + " prescription_package.dispensasemestral, "
+                + "    dispensa_packege.datalevantamento, "
+                + "    dispensa_packege.dataproximolevantamento "
+                + " 	FROM  "
 
-				+ " 	 prescription,  " + " package , regimeterapeutico, linhat "
+                + " 	( "
+                + "   SELECT  "
 
-				+ "  WHERE   "
+                + " 		prescription.id, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
+                //+ "linhat.linhanome AS linhanome, "
+                + " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime "
 
-				+ " prescription.id = package.prescription  "
+                + " 	 FROM  "
 
-				+ "  AND  " + " 	 prescription.ppe=\'F\' "
+                + " 	 prescription,  " + " package , regimeterapeutico, linhat "
 
-				+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
-				//+ "AND linhat.linhaid = prescription.linhaid "
-				+ " AND   "
+                + "  WHERE   "
 
-				+ "  	 prescription.reasonforupdate IN "
-				+ condicao
+                + " prescription.id = package.prescription  "
 
-				+ " 	 )as prescription_package,  "
+                + "  AND  " + " 	 prescription.ppe=\'F\' "
 
-				+ " 	 (  "
-				+ " 	 SELECT  "
+                + " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
+                //+ "AND linhat.linhaid = prescription.linhaid "
+                + " AND   "
 
-				+ " 	 packagedruginfotmp.patientid as nid,  "
-				+ " 	 packagedruginfotmp.packageid,"
-				+ " 	 packagedruginfotmp.dispensedate as datalevantamento,"
-				+ "  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento "
+                + "  	 prescription.reasonforupdate IN "
+                + condicao
 
-				+ "  	 FROM "
-				+ "  	 package, packagedruginfotmp  "
+                + " 	 )as prescription_package,  "
 
-				+ " 	 WHERE  "
+                + " 	 (  "
+                + " 	 SELECT  "
 
-				+ " 	 package.packageid=packagedruginfotmp.packageid  "
-				+ " 	 AND  "
+                + " 	 packagedruginfotmp.patientid as nid,  "
+                + " 	 packagedruginfotmp.packageid,"
+                + " 	 packagedruginfotmp.dispensedate as datalevantamento,"
+                + "  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento "
 
-				+ "  					 packagedruginfotmp.dispensedate::timestamp::date >=  "
-				+ "  \'"
-				+ startDate
-				+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-				+ "   \'"
-				+ endDate
-				+ "\'::timestamp::date  "
-				+ " 	) as dispensa_packege,"
-				+ "     ( "
-				+ "     select packagedruginfotmp.patientid,  "
+                + "  	 FROM "
+                + "  	 package, packagedruginfotmp  "
 
-				+ " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
+                + " 	 WHERE  "
 
-				+ " 	 FROM "
-				+ " 	 package, packagedruginfotmp  "
+                + " 	 package.packageid=packagedruginfotmp.packageid  "
+                + " 	 AND  "
 
-				+ "  WHERE  "
+                + "  					 packagedruginfotmp.dispensedate::timestamp::date >=  "
+                + "  \'"
+                + startDate
+                + "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+                + "   \'"
+                + endDate
+                + "\'::timestamp::date  "
+                + " 	) as dispensa_packege,"
+                + "     ( "
+                + "     select packagedruginfotmp.patientid,  "
 
-				+ "  package.packageid=packagedruginfotmp.packageid  "
-				+ " 	 AND  "
+                + " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
 
-				+ " 			 packagedruginfotmp.dispensedate::timestamp::date >=  "
-				+ "  \'"
-				+ startDate
-				+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-				+ "   \'"
-				+ endDate
-				+ "\'::timestamp::date  "
+                + " 	 FROM "
+                + " 	 package, packagedruginfotmp  "
 
-				+ "   group by packagedruginfotmp.patientid "
+                + "  WHERE  "
 
-				+ "       ) as ultimadatahora  "
+                + "  package.packageid=packagedruginfotmp.packageid  "
+                + " 	 AND  "
 
-				+ "  	 WHERE  "
-				+ "  	 dispensa_packege.packageid=prescription_package.packageid  "
+                + " 			 packagedruginfotmp.dispensedate::timestamp::date >=  "
+                + "  \'"
+                + startDate
+                + "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+                + "   \'"
+                + endDate
+                + "\'::timestamp::date  "
 
-				+ " 	 and "
-				+ "    dispensa_packege.datalevantamento=ultimadatahora.lastdispense "
-				+ "    ) as dispensas_e_prescricoes "
-				+ "     ,"
-				+ "     patient "
+                + "   group by packagedruginfotmp.patientid "
 
-				+ "    where "
+                + "       ) as ultimadatahora  "
 
-				+ "    dispensas_e_prescricoes.nid=patient.patientid";
-		
-		List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
-		ResultSet rs = st.executeQuery(query);
-		
-		if (rs != null) { 
-			
-			while(rs.next()) {
-				HistoricoLevantamentoXLS levantamentoXLS = new HistoricoLevantamentoXLS();
-				levantamentoXLS.setPatientIdentifier(rs.getString("nid"));
-				levantamentoXLS.setNome(rs.getString("nome"));
-				levantamentoXLS.setApelido(rs.getString("apelido"));
-				levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
-				levantamentoXLS.setRegimeTerapeutico(rs.getString("regime")); 
-				levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
-				levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
-				levantamentoXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
-				
-				levantamentoXLSs.add(levantamentoXLS);
-			}
-			rs.close();
-		}
-		
-		st.close();
-		conn_db.close();
-		
-		return levantamentoXLSs;
-		
-	}
-	
-	
-	public List<AbsenteeForSupportCall> getAbsenteeForSupportCallQuartelyDispensation(String miniumDaysLate, String maximumDaysLate, String reportDate, String clinicId) throws ClassNotFoundException, SQLException {
-		
-		conecta(iDartProperties.hibernateUsername, 
-				iDartProperties.hibernatePassword);
-		
-		String query = "SELECT pat.patientid as patID, "+
-		"(pat.lastname||', '|| pat.firstnames) AS name, "+
-		"pat.nextofkinname AS supportername, "+
-		"pat.nextofkinphone AS supporterphone,"+
-		"pat.cellphone AS cellno, "+
-		"date_part('year',age(pat.dateofbirth)) AS age, "+
-		"app.appointmentDate::date AS dateexpected, "+
-		"('"+ reportDate +"'::date-app.appointmentDate::date)::integer AS dayssinceexpected, "+
-		"CASE "+
-		    "WHEN (('"+ reportDate +"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
-		    "ELSE "+
-			"CASE "+
-			    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
-		              "ELSE null "+
-		    	"END "+
-		"END "+
-		  "AS datelostfollowup, "+
-		  "CASE "+
-		    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
-		    "ELSE null "+
-		  "END "+
-		  "AS datereturn, "+
-		"MAX(app.appointmentDate) AS ultimaData "+
-		"FROM patient as pat, appointment AS app, patientidentifier as pi,identifiertype AS idt "+
-		"WHERE app.patient = pat.id "+
-		"AND idt.name = 'NID' "+
-		"AND pi.value = pat.patientid "+
-		"AND idt.id = pi.type_id "+
-		"AND "+ clinicId +" = pat.clinic "+
-		"AND app.appointmentDate is not null "+
-		"AND (app.visitDate is null) "+
-		"AND ('"+ reportDate +"'::date - app.appointmentDate::date) between '"+ miniumDaysLate +"' and '"+ maximumDaysLate +"' "+
-		"AND exists (select prescription.id "+
-		"FROM prescription "+
-		"WHERE prescription.patient = pat.id "+
-		"AND prescription.dispensatrimestral = 1 "+
-		"AND (('"+ reportDate +"' between prescription.date and prescription.endDate)or(('"+ reportDate +"' > prescription.date)) and (prescription.endDate is null))) "+
-		"AND exists (select id from episode where episode.patient = pat.id "+
-		"AND (('"+ reportDate +"' between episode.startdate and episode.stopdate)or(('" + reportDate + "' > episode.startdate)) and (episode.stopdate is null))) "+
-		"GROUP BY 1,2,3,4,5,6,7,8,9,10 "+
-		"ORDER BY patID asc";
-		
-		List<AbsenteeForSupportCall> absenteeForSupportCalls = new ArrayList<AbsenteeForSupportCall>();
-		ResultSet rs = st.executeQuery(query);
-		
-		if (rs != null) { 
-			
-			while(rs.next()) {
-				AbsenteeForSupportCall absenteeForSupportCall = new AbsenteeForSupportCall(); 
-				absenteeForSupportCall.setPatientIdentifier(rs.getString("patid"));  
-				absenteeForSupportCall.setNome(rs.getString("name"));
-				absenteeForSupportCall.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
-				absenteeForSupportCall.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
-				absenteeForSupportCall.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
-				absenteeForSupportCall.setContacto(rs.getString("cellno"));
-				
-				absenteeForSupportCalls.add(absenteeForSupportCall);
-			}
-			rs.close();
-		}
-		
-		st.close();
-		conn_db.close();
-		
-		return absenteeForSupportCalls;
-		
-	}
-	
-	public List<AbsenteeForSupportCall> getAbsenteeForSupportCallHold (String miniumDaysLate, String maximumDaysLate, String reportDate, String clinicId) throws ClassNotFoundException, SQLException {
-		
-		conecta(iDartProperties.hibernateUsername,  
-				iDartProperties.hibernatePassword);
-		
-		String query = "SELECT "+
-		"pat.patientid AS patID, "+
-		"(pat.lastname||', '|| pat.firstnames) AS name, "+
-		"pat.nextofkinname AS supportername, "+
-		"pat.nextofkinphone AS supporterphone, "+
-		"pat.cellphone AS cellno, "+
-		"date_part('year',age(pat.dateofbirth)) AS age, "+
-		"app.appointmentDate::date AS dateexpected, "+
-		"('"+ reportDate +"'::date-app.appointmentDate::date)::integer AS dayssinceexpected, "+
-		"CASE "+
-		    "WHEN (('"+ reportDate +"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
-		    "ELSE "+
-			"CASE "+
-			    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days') "+
-		              "ELSE NULL "+
-		    	"END "+
-		"END "+
-		  "AS datelostfollowup, "+
-		  "CASE "+
-		    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
-		    "ELSE NULL "+
-		  "END "+
-		  "AS datereturn, "+
-		"MAX(app.appointmentDate) AS ultimaData "+
-		"FROM patient AS pat, appointment AS app, patientidentifier AS pi,identifiertype AS idt "+
-		"WHERE app.patient = pat.id "+
-		"AND idt.name = 'NID' "+
-		"AND pi.value = pat.patientid "+
-		"AND idt.id = pi.type_id "+
-		"AND '" + clinicId + "' = pat.clinic "+
-		"AND app.appointmentDate IS NOT NULL "+
-		"AND (app.visitDate IS NULL) "+
-		"AND ('"+ reportDate +"'::date - app.appointmentDate::date) BETWEEN '"+ miniumDaysLate +"' AND '" + maximumDaysLate + "' "+
-		"AND EXISTS (select prescription.id "+
-		"FROM prescription "+
-		"WHERE prescription.patient = pat.id "+
-		"AND prescription.dispensatrimestral = 0 "+
-		"AND prescription.reasonforupdate = 'Inicia' "+
-		"AND (('"+ reportDate +"' BETWEEN prescription.date and prescription.endDate) OR (('"+ reportDate +"' > prescription.date)) AND (prescription.endDate IS NULL))) "+
-		"AND exists (SELECT id FROM episode WHERE episode.patient = pat.id "+
-		"AND (('" + reportDate + "' BETWEEN episode.startdate AND episode.stopdate) OR (('"+ reportDate +"' > episode.startdate)) AND (episode.stopdate IS NULL))) "+
-		"GROUP BY 1,2,3,4,5,6,7,8,9,10 "+
-		"ORDER BY patID ASC";
-		
-		List<AbsenteeForSupportCall> absenteeForSupportCallsHold = new ArrayList<AbsenteeForSupportCall>();
-		ResultSet rs = st.executeQuery(query);
-		
-		if (rs != null) { 
-			
-			while(rs.next()) {
-				AbsenteeForSupportCall absenteeForSupportCallHold = new AbsenteeForSupportCall(); 
-				absenteeForSupportCallHold.setPatientIdentifier(rs.getString("patid"));  
-				absenteeForSupportCallHold.setNome(rs.getString("name"));
-				absenteeForSupportCallHold.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
-				absenteeForSupportCallHold.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
-				absenteeForSupportCallHold.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
-				absenteeForSupportCallHold.setContacto(rs.getString("cellno"));
-				
-				absenteeForSupportCallsHold.add(absenteeForSupportCallHold);
-			}
-			rs.close();
-		}
-		
-		st.close();
-		conn_db.close();
-		
-		return absenteeForSupportCallsHold;
-	}
-	
-	public List<SecondLinePatients> getSecondLinePatients (String startDate, String endDate) throws ClassNotFoundException, SQLException {
-		
-		conecta(iDartProperties.hibernateUsername, 
-				iDartProperties.hibernatePassword);
-		
-		String query = "SELECT DISTINCT p.id AS id," +
-			        " p.patientId AS patientid," +
-			        " p.dateOfBirth AS dob," +
-			        " p.firstnames AS nome," +
-			        " p.lastname AS apelido," +
-			        " c.clinicName AS clinic," +
-			        " p.cellphone AS cellno," +
-			        " date_part('year', age(p.dateofbirth))::Integer AS age," +
-			        " (p.address1 ||' '||p.address2||' '||p.address3) AS endereco," +
-			        " CASE" +
-			            " WHEN (p.sex = \'F\'" + 
-			                  " OR p.sex = \'f\') THEN \'Feminino\'" +
-			            " WHEN (p.sex = \'M\'" +
-			                  " OR p.sex = \'m\') THEN \'Masculino\'" +
-			            " ELSE \'Outro\'" +
-			        " END AS sex," +
-			        " rt.regimeesquema AS esquematerapeutico," +
-			        " l.linhanome AS linhaterapeutica," +
-			        " pr.reasonforupdate AS tipoPaciente" +
-					" FROM Patient AS p" +
-					" INNER JOIN clinic c ON c.id = p.clinic" +
-					" INNER JOIN prescription pr ON pr.patient = p.id" +
-					" INNER JOIN regimeterapeutico rt ON rt.regimeid = pr.regimeid" +
-					" INNER JOIN linhat l ON l.linhaid = pr.linhaid" +
-					" WHERE (l.linhanome LIKE '%2%')" +
-					" AND pg_catalog.date(pr.date) BETWEEN '"+ startDate +"' AND '"+endDate+"'" +
-					" GROUP BY p.id," +
-						 " c.clinicname," +
-						 " l.linhanome," +
-						 " pr.reasonforupdate," +
-						 " rt.regimeesquema;"; 
-		
-		List<SecondLinePatients> secondLinePatients = new ArrayList<SecondLinePatients>();
-		ResultSet rs = st.executeQuery(query);
-		
-		if (rs != null) {
-			
-			while(rs.next()) {
-				SecondLinePatients linePatients = new SecondLinePatients();
-				linePatients.setPatientIdentifier(rs.getString("patientid"));
-				linePatients.setNome(rs.getString("nome"));
-				linePatients.setIdade(rs.getInt("age"));
-				linePatients.setTherapeuticScheme(rs.getString("esquematerapeutico"));
-				linePatients.setLine(rs.getString("linhaterapeutica"));
-				linePatients.setArtType(rs.getString("tipoPaciente"));
-				
-				secondLinePatients.add(linePatients);
-			}
-			rs.close();
-		}
-		
-		st.close();
-		conn_db.close();
-		
-		return secondLinePatients; 
-	}
-	
-	public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
-		
-		String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" + 
-				" FROM prescription pr\r\n" + 
-				" INNER JOIN patient pa ON pa.id=pr.patient\r\n" + 
-				" WHERE pr.id NOT IN (\r\n" + 
-				" SELECT prescription FROM package\r\n" + 
-				")\r\n" + 
-				" AND pr.date::timestamp::date >= '"+startDate+"'::timestamp::date\r\n" + 
-				" AND pr.date::timestamp::date <= '"+endDate+"'::timestamp::date\r\n" + 
-				" AND pr.current='T';";
-		
-		return query;
-	}
+                + "  	 WHERE  "
+                + "  	 dispensa_packege.packageid=prescription_package.packageid  "
 
-	public void insere_sync_temp_dispense() {
+                + " 	 and "
+                + "    dispensa_packege.datalevantamento=ultimadatahora.lastdispense "
+                + "    ) as dispensas_e_prescricoes "
+                + "     ,"
+                + "     patient "
 
-		delete_sync_temp_dispense();
-		try {
-			conecta(iDartProperties.hibernateUsername,
-					iDartProperties.hibernatePassword);
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+                + "    where "
 
-		//ConexaoODBC conn = new ConexaoODBC();
-		//ResultSet data = conn.result_for_sync_dispense();
+                + "    dispensas_e_prescricoes.nid=patient.patientid";
+
+        List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+                HistoricoLevantamentoXLS levantamentoXLS = new HistoricoLevantamentoXLS();
+                levantamentoXLS.setPatientIdentifier(rs.getString("nid"));
+                levantamentoXLS.setNome(rs.getString("nome"));
+                levantamentoXLS.setApelido(rs.getString("apelido"));
+                levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
+                levantamentoXLS.setRegimeTerapeutico(rs.getString("regime"));
+                levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
+                levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
+                levantamentoXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+
+                levantamentoXLSs.add(levantamentoXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return levantamentoXLSs;
+
+    }
+
+    public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
+
+        String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" +
+                " FROM prescription pr\r\n" +
+                " INNER JOIN patient pa ON pa.id=pr.patient\r\n" +
+                " WHERE pr.id NOT IN (\r\n" +
+                " SELECT prescription FROM package\r\n" +
+                ")\r\n" +
+                " AND pr.date::timestamp::date >= '" + startDate + "'::timestamp::date\r\n" +
+                " AND pr.date::timestamp::date <= '" + endDate + "'::timestamp::date\r\n" +
+                " AND pr.current='T';";
+
+        return query;
+    }
+
+    public void insere_sync_temp_dispense() {
+
+        delete_sync_temp_dispense();
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+        } catch (ClassNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
         /*		if (data != null) {
          try {
@@ -3148,7 +3555,7 @@ public class ConexaoJDBC {
 
             ResultSet linhas = st.executeQuery(query);
 
-			// System.out.println(" Query: "+query );
+            // System.out.println(" Query: "+query );
             while (linhas.next()) {
 
                 SyncLinha synclinha = new SyncLinha(linhas.getString("a"),
@@ -3257,8 +3664,8 @@ public class ConexaoJDBC {
             e1.printStackTrace();
         }
 
-		//ConexaoODBC conn = new ConexaoODBC();
-		//ResultSet data = conn.result_for_sync_patients();
+        //ConexaoODBC conn = new ConexaoODBC();
+        //ResultSet data = conn.result_for_sync_patients();
 
         /*		if (data != null)
          try {
@@ -3462,4 +3869,8 @@ public class ConexaoJDBC {
         return jatemFilaInicio;
 
     }
+
+//    public List<SecondLinePatients> getSecondLinePatients(String format, String format1) {
+//    }
 }
+>>>>>>> 296b96cc3acfe964dca319e412ade7b1b25f87b3

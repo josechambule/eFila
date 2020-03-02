@@ -23,6 +23,7 @@ import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
@@ -59,6 +60,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.Session;
 
+import migracao.swingreverse.MainPanel;
+import migracao.swingreverse.RestorePatientFarmac;
 import model.manager.excel.reports.in.PatientSheet;
 
 /**
@@ -375,19 +378,48 @@ public class GeneralAdmin extends GenericAdminGui {
                             }
                 });
 
-        //Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
-        Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
-        btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
-        btnImportPatientsOpenMRS.setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
-        btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,110, 235, 30));
-        btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnImportPatientsOpenMRS.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                    }
-                });
-        btnImportPatientsOpenMRS.setEnabled(true);
+        btnImportPatients.setEnabled(false);
+
+        // Importar Pacientes : Alterado Colaco 14-08-2018
+        if (iDartProperties.FARMAC) {
+            // Importar Pacientes do ficheiro  : Alterado Colaco 14-08-2018
+            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
+            btnImportPatientsOpenMRS.setText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
+            btnImportPatientsOpenMRS
+                    .setToolTipText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+                    100, 235, 27));
+            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnImportPatientsOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            RestorePatientFarmac restorePatientFarmac = new RestorePatientFarmac();
+                            restorePatientFarmac.createAndShowGUI();
+                        }
+                    });
+            btnImportPatientsOpenMRS.setEnabled(true);
+        } else {
+            // Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
+            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
+            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS
+                    .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+                    100, 235, 27));
+            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnImportPatientsOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            MainPanel importPatients = new MainPanel();
+                            importPatients.createAndShowGUI();
+                        }
+                    });
+            btnImportPatientsOpenMRS.setEnabled(true);
+        }
         
     }
 

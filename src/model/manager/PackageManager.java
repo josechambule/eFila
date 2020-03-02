@@ -189,6 +189,24 @@ public class PackageManager {
 		return id;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Prescription getPrescriptionFromPatient(Session session,
+														  Patient patient, Date datePickup) throws HibernateException {
+		Prescription id = null;
+		List<Prescription> presc = null;
+		presc = session.createQuery(
+				"select prescription from Prescription as prescription "
+						+ "where prescription.date = '"
+						+ datePickup + "' AND patient = " + patient.getId()
+		).list();
+
+		Iterator<Prescription> iter = presc.iterator();
+		if (iter.hasNext()) {
+			id = iter.next();
+		}
+		return id;
+	}
+
 	/**
 	 * Queries the the database for a list of return reasons to populate the
 	 * package return reason combo box

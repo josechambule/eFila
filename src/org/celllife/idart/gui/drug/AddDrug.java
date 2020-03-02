@@ -477,7 +477,7 @@ public class AddDrug extends GenericFormGui {
                     | SWT.YES | SWT.NO);
             mSave.setText(isAddnotUpdate ? "Registar novo medicamento" : "Actualizar Detalhes");
             mSave
-                    .setMessage(isAddnotUpdate ? "Quer mesmo registar estem medicamento na base de dados?"
+                    .setMessage(isAddnotUpdate ? "Quer mesmo registar este medicamento na base de dados?"
                             : "Quer salvar as mudanças efectuadas sobres este medicamento?");
 
             switch (mSave.open()) {
@@ -612,7 +612,7 @@ public class AddDrug extends GenericFormGui {
                     .getValueSelected()[0]);
             loadDrugDetails();
             btnSearch.setEnabled(false);
-            // txtBarcode.setEditable(false);
+
             enableFields(true);
             txtName.setFocus();
 
@@ -642,9 +642,6 @@ public class AddDrug extends GenericFormGui {
             rdBtnInactive.setSelection(true);
         }
 
-//        if (localDrug.getPediatric() == 'T') chkBtnPediatric.setSelection(true);
-//        if (localDrug.getPediatric() == 'F') chkBtnAdult.setSelection(true);
-
         Form theForm = localDrug.getForm();
         lblPackDescription
                 .setText(theForm.getFormLanguage1().equals("drops") ? "ml"
@@ -662,22 +659,10 @@ public class AddDrug extends GenericFormGui {
                 : "" + amntpertime.toString();
         txtAmountPerTime.setText(tmp);
 
-
         txtTimesPerDay.setText(String.valueOf(localDrug.getDefaultTimes()));
 
         btnSearch.setEnabled(false);
         cmbtipoDoenca.setText(localDrug.getTipoDoenca());
-//        if (localDrug.getTipoDoenca().contains("ARV")) {
-//            rdBtnSideTreatment.setSelection(true);
-//            rdBtnARV.setSelection(false);
-//        } else {
-//            rdBtnARV.setSelection(true);
-//            rdBtnSideTreatment.setSelection(false);
-//        }
-
-//        if (localDrug.getStockCode() != null) {
-//            //txtMims.setText(localDrug.getStockCode());
-//        }
 
         grpDrugInfo.layout();
 
@@ -854,20 +839,10 @@ public class AddDrug extends GenericFormGui {
         txtDispensingInstructions1.setEnabled(enable);
         txtDispensingInstructions2.setEnabled(enable);
         cmbtipoDoenca.setEnabled(enable);
-//        chkBtnPediatric.setEnabled(enable);
-//        chkBtnAdult.setEnabled(enable);
-        //chkBtnPediatric.setSelection(false);
-        //chkBtnAdult.setSelection(false);
         txtAmountPerTime.setEnabled(enable);
         txtTimesPerDay.setEnabled(enable);
         txtAtc.setEnabled(enable);
-        //txtMims.setEnabled(enable);
         btnSave.setEnabled(enable);
-//        grpChemicalCompounds.setEnabled(enable);
-//        tblChemicalCompounds.setEnabled(enable);
-//        btnAddChemical.setEnabled(enable);
-//        btnEditChemical.setEnabled(enable);
-//		btnAtcSearch.setEnabled(enable);
 
         if (enable) {
             cmbForm.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -918,184 +893,6 @@ public class AddDrug extends GenericFormGui {
         lblInstructions.setFont(ResourceUtils
                 .getFont(iDartFont.VERASANS_10_ITALIC));
     }
-
-    /**
-     * This method initializes grpChemicalCcompounds
-     */
-//    private void createGrpChemicalCompounds() {
-//        grpChemicalCompounds = new Group(getShell(), SWT.NONE);
-//        grpChemicalCompounds.setText("Composição química ");
-//        grpChemicalCompounds.setBounds(new Rectangle(524, 110, 235, 372));
-//        grpChemicalCompounds.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//
-//        tblChemicalCompounds = new Table(grpChemicalCompounds, SWT.CHECK
-//                | SWT.FULL_SELECTION | SWT.BORDER);
-//        tblChemicalCompounds.setHeaderVisible(true);
-//        tblChemicalCompounds.setLinesVisible(true);
-//        tblChemicalCompounds.setBounds(new Rectangle(12, 20, 213, 301));
-//        tblChemicalCompounds.setFont(ResourceUtils
-//                .getFont(iDartFont.VERASANS_8));
-//
-////		Label lblAddChemical = new Label(grpChemicalCompounds, SWT.NONE);
-////		lblAddChemical.setBounds(new Rectangle(14, 334, 30, 26));
-////		lblAddChemical.setText("");
-////		lblAddChemical.setImage(ResourceUtils.getImage(iDartImage.DRUG_30X26));
-//
-//        btnAddChemical = new Button(grpChemicalCompounds, SWT.NONE);
-//        btnAddChemical.setBounds(new Rectangle(14, 332, 100, 30));
-//        btnAddChemical.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//        btnAddChemical.setText("Adicionar composto");
-//        btnAddChemical
-//                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//                    @Override
-//                    public void widgetSelected(
-//                            org.eclipse.swt.events.SelectionEvent e) {
-//                        cmdAddChemicalWidgetSelected(null);
-//                    }
-//                });
-//
-//        btnEditChemical = new Button(grpChemicalCompounds, SWT.NONE);
-//        btnEditChemical.setBounds(new Rectangle(120, 332, 100, 30));
-//        btnEditChemical.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//        btnEditChemical.setText("Editar Composto");
-//        btnEditChemical.setEnabled(false);
-//        btnEditChemical
-//                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//                    @Override
-//                    public void widgetSelected(
-//                            org.eclipse.swt.events.SelectionEvent e) {
-//                        TableItem[] selection = tblChemicalCompounds.getSelection();
-//                        if (selection.length > 0) {
-//                            ChemicalCompound cc = (ChemicalCompound) selection[0].getData();
-//                            cmdAddChemicalWidgetSelected(cc);
-//                        }
-//                    }
-//                });
-//
-//        TableColumn tblColChemicalCompounds = new TableColumn(
-//                tblChemicalCompounds, SWT.NONE);
-//        tblColChemicalCompounds.setWidth(140);
-//        tblColChemicalCompounds.setText("Medicamento");
-//
-//        TableColumn tblClmStrength = new TableColumn(tblChemicalCompounds,
-//                SWT.NONE);
-//        tblClmStrength.setWidth(72);
-//        tblClmStrength.setText("Posologia");
-//        populateTblChemicalCompounds();
-//
-//        editor = new TableEditor(tblChemicalCompounds);
-//        editor.horizontalAlignment = SWT.LEFT;
-//        editor.grabHorizontal = true;
-//
-//        tblChemicalCompounds.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseDown(MouseEvent event) {
-//                // Dispose any existing editor
-//                Control old = editor.getEditor();
-//                if (old != null) {
-//                    old.dispose();
-//                }
-//
-//                // Determine where the mouse was clicked
-//                Point pt = new Point(event.x, event.y);
-//
-//                // Determine which row was selected
-//                final TableItem item = tblChemicalCompounds.getItem(pt);
-//                if (item != null) {
-//                    // Determine which column was selected
-//                    int column = -1;
-//                    for (int i = 0, n = tblChemicalCompounds.getColumnCount(); i < n; i++) {
-//                        Rectangle rect = item.getBounds(i);
-//                        if (rect.contains(pt)) {
-//                            // This is the selected column
-//                            column = i;
-//                            break;
-//                        }
-//                    }
-//
-//                    if (column == 1) {
-//                        // Create the Text object for our editor
-//
-//                        final Text text = new Text(tblChemicalCompounds,
-//                                SWT.NONE);
-//                        text.setForeground(item.getForeground());
-//                        text.setBackground(ResourceUtils
-//                                .getColor(iDartColor.GRAY));
-//                        text.setFont(ResourceUtils
-//                                .getFont(iDartFont.VERASANS_8));
-//                        text.setText(item.getText(column));
-//                        text.setForeground(item.getForeground());
-//                        text.selectAll();
-//                        text.setFocus();
-//
-//                        editor.minimumWidth = text.getBounds().width;
-//
-//                        // Set the control into the editor
-//                        editor.setEditor(text, item, column);
-//
-//                        final int col = column;
-//                        text.addModifyListener(new ModifyListener() {
-//                            @Override
-//                            public void modifyText(ModifyEvent event1) {
-//
-//                                item.setText(col, text.getText());
-//
-//                                // if you've set a strength, check the column
-//                                if (!text.getText().trim().equals("")) {
-//                                    item.setChecked(true);
-//                                } else if (item.getChecked()) {
-//                                    item.setChecked(false);
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
-//
-//        // if the user unchecks (or checks) a colum, clear the current contents
-//        // of the strength field
-//        tblChemicalCompounds.addListener(SWT.Selection, new Listener() {
-//            @Override
-//            public void handleEvent(Event event) {
-//
-//                if (event.detail == SWT.CHECK) {
-//                    TableItem ti = (TableItem) event.item;
-//                    ti.setText(1, "");
-//
-//                }
-//            }
-//        });
-//
-//    }
-
-//    private void populateTblChemicalCompounds() {
-//        List<ChemicalCompound> chemicalCompoundList = new ArrayList<ChemicalCompound>();
-//
-//        chemicalCompoundList = DrugManager
-//                .getAllChemicalCompounds(getHSession());
-//
-//        Iterator<ChemicalCompound> chemicalCompoundIt = chemicalCompoundList
-//                .iterator();
-//
-//        while (chemicalCompoundIt.hasNext()) {
-//            ChemicalCompound cc = chemicalCompoundIt.next();
-//            TableItem ti = new TableItem(tblChemicalCompounds, SWT.NONE);
-//
-//            // populate table
-//            populateTableItem(cc, ti);
-//        }
-//    }
-
-    /**
-     * @param cc
-     * @param ti
-     */
-//    private void populateTableItem(ChemicalCompound cc, TableItem ti) {
-//        ti.setText(0, "[" + cc.getAcronym() + "] " + cc.getName());
-//        ti.setData(cc);
-//        ti.setData(ID, cc.getId());
-//    }
 
     /**
      * Method submitForm.

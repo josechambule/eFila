@@ -52,30 +52,21 @@ public class DispensaSemestral extends AbstractJasperReport {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            //Total de pacientes que levantaram arv 20 a 20
-            int totalpacientesnovos= conn.totalPacientesNovosDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            System.out.println("Total de pacientes novos dispensa semestral " + totalpacientesnovos);
+            Map mapaDispensaTrimestral = conn.DispensaSemestral(dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 
-            int totalpacientesmanter = conn.totalPacientesManterDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            System.out.println("Total de pacientes a manter arv " + totalpacientesmanter);
+            int totalpacientesmanter = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesmanter").toString());
+            int totalpacientesnovos = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesnovos").toString());
+            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteManuntencaoTransporte").toString());
+            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteCumulativo").toString());
 
-            int totalpacientesTransporte = conn.totalPacientesManuntencaoTransporteDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            System.out.println("Total de pacientes a transportar arv " + totalpacientesTransporte);
-
-//          int totalpacientesCumulativo = conn.totalPacientesCumulativoDispensaSemestral(dateFormat.format(theStartDate), dateFormat.format(theEndDate));
-            int totalpacientesCumulativo = totalpacientesnovos + totalpacientesmanter + totalpacientesTransporte;
-          
-            System.out.println("Total de pacientes Cumulativo " + totalpacientesCumulativo);
-            
-            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));
             map.put("totalpacientesnovos", String.valueOf(totalpacientesnovos));
-            map.put("totalpacienteManuntencaoTransporte", String.valueOf(totalpacientesTransporte));
-            map.put("totalpacienteCumulativo", String.valueOf(totalpacientesCumulativo));
+            map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));
+            map.put("totalpacienteManuntencaoTransporte", String.valueOf(totalpacienteManuntencaoTransporte));
+            map.put("totalpacienteCumulativo", String.valueOf(totalpacienteCumulativo));
             map.put("facilityName", LocalObjects.currentClinic.getClinicName());
             map.put("dateStart",  theStartDate);
             map.put("dateEnd", theEndDate);
             map.put("path", getReportPath());
-           // map.put("dataelaboracao", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block

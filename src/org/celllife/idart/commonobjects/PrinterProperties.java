@@ -39,7 +39,7 @@ public class PrinterProperties {
     }
 
     public static void setPrinterProperties() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        log = Logger.getLogger(iDartProperties.class);
+        log = Logger.getLogger(PrinterProperties.class);
         log.info("Loading Encrypted System Properties");
 
         PropertiesEncrypter pe = new PropertiesEncrypter();

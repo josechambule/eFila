@@ -72,14 +72,13 @@ import com.pholser.util.properties.ValuesSeparatedBy;
  *  
  *  missedAppointmentSms1_daysLate = 1
  *  missedAppointmentSms1_message_English=You missed your appointment yesterday
- *  missedAppointmentSms1_message_French=Vous avez manqué votre rendez-vous hier
+ *  missedAppointmentSms1_message_French=Vous avez manqu votre rendez-vous hier
  *  
  *  missedAppointmentSms2_daysLate = 7
  *  missedAppointmentSms2_message_English=You missed your appointment 7 days ago
- *  missedAppointmentSms2_message_French=Vous avez raté votre rendez-vous il ya 7 jours
+ *  missedAppointmentSms2_message_French=Vous avez rat votre rendez-vous il ya 7 jours
  * </pre>
  * 
- * @see sms.properties file
  */
 public interface SmsProperties {
 
