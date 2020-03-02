@@ -41,7 +41,7 @@ public class PharmacyWelcome extends GenericWelcome {
 		Label lblPicGeneralAdmin = new Label(compOptions, SWT.NONE);
 		lblPicGeneralAdmin.setBounds(new Rectangle(40, 0, 50, 43));
 		lblPicGeneralAdmin.setImage(ResourceUtils.getImage(iDartImage.GENERALADMIN));
-		lblPicGeneralAdmin.setVisible(false); 
+		lblPicGeneralAdmin.setEnabled(false); 
 		lblPicGeneralAdmin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
@@ -55,7 +55,7 @@ public class PharmacyWelcome extends GenericWelcome {
 		btnGeneralAdmin.setText(Messages.getString("pharmacywelcome.button.generaladmin.text")); //$NON-NLS-1$
 		btnGeneralAdmin.setToolTipText(Messages.getString("pharmacywelcome.button.generaladmin.tooltip")); //$NON-NLS-1$
 		btnGeneralAdmin.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnGeneralAdmin.setVisible(false); 
+		btnGeneralAdmin.setEnabled(false); 
 		btnGeneralAdmin
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -66,8 +66,8 @@ public class PharmacyWelcome extends GenericWelcome {
 		});
 		
 		if (getUserPermission() == 'A') {
-			lblPicGeneralAdmin.setVisible(true); 
-			btnGeneralAdmin.setVisible(true); 
+			lblPicGeneralAdmin.setEnabled(true); 
+			btnGeneralAdmin.setEnabled(true); 
 		}
 		
 		// patientAdmin

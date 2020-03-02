@@ -5,14 +5,34 @@
  */
 package org.celllife.idart.gui.reportParameters;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import model.manager.reports.MissedAppointmentsReportChamadas;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_CHAMADAS;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -32,6 +52,10 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import model.manager.reports.AbsenteeForSupportCall;
+import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.MissedAppointmentsReportChamadas;
+
 /**
  *
  * @author colaco
@@ -44,9 +68,9 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 
 	private CCombo cmbClinic;
         
-        private Button chkBtnDT;
+    private Button chkBtnDT;
 
-        private Button chkBtnRET;
+    private Button chkBtnRET;
 
 	private Label lblMinimumDaysLate;
 
@@ -60,6 +84,14 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 
 	private SWTCalendar swtCal;
 
+	private List<AbsenteeForSupportCall> supportCallListQuartelyDispensation;
+
+	private List<AbsenteeForSupportCall> supportCallListHold;
+	
+	private final Shell parent;
+	
+    private FileOutputStream out = null; 
+
 	/**
 	 * Constructor
 	 * 
@@ -69,8 +101,8 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 	 *            boolean
 	 */
 	public MissedAppointmentsChamadas(Shell parent, boolean activate) {
-		super(parent, GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT,
-				activate);
+		super(parent, GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT,activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -346,7 +378,318 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+				
+		ConexaoJDBC con = new ConexaoJDBC();
+		
+		int max = 0;
+		int min = 0;
+		
+		if (cmbClinic.getText().equals("")) {
 
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			missing.setText("Nenhuma US selecionada");
+			missing.setMessage("Nenhuma US selecionada. Por favor selecione a Unidade Sanitaria.");
+			missing.open();
+		}
+		
+        if(!chkBtnDT.getSelection() && !chkBtnRET.getSelection()) {
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("Nenhum tipo de relatorio foi seleccionado");
+            missing.setMessage("Nenhum tipo de relatorio foi seleccionado. Por favor selecione a DT ou Retenção 1 Mês.");
+            missing.open();
+        }
+        
+
+		if (txtMinimumDaysLate.getText().equals("") || txtMaximumDaysLate.getText().equals("")) {
+			MessageBox incorrectData = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			incorrectData.setText("Informacao Invalida");
+			incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+			incorrectData.open();
+			txtMinimumDaysLate.setText("");
+			txtMinimumDaysLate.setFocus();
+		} else if (!txtMinimumDaysLate.getText().equals("") && !txtMaximumDaysLate.getText().equals("")) {
+			
+			try {
+				
+				min = Integer.parseInt(txtMinimumDaysLate.getText());
+				max = Integer.parseInt(txtMaximumDaysLate.getText());
+
+				if ((min < 0) || (max < 0)) {
+					MessageBox incorrectData = new MessageBox(getShell(),
+							SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Informacao Invalida");
+					incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+					incorrectData.open();
+					txtMinimumDaysLate.setText("");
+					txtMinimumDaysLate.setFocus();
+				}
+
+				if (min >= max) {
+					MessageBox incorrectData = new MessageBox(getShell(),SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Informacao Invalida");
+					incorrectData.setMessage("O Minimo dia deve ser menor que o maximo dia.");
+					incorrectData.open();
+					txtMinimumDaysLate.setFocus();
+				}
+
+			} catch (NumberFormatException nfe) {
+				MessageBox incorrectData = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+				incorrectData.setText("Informacao Invalida");
+				incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+				incorrectData.open();
+				txtMinimumDaysLate.setText("");
+				txtMinimumDaysLate.setFocus();
+			}
+		}
+		
+		if (chkBtnDT.getSelection()) { 
+							        
+			try {
+				supportCallListQuartelyDispensation = con.getAbsenteeForSupportCallQuartelyDispensation(txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText(), 
+						sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
+				
+				if(supportCallListQuartelyDispensation.size() > 0) {
+					
+					FileInputStream currentXls = new FileInputStream("ChamadasFaltososDT.xls");
+					
+					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+					
+					HSSFSheet sheet = workbook.getSheetAt(0);
+					
+					HSSFCellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setBorderBottom(BorderStyle.THIN);
+					cellStyle.setBorderTop(BorderStyle.THIN);
+					cellStyle.setBorderLeft(BorderStyle.THIN);
+					cellStyle.setBorderRight(BorderStyle.THIN);
+					cellStyle.setAlignment(HorizontalAlignment.CENTER);
+					
+					HSSFCellStyle cellFontStyle = workbook.createCellStyle();
+					HSSFFont font = workbook.createFont();
+					font.setFontHeightInPoints((short) 14); 
+					cellFontStyle.setFont(font );
+											
+					HSSFRow healthFacility = sheet.getRow(10); 
+					HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+					healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+					healthFacilityCell.setCellStyle(cellStyle); 
+					
+					HSSFRow reportPeriod = sheet.getRow(10);
+					HSSFCell reportPeriodCell = reportPeriod.createCell(9);
+					reportPeriodCell.setCellValue(sdf.format(swtCal.getCalendar().getTime()));
+					reportPeriodCell.setCellStyle(cellStyle); 
+
+					HSSFRow reportYear = sheet.getRow(11);
+					HSSFCell reportYearCell = reportYear.createCell(9);
+					reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
+					reportYearCell.setCellStyle(cellStyle);
+					
+					HSSFRow minMax = sheet.getRow(8);
+					HSSFCell minMaxCell = minMax.createCell(4);
+					minMaxCell.setCellValue("Este relatório mostra os pacientes que faltaram entre " + txtMinimumDaysLate.getText() + " e " + txtMaximumDaysLate.getText() + " dias");
+					minMaxCell.setCellStyle(cellFontStyle); 
+
+					  for(int i=14; i<= sheet.getLastRowNum(); i++) 
+					  { 
+						HSSFRow row = sheet.getRow(i);
+					  	deleteRow(sheet,row);  
+					  }
+					 
+					  out = new FileOutputStream(new File("ChamadasFaltososDT.xls"));
+					  workbook.write(out); 
+					
+					int rowNum = 14;
+					
+					for (AbsenteeForSupportCall xls : supportCallListQuartelyDispensation) { 
+						
+						HSSFRow row = sheet.createRow(rowNum++);
+						
+						HSSFCell createCellNid = row.createCell(1);
+						createCellNid.setCellValue(xls.getPatientIdentifier());
+						createCellNid.setCellStyle(cellStyle); 
+						
+						HSSFCell createCellNome = row.createCell(2);
+						createCellNome.setCellValue(xls.getNome());
+						createCellNome.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataQueFaltouLevantamento = row.createCell(3);
+						createCellDataQueFaltouLevantamento.setCellValue(xls.getDataQueFaltouLevantamento());
+						createCellDataQueFaltouLevantamento.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataIdentificouAbandonoTarv = row.createCell(4); 
+						createCellDataIdentificouAbandonoTarv.setCellValue(xls.getDataIdentificouAbandonoTarv());
+						createCellDataIdentificouAbandonoTarv.setCellStyle(cellStyle);
+						
+						HSSFCell createCellEfectuouLigacao = row.createCell(5); 
+						createCellEfectuouLigacao.setCellValue("");
+						createCellEfectuouLigacao.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataRegressoUnidadeSanitaria = row.createCell(6); 
+						createCellDataRegressoUnidadeSanitaria.setCellValue(xls.getDataRegressoUnidadeSanitaria());
+						createCellDataRegressoUnidadeSanitaria.setCellStyle(cellStyle);
+						
+						HSSFCell createCellChamadaEfectuada = row.createCell(7); 
+						createCellChamadaEfectuada.setCellValue("");
+						createCellChamadaEfectuada.setCellStyle(cellStyle);
+
+						HSSFCell createCellContacto = row.createCell(8); 
+						createCellContacto.setCellValue(xls.getContacto());
+						createCellContacto.setCellStyle(cellStyle);
+						
+						HSSFCell createCellFaltososSemana = row.createCell(9); 
+						createCellFaltososSemana.setCellValue("");
+						createCellFaltososSemana.setCellStyle(cellStyle);
+					}
+					
+					currentXls.close();
+					
+					FileOutputStream outputStream = new FileOutputStream(new File("ChamadasFaltososDT.xls")); 
+					workbook.write(outputStream);
+					workbook.close();
+					
+					Desktop.getDesktop().open(new File("ChamadasFaltososDT.xls"));
+					
+				} else {
+					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) { 
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} else {
+			try {
+				supportCallListHold = con.getAbsenteeForSupportCallHold(txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText(), sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
+				
+				if(supportCallListHold.size() > 0) {
+					
+					FileInputStream currentXls = new FileInputStream("ChamadasFaltososRET.xls");
+					
+					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+					
+					HSSFSheet sheet = workbook.getSheetAt(0);
+					
+					HSSFCellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setBorderBottom(BorderStyle.THIN);
+					cellStyle.setBorderTop(BorderStyle.THIN);
+					cellStyle.setBorderLeft(BorderStyle.THIN);
+					cellStyle.setBorderRight(BorderStyle.THIN);
+					cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+					HSSFCellStyle cellFontStyle = workbook.createCellStyle();
+					HSSFFont font = workbook.createFont();
+					font.setFontHeightInPoints((short) 14); 
+					cellFontStyle.setFont(font );
+											
+					HSSFRow healthFacility = sheet.getRow(10); 
+					HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+					healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+					healthFacilityCell.setCellStyle(cellStyle); 
+					
+					HSSFRow reportPeriod = sheet.getRow(10);
+					HSSFCell reportPeriodCell = reportPeriod.createCell(9);
+					reportPeriodCell.setCellValue(sdf.format(swtCal.getCalendar().getTime()));
+					reportPeriodCell.setCellStyle(cellStyle); 
+
+					HSSFRow reportYear = sheet.getRow(11);
+					HSSFCell reportYearCell = reportYear.createCell(9);
+					reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
+					reportYearCell.setCellStyle(cellStyle);
+					
+					HSSFRow minMax = sheet.getRow(8);
+					HSSFCell minMaxCell = minMax.createCell(4);
+					minMaxCell.setCellValue("Este relatório mostra os pacientes que faltaram entre " + txtMinimumDaysLate.getText() + " e " + txtMaximumDaysLate.getText() + " dias");
+					minMaxCell.setCellStyle(cellFontStyle); 
+
+					  for(int i=14; i<= sheet.getLastRowNum(); i++) 
+					  { 
+						HSSFRow row = sheet.getRow(i);
+					  	deleteRow(sheet,row);  
+					  }
+					 
+					  out = new FileOutputStream(new File("ChamadasFaltososRET.xls"));
+					  workbook.write(out); 
+					
+					int rowNum = 14;
+					
+					for (AbsenteeForSupportCall xls : supportCallListHold) { 
+						
+						HSSFRow row = sheet.createRow(rowNum++);
+						
+						HSSFCell createCellNid = row.createCell(1);
+						createCellNid.setCellValue(xls.getPatientIdentifier());
+						createCellNid.setCellStyle(cellStyle); 
+						
+						HSSFCell createCellNome = row.createCell(2);
+						createCellNome.setCellValue(xls.getNome());
+						createCellNome.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataQueFaltouLevantamento = row.createCell(3);
+						createCellDataQueFaltouLevantamento.setCellValue(xls.getDataQueFaltouLevantamento());
+						createCellDataQueFaltouLevantamento.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataIdentificouAbandonoTarv = row.createCell(4); 
+						createCellDataIdentificouAbandonoTarv.setCellValue(xls.getDataIdentificouAbandonoTarv());
+						createCellDataIdentificouAbandonoTarv.setCellStyle(cellStyle);
+						
+						HSSFCell createCellEfectuouLigacao = row.createCell(5); 
+						createCellEfectuouLigacao.setCellValue("");
+						createCellEfectuouLigacao.setCellStyle(cellStyle);
+
+						HSSFCell createCellDataRegressoUnidadeSanitaria = row.createCell(6); 
+						createCellDataRegressoUnidadeSanitaria.setCellValue(xls.getDataRegressoUnidadeSanitaria());
+						createCellDataRegressoUnidadeSanitaria.setCellStyle(cellStyle);
+						
+						HSSFCell createCellChamadaEfectuada = row.createCell(7); 
+						createCellChamadaEfectuada.setCellValue("");
+						createCellChamadaEfectuada.setCellStyle(cellStyle);
+
+						HSSFCell createCellContacto = row.createCell(8); 
+						createCellContacto.setCellValue(xls.getContacto());
+						createCellContacto.setCellStyle(cellStyle);
+						
+						HSSFCell createCellFaltososSemana = row.createCell(9); 
+						createCellFaltososSemana.setCellValue("");
+						createCellFaltososSemana.setCellStyle(cellStyle);
+					}
+					
+					currentXls.close();
+					
+					FileOutputStream outputStream = new FileOutputStream(new File("ChamadasFaltososRET.xls")); 
+					workbook.write(outputStream);
+					workbook.close();
+					
+					Desktop.getDesktop().open(new File("ChamadasFaltososRET.xls"));
+					
+				} else {
+					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+				
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -361,5 +704,16 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 	@Override
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
+	}
+	
+	private void deleteRow(HSSFSheet sheet, Row row) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (lastRowNum > 0) {
+			int rowIndex = row.getRowNum();
+			HSSFRow removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+			}
+		}
 	}
 }

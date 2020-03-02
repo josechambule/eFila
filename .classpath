@@ -86,5 +86,6 @@
 	<classpathentry kind="lib" path="lib/swt.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/zip4j-1.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

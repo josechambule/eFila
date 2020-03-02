@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package org.celllife.idart.database.dao;
 
 import java.sql.Connection;
@@ -6,7 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -16,6 +22,7 @@ import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
+import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.HistoricoLevantamentoXLS;
 import model.manager.reports.SecondLinePatients;
 
@@ -3866,3 +3873,4 @@ public class ConexaoJDBC {
 //    public List<SecondLinePatients> getSecondLinePatients(String format, String format1) {
 //    }
 }
+>>>>>>> 296b96cc3acfe964dca319e412ade7b1b25f87b3

@@ -5,17 +5,19 @@
  */
 package migracao.farmac;
 
-import net.lingala.zip4j.exception.ZipException;
-import org.apache.commons.io.FileUtils;
-import org.celllife.idart.commonobjects.iDartProperties;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+
+import org.apache.commons.io.FileUtils;
+import org.celllife.idart.commonobjects.iDartProperties;
+
+import net.lingala.zip4j.exception.ZipException;
 
 /**
  *

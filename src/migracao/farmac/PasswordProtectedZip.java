@@ -5,18 +5,14 @@
  */
 package migracao.farmac;
 
-/**
- *
- * @author colaco
- */
+import java.io.File;
+
+import org.celllife.idart.commonobjects.iDartProperties;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
-import org.celllife.idart.commonobjects.iDartProperties;
-
-import java.io.File;
 
 public class PasswordProtectedZip {
 
