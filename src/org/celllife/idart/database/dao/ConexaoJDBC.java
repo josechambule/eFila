@@ -4257,9 +4257,8 @@ public class ConexaoJDBC {
                     "and exists (select prescription.id\n" +
                     "from prescription\n" +
                     "where prescription.patient = pat.id\n" +
-                    "and prescription.dispensatrimestral = 1\n" +
+                    "and prescription.dispensatrimestral = 0\n" +
                     "and prescription.dispensasemestral = 0\n" +
-                    "and prescription.reasonforupdate = 'Inicia'\n" +
                     "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
                     "and exists (select id from episode where episode.patient = pat.id\n" +
                     "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
