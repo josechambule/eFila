@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package org.celllife.idart.database.dao;
 
 import java.sql.Connection;
@@ -237,6 +237,203 @@ public class ConexaoJDBC {
         return map;
 
     }
+
+    /**
+     * Mapa para pacientes e desagregacao no Relatorio de indicadores mensais
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public Map indicadoresMensais(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT  distinct visit.patient,p.reasonforupdate, p.dispensatrimestral, " +
+                "p.dispensasemestral, p.prep,p.ptv,p.dc,p.ppe,p.ce,l.linhanome, " +
+                "p.af, p.gaac,p.ca,p.tb,p.ccr,p.saaj,p.cpn,p.fr, " +
+                "EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int dateofbirth, visit.startreason, " +
+                "CASE " +
+                "	WHEN pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
+                "	ELSE 'Transporte' " +
+                "END  tipodt " +
+                "FROM (select max(pre.date) predate, pat.id " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription p on p.date = pack.predate and p.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "inner join package pa on pa.prescription = p.id " +
+                "inner join linhat l on l.linhaid = p.linhaid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id ";
+
+        int adultnovosdt = 0;
+        int adultmanuntencaodt = 0;
+        int adulttransportedt = 0;
+
+        int pednovosdt = 0;
+        int pedmanuntencaodt = 0;
+        int pedtransportedt = 0;
+
+        int adultnovosds = 0;
+        int adultmanuntencaods = 0;
+        int adulttransporteds = 0;
+
+        int pednovosds = 0;
+        int pedmanuntencaods = 0;
+        int pedtransporteds = 0;
+
+        int totalmmia = 0;
+
+        int totalaf = 0;
+        int totalgaac = 0;
+        int totalca = 0;
+        int totalptv = 0;
+        int totalcpn = 0;
+        int totaltb = 0;
+        int totalccr = 0;
+        int totalsaaj = 0;
+        int totalprep = 0;
+        int totaldc = 0;
+        int totalppe = 0;
+        int totalCE = 0;
+        int totalDM = 0;
+
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                boolean nonuspatient = rs.getString("startreason").contains("nsito") || rs.getString("startreason").contains("ternidade");
+
+                // Total no MMIA
+                if (!nonuspatient) {
+                    totalmmia++;
+                }
+
+                // Sector de Levantamento
+                if (!nonuspatient && !rs.getString("prep").equalsIgnoreCase("F")) {
+                    totalprep++;
+                }
+                if (!nonuspatient && !rs.getString("ptv").equalsIgnoreCase("F")) {
+                    totalptv++;
+                }
+                if (!nonuspatient && !rs.getString("dc").equalsIgnoreCase("F")) {
+                    totaldc++;
+                }
+                if (!nonuspatient && !rs.getString("ppe").equalsIgnoreCase("F")) {
+                    totalppe++;
+                }
+                if (!nonuspatient && !rs.getString("ce").equalsIgnoreCase("F")) {
+                    totalCE++;
+                }
+                if (!nonuspatient && !rs.getString("ccr").equalsIgnoreCase("F")) {
+                    totalccr++;
+                }
+                if (!nonuspatient && !rs.getString("gaac").equalsIgnoreCase("F")) {
+                    totalgaac++;
+                }
+                if (!nonuspatient && !rs.getString("saaj").equalsIgnoreCase("F")) {
+                    totalsaaj++;
+                }
+                if (!nonuspatient && !rs.getString("ca").equalsIgnoreCase("F")) {
+                    totalca++;
+                }
+                if (!nonuspatient && !rs.getString("tb").equalsIgnoreCase("F")) {
+                    totaltb++;
+                }
+                if (!nonuspatient && !rs.getString("af").equalsIgnoreCase("F")) {
+                    totalaf++;
+                }
+                if (!nonuspatient && !rs.getString("cpn").equalsIgnoreCase("F")) {
+                    totalcpn++;
+                }
+
+                // idade e DT
+                if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                    adultnovosdt++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                    adultmanuntencaodt++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                    adulttransportedt++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                    pednovosdt++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                    pedmanuntencaodt++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                    pedtransportedt++;
+                }
+
+                // idade e DS
+                if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                    adultnovosds++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                    adultmanuntencaods++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                    adulttransporteds++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                    pednovosds++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                    pedmanuntencaods++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                    pedtransporteds++;
+                }
+
+                if (!nonuspatient && rs.getInt("dispensasemestral") != 1 && rs.getInt("dispensatrimestral") != 1) {
+                    totalDM++;
+                }
+
+            }
+            rs.close();
+        }
+
+        map.put("adultnovosdt", adultnovosdt);
+        map.put("adultmanuntencaodt", adultmanuntencaodt);
+        map.put("adulttransportedt", adulttransportedt);
+        map.put("adultcumulativodt", adultnovosdt + adultmanuntencaodt + adulttransportedt);
+
+        map.put("pednovosdt", pednovosdt);
+        map.put("pedmanuntencaodt", pedmanuntencaodt);
+        map.put("pedtransportedt", pedtransportedt);
+        map.put("pedcumulativodt", pednovosdt + pedmanuntencaodt + pedtransportedt);
+
+        map.put("adultnovosds", adultnovosds);
+        map.put("adultmanuntencaods", adultmanuntencaods);
+        map.put("adulttransporteds", adulttransporteds);
+        map.put("adultcumulativods", adultnovosds + adultmanuntencaods + adulttransporteds);
+
+        map.put("pednovosds", pednovosds);
+        map.put("pedmanuntencaods", pedmanuntencaods);
+        map.put("pedtransporteds", pedtransporteds);
+        map.put("pedcumulativods", pednovosds + pedmanuntencaods + pedtransporteds);
+
+        map.put("totalDM", totalDM);
+        map.put("totalmmia", totalmmia);
+        map.put("totalaf", totalaf);
+        map.put("totalgaac", totalgaac);
+        map.put("totalca", totalca);
+        map.put("totalptv", totalptv);
+        map.put("totalcpn", totalcpn);
+        map.put("totaltb", totaltb);
+        map.put("totalccr", totalccr);
+        map.put("totalsaaj", totalsaaj);
+        map.put("totalprep", totalprep);
+        map.put("totaldc", totaldc);
+        map.put("totalppe", totalppe);
+        map.put("totalCE", totalCE);
+        return map;
+
+    }
+
 
     /**
      * Mapa para pacientes e desagregacao no Relatorio de DT
@@ -3870,7 +4067,237 @@ public class ConexaoJDBC {
 
     }
 
-//    public List<SecondLinePatients> getSecondLinePatients(String format, String format1) {
-//    }
+    public List<SecondLinePatients> getSecondLinePatients(String dataInicio, String dataFim) {
+
+        List<SecondLinePatients> secondLinePatientsXLS = new ArrayList<SecondLinePatients>();
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select distinct p.id as id,p.patientId as nid, p.dateOfBirth AS dob, " +
+                            "p.firstnames ||' '|| p.lastname as nome, "+
+                            "c.clinicName as clinic, "+
+                            "p.cellphone as cellno, "+
+                            "date_part('year',age(p.dateofbirth))::Integer as idade, "+
+                            "(p.address1 ||' '||p.address2||' '||p.address3) as endereco, "+
+                            "CASE WHEN (p.sex = 'F' OR p.sex = 'f')  THEN 'Feminino'  "+
+                            "WHEN (p.sex = 'M' OR p.sex = 'm') THEN 'Masculino'  "+
+                            "ELSE 'Outro'  "+
+                            "END as sex,  "+
+                            "rt.regimeesquema as esquematerapeutico, "+
+                            "l.linhanome as linhaterapeutica, "+
+                            "pr.reasonforupdate as tipoPaciente "+
+                            "from Patient as p "+
+                            "inner join clinic c on c.id = p.clinic "+
+                            "inner join prescription pr on pr.patient = p.id "+
+                            "inner join regimeterapeutico rt on rt.regimeid = pr.regimeid "+
+                            "inner join linhat l on l.linhaid = pr.linhaid "+
+                            "where (l.linhanome like '%2%')  and pr.date between '"+dataInicio+"' AND '"+dataFim+"' "+
+                            "group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,rt.regimeesquema ";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    SecondLinePatients pacienteSegundaLinha = new SecondLinePatients();
+                    pacienteSegundaLinha.setPatientIdentifier(rs.getString("nid"));
+                    pacienteSegundaLinha.setNome(rs.getString("nome"));
+                    pacienteSegundaLinha.setIdade(rs.getInt("idade"));
+                    pacienteSegundaLinha.setTherapeuticScheme(rs.getString("esquematerapeutico"));
+                    pacienteSegundaLinha.setLine(rs.getString("linhaterapeutica"));
+                    pacienteSegundaLinha.setArtType(rs.getString("tipoPaciente"));
+
+                    secondLinePatientsXLS.add(pacienteSegundaLinha);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return secondLinePatientsXLS;
+    }
+
+    public List<AbsenteeForSupportCall> getAbsenteeForSupportCallQuartelyDispensation(String minDays, String maxDays, String dataInicial, String dataFinal) {
+
+        List<AbsenteeForSupportCall> absenteeForSupportCallsXLS = new ArrayList<AbsenteeForSupportCall>();
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select\n" +
+                    "pat.patientid as nid,\n" +
+                    "(pat.lastname||', '|| pat.firstnames) as nome,\n" +
+                    " pat.nextofkinname as supportername,\n" +
+                    "pat.nextofkinphone as supporterphone,\n" +
+                    "pat.cellphone as cellno,\n" +
+                    "date_part('year',age(pat.dateofbirth)) as idade,\n" +
+                    "app.appointmentDate::date as dateexpected,\n" +
+                    "('"+dataInicial+"'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
+                    "CASE\n" +
+                    "    WHEN (('"+dataInicial+"'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "    ELSE\n" +
+                    "\tCASE\n" +
+                    "\t    WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "              ELSE null\n" +
+                    "    \tEND\n" +
+                    "END\n" +
+                    "  AS datelostfollowup,\n" +
+                    "\n" +
+                    "  CASE\n" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date\n" +
+                    "    ELSE null\n" +
+                    "  END\n" +
+                    "  AS datereturn,\n" +
+                    "max(app.appointmentDate) as ultimaData\n" +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt\n" +
+                    "where app.patient = pat.id\n" +
+                    "and idt.name = 'NID'\n" +
+                    "and pi.value = pat.patientid\n" +
+                    "and idt.id = pi.type_id\n" +
+                    "and app.appointmentDate is not null\n" +
+                    "and (app.visitDate is null)\n" +
+                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+"' and "+Integer.parseInt(maxDays)+"'\n" +
+                    "and exists (select prescription.id\n" +
+                    "from prescription\n" +
+                    "where prescription.patient = pat.id\n" +
+                    "and prescription.dispensatrimestral = 1\n" +
+                    "and prescription.dispensasemestral = 0\n" +
+                    "and prescription.reasonforupdate = 'Inicia'\n" +
+                    "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
+                    "and exists (select id from episode where episode.patient = pat.id\n" +
+                    "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
+                    "group by 1,2,3,4,5,6,7,8,9,10\n" +
+                    "order by patID asc";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    AbsenteeForSupportCall absenteeForSupportCall = new AbsenteeForSupportCall();
+                    absenteeForSupportCall.setPatientIdentifier(rs.getString("nid"));
+                    absenteeForSupportCall.setNome(rs.getString("nome"));
+                    absenteeForSupportCall.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    absenteeForSupportCall.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    absenteeForSupportCall.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+                    absenteeForSupportCall.setContacto(rs.getString("cellno"));
+//                    absenteeForSupportCall.setListaFaltososSemana(rs.getString("tipoPaciente"));
+
+                    absenteeForSupportCallsXLS.add(absenteeForSupportCall);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return absenteeForSupportCallsXLS;
+
+    }
+
+    public List<AbsenteeForSupportCall> getAbsenteeForSupportCallHold(String minDays, String maxDays, String dataInicial, String dataFinal) {
+
+        List<AbsenteeForSupportCall> absenteeForSupportCallsXLS = new ArrayList<AbsenteeForSupportCall>();
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select\n" +
+                    "pat.patientid as nid,\n" +
+                    "(pat.lastname||', '|| pat.firstnames) as nome,\n" +
+                    " pat.nextofkinname as supportername,\n" +
+                    "pat.nextofkinphone as supporterphone,\n" +
+                    "pat.cellphone as cellno,\n" +
+                    "date_part('year',age(pat.dateofbirth)) as idade,\n" +
+                    "app.appointmentDate::date as dateexpected,\n" +
+                    "('"+dataInicial+"'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
+                    "CASE\n" +
+                    "    WHEN (('"+dataInicial+"'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "    ELSE\n" +
+                    "\tCASE\n" +
+                    "\t    WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "              ELSE null\n" +
+                    "    \tEND\n" +
+                    "END\n" +
+                    "  AS datelostfollowup,\n" +
+                    "\n" +
+                    "  CASE\n" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date\n" +
+                    "    ELSE null\n" +
+                    "  END\n" +
+                    "  AS datereturn,\n" +
+                    "max(app.appointmentDate) as ultimaData\n" +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt\n" +
+                    "where app.patient = pat.id\n" +
+                    "and idt.name = 'NID'\n" +
+                    "and pi.value = pat.patientid\n" +
+                    "and idt.id = pi.type_id\n" +
+                    "and app.appointmentDate is not null\n" +
+                    "and (app.visitDate is null)\n" +
+                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+"' and "+Integer.parseInt(maxDays)+"'\n" +
+                    "and exists (select prescription.id\n" +
+                    "from prescription\n" +
+                    "where prescription.patient = pat.id\n" +
+                    "and prescription.dispensatrimestral = 1\n" +
+                    "and prescription.dispensasemestral = 0\n" +
+                    "and prescription.reasonforupdate = 'Inicia'\n" +
+                    "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
+                    "and exists (select id from episode where episode.patient = pat.id\n" +
+                    "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
+                    "group by 1,2,3,4,5,6,7,8,9,10\n" +
+                    "order by patID asc";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    AbsenteeForSupportCall absenteeForSupportCall = new AbsenteeForSupportCall();
+                    absenteeForSupportCall.setPatientIdentifier(rs.getString("nid"));
+                    absenteeForSupportCall.setNome(rs.getString("nome"));
+                    absenteeForSupportCall.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    absenteeForSupportCall.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    absenteeForSupportCall.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+                    absenteeForSupportCall.setContacto(rs.getString("cellno"));
+//                    absenteeForSupportCall.setListaFaltososSemana(rs.getString("tipoPaciente"));
+
+                    absenteeForSupportCallsXLS.add(absenteeForSupportCall);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return absenteeForSupportCallsXLS;
+
+    }
+
 }
->>>>>>> 296b96cc3acfe964dca319e412ade7b1b25f87b3
+

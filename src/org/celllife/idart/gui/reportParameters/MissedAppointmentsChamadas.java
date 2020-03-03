@@ -559,11 +559,7 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 					mNoPages.open();
 				}
 				
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (FileNotFoundException e) { 
+			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -680,10 +676,6 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 					mNoPages.open();
 				}
 				
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

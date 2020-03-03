@@ -46,8 +46,8 @@
 	<parameter name="totalpacientesmanter" class="java.lang.String"/>
 	<parameter name="totalpacienteManuntencaoTransporte" class="java.lang.String"/>
 	<parameter name="dateStart" class="java.util.Date"/>
-	<parameter name="path" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
+	<parameter name="path" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="totalpacienteCumulativo" class="java.lang.String"/>
 	<queryString>
@@ -77,7 +77,7 @@ INNER JOIN (SELECT MAX (startdate),patient, episode.startreason
 			 from episode WHERE stopdate is null
 			 GROUP BY 2,3
 ) visit on visit.patient = pack.id
-WHERE pre.dispensasemestral = 1
+WHERE pre.dispensasemestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%')
 order by 8]]>
 	</queryString>
 	<field name="patientid" class="java.lang.String"/>
