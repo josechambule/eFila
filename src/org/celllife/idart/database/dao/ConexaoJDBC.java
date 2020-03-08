@@ -85,9 +85,13 @@ public class ConexaoJDBC {
                 "p.dispensasemestral, p.prep,p.ptv,p.dc,p.ppe,p.ce,l.linhanome, " +
                 "EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int dateofbirth, visit.startreason, " +
                 "CASE " +
-                "	WHEN pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
+                "	WHEN p.dispensatrimestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
                 "	ELSE 'Transporte' " +
-                "END  tipodt " +
+                "END  tipodt, " +
+                "CASE " +
+                "	WHEN p.dispensasemestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipods " +
+                "	ELSE 'Transporte' " +
+                "END  tipods " +
                 "FROM (select max(pre.date) predate, pat.id " +
                 "from package pa " +
                 "inner join packageddrugs pds on pds.parentpackage = pa.id " +
@@ -157,8 +161,15 @@ public class ConexaoJDBC {
                 }
 
                 // Manuntencao Transporte
-                if (!nonuspatient && rs.getString("tipodt").contains("Transporte")) {
+                if (!nonuspatient && rs.getString("tipodt") != null) {
+                    if (rs.getString("tipodt").contains("Transporte"))
                     totalpacientesmanterTransporte++;
+                }
+
+                // Manuntencao Transporte
+                if (!nonuspatient && rs.getString("tipods") != null) {
+                    if (rs.getString("tipods").contains("Transporte"))
+                        totalpacientesmanterTransporte++;
                 }
 
                 // Dispensa Trimenstral ou Semestral
@@ -255,9 +266,13 @@ public class ConexaoJDBC {
                 "p.af, p.gaac,p.ca,p.tb,p.ccr,p.saaj,p.cpn,p.fr, " +
                 "EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) :: int dateofbirth, visit.startreason, " +
                 "CASE " +
-                "	WHEN pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
+                "	WHEN p.dispensatrimestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipodt " +
                 "	ELSE 'Transporte' " +
-                "END  tipodt " +
+                "END  tipodt, " +
+                "CASE " +
+                "	WHEN p.dispensasemestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipods " +
+                "	ELSE 'Transporte' " +
+                "END  tipods " +
                 "FROM (select max(pre.date) predate, pat.id " +
                 "from package pa " +
                 "inner join packageddrugs pds on pds.parentpackage = pa.id " +
@@ -374,17 +389,17 @@ public class ConexaoJDBC {
                 }
 
                 // idade e DS
-                if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Novo")) {
                     adultnovosds++;
-                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Manunt")) {
                     adultmanuntencaods++;
-                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Transporte")) {
                     adulttransporteds++;
-                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Novo")) {
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Novo")) {
                     pednovosds++;
-                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Manunt")) {
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Manunt")) {
                     pedmanuntencaods++;
-                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
+                } else if (!nonuspatient && rs.getInt("dateofbirth") < 15 && rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Transporte")) {
                     pedtransporteds++;
                 }
 
@@ -486,13 +501,17 @@ public class ConexaoJDBC {
         if (rs != null) {
             while (rs.next()) {
                 totalpacienteCumulativo++;
-                // Tipo de Pacinte
-                if (rs.getString("tipodt").contains("Novo")) {
-                    totalpacientesnovos++;
-                } else if ((rs.getString("tipodt").contains("Manunte"))) {
-                    totalpacientesmanter++;
-                } else if (rs.getString("tipodt").contains("Transporte")) {
-                    totalpacienteManuntencaoTransporte++;
+
+                if (rs.getString("tipodt") != null) {
+
+                    // Tipo de Pacinte
+                    if (rs.getString("tipodt").contains("Novo")) {
+                        totalpacientesnovos++;
+                    } else if ((rs.getString("tipodt").contains("Manunte"))) {
+                        totalpacientesmanter++;
+                    } else if (rs.getString("tipodt").contains("Transporte")) {
+                        totalpacienteManuntencaoTransporte++;
+                    }
                 }
             }
             rs.close();
@@ -525,9 +544,9 @@ public class ConexaoJDBC {
                 "		pack.dateexpectedstring proximoLevantamento , " +
                 "		reg.regimeesquema, " +
                 "		CASE " +
-                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipodt " +
+                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipods " +
                 "			ELSE 'Transporte' " +
-                "		END  tipodt " +
+                "		END  tipods " +
                 "FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring " +
                 "from package pa " +
                 "inner join packageddrugs pds on pds.parentpackage = pa.id " +
@@ -558,12 +577,16 @@ public class ConexaoJDBC {
             while (rs.next()) {
                 totalpacienteCumulativo++;
                 // Tipo de Pacinte
-                if (rs.getString("tipodt").contains("Novo")) {
-                    totalpacientesnovos++;
-                } else if ((rs.getString("tipodt").contains("Manunte"))) {
-                    totalpacientesmanter++;
-                } else if (rs.getString("tipodt").contains("Transporte")) {
-                    totalpacienteManuntencaoTransporte++;
+
+                if (rs.getString("tipods") != null) {
+
+                    if (rs.getString("tipods").contains("Novo")) {
+                        totalpacientesnovos++;
+                    } else if ((rs.getString("tipods").contains("Manunte"))) {
+                        totalpacientesmanter++;
+                    } else if (rs.getString("tipods").contains("Transporte")) {
+                        totalpacienteManuntencaoTransporte++;
+                    }
                 }
             }
             rs.close();
