@@ -29,34 +29,7 @@ import org.celllife.idart.gui.dataQuality.DataQuality;
 import org.celllife.idart.gui.platform.GenericAdminGui;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
-import org.celllife.idart.gui.reportParameters.ARVDrugUsage;
-import org.celllife.idart.gui.reportParameters.ClinicIndicators;
-import org.celllife.idart.gui.reportParameters.CohortDrugCollections;
-import org.celllife.idart.gui.reportParameters.CotrimoxazolReport;
-import org.celllife.idart.gui.reportParameters.DailyDispensingTotals;
-import org.celllife.idart.gui.reportParameters.DispensaSemestralReport;
-import org.celllife.idart.gui.reportParameters.DispensaTrimestralReport;
-import org.celllife.idart.gui.reportParameters.DrugCombinations;
-import org.celllife.idart.gui.reportParameters.DrugsDispensed;
-import org.celllife.idart.gui.reportParameters.EpisodeStats;
-import org.celllife.idart.gui.reportParameters.EpisodesStartedOrEndedReportGUI;
-import org.celllife.idart.gui.reportParameters.HistoricoLevantamentos;
-import org.celllife.idart.gui.reportParameters.IsoniazidaReport;
-import org.celllife.idart.gui.reportParameters.MissedAppointments;
-import org.celllife.idart.gui.reportParameters.MmiaReportMISAU;
-import org.celllife.idart.gui.reportParameters.MonthlyReceiptsAndIssues;
-import org.celllife.idart.gui.reportParameters.MonthlyStockReceipt;
-import org.celllife.idart.gui.reportParameters.PackageProcessingReportGUI;
-import org.celllife.idart.gui.reportParameters.PackageTracking;
-import org.celllife.idart.gui.reportParameters.PackagesAwaiting;
-import org.celllife.idart.gui.reportParameters.PatientHistory;
-import org.celllife.idart.gui.reportParameters.PatientsExpected;
-import org.celllife.idart.gui.reportParameters.PepfarReportGUI;
-import org.celllife.idart.gui.reportParameters.PrescribingDoctors;
-import org.celllife.idart.gui.reportParameters.PrescriptionsWithNoEncounter;
-import org.celllife.idart.gui.reportParameters.RegisteredIdart;
-import org.celllife.idart.gui.reportParameters.StockTakeReportGUI;
-import org.celllife.idart.gui.reportParameters.TransactionLog;
+import org.celllife.idart.gui.reportParameters.*;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
@@ -86,19 +59,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import model.manager.exports.iedea.IedeaExporter;
-import org.celllife.idart.gui.reportParameters.AvaliacaoSegundasLinhas;
-import org.celllife.idart.gui.reportParameters.CohortDispensaTrimestral;
-import org.celllife.idart.gui.reportParameters.IndicadoresMesnsais;
-import org.celllife.idart.gui.reportParameters.LivroEletronicoDispensaARV;
-import org.celllife.idart.gui.reportParameters.LostToFollowUpReturned;
-import org.celllife.idart.gui.reportParameters.MissedAppointmentsAPSS;
-import org.celllife.idart.gui.reportParameters.MissedAppointmentsChamadas;
-import org.celllife.idart.gui.reportParameters.MissedAppointmentsDT;
-import org.celllife.idart.gui.reportParameters.MissedAppointmentsNew;
-import org.celllife.idart.gui.reportParameters.PacientesReferidos;
-import org.celllife.idart.gui.reportParameters.PacientesSemDT;
-import org.celllife.idart.gui.reportParameters.RegimeTerapeuticoReport;
-import org.celllife.idart.gui.reportParameters.SecondLineReport;
 
 /**
  */
@@ -490,6 +450,8 @@ public class NewReports extends GenericAdminGui {
                 new MonthlyReceiptsAndIssues(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE,
                 new ARVDrugUsage(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_FICHA_STOCK,
+                new FichaStock(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_APSS,
                 new MissedAppointmentsAPSS(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_NEW,
