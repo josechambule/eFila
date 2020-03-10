@@ -365,7 +365,7 @@ public class GeneralAdmin extends GenericAdminGui {
                             }
                 });
 
-        Button btnImportPatients = new Button(grpImport, SWT.NONE);
+        /*Button btnImportPatients = new Button(grpImport, SWT.NONE);
         btnImportPatients.setText(Messages.getString("GeneralAdmin.button.importPatients.title")); //$NON-NLS-1$
         btnImportPatients.setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip")); //$NON-NLS-1$
         btnImportPatients.setBounds(new org.eclipse.swt.graphics.Rectangle(35,70, 235, 30));
@@ -378,7 +378,7 @@ public class GeneralAdmin extends GenericAdminGui {
                             }
                 });
 
-        btnImportPatients.setEnabled(false);
+        btnImportPatients.setEnabled(false);*/
 
         // Importar Pacientes : Alterado Colaco 14-08-2018
         if (iDartProperties.FARMAC) {

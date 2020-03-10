@@ -576,7 +576,7 @@ if(localUser.getPermission()!='A'){
 							MessageBox m = new MessageBox(getShell(), SWT.OK
 									| SWT.ICON_INFORMATION);
 							m.setText("Novo Usuário Adicionado");
-							m.setMessage("A new user, named '".concat(
+							m.setMessage("Um novo utilizador '".concat(
 									txtUser.getText()).concat(
 									"' foi adicionado ao sistema."));
 							m.open();
