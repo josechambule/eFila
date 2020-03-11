@@ -4190,18 +4190,16 @@ public class ConexaoJDBC {
                     "and idt.id = pi.type_id\n" +
                     "and app.appointmentDate is not null\n" +
                     "and (app.visitDate is null)\n" +
-                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+"' and "+Integer.parseInt(maxDays)+"'\n" +
+                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+" and "+Integer.parseInt(maxDays)+"\n" +
                     "and exists (select prescription.id\n" +
                     "from prescription\n" +
                     "where prescription.patient = pat.id\n" +
                     "and prescription.dispensatrimestral = 1\n" +
-                    "and prescription.dispensasemestral = 0\n" +
-                    "and prescription.reasonforupdate = 'Inicia'\n" +
                     "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
                     "and exists (select id from episode where episode.patient = pat.id\n" +
                     "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
                     "group by 1,2,3,4,5,6,7,8,9,10\n" +
-                    "order by patID asc";
+                    "order by nid asc";
 
 
             ResultSet rs = st.executeQuery(query);
@@ -4276,17 +4274,17 @@ public class ConexaoJDBC {
                     "and idt.id = pi.type_id\n" +
                     "and app.appointmentDate is not null\n" +
                     "and (app.visitDate is null)\n" +
-                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+"' and "+Integer.parseInt(maxDays)+"'\n" +
+                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+" and "+Integer.parseInt(maxDays)+"\n" +
                     "and exists (select prescription.id\n" +
                     "from prescription\n" +
                     "where prescription.patient = pat.id\n" +
                     "and prescription.dispensatrimestral = 0\n" +
-                    "and prescription.dispensasemestral = 0\n" +
+                    "and prescription.reasonforupdate = 'Inicia'\n" +
                     "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
                     "and exists (select id from episode where episode.patient = pat.id\n" +
                     "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
                     "group by 1,2,3,4,5,6,7,8,9,10\n" +
-                    "order by patID asc";
+                    "order by nid asc";
 
 
             ResultSet rs = st.executeQuery(query);
