@@ -295,11 +295,11 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("HistoricoLevantamento.xls")); 
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("TemplateHistoricoLevantamento.xls"));
+						Desktop.getDesktop().open(new File("HistoricoLevantamento.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
