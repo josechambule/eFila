@@ -2,9 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockPerDrugBatches" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="p_stockId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
 	</parameter>
@@ -24,8 +27,8 @@ and s.drug = d.id
 and ((s.datereceived between $P{p_startDate} and $P{p_endDate})
 or (s.datereceived = $P{p_startDate}) or (s.datereceived = $P{p_endDate}))
 
-group by pd.stock, s.datereceived, 
-s.unitsreceived, s.batchnumber, 
+group by pd.stock, s.datereceived,
+s.unitsreceived, s.batchnumber,
 s.expirydate, s.id, d.packsize]]>
 	</queryString>
 	<field name="datereceived" class="java.sql.Timestamp"/>
@@ -440,11 +443,11 @@ s.expirydate, s.id, d.packsize]]>
 				<subreportParameter name="packsize">
 					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="stockId">
-					<subreportParameterExpression><![CDATA[$F{stockid}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="path">
 					<subreportParameterExpression><![CDATA[$P{p_path}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="stockId">
+					<subreportParameterExpression><![CDATA[$F{stockid}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="totalReceived">
 					<subreportParameterExpression><![CDATA[new Integer($F{unitsreceived}.intValue())]]></subreportParameterExpression>
