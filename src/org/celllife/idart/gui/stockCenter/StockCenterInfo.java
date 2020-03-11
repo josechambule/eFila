@@ -157,7 +157,7 @@ public class StockCenterInfo extends GenericFormGui {
 	 */
 	@Override
 	protected void createShell() {
-		String shellText = "Add a New Pharmacy";
+		String shellText = "Adicionar uma nova farmácia";
 		Rectangle bounds = new Rectangle(25, 0, 800, 680);
 		buildShell(shellText, bounds);
 	}
@@ -178,7 +178,7 @@ public class StockCenterInfo extends GenericFormGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = "Add a New Pharmacy";
+		String headerTxt = "Adicionar uma nova farmácia";
 		iDartImage icoImage = iDartImage.PHARMACYUSER;
 		buildCompHeader(headerTxt, icoImage);
 	}
@@ -198,28 +198,28 @@ public class StockCenterInfo extends GenericFormGui {
 		grpSelectStockCenter.setBounds(new Rectangle(40, 100, 720, 120));
 		grpSelectStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpSelectStockCenter
-		.setText("Pharmacy Details (related to where stock is held)");
+		.setText("Detalhes da farmácia (relacionados ao local onde o estoque é mantido)"); 
 
 		rdBtnAddStockCenter = new Button(grpSelectStockCenter, SWT.RADIO);
 		rdBtnAddStockCenter.setBounds(new Rectangle(105, 25, 150, 30));
 		rdBtnAddStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnAddStockCenter.setText("Add New Pharmacy");
+		rdBtnAddStockCenter.setText("Adicionar nova farmácia");
 
 		rdBtnUpdateStockCenter = new Button(grpSelectStockCenter, SWT.RADIO);
 		rdBtnUpdateStockCenter.setBounds(new Rectangle(280, 20, 150, 30));
 		rdBtnUpdateStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnUpdateStockCenter.setText("Update a Pharmacy");
+		rdBtnUpdateStockCenter.setText("Atualizar farmácia");
 
 		rdBtnUpdatePharmacyDetails = new Button(grpSelectStockCenter, SWT.RADIO);
 		rdBtnUpdatePharmacyDetails.setBounds(new Rectangle(455, 20, 160, 30));
 		rdBtnUpdatePharmacyDetails.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnUpdatePharmacyDetails.setText("Update Facility Details");
+		rdBtnUpdatePharmacyDetails.setText("Atualizar detalhes da Unidade Sanitária");
 
 		lblStockCenterName = new Label(grpSelectStockCenter, SWT.NONE);
 		lblStockCenterName.setBounds(new Rectangle(155, 60, 100, 20));
 		lblStockCenterName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblStockCenterName.setAlignment(SWT.RIGHT);
-		lblStockCenterName.setText("Pharmacy name:");
+		lblStockCenterName.setText("Nome da farmácia:");
 
 		txtStockCenterName = new Text(grpSelectStockCenter, SWT.BORDER);
 		txtStockCenterName.setBounds(new Rectangle(
@@ -252,9 +252,9 @@ public class StockCenterInfo extends GenericFormGui {
 
 		btnSearch = new Button(grpSelectStockCenter, SWT.NONE);
 		btnSearch.setBounds(new Rectangle(470, 57, 110, 28));
-		btnSearch.setText("Pharmacy Search");
+		btnSearch.setText("Pesquisar Farmácia");
 		btnSearch
-		.setToolTipText("Press this button to search for pharmacies.");
+		.setToolTipText("Pressione este botão para procurar farmácias.");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -268,7 +268,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblPreferredStockCenter.setBounds(new Rectangle(140, 97, 200, 20));
 		lblPreferredStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblPreferredStockCenter.setAlignment(SWT.RIGHT);
-		lblPreferredStockCenter.setText("Preferred Pharmacy?");
+		lblPreferredStockCenter.setText("Farmácia preferida?");
 
 		Composite cmpRadio = new Composite(grpSelectStockCenter, SWT.NONE);
 		cmpRadio.setLayout(null);
@@ -277,7 +277,7 @@ public class StockCenterInfo extends GenericFormGui {
 		rdBtnPreferredYes = new Button(cmpRadio, SWT.RADIO);
 		rdBtnPreferredYes.setBounds(new Rectangle(10, 10, 40, 30));
 		rdBtnPreferredYes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnPreferredYes.setText("Yes");
+		rdBtnPreferredYes.setText("Sim");
 		rdBtnPreferredYes.setEnabled(false);
 		rdBtnPreferredYes.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -298,7 +298,7 @@ public class StockCenterInfo extends GenericFormGui {
 		rdBtnPreferredNo = new Button(cmpRadio, SWT.RADIO);
 		rdBtnPreferredNo.setBounds(new Rectangle(60, 10, 40, 30));
 		rdBtnPreferredNo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		rdBtnPreferredNo.setText("No");
+		rdBtnPreferredNo.setText("Não");
 		rdBtnPreferredNo.setSelection(true);
 		rdBtnPreferredNo.setEnabled(false);
 		rdBtnPreferredNo.addSelectionListener(new SelectionAdapter() {
@@ -312,11 +312,12 @@ public class StockCenterInfo extends GenericFormGui {
 						&& rdBtnPreferredNo.getSelection()) {
 					MessageBox mbox = new MessageBox(getShell(),
 							SWT.ICON_INFORMATION | SWT.OK);
-					mbox.setText("Cannot Change Preferred Pharmacy ");
+					mbox.setText("Não é possível alterar a farmácia preferida ");
 					mbox
 					.setMessage("'"
 							+ txtStockCenterName.getText()
-							+ "' is currently the preferred pharmacy and this cannot be changed here.\n\nIf you would like to make another pharmacy the preferred one, please select it using the search button, and then set that pharmacy to the preferred one. ");
+							+ "' é atualmente a farmácia preferida e não pode ser alterado aqui.\n\nSe você gostaria de fazer de outra farmácia a preferida, selecione-o usando o botão de pesquisa\r\n" + 
+							", e depois defina a farmácia como a preferida. ");
 					mbox.open();
 
 					rdBtnPreferredYes.setSelection(true);
@@ -343,10 +344,10 @@ public class StockCenterInfo extends GenericFormGui {
 
 					if(changeModes()) {
 
-						String headerTxt = "Add a New Pharmacy";
+						String headerTxt = "Adicionar uma nova farmácia";
 						iDartImage icoImage = iDartImage.PHARMACYUSER;
 						buildCompHeader(headerTxt, icoImage);
-						getShell().setText("Add a New Pharmacy");
+						getShell().setText("Adicionar uma nova farmácia");
 						currentScreenMode = screenModes[0];
 						clearForm();
 						enableFields();
@@ -380,10 +381,10 @@ public class StockCenterInfo extends GenericFormGui {
 
 					if (changeModes()) {
 
-						String headerTxt = "Update a Pharmacy";
+						String headerTxt = "Atualizar uma farmácia";
 						iDartImage icoImage = iDartImage.PHARMACYUSER;
 						buildCompHeader(headerTxt, icoImage);
-								getShell().setText("Update a Pharmacy");
+								getShell().setText("Atualizar uma farmácia");
 						currentScreenMode = screenModes[1];
 						clearForm();
 						enableFields();
@@ -419,10 +420,10 @@ public class StockCenterInfo extends GenericFormGui {
 
 					if (changeModes()) {
 
-						String headerTxt = "Update Facility Details";
+						String headerTxt = "Atualizar detalhes da Unidade Sanitária";
 						iDartImage icoImage = iDartImage.PHARMACYUSER;
 						buildCompHeader(headerTxt, icoImage);
-						getShell().setText("Update Facility Details");
+						getShell().setText("Atualizar detalhes da Unidade Sanitária");
 						currentScreenMode = screenModes[2];
 						clearForm();
 						enableFields();
@@ -466,9 +467,9 @@ public class StockCenterInfo extends GenericFormGui {
 		if (fieldsChanged) {
 			MessageBox mbWarning = new MessageBox(getShell(),
 					SWT.ICON_WARNING | SWT.YES | SWT.NO | SWT.CANCEL);
-			mbWarning.setText("iDART: Save Changes?");
+			mbWarning.setText("iDART: Salvar alterações?");
 			mbWarning
-			.setMessage("You have not saved your changes. Would you like to save your changes?");
+			.setMessage("Você não salvou suas alterações. Deseja salvar suas alterações?");
 			switch( mbWarning.open()) {
 
 			// proceed but save changes
@@ -492,7 +493,7 @@ public class StockCenterInfo extends GenericFormGui {
 	 */
 	private void createGrpPharmacyDetails() {
 		grpPharmacyDetails = new Group(getShell(), SWT.NONE);
-		grpPharmacyDetails.setText("Facility Details (shown on labels and reports)");
+		grpPharmacyDetails.setText("Detalhes da Unidade Sanitária (mostrado nos rótulos e relatórios)");
 		grpPharmacyDetails.setBounds(new Rectangle(40, 250, 720, 320));
 		grpPharmacyDetails.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	}
@@ -509,7 +510,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblInstructions = new Label(grpContactDetails, SWT.CENTER);
 		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(50,
 				20, 260, 20));
-		lblInstructions.setText("All fields marked with * are compulsory");
+		lblInstructions.setText("Todos os campos marcados com * são obrigatórios");
 		lblInstructions.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8_ITALIC));
 
@@ -517,7 +518,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblPharmacyName.setBounds(new org.eclipse.swt.graphics.Rectangle(18, 45, 120,
 				20));
 		lblPharmacyName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblPharmacyName.setText("* Facility Name:");
+		lblPharmacyName.setText("* Nome da Unidade Sanitária:");
 		txtPharmacyName = new Text(grpContactDetails, SWT.BORDER);
 		txtPharmacyName.setBounds(new org.eclipse.swt.graphics.Rectangle(150, 45, 180,
 				20));
@@ -537,7 +538,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblStreetAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(18, 75,
 				120, 20));
 		lblStreetAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblStreetAdd.setText("* Street Address:");
+		lblStreetAdd.setText("* Endereço:");
 		txtStreetAdd = new Text(grpContactDetails, SWT.BORDER);
 		txtStreetAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(150, 75,
 				180, 20));
@@ -555,7 +556,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblCity.setBounds(new org.eclipse.swt.graphics.Rectangle(18, 105, 120,
 				20));
 		lblCity.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCity.setText("* City:");
+		lblCity.setText("* Cidade:");
 		txtCity = new Text(grpContactDetails, SWT.BORDER);
 		txtCity.setBounds(new org.eclipse.swt.graphics.Rectangle(150, 105, 180,
 				20));
@@ -573,7 +574,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblTel.setBounds(new org.eclipse.swt.graphics.Rectangle(18, 135, 124,
 				20));
 		lblTel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblTel.setText("* Telephone Number:");
+		lblTel.setText("* Número de telefone:");
 		txtTel = new Text(grpContactDetails, SWT.BORDER);
 		txtTel.setBounds(new org.eclipse.swt.graphics.Rectangle(150, 135, 180,
 				20));
@@ -591,7 +592,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblPharmacistName1.setBounds(new org.eclipse.swt.graphics.Rectangle(18,
 				165, 120, 20));
 		lblPharmacistName1.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblPharmacistName1.setText("* Head Pharmacist:");
+		lblPharmacistName1.setText("* Farmacêutico Chefe:");
 		txtPharmacistName1 = new Text(grpContactDetails, SWT.BORDER);
 		txtPharmacistName1.setBounds(new org.eclipse.swt.graphics.Rectangle(
 				150, 165, 180, 20));
@@ -609,7 +610,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblPharmacyAssistant.setBounds(new org.eclipse.swt.graphics.Rectangle(18,
 				195, 120, 20));
 		lblPharmacyAssistant.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblPharmacyAssistant.setText("  Pharmacy Assistant:");
+		lblPharmacyAssistant.setText("  Assistente de Farmácia:");
 		txtPharmacyAssistant = new Text(grpContactDetails, SWT.BORDER);
 		txtPharmacyAssistant.setBounds(new org.eclipse.swt.graphics.Rectangle(
 				150, 195, 180, 20));
@@ -631,7 +632,7 @@ public class StockCenterInfo extends GenericFormGui {
 	private void createGrpLabel() {
 
 		grpLabel = new Group(grpPharmacyDetails, SWT.NONE);
-		grpLabel.setText("Preview of Label");
+		grpLabel.setText("Visualização do rótulo");
 		grpLabel.setBounds(new Rectangle(390, 40, 310, 230));
 		grpLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -642,7 +643,7 @@ public class StockCenterInfo extends GenericFormGui {
 		createCanvasBorders();
 
 		lblCanvasPharmName = new Label(canvasLabel, SWT.NONE);
-		lblCanvasPharmName.setText("Facility Name");
+		lblCanvasPharmName.setText("Nome da Unidade Sanitária");
 		lblCanvasPharmName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblCanvasPharmName.setBackground(ResourceUtils
 				.getColor(iDartColor.WHITE));
@@ -652,7 +653,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblCanvasPharmName.setAlignment(SWT.CENTER);
 
 		lblCanvasPharmacist = new Label(canvasLabel, SWT.NONE);
-		lblCanvasPharmacist.setText("Pharmacist");
+		lblCanvasPharmacist.setText("Farmacêutico");
 		lblCanvasPharmacist
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblCanvasPharmacist.setBackground(ResourceUtils
@@ -663,7 +664,7 @@ public class StockCenterInfo extends GenericFormGui {
 		lblCanvasPharmacist.setAlignment(SWT.CENTER);
 
 		lblCanvasAddress = new Label(canvasLabel, SWT.NONE);
-		lblCanvasAddress.setText("Physical Address");
+		lblCanvasAddress.setText("Endereço físico");
 		lblCanvasAddress.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblCanvasAddress
 		.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -763,9 +764,9 @@ public class StockCenterInfo extends GenericFormGui {
 			txtTel.setText("");
 			txtPharmacistName1.setText("");
 			txtPharmacyAssistant.setText("");
-			lblCanvasPharmName.setText("Facility Name");
-			lblCanvasPharmacist.setText("Pharmacist");
-			lblCanvasAddress.setText("Physical Address");
+			lblCanvasPharmName.setText("Nome da Unidade Sanitária");
+			lblCanvasPharmacist.setText("Farmacêutico");
+			lblCanvasAddress.setText("Endereço físico");
 		}
 
 		fieldsChanged = false;
@@ -790,9 +791,9 @@ public class StockCenterInfo extends GenericFormGui {
 		txtTel.setText("");
 		txtPharmacistName1.setText("");
 		txtPharmacyAssistant.setText("");
-		lblCanvasPharmName.setText("Facility Name");
-		lblCanvasPharmacist.setText("Pharmacist");
-		lblCanvasAddress.setText("Physical Address");
+		lblCanvasPharmName.setText("Nome da Unidade Sanitária");
+		lblCanvasPharmacist.setText("Farmacêutico");
+		lblCanvasAddress.setText("Endereço físico");
 
 		fieldsChanged = false;
 		enableFields();
@@ -855,18 +856,18 @@ public class StockCenterInfo extends GenericFormGui {
 							| SWT.YES | SWT.NO);
 
 					if(currentScreenMode.equalsIgnoreCase(screenModes[0])) {
-						mSave.setText("iDART: Add New Pharmacy?");
-						mSave.setMessage("Are you sure you want to add Pharmacy '"
+						mSave.setText("iDART: Adicionar nova farmácia?");
+						mSave.setMessage("Tem certeza de que deseja adicionar Farmácia '"
 								+ txtStockCenterName.getText() + "'?");
 					}
 					else if(currentScreenMode.equalsIgnoreCase(screenModes[1])) {
-						mSave.setText("iDART: Update Pharmacy?");
-						mSave.setMessage("Are you sure you want to update the Pharmacy '"
+						mSave.setText("iDART: Atualizar farmácia?");
+						mSave.setMessage("Tem certeza de que deseja adicionar Farmácia '"
 								+ txtStockCenterName.getText() + "'?");
 					}
 					else if(currentScreenMode.equalsIgnoreCase(screenModes[2])) {
-						mSave.setText("iDART: Update Facility Details?");
-						mSave.setMessage("Are you sure you want to update the Facility Details?");
+						mSave.setText("iDART: Atualizar detalhes da Unidade Sanitária?");
+						mSave.setMessage("Tem certeza de que deseja atualizar os Detalhes da Unidade Sanitária?");
 					}
 					switch (mSave.open()) {
 
@@ -878,8 +879,8 @@ public class StockCenterInfo extends GenericFormGui {
 						tx.commit();
 						MessageBox confirmUpdate = new MessageBox(getShell(),
 								SWT.OK | SWT.ICON_INFORMATION);
-						confirmUpdate.setText("iDART: Database Updated");
-						confirmUpdate.setMessage("The changes have been updated.");
+						confirmUpdate.setText("iDART: Base de dados atualizado");
+						confirmUpdate.setMessage("As alterações foram atualizadas.");
 						confirmUpdate.open();
 						clearMode();
 						break;
@@ -911,8 +912,8 @@ public class StockCenterInfo extends GenericFormGui {
 			else {
 				MessageBox mSave = new MessageBox(getShell(), SWT.OK
 						| SWT.ICON_INFORMATION);
-				mSave.setText("iDART: Changes Not Made");
-				mSave.setMessage("No changes were made");
+				mSave.setText("iDART: Alterações não feitas");
+				mSave.setMessage("Nenhuma alteração foi feita");
 				mSave.open();
 
 			}
