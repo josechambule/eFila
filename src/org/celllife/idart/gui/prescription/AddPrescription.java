@@ -1018,23 +1018,6 @@ public class AddPrescription extends GenericFormGui implements
         });
 
         enableContentProposal(cmbRegime);
-        //cmbRegime.setFocus();
-
-        /*Adicionado pr Colaco Nhongo - Botao para pesquisar o Regime Terapeutico*/
-        // Inicio
-//        btnSearchDrugsGroup = new Button(grpParticulars, SWT.NONE);
-//        btnSearchDrugsGroup.setBounds(new Rectangle(585, 94, 30, 24));
-//        btnSearchDrugsGroup.setImage(ResourceUtils.getImage(iDartImage.SEARCH_ICON_16));
-//        btnSearchDrugsGroup.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//        btnSearchDrugsGroup.setToolTipText("Pressione neste botão para pesquisar o Regime Terapeutico");
-//
-//        btnSearchDrugsGroup.addSelectionListener(new SelectionAdapter() {
-//            @Override
-//            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-//                cmdDrugGroupSearchWidgetSelected();
-//            }
-//        });
-// Fim
 
         // Linha Terapeutica
         Label lblLinha = new Label(grpParticulars, SWT.NONE);
@@ -1049,15 +1032,6 @@ public class AddPrescription extends GenericFormGui implements
         cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         //popula o ccombo de linhas
         CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-        cmbLinha.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                cmbLinha.removeAll();
-                CommonObjects.populateLinha(getHSession(), cmbLinha, false);
-                cmbLinha.setVisibleItemCount(Math.min(
-                        cmbLinha.getItemCount(), 25));
-            }
-        });
         cmbLinha.setFocus();
 
         // Prescription Notes
@@ -1076,8 +1050,7 @@ public class AddPrescription extends GenericFormGui implements
         lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
                 | SWT.BORDER);
         lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
-        lblNewPrescriptionId.setFont(ResourceUtils
-                .getFont(iDartFont.VERASANS_8));
+        lblNewPrescriptionId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
     }
 
