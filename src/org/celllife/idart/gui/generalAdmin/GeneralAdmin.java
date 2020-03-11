@@ -352,7 +352,7 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicImport.setText(EMPTY);
         lblPicImport.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
 
-        Button btnGenerateTemplate = new Button(grpImport, SWT.NONE);
+        /*Button btnGenerateTemplate = new Button(grpImport, SWT.NONE);
         btnGenerateTemplate.setText(Messages.getString("GeneralAdmin.button.generateTemplate.title")); //$NON-NLS-1$
         btnGenerateTemplate.setToolTipText(Messages.getString("GeneralAdmin.button.generateTemplate.tooltip")); //$NON-NLS-1$
         btnGenerateTemplate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 35,235, 30));
@@ -365,7 +365,7 @@ public class GeneralAdmin extends GenericAdminGui {
                             }
                 });
 
-        /*Button btnImportPatients = new Button(grpImport, SWT.NONE);
+        Button btnImportPatients = new Button(grpImport, SWT.NONE);
         btnImportPatients.setText(Messages.getString("GeneralAdmin.button.importPatients.title")); //$NON-NLS-1$
         btnImportPatients.setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip")); //$NON-NLS-1$
         btnImportPatients.setBounds(new org.eclipse.swt.graphics.Rectangle(35,70, 235, 30));
@@ -388,7 +388,7 @@ public class GeneralAdmin extends GenericAdminGui {
             btnImportPatientsOpenMRS
                     .setToolTipText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
             btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                    100, 235, 27));
+                    55, 235, 27));
             btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
             btnImportPatientsOpenMRS
                     .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -407,7 +407,7 @@ public class GeneralAdmin extends GenericAdminGui {
             btnImportPatientsOpenMRS
                     .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
             btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                    100, 235, 27));
+                    55, 235, 27));
             btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
             btnImportPatientsOpenMRS
                     .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
