@@ -229,15 +229,15 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         txtDrugGroupName = new Text(grpRegimen, SWT.BORDER);
         txtDrugGroupName.setBounds(new Rectangle(160, 45, 220, 20));
         txtDrugGroupName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        txtDrugGroupName.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-            }
-
-            @Override
-            public void focusLost(FocusEvent focusEvent) {
-                cmdSearchWidgetSelected();
-            }
-        });
+//        txtDrugGroupName.addFocusListener(new FocusListener() {
+//            public void focusGained(FocusEvent e) {
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent focusEvent) {
+//                cmdSearchWidgetSelected();
+//            }
+//        });
 
         btnSearch = new Button(grpRegimen, SWT.NONE);
         btnSearch.setBounds(new Rectangle(390, 45, 160, 25));
