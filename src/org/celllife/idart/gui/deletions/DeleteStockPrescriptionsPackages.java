@@ -1421,8 +1421,9 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 		Transaction tx = null;
 		try {
 			tx = getHSession().beginTransaction();
-			DeletionsManager.removeUndispensedPrescription(getHSession(),
-					prescriptionToRemove);
+			DeletionsManager.removeUndispensedPrescription(getHSession(),prescriptionToRemove);
+
+
 			getHSession().flush();
 			tx.commit();
 			MessageBox mb = new MessageBox(getShell());

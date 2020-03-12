@@ -6,8 +6,10 @@
 package migracao.entidadesHibernate.dao;
 
 import migracao.connection.hibernateConectionRemote;
+import migracao.entidades.PatientIdentifier;
 import migracao.entidades.PatientProgram;
 import migracao.entidadesHibernate.Interfaces.PatientProgramDaoInterface;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -82,11 +84,35 @@ public class PatientProgramDao implements PatientProgramDaoInterface<PatientProg
   //Review - colaco
     @Override
     public List<PatientProgram> findAll() {
+
         List patientPrograms = this.getCurrentSession().createQuery("from PatientProgram p "
                                                                     + "where p.programId = 2 and "
                                                                     + "p.idart is null and "
                                                                     + "p.dateEnrolled is not null and "
                                                                     + "p.dateCompleted is null").list();
+
+        SQLQuery query = this.getCurrentSession().createSQLQuery(" " +
+                        "select pg.* from patient p "+
+                        "inner join patient_program pg on pg.patient_id = p.patient_id "+
+                        "where pg.voided=0 and pg.program_id=2 "+
+                        "and pg.idart is null "+
+                        "and pg.date_enrolled is not null "+
+                        "and pg.date_completed is null " +
+                        "and p.patient_id not in ( " +
+                            "select pg.patient_id " +
+                            "from patient p " +
+                            "inner join patient_program pg on pg.patient_id = p.patient_id " +
+                            "inner join patient_state ps on ps.patient_program_id = pg.patient_program_id " +
+                            "where pg.voided=0 and ps.voided=0 " +
+                            "and p.voided=0 " +
+                            "and pg.program_id = 2 " +
+                            "and ps.state in (7,8,9,10) " +
+                            "and ps.end_date is null " +
+                            "and ps.start_date <= NOW() " +
+                        " ) ");
+        query.addEntity(PatientProgram.class);
+        patientPrograms = query.list();
+
         return patientPrograms;
     }
 
