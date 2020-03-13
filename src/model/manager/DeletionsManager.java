@@ -419,10 +419,17 @@ public class DeletionsManager {
         logging.setModified('Y');
         logging.setTransactionDate(new Date());
         logging.setTransactionType("Delete Prescription");
-        logging.setMessage("Deleted Prescription "
-                + thePrescription.getPrescriptionId() + " from Patient "
-                + thePrescription.getPatient().getPatientId());
+        logging.setMessage("Deleted Prescription " + thePrescription.getPrescriptionId() + " from Patient " + thePrescription.getPatient().getPatientId());
         session.save(logging);
+
+        String updatePrescriptio =  "update Prescription set current = 'T' " +
+                                    " where patient =  " +thePrescription.getPatient().getId()+
+                                    " and date = (select max(date) " +
+                                    "            from Prescription " +
+                                    "               where patient = "+thePrescription.getPatient().getId()+" ) ";
+        session.createQuery(updatePrescriptio).executeUpdate();
+
+
     }
 
     /**

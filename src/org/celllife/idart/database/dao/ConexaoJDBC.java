@@ -17,6 +17,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PrescriptionToPatient;
 import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
@@ -4316,6 +4317,25 @@ public class ConexaoJDBC {
         }
 
         return absenteeForSupportCallsXLS;
+
+    }
+
+
+    /**
+     * Actualiza a ultima prescricao para current T depois de remover a current
+     * @param patient
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public void updateLastPrescriptionToTrue(Patient patient) throws ClassNotFoundException, SQLException {
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        st.executeUpdate("update prescription set current = 'T' " +
+                " where patient =  " +patient.getId()+
+                " and date = (select max(date) " +
+                "            from prescription " +
+                "               where patient = "+patient.getId()+" ) ");
 
     }
 
