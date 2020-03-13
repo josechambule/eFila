@@ -107,7 +107,7 @@ public class DeliveryDetails extends GenericFormGui {
 	/**
 	 * Constructor method
 	 * 
-	 * @param parent
+	 * @param parentStockScreen
 	 *            Shell
 	 * @param ti
 	 *            TableItem
@@ -279,7 +279,7 @@ public class DeliveryDetails extends GenericFormGui {
 		Label lblExpiryDate = new Label(grpBatchDetails, SWT.NONE);
 		lblExpiryDate.setBounds(new Rectangle(20, 90, 90, 20));
 		lblExpiryDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblExpiryDate.setText("*Data de Expiração");
+		lblExpiryDate.setText("*Data de Validade");
 
 		cmbExpiryMonth = new Combo(grpBatchDetails, SWT.BORDER);
 		cmbExpiryMonth.setBounds(new Rectangle(150, 85, 106, 13));
@@ -389,7 +389,7 @@ public class DeliveryDetails extends GenericFormGui {
 		Label lblShelfNo = new Label(grpBatchDetails, SWT.NONE);
 		lblShelfNo.setBounds(new Rectangle(20, 150, 90, 20));
 		lblShelfNo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblShelfNo.setText("Shelf Number");
+		lblShelfNo.setText("Número da Prateleira");
 
 		txtShelfNo = new Text(grpBatchDetails, SWT.BORDER);
 		txtShelfNo.setBounds(new Rectangle(150, 149, 90, 20));
@@ -445,13 +445,12 @@ public class DeliveryDetails extends GenericFormGui {
 		Label lblUnitPrice = new Label(grpBatchDetails, SWT.NONE);
 		lblUnitPrice.setBounds(new Rectangle(20, 242, 84, 20));
 		lblUnitPrice.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblUnitPrice.setText("Preço Por Unidade");
+		lblUnitPrice.setText("Preço Por Unidade ");
 
 		Label lblCurrency = new Label(grpBatchDetails, SWT.RIGHT);
 		lblCurrency.setBounds(new Rectangle(110, 242, 23, 20));
 		lblCurrency.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCurrency.setText(Currency.getInstance(iDartProperties.currentLocale)
-				.getSymbol());
+		lblCurrency.setText(iDartProperties.currency);
 
 		txtUnitPrice = new Text(grpBatchDetails, SWT.BORDER);
 		txtUnitPrice.setBounds(new Rectangle(150, 239, 90, 20));
