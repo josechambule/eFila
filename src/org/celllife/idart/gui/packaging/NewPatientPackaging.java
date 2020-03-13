@@ -889,7 +889,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
         // btnPrintEmergencyLabel
         Button btnRerrintLabels = new Button(getCompButtons(), SWT.NONE);
         btnRerrintLabels.setBounds(new Rectangle(0, 2, 120, 30));
-        btnRerrintLabels.setText("Reimprir Etiqueta");
+        btnRerrintLabels.setText("Reimprimir Etiqueta");
         btnRerrintLabels.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -909,6 +909,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
         });
 
         btnRerrintLabels.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnPrintCustomLabel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         Label lblPicDispense = new Label(getCompButtons(), SWT.NONE);
         lblPicDispense.setBounds(new Rectangle(508, 0, 40, 34));
