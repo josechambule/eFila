@@ -1,20 +1,20 @@
 /*
  * iDART: The Intelligent Dispensing of Anti-retroviral Treatment
  * Copyright (C) 2006 Cell-Life
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License version
  * 2 for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License version 2
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 
 package org.celllife.idart.gui.clinic;
@@ -90,7 +90,7 @@ public class AddClinic extends GenericFormGui {
 	/**
 	 * Use true if you want to add a new clinic, use false if you are updating
 	 * an existing clinic
-	 * 
+	 *
 	 * @param parent
 	 *            Shell
 	 */
@@ -109,8 +109,8 @@ public class AddClinic extends GenericFormGui {
 	protected void createShell() {
 		isAddnotUpdate = ((Boolean) getInitialisationOption(OPTION_isAddNotUpdate))
 				.booleanValue();
-		String shellTxt = isAddnotUpdate ? "Add New Clinic"
-				: "Update an Existing Clinic";
+		String shellTxt = isAddnotUpdate ? "Adicionar US"
+				: "Actualizar uma US existente";
 		Rectangle bounds = new Rectangle(100, 100, 600, 560);
 
 		// Parent Generic Methods ------
@@ -124,13 +124,13 @@ public class AddClinic extends GenericFormGui {
 
 	/**
 	 * This method initializes compHeader
-	 * 
+	 *
 	 */
 	@Override
 	protected void createCompHeader() {
 
-		String headerTxt = (isAddnotUpdate ? "Add New Clinic"
-				: "Update Existing Clinic");
+		String headerTxt = (isAddnotUpdate ? "Adicionar US"
+				: "Actualizar uma US existente");
 		iDartImage icoImage = iDartImage.CLINIC;
 		buildCompHeader(headerTxt, icoImage);
 		Rectangle bounds = getCompHeader().getBounds();
@@ -142,7 +142,7 @@ public class AddClinic extends GenericFormGui {
 
 	/**
 	 * This method initializes compButtons
-	 * 
+	 *
 	 */
 	@Override
 	protected void createCompButtons() {
@@ -151,7 +151,7 @@ public class AddClinic extends GenericFormGui {
 
 	/**
 	 * This method initializes grpClinicInfo
-	 * 
+	 *
 	 */
 	private void createGrpClinicInfo() {
 
@@ -166,14 +166,14 @@ public class AddClinic extends GenericFormGui {
 		Label lblInstructions = new Label(grpClinicInfo, SWT.CENTER);
 		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(70,
 				15, 260, 20));
-		lblInstructions.setText("All fields marked with * are compulsory");
+		lblInstructions.setText("Todos campos marcados com * são obrigatorios");
 		lblInstructions.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_10_ITALIC));
 
 		// lblClinic & txtClinic
 		Label lblClinic = new Label(grpClinicInfo, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(40, 50, 111, 20));
-		lblClinic.setText("* Clinic:");
+		lblClinic.setText("* Nome:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtClinic = new Text(grpClinicInfo, SWT.BORDER);
@@ -184,23 +184,23 @@ public class AddClinic extends GenericFormGui {
 		// btnSearch
 		btnSearch = new Button(grpClinicInfo, SWT.NONE);
 		btnSearch.setBounds(new Rectangle(293, 47, 152, 30));
-		btnSearch.setText("Clinic Search");
+		btnSearch.setText("Procurar");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch.setVisible(!isAddnotUpdate);
 		btnSearch.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-					@Override
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						cmdSearchWidgetSelected();
-					}
-				});
-		btnSearch.setToolTipText("Press this button to search for an existing Clinic .");
+			@Override
+			public void widgetSelected(
+					org.eclipse.swt.events.SelectionEvent e) {
+				cmdSearchWidgetSelected();
+			}
+		});
+		btnSearch.setToolTipText("Pressione para procurar uma US existente .");
 
 		// lblTelephone & txtTelephone
 		Label lblTelephone = new Label(grpClinicInfo, SWT.NONE);
 		lblTelephone.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 80,
 				100, 20));
-		lblTelephone.setText("Telephone:");
+		lblTelephone.setText("Telefone:");
 		lblTelephone.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtTelephone = new Text(grpClinicInfo, SWT.BORDER);
@@ -211,7 +211,7 @@ public class AddClinic extends GenericFormGui {
 		Label lblClinicNotes = new Label(grpClinicInfo, SWT.NONE);
 		lblClinicNotes.setBounds(new org.eclipse.swt.graphics.Rectangle(40,
 				110, 100, 20));
-		lblClinicNotes.setText("Notes:");
+		lblClinicNotes.setText("Notas:");
 		lblClinicNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtClinicNotes = new Text(grpClinicInfo, SWT.BORDER);
@@ -220,7 +220,7 @@ public class AddClinic extends GenericFormGui {
 
 		grplocationInfo = new Group(grpClinicInfo, SWT.NONE);
 		grplocationInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grplocationInfo.setText("Location");
+		grplocationInfo.setText("Localização");
 		grplocationInfo.setBounds(new Rectangle(18, 150, 470, 210));
 
 		// lblCountry & cmbCountry
@@ -228,7 +228,7 @@ public class AddClinic extends GenericFormGui {
 		lblCountry.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				100, 20));
 		lblCountry.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCountry.setText("Country:");
+		lblCountry.setText("País:");
 		cmbCountry = new CCombo(grplocationInfo, SWT.BORDER);
 		cmbCountry.setBounds(new Rectangle(140, 30, 130, 20));
 		cmbCountry.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -242,7 +242,7 @@ public class AddClinic extends GenericFormGui {
 		lblProvince.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 60,
 				100, 20));
 		lblProvince.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblProvince.setText("Province:");
+		lblProvince.setText("Província:");
 		cmbProvince = new CCombo(grplocationInfo, SWT.BORDER);
 		cmbProvince.setBounds(new Rectangle(140, 60, 150, 20));
 		cmbProvince.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -259,31 +259,31 @@ public class AddClinic extends GenericFormGui {
 				populateDistrict();
 			}
 		});
-		
+
 		// btnSearch
 		btnSearchNational = new Button(grplocationInfo, SWT.NONE);
 		btnSearchNational.setBounds(new Rectangle(320, 60, 130, 30));
-		btnSearchNational.setText("Search National List ");
+		btnSearchNational.setText("Procurar na Lista ");
 		btnSearchNational.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		if(!isAddnotUpdate){
-			btnSearchNational.setEnabled(false);	
+			btnSearchNational.setEnabled(false);
 		}
-		
+
 		btnSearchNational.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				cmdSearchNationalSelected();	
+				cmdSearchNationalSelected();
 			}
 		});
 		btnSearchNational
-				.setToolTipText("Press this button to search for an existing Clinic .");
+				.setToolTipText("Pressione para procurar uma US existente .");
 
 		// lblDistrict & cmbDistrict
 		Label lblDistrict = new Label(grplocationInfo, SWT.NONE);
 		lblDistrict.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 90,
 				100, 20));
 		lblDistrict.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblDistrict.setText("District:");
+		lblDistrict.setText("Distrito:");
 		cmbDistrict = new CCombo(grplocationInfo, SWT.BORDER);
 		cmbDistrict.setBounds(new Rectangle(140, 90, 160, 20));
 		cmbDistrict.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -302,7 +302,7 @@ public class AddClinic extends GenericFormGui {
 		lblSubdistrict.setBounds(new org.eclipse.swt.graphics.Rectangle(40,
 				120, 100, 20));
 		lblSubdistrict.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblSubdistrict.setText("Sub-District:");
+		lblSubdistrict.setText("Posto Administrativo:");
 		cmbSubDistrict = new CCombo(grplocationInfo, SWT.BORDER);
 		cmbSubDistrict.setBounds(new Rectangle(140, 120, 160, 20));
 		cmbSubDistrict.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -323,7 +323,7 @@ public class AddClinic extends GenericFormGui {
 		lblFacility.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 150,
 				100, 20));
 		lblFacility.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblFacility.setText("Facility Name:");
+		lblFacility.setText("Nome da US:");
 		cmbFacility = new CCombo(grplocationInfo, SWT.BORDER);
 		cmbFacility.setBounds(new Rectangle(140, 150, 160, 20));
 		cmbFacility.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -337,7 +337,7 @@ public class AddClinic extends GenericFormGui {
 				populateFacilitytype();
 			}
 
-			
+
 		});
 
 		// lblSubdistrict & cmbSubDistrict
@@ -345,7 +345,7 @@ public class AddClinic extends GenericFormGui {
 		lblFacilityType.setBounds(new org.eclipse.swt.graphics.Rectangle(40,
 				180, 100, 20));
 		lblFacilityType.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblFacilityType.setText("Facility Type:");
+		lblFacilityType.setText("Tipo de US:");
 		txtFacilityType = new Text(grplocationInfo, SWT.BORDER);
 		txtFacilityType.setBounds(new Rectangle(140, 180, 150, 20));
 		txtFacilityType.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -354,9 +354,9 @@ public class AddClinic extends GenericFormGui {
 		txtFacilityType.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 	}
-	
+
 	private void populateDistrict() {
-		if (!cmbProvince.getText().equals("Select a Province")) {
+		if (!cmbProvince.getText().equals("Seleccione a Província")) {
 
 			cmbDistrict.setEnabled(true);
 			cmbDistrict.removeAll();
@@ -371,14 +371,14 @@ public class AddClinic extends GenericFormGui {
 			if (ncList != null) {
 				for (String s : ncList) {
 					if(s!=null){
-					cmbDistrict.add(s);
+						cmbDistrict.add(s);
 					}
 				}
 			}
 
 			if (cmbDistrict.getItemCount() > 0) {
 				// Set the default to the first item in the combo box
-				cmbDistrict.setText("Select a District");
+				cmbDistrict.setText("Seleccione o Distrito");
 			}
 		}
 	}
@@ -391,13 +391,13 @@ public class AddClinic extends GenericFormGui {
 
 			try {
 				tx = getHSession().beginTransaction();
-				
+
 				NationalClinics nclinic = AdministrationManager
-				.getNationalClinic(getHSession(), cmbProvince
-						.getText().trim(), cmbDistrict.getText()
-						.trim(), cmbSubDistrict.getText().trim(),
-						cmbFacility.getText().trim());
-				
+						.getNationalClinic(getHSession(), cmbProvince
+										.getText().trim(), cmbDistrict.getText()
+										.trim(), cmbSubDistrict.getText().trim(),
+								cmbFacility.getText().trim());
+
 				if (localClinic == null && isAddnotUpdate) {
 					localClinic = new Clinic();
 
@@ -416,20 +416,20 @@ public class AddClinic extends GenericFormGui {
 				localClinic.setClinicName(txtClinic.getText().trim());
 				localClinic.setTelephone(txtTelephone.getText().trim());
 				localClinic.setClinicDetails(nclinic);
-				
+
 				AdministrationManager.saveClinic(getHSession(), localClinic);
 				getHSession().flush();
 				tx.commit();
 
 				showMessage(
-						MessageDialog.INFORMATION,"Database Updated",
-						"The Clinic '" + localClinic.getClinicName() + "' has been saved.");
+						MessageDialog.INFORMATION,"Actualização com Sucesso",
+						"A Farmacia '" + localClinic.getClinicName() + "' foi adicionada.");
 
 			} catch (HibernateException he) {
 				showMessage(
 						MessageDialog.ERROR,
-						"Problems Saving to the Database",
-						"There was a problem saving the Clinic's information to the database. Please try again.");
+						"Problemas ao gravar a informação",
+						"Problemas ao gravar a informação da farmacia. Por favor, tente novamente.");
 				if (tx != null) {
 					tx.rollback();
 				}
@@ -448,10 +448,10 @@ public class AddClinic extends GenericFormGui {
 		try {
 			txtClinic.setText("");
 			cmbCountry.setText(iDartProperties.country);
-			cmbProvince.setText("Select a Province");
+			cmbProvince.setText("Seleccione a Província");
 			cmbDistrict.setText("");
 			cmbDistrict.setEnabled(false);
-			
+
 			cmbFacility.setText("");
 			cmbFacility.setEnabled(false);
 			cmbSubDistrict.setText("");
@@ -462,9 +462,9 @@ public class AddClinic extends GenericFormGui {
 			txtClinicNotes.setText("");
 			txtClinic.setFocus();
 			if(!isAddnotUpdate){
-				btnSearchNational.setEnabled(false);	
+				btnSearchNational.setEnabled(false);
 			}
-			
+
 			enableFields(isAddnotUpdate);
 
 		} catch (Exception e) {
@@ -481,7 +481,7 @@ public class AddClinic extends GenericFormGui {
 	private void cmdSearchWidgetSelected() {
 
 		Search clinicSearch = new Search(getHSession(), getShell(),
-				CommonObjects.CLINIC);
+				CommonObjects.CLINIC) {};
 
 		if (clinicSearch.getValueSelected() != null) {
 
@@ -497,11 +497,11 @@ public class AddClinic extends GenericFormGui {
 		}
 
 	}
-	
+
 	private void cmdSearchNationalSelected() {
 
 		Search nationalSearch = new Search(getHSession(), getShell(),
-				CommonObjects.NATION);
+				CommonObjects.NATION) {};
 
 		if (nationalSearch.getValueSelected() != null) {
 
@@ -513,23 +513,23 @@ public class AddClinic extends GenericFormGui {
 	}
 
 	private void loadNationalClinicDetails(NationalClinics natclinic) {
-		
+
 		cmbProvince.setText(natclinic.getProvince());
 		//populateDistrict();
 		cmbProvince.setEnabled(true);
-		
+
 		cmbDistrict.setText(natclinic.getDistrict());
 		//populateSubDistrict();
 		cmbDistrict.setEnabled(true);
-		
+
 		cmbSubDistrict.setText(natclinic.getSubDistrict());
 		//populateFacilityname();
 		cmbSubDistrict.setEnabled(true);
-		
+
 		cmbFacility.setText(natclinic.getFacilityName());
 		//populateFacilitytype();
 		cmbFacility.setEnabled(true);
-		
+
 		txtFacilityType.setEnabled(true);
 		txtFacilityType.setText(natclinic.getFacilityType());
 	}
@@ -544,7 +544,7 @@ public class AddClinic extends GenericFormGui {
 
 	/**
 	 * Method enableFields.
-	 * 
+	 *
 	 * @param enable
 	 *            boolean
 	 */
@@ -573,18 +573,18 @@ public class AddClinic extends GenericFormGui {
 		txtClinic.setText(localClinic.getClinicName());
 		txtTelephone.setText(localClinic.getTelephone());
 		txtClinicNotes.setText(localClinic.getNotes());
-		
+
 		NationalClinics natClinic = localClinic.getClinicDetails();
 		if(natClinic != null){
 			loadNationalClinicDetails(natClinic);
 		}
-		
+
 	}
 
 	/**
 	 * Check if the necessary field names are filled in. Returns true if there
 	 * are fields missing
-	 * 
+	 *
 	 * @return boolean
 	 */
 	@Override
@@ -594,22 +594,22 @@ public class AddClinic extends GenericFormGui {
 
 		if (txtClinic.getText().trim().equals("")) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("The Clinic's name cannot be blank.");
-			b.setText("Missing Fields");
+			b.setMessage("O campo nome da farmacia nao pode estar em branco.");
+			b.setText("Campos em branco");
 			b.open();
 			txtClinic.setFocus();
 			fieldsOkay = false;
 		} else if ((AdministrationManager.clinicExists(getHSession(), txtClinic
 				.getText().trim()) && isAddnotUpdate)
 				|| (AdministrationManager.clinicExists(getHSession(), txtClinic
-						.getText().trim())
-						&& localClinic != null && !localClinic.getClinicName()
-						.equalsIgnoreCase(txtClinic.getText().trim()))) {
+				.getText().trim())
+				&& localClinic != null && !localClinic.getClinicName()
+				.equalsIgnoreCase(txtClinic.getText().trim()))) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_INFORMATION);
-			m.setText("Problems Saving to the Database");
+			m.setText("Problemas ao gravar a informação");
 			m
-					.setMessage("A Clinic with this name already exists! Please choose another name");
+					.setMessage("Ja existe uma farmacia com este nome! Por favor escolha outro nome");
 			m.open();
 
 			txtClinic.setFocus();
@@ -621,7 +621,7 @@ public class AddClinic extends GenericFormGui {
 
 	/**
 	 * Method submitForm.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	@Override
@@ -636,7 +636,7 @@ public class AddClinic extends GenericFormGui {
 	}
 
 	private void populateSubDistrict() {
-		if (!cmbDistrict.getText().equals("Select a District")) {
+		if (!cmbDistrict.getText().equals("Seleccione o Distrito")) {
 
 			cmbSubDistrict.setEnabled(true);
 			cmbSubDistrict.removeAll();
@@ -656,14 +656,14 @@ public class AddClinic extends GenericFormGui {
 
 			if (cmbSubDistrict.getItemCount() > 0) {
 				// Set the default to the first item in the combo box
-				cmbSubDistrict.setText("Select a Sub-District");
+				cmbSubDistrict.setText("Seleccione o Posto Administrativo");
 			}
 		}
 	}
-	
+
 	private void populateFacilityname() {
 		if (!cmbSubDistrict.getText().equals(
-				"Select a Sub-District")) {
+				"Seleccione o Posto Administrativo")) {
 
 			cmbFacility.setEnabled(true);
 			cmbFacility.removeAll();
@@ -681,14 +681,14 @@ public class AddClinic extends GenericFormGui {
 
 			if (cmbFacility.getItemCount() > 0) {
 				// Set the default to the first item in the combo box
-				cmbFacility.setText("Select a Facility Name");
+				cmbFacility.setText("Seleccione o Nome da US");
 			}
 		}
 	}
-	
+
 	private void populateFacilitytype() {
 		if (!cmbSubDistrict.getText().equals(
-				"Select a Facility Name")) {
+				"Seleccione o Nome da US")) {
 
 			txtFacilityType.setEnabled(true);
 			txtFacilityType.clearSelection();
