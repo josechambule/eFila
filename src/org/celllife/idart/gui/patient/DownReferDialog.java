@@ -36,12 +36,10 @@ import org.hibernate.Transaction;
 
 public class DownReferDialog extends GenericOthersGui {
 
-	private static final String infoText = "When you down refer this "
-		+ "patient, you will still be packaging drugs for them. "
-		+ "This patient will still be counted in the total number "
-		+ "of patients on treatement but will be reflected in the "
-		+ "down referral clinic's data, and no longer in the "
-		+ "pharmacy's data.";
+	private static final String infoText = "Quando uma farmacia refere um paciente, "
+			+ "ela ainda pode efectuar dispensas para o mesmo paciente. "
+			+ "Este paciente sera contabilizado no numero total de pacientes "
+			+ "em tratamento da farmacia de referencia. ";
 	private final Patient patient;
 	private CCombo cmbClinic;
 	private DateButton btnDownReferredDate;
@@ -57,32 +55,31 @@ public class DownReferDialog extends GenericOthersGui {
 	@Override
 	protected void createCompButtons() {
 		Button btnSave = new Button(getCompButtons(), SWT.NONE);
-		btnSave.setText("Save");
+		btnSave.setText("Gravar");
 		btnSave.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnSave.setToolTipText("Press this button to save the information \n"
-				+ "you have entered on this screen.");
+		btnSave.setToolTipText("Pressione este botão para gravar a informação.");
 		btnSave
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdSaveWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdSaveWidgetSelected();
+					}
+				});
 
 		Button btnCancel = new Button(getCompButtons(), SWT.NONE);
-		btnCancel.setText("Cancel");
+		btnCancel.setText("Cancelar");
 		btnCancel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnCancel.setToolTipText("Press this button to close this screen.\n"
-				+ "The information you've entered here will be lost.");
+		btnCancel.setToolTipText("Pressione este botão para fechar esta janela.\n"
+				+ "A informação digitada será perdida.");
 		btnCancel
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdCancelWidgetSelected();
-			}
-		});
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					@Override
+					public void widgetSelected(
+							org.eclipse.swt.events.SelectionEvent e) {
+						cmdCancelWidgetSelected();
+					}
+				});
 	}
 
 	protected void cmdCancelWidgetSelected() {
@@ -98,8 +95,8 @@ public class DownReferDialog extends GenericOthersGui {
 	private boolean fieldsOk() {
 		String clinicName = cmbClinic.getText();
 		if (clinicName == null || clinicName.isEmpty()) {
-			showMessage(MessageDialog.ERROR, "Clinic not selected",
-			"Please select a clinic.");
+			showMessage(MessageDialog.ERROR, "Farmacia nao selecionada",
+					"Por Favor Seleccione a Farmacia.");
 			return false;
 		}
 		return true;
@@ -112,19 +109,19 @@ public class DownReferDialog extends GenericOthersGui {
 			Episode episode = patient.getMostRecentEpisode();
 			Date date = btnDownReferredDate.getDate();
 			episode.setStopDate(date);
-			episode.setStopReason("Down-Referred");
+			episode.setStopReason("Referido");
 			String clinicName = cmbClinic.getText();
-			episode.setStopNotes("To " + clinicName);
+			episode.setStopNotes("Para " + clinicName);
 
 			Episode newEpisode = new Episode();
 			newEpisode.setPatient(patient);
 			newEpisode.setStartDate(date);
-			newEpisode.setStartNotes("At " + clinicName);
+			newEpisode.setStartNotes("Para " + clinicName);
 			String startReason;
 			if (btnYes.getSelection()) {
-				startReason = "Start at Down Referral Clinic";
+				startReason = "Referido para outra Farmacia";
 			} else {
-				startReason = "Restart at Down Referral Clinic";
+				startReason = "Voltou a ser referido para outra Farmacia";
 			}
 			newEpisode.setStartReason(startReason);
 			patient.getEpisodes().add(newEpisode);
@@ -140,9 +137,9 @@ public class DownReferDialog extends GenericOthersGui {
 
 			MessageBox m = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_INFORMATION);
-			m.setText("Patient Down-Referred");
-			m.setMessage("Patient '".concat(patient.getPatientId()).concat(
-			"' has been down-referred"));
+			m.setText("Paciente Referido para outra Farmacia");
+			m.setMessage("O Paciente '".concat(patient.getPatientId()).concat(
+					"' foi referido para outra Farmacia."));
 			m.open();
 
 			closeShell(false);
@@ -151,12 +148,12 @@ public class DownReferDialog extends GenericOthersGui {
 				tx.rollback();
 			}
 
-			getLog().error("Error saving patient to the database.", he);
+			getLog().error("Erro ao gravar o paciente na base de dados.", he);
 			MessageBox m = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_INFORMATION);
-			m.setText("Problems Saving to the Database");
-			m.setMessage("There was a problem saving the patient's "
-					+ "information to the database. Please try again.");
+			m.setText("Problemas ao gravar a informação");
+			m.setMessage("Problemas ao gravar a informação"
+					+ ". Por favor, tente novamente.");
 			m.open();
 		}
 	}
@@ -190,7 +187,7 @@ public class DownReferDialog extends GenericOthersGui {
 
 	@Override
 	protected void createShell() {
-		String shellTxt = "Down-Refer This Patient";
+		String shellTxt = "Referir este paciente";
 		buildShell(shellTxt, new Rectangle(25, 0, 550, 300));
 
 		createContents();
@@ -209,7 +206,7 @@ public class DownReferDialog extends GenericOthersGui {
 		label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.VERTICAL_ALIGN_CENTER));
 		label.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		label.setText("Down-Referral Clinic:");
+		label.setText("Farmacia de Referencia:");
 
 		cmbClinic = new CCombo(compContents, SWT.BORDER);
 		cmbClinic.setEditable(false);
@@ -221,7 +218,7 @@ public class DownReferDialog extends GenericOthersGui {
 		label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.VERTICAL_ALIGN_CENTER));
 		label.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		label.setText("Date Patient is Down-Referred:");
+		label.setText("Data da referencia do Paciente:");
 
 		btnDownReferredDate = new DateButton(
 				compContents,
@@ -230,11 +227,11 @@ public class DownReferDialog extends GenericOthersGui {
 						true,
 						new Date(), true, true)));
 		btnDownReferredDate.setLayoutData(new GridData(155, 20));
-		btnDownReferredDate.setText("Date");
+		btnDownReferredDate.setText("Data");
 		btnDownReferredDate
-		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+				.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnDownReferredDate
-		.setToolTipText("Press this button to select a date.");
+				.setToolTipText("Preccione o botão para seleccionar a data.");
 		try {
 			btnDownReferredDate.setDate(new Date());
 		} catch (Exception e) {
@@ -245,16 +242,16 @@ public class DownReferDialog extends GenericOthersGui {
 		label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.VERTICAL_ALIGN_CENTER));
 		label.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		label.setText("First Time at Down-Referral Clinic?");
+		label.setText("Primeira vez a referir para outra Farmacia?");
 
 		Composite compRadio = new Composite(compContents, SWT.NONE);
 		compRadio.setLayout(new RowLayout());
 		compRadio.setLayoutData(new GridData(150, 25));
 
 		btnYes = new Button(compRadio, SWT.RADIO);
-		btnYes.setText("Yes");
+		btnYes.setText("Sim");
 		Button btnNo = new Button(compRadio, SWT.RADIO);
-		btnNo.setText("No");
+		btnNo.setText("Nao");
 		btnYes.setSelection(true);
 
 		Rectangle b = getShell().getBounds();
