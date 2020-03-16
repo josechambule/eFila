@@ -1,6 +1,5 @@
 .classpath
-.settings/org.eclipse.core.resources.prefs	
-idart.properties
+.settings/org.eclipse.core.resources.prefs
 lib/swt-debug.jar
 lib/swt.jar
 src/jdbc.properties
