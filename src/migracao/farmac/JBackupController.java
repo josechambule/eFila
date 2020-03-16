@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static com.lowagie.tools.Executable.isWindows;
+import static com.lowagie.tools.Executable.*;
 
 /**
  *
@@ -87,8 +87,10 @@ public class JBackupController {
             case "backup":
                 if (isWindows()) {
                     commands.add("C:\\Program Files\\PostgreSQL\\9.5\\bin\\pg_dump");
-                } else {
+                } else if(isLinux()){
                     commands.add("/opt/PostgreSQL/9.6/bin/pg_dump");
+                }else if(isMac()) {
+                    commands.add("/Library/PostgreSQL/9.6/bin/pg_dump");
                 }
                 commands.add("-h"); //database server host
                 commands.add("localhost");

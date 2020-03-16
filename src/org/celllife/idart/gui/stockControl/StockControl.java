@@ -194,56 +194,11 @@ public class StockControl extends GenericAdminGui {
 					}
 				});
 
-// Intro FARMAC
-		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) && !iDartProperties.FARMAC) {
-
-			// lblDistributePackages
-			lblDistributePackages = new Label(compOptions, SWT.NONE);
-			lblDistributePackages.setBounds(new Rectangle(50, 260, 50, 43));
-			lblDistributePackages.setImage(ResourceUtils
-					.getImage(iDartImage.OUTGOINGPACKAGES));
-
-			lblDistributePackages.addMouseListener(new MouseListener() {
-
-				@Override
-				public void mouseUp(MouseEvent mu) {
-
-					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
-					syncPacientesFarmac.createAndShowGUI();
-				}
-
-				@Override
-				public void mouseDown(MouseEvent md) {
-				}
-
-				@Override
-				public void mouseDoubleClick(MouseEvent dc) {
-				}
-			});
-
-			// btnDistributePackages
-			btnDistributePackagesToClinic = new Button(compOptions, SWT.NONE);
-			btnDistributePackagesToClinic.setBounds(new Rectangle(105, 262, 260, 40));
-			btnDistributePackagesToClinic.setText("Exportar Pacientes Referidos para FARMAC");
-			btnDistributePackagesToClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-			btnDistributePackagesToClinic.setToolTipText(Messages.getString("FExportar Pacientes Referidos para FARMAC")); //$NON-NLS-1$
-
-			btnDistributePackagesToClinic.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-				@Override
-				public void widgetSelected(
-						org.eclipse.swt.events.SelectionEvent e) {
-					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
-					syncPacientesFarmac.createAndShowGUI();
-				}
-			});
-
-		}
-
 		// Enviar Dispensas para OpenMRS : Alterado Colaco 06-07-2016
 		if (!iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) || !iDartProperties.FARMAC) {
 			lblDispenseToOpenmrs = new Label(compOptions, SWT.NONE);
 			lblDispenseToOpenmrs.setBounds(new Rectangle(50, 180, 50, 43));
-			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
+			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.REPORT_PACKAGESSCANNEDOUT));
 
 			lblDispenseToOpenmrs.addMouseListener(new MouseListener() {
 
@@ -284,7 +239,7 @@ public class StockControl extends GenericAdminGui {
 		} else {
 			lblDispenseToOpenmrs = new Label(compOptions, SWT.NONE);
 			lblDispenseToOpenmrs.setBounds(new Rectangle(50, 180, 50, 43));
-			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.PACKAGERETURN));
+			lblDispenseToOpenmrs.setImage(ResourceUtils.getImage(iDartImage.REPORT_PACKAGESSCANNEDOUT));
 
 			lblDispenseToOpenmrs.addMouseListener(new MouseListener() {
 
@@ -323,13 +278,13 @@ public class StockControl extends GenericAdminGui {
 			// Return Uncollected Packages
 			lblSync = new Label(compOptions, SWT.NONE);
 			if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE)) {
-				lblSync.setBounds(new Rectangle(50, 340, 50, 43));
+				lblSync.setBounds(new Rectangle(50, 260, 50, 43));
 			} else {
 				lblSync.setBounds(new Rectangle(50, 260, 50, 43));
 			}
 
 			lblSync.setImage(ResourceUtils
-					.getImage(iDartImage.PACKAGERETURN));
+					.getImage(iDartImage.REPORT_PACKAGESSCANNEDIN));
 			lblSync.addMouseListener(new MouseListener() {
 
 				@Override
@@ -351,7 +306,7 @@ public class StockControl extends GenericAdminGui {
 			btnSync = new Button(compOptions, SWT.NONE);
 			btnSync.setText("FARMAC:Carregar Dispensas"); //$NON-NLS-1$
 
-			btnSync.setBounds(new Rectangle(105, 342, 260, 40));
+			btnSync.setBounds(new Rectangle(105, 262, 260, 40));
 
 			btnSync.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 			btnSync
