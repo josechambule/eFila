@@ -18,12 +18,33 @@
  */
 package org.celllife.idart.gui.reportParameters;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -45,6 +66,7 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 
 import model.manager.AdministrationManager;
 import model.manager.reports.DispensaSemestral;
+import model.manager.reports.DispensaTrimestralSemestral;
 
 /**
  */
@@ -59,6 +81,14 @@ public class DispensaSemestralReport extends GenericReportGui {
     private Group grpPharmacySelection;
 
     private CCombo cmbStockCenter;
+    
+    private StockCenter pharm;
+    
+    private final Shell parent;
+    
+    private FileOutputStream out = null;
+    
+    private List<DispensaTrimestralSemestral> dispensaSemestralXLS;
 
     /**
      * Constructor
@@ -68,6 +98,7 @@ public class DispensaSemestralReport extends GenericReportGui {
      */
     public DispensaSemestralReport(Shell parent, boolean activate) {
         super(parent, REPORTTYPE_MIA, activate);
+        this.parent = parent;
     }
 
     /**
@@ -142,24 +173,24 @@ public class DispensaSemestralReport extends GenericReportGui {
     @Override
     protected void cmdViewReportWidgetSelected() {
 
-        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+        pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
 
         if (cmbStockCenter.getText().equals("")) {
 
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
-            missing.setText("No Pharmacy Was Selected");
+            missing.setText("Nenhuma farmácia foi selecionada");
             missing
-                    .setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+                    .setMessage("Nenhuma farmácia foi selecionada. Selecione uma farmácia da lista de farmácias disponíveis.");
             missing.open();
 
         } else if (pharm == null) {
 
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-            missing.setText("Pharmacy not found");
-            missing.setMessage("There is no pharmacy called '"
+            missing.setText("Farmácia não encontrada");
+            missing.setMessage("Não existe uma farmácia chamada '"
                             + cmbStockCenter.getText()
-                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+                            + "' na base de dados. Selecione uma farmácia da lista de farmácias disponíveis.");
             missing.open();
 
         } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
@@ -296,7 +327,176 @@ public class DispensaSemestralReport extends GenericReportGui {
 
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
-		// TODO Auto-generated method stub
 		
+        pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+
+        if (cmbStockCenter.getText().equals("")) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            missing.setText("Nenhuma farmácia foi selecionada");
+            missing
+                    .setMessage("Nenhuma farmácia foi selecionada. Selecione uma farmácia da lista de farmácias disponíveis.");
+            missing.open();
+
+        } else if (pharm == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("Farmácia não encontrada");
+            missing.setMessage("Não existe uma farmácia chamada '"
+                            + cmbStockCenter.getText()
+                            + "' na base de dados. Selecione uma farmácia da lista de farmácias disponíveis.");
+            missing.open();
+        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
+            showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+            return;
+        } 
+        
+        dispensaSemestralXLS = new ArrayList<DispensaTrimestralSemestral>();
+		
+		try {
+			ConexaoJDBC con = new ConexaoJDBC();
+			
+			Map<String, Object> map = new HashMap<>();
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			
+			 Map mapaDispensaSemestral = con.DispensaSemestral(dateFormat.format(calendarStart.getCalendar().getTime()),dateFormat.format(calendarEnd.getCalendar().getTime()));
+			
+            int totalpacientesManter = Integer.parseInt(mapaDispensaSemestral.get("totalpacientesmanter").toString());
+            int totalpacientesNovos = Integer.parseInt(mapaDispensaSemestral.get("totalpacientesnovos").toString());
+            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaSemestral.get("totalpacienteManuntencaoTransporte").toString());
+            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaSemestral.get("totalpacienteCumulativo").toString());
+			
+            dispensaSemestralXLS = con.dispensaSemestral(dateFormat.format(calendarStart.getCalendar().getTime()), dateFormat.format(calendarEnd.getCalendar().getTime()));
+			
+			if(dispensaSemestralXLS.size() > 0) {
+				
+				FileInputStream currentXls = new FileInputStream("DispensaSemestral.xls");
+				
+				HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+				
+				HSSFSheet sheet = workbook.getSheetAt(0);
+				
+				HSSFCellStyle cellStyle = workbook.createCellStyle();
+				cellStyle.setBorderBottom(BorderStyle.THIN);
+				cellStyle.setBorderTop(BorderStyle.THIN);
+				cellStyle.setBorderLeft(BorderStyle.THIN);
+				cellStyle.setBorderRight(BorderStyle.THIN);
+				cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+										
+				HSSFRow healthFacility = sheet.getRow(9); 
+				HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+				healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+				healthFacilityCell.setCellStyle(cellStyle); 
+				
+				HSSFRow reportPeriod = sheet.getRow(10);
+				HSSFCell reportPeriodCell = reportPeriod.createCell(2);
+				reportPeriodCell.setCellValue(dateFormat.format(calendarStart.getCalendar().getTime()) +" à "+ dateFormat.format(calendarEnd.getCalendar().getTime()));
+				reportPeriodCell.setCellStyle(cellStyle);
+				
+				HSSFRow _totalpacientesNovos = sheet.getRow(14); 
+				HSSFCell totalpacientesNovosCell = _totalpacientesNovos.createCell(2); 
+				totalpacientesNovosCell.setCellValue(totalpacientesNovos);
+				totalpacientesNovosCell.setCellStyle(cellStyle);
+				
+				HSSFRow _totalpacientesManter = sheet.getRow(15); 
+				HSSFCell totalpacientesManterCell = _totalpacientesManter.createCell(2); 
+				totalpacientesManterCell.setCellValue(totalpacientesManter);
+				totalpacientesManterCell.setCellStyle(cellStyle);
+				
+				HSSFRow _totalpacienteManuntencaoTransporte = sheet.getRow(16); 
+				HSSFCell totalpacienteManuntencaoTransporteCell = _totalpacienteManuntencaoTransporte.createCell(2); 
+				totalpacienteManuntencaoTransporteCell.setCellValue(totalpacienteManuntencaoTransporte);
+				totalpacienteManuntencaoTransporteCell.setCellStyle(cellStyle); 
+				
+				HSSFRow _totalpacienteCumulativo = sheet.getRow(17); 
+				HSSFCell totalpacienteCumulativoCell = _totalpacienteCumulativo.createCell(2); 
+				totalpacienteCumulativoCell.setCellValue(totalpacienteCumulativo);
+				totalpacienteCumulativoCell.setCellStyle(cellStyle);
+
+				  for(int i=21; i<= sheet.getLastRowNum(); i++) 
+				  { 
+					HSSFRow row = sheet.getRow(i);
+				  	deleteRow(sheet,row);  
+				  }
+				 
+				  out = new FileOutputStream(new File("DispensaSemestral.xls"));
+				  workbook.write(out); 
+				
+				int rowNum = 21;
+				
+				for (DispensaTrimestralSemestral xls : dispensaSemestralXLS) { 
+					
+					HSSFRow row = sheet.createRow(rowNum++);
+					
+					HSSFCell createCellNid = row.createCell(1);
+					createCellNid.setCellValue(xls.getPatientIdentifier());
+					createCellNid.setCellStyle(cellStyle); 
+					
+					HSSFCell createCellNome = row.createCell(2);
+					createCellNome.setCellValue(xls.getNome());
+					createCellNome.setCellStyle(cellStyle);
+					
+					HSSFCell createCellRegimeTerapeutico = row.createCell(3); 
+					createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
+					createCellRegimeTerapeutico.setCellStyle(cellStyle);
+
+					HSSFCell createCellTipoTarv = row.createCell(4);
+					createCellTipoTarv.setCellValue(xls.getTipoPaciente());
+					createCellTipoTarv.setCellStyle(cellStyle);
+
+
+					HSSFCell createCellDataPrescricao = row.createCell(5); 
+					createCellDataPrescricao.setCellValue(xls.getDataPrescricao());
+					createCellDataPrescricao.setCellStyle(cellStyle);
+
+					HSSFCell createCellDataLevantamento = row.createCell(6); 
+					createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
+					createCellDataLevantamento.setCellStyle(cellStyle);
+
+					HSSFCell createCellDataProximoLevantamento = row.createCell(7);
+					createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
+					createCellDataProximoLevantamento.setCellStyle(cellStyle);
+				}
+				
+				for(int i = 1; i < DispensaTrimestralSemestral.class.getClass().getDeclaredFields().length; i++) { 
+		            sheet.autoSizeColumn(i);
+		        }
+				
+				currentXls.close();
+				
+				FileOutputStream outputStream = new FileOutputStream(new File("DispensaSemestral.xls")); 
+				workbook.write(outputStream);
+				workbook.close();
+				
+				Desktop.getDesktop().open(new File("DispensaSemestral.xls"));
+				
+			} else {
+				MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+				mNoPages.setText("O relatório não possui páginas");
+				mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+				mNoPages.open();
+			}
+								
+		} catch (SQLException | ClassNotFoundException e) { 
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void deleteRow(HSSFSheet sheet, Row row) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (lastRowNum > 0) {
+			int rowIndex = row.getRowNum();
+			HSSFRow removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+			}
+		}
 	}
 }

@@ -23,6 +23,7 @@ import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
 import model.manager.reports.AbsenteeForSupportCall;
+import model.manager.reports.DispensaTrimestralSemestral;
 import model.manager.reports.HistoricoLevantamentoXLS;
 import model.manager.reports.SecondLinePatients;
 
@@ -488,7 +489,7 @@ public class ConexaoJDBC {
                 "			 from episode WHERE stopdate is null " +
                 "			 GROUP BY 2,3 " +
                 ") visit on visit.patient = pack.id " +
-                "WHERE pre.dispensatrimestral = 1 " +
+                "WHERE pre.dispensatrimestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%') " +
                 "order by 8 ";
 
         int totalpacientesmanter = 0;
@@ -523,6 +524,72 @@ public class ConexaoJDBC {
         map.put("totalpacienteCumulativo", totalpacienteCumulativo);
         return map;
 
+    }
+    
+    /**
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public List<DispensaTrimestralSemestral> dispensaTrimestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT 	distinct pat.patientid, pat.firstnames, " +
+                "		pat.lastname, " +
+                "		pg_catalog.date(pre.date) dataprescricao, " +
+                "		pg_catalog.date(pack.pickupdate) dataLevantamento, " +
+                "		pack.dateexpectedstring proximoLevantamento , " +
+                "		reg.regimeesquema, " +
+                "		CASE " +
+                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipodt " +
+                "			ELSE 'Transporte' " +
+                "		END  tipodt " +
+                "FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription pre on pre.date = pack.predate and pre.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id " +
+                "WHERE pre.dispensatrimestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%') " +
+                "order by 8 ";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        List<DispensaTrimestralSemestral> dispensaTrimestralXLS = new ArrayList<DispensaTrimestralSemestral>();
+        ResultSet rs = st.executeQuery(query);
+        
+        if (rs != null) {
+
+            while (rs.next()) {
+            	DispensaTrimestralSemestral lstDispensaTrimestral = new DispensaTrimestralSemestral();
+            	lstDispensaTrimestral.setPatientIdentifier(rs.getString("patientid"));
+            	lstDispensaTrimestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
+            	lstDispensaTrimestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
+            	lstDispensaTrimestral.setTipoPaciente(rs.getString("tipodt")); 
+            	lstDispensaTrimestral.setDataPrescricao(rs.getString("dataprescricao"));
+            	lstDispensaTrimestral.setDataLevantamento(rs.getString("dataLevantamento"));
+            	lstDispensaTrimestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
+
+            	dispensaTrimestralXLS.add(lstDispensaTrimestral);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+        
+		return dispensaTrimestralXLS;
     }
 
     /**
@@ -563,7 +630,7 @@ public class ConexaoJDBC {
                 "			 from episode WHERE stopdate is null " +
                 "			 GROUP BY 2,3 " +
                 ") visit on visit.patient = pack.id " +
-                "WHERE pre.dispensasemestral = 1 " +
+                "WHERE pre.dispensasemestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%') " +
                 "order by 8 ";
 
         int totalpacientesmanter = 0;
@@ -597,7 +664,73 @@ public class ConexaoJDBC {
         map.put("totalpacienteManuntencaoTransporte", totalpacienteManuntencaoTransporte);
         map.put("totalpacienteCumulativo", totalpacienteCumulativo);
         return map;
+    }
+    
+    
+    /**
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public List<DispensaTrimestralSemestral> dispensaSemestral(String startDate, String endDate) throws ClassNotFoundException, SQLException {
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = "SELECT 	distinct pat.patientid, pat.firstnames, " +
+                "		pat.lastname, " +
+                "		pg_catalog.date(pre.date) dataprescricao, " +
+                "		pg_catalog.date(pack.pickupdate) dataLevantamento, " +
+                "		pack.dateexpectedstring proximoLevantamento , " +
+                "		reg.regimeesquema, " +
+                "		CASE " +
+                "			WHEN pack.pickupdate >= '" + startDate + "' THEN pre.tipods " +
+                "			ELSE 'Transporte' " +
+                "		END  tipods " +
+                "FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "') OR " +
+                "(pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= '" + endDate + "') " +
+                "GROUP BY 2 order by 2) pack " +
+                "inner join prescription pre on pre.date = pack.predate and pre.patient=pack.id " +
+                "inner join patient pat on pat.id = pack.id " +
+                "INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid " +
+                "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                "			 from episode WHERE stopdate is null " +
+                "			 GROUP BY 2,3 " +
+                ") visit on visit.patient = pack.id " +
+                "WHERE pre.dispensasemestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%') " +
+                "order by 8 ";
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        List<DispensaTrimestralSemestral> dispensaSemestralXLS = new ArrayList<DispensaTrimestralSemestral>();
+        ResultSet rs = st.executeQuery(query);
+        
+        if (rs != null) {
+
+            while (rs.next()) {
+            	DispensaTrimestralSemestral lstDispensaSemestral = new DispensaTrimestralSemestral();
+            	lstDispensaSemestral.setPatientIdentifier(rs.getString("patientid"));
+            	lstDispensaSemestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
+            	lstDispensaSemestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
+            	lstDispensaSemestral.setTipoPaciente(rs.getString("tipods")); 
+            	lstDispensaSemestral.setDataPrescricao(rs.getString("dataprescricao"));
+            	lstDispensaSemestral.setDataLevantamento(rs.getString("dataLevantamento"));
+            	lstDispensaSemestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
+
+            	dispensaSemestralXLS.add(lstDispensaSemestral);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+        
+		return dispensaSemestralXLS;
     }
 
 
