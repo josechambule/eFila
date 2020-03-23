@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lowagie.tools.Executable.isWindows;
+import static com.lowagie.tools.Executable.*;
 
 /**
  *
@@ -98,8 +98,10 @@ public class JRestoreController {
             case "restore":
                 if (isWindows()) {
                     commands.add("C:\\Program Files\\PostgreSQL\\9.5\\bin\\pg_restore");
-                } else {
+                } else if(isLinux()){
                     commands.add("/opt/PostgreSQL/9.6/bin/pg_restore");
+                }else if(isMac()){
+                    commands.add("/Library/PostgreSQL/9.6/bin/pg_restore");
                 }
                 commands.add("-h");
                 commands.add("localhost");

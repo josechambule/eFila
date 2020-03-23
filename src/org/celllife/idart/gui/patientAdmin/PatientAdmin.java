@@ -19,6 +19,7 @@
 
 package org.celllife.idart.gui.patientAdmin;
 
+import migracao.swingreverse.SyncPacientesFarmac;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.gui.patient.AddPatient;
@@ -38,6 +39,8 @@ import org.celllife.idart.misc.Screens;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -315,8 +318,7 @@ public class PatientAdmin extends GenericAdminGui {
 		// lblPicPatientVisitsandStats
 //		lblPicPatientVisitsandStats = new Label(compOptionsInner, SWT.NONE);
 //		lblPicPatientVisitsandStats.setLayoutData(gdPic);
-//		lblPicPatientVisitsandStats.setImage(ResourceUtils
-//				.getImage(iDartImage.PAVAS));
+//		lblPicPatientVisitsandStats.setImage(ResourceUtils.getImage(iDartImage.PAVAS));
 //		lblPicPatientVisitsandStats.addMouseListener(new MouseAdapter() {
 //			@Override
 //			public void mouseUp(MouseEvent mu) {
@@ -329,10 +331,8 @@ public class PatientAdmin extends GenericAdminGui {
 //		btnPatientVisitsandStats.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
 //		btnPatientVisitsandStats.setLayoutData(gdBtn);
 //		btnPatientVisitsandStats.setText(Messages.getString("PatientAdmin.button.patientVisits")); //$NON-NLS-1$
-//		btnPatientVisitsandStats
-//		.setToolTipText(Messages.getString("PatientAdmin.button.patientVisits.tooltip")); //$NON-NLS-1$
-//		btnPatientVisitsandStats.setFont(ResourceUtils
-//				.getFont(iDartFont.VERASANS_10));
+//		btnPatientVisitsandStats.setToolTipText(Messages.getString("PatientAdmin.button.patientVisits.tooltip")); //$NON-NLS-1$
+//		btnPatientVisitsandStats.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
 //		btnPatientVisitsandStats
 //		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 //			@Override
@@ -341,6 +341,40 @@ public class PatientAdmin extends GenericAdminGui {
 //				cmdViewPAVASWidgetSelected2();
 //			}
 //		});
+
+		// Intro FARMAC
+		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) && !iDartProperties.FARMAC) {
+
+			// lblDistributePackages
+			Label lblExportFarmac = new Label(compOptionsInner, SWT.NONE);
+			lblExportFarmac.setLayoutData(gdPic);
+			lblExportFarmac.setImage(ResourceUtils.getImage(iDartImage.PHARMACYUSER));
+			lblExportFarmac.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseUp(MouseEvent mu) {
+					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
+					syncPacientesFarmac.createAndShowGUI();
+				}
+			});
+
+			// btnDistributePackages
+			Button btnExportFarmac = new Button(compOptionsInner, SWT.NONE);
+			btnExportFarmac.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
+			btnExportFarmac.setLayoutData(gdBtn);
+			btnExportFarmac.setText("Exportar Pacientes Referidos para FARMAC");
+			btnExportFarmac.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+			btnExportFarmac.setToolTipText(Messages.getString("Exportar Pacientes Referidos para FARMAC")); //$NON-NLS-1$
+
+			btnExportFarmac.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				@Override
+				public void widgetSelected(
+						org.eclipse.swt.events.SelectionEvent e) {
+					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
+					syncPacientesFarmac.createAndShowGUI();
+				}
+			});
+
+		}
 
 		compOptions.layout();
 		compOptionsInner.layout();

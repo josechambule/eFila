@@ -157,12 +157,14 @@ public class iDartProperties {
 	public static boolean nextAppointmentDateOnLabels = true;
 
 	public static boolean showBatchInfoOnSummaryLabels = false;
+
 	public static boolean showBatchInfoOnDrugLabels = false;
 	
 	public static String country = "Moçambique";
 
+	public static String currency = "MZN";
+
 	public static Locale currentLocale = new Locale("pt", "MZ");
-//	public static Locale currentLocale = new Locale("en", "ZA");
 
 	public static String importDateFormat = "dd/MM/yyyy";
 	
@@ -173,11 +175,15 @@ public class iDartProperties {
 	public static boolean isCidaStudy = false;
 
 	public static final String ZIPFILEPASSWORD = "!cdc2020#";
+
 	public static String hibernateTableImport = "sync_temp_patients";
+
 	public static boolean FARMAC = false;
+
 	public static String hibernateTableExport = "sync_temp_dispense";
 
 	public static String illegalPatientIdChars = "'`^";
+
 	public static String illegalPatientIdRegex = "["+illegalPatientIdChars+"]+";
 
 	/**
@@ -229,6 +235,7 @@ public class iDartProperties {
 		isEkapaVersion = setBooleanProperty("isEkapaVersion");
 		accumByDefault = setBooleanProperty("accumByDefault");
 		country = setStringProperty("country");
+		currency = setStringProperty("currency");
 		timesPerDayLanguage1 = setStringProperty("timesPerDayLanguage1");
 		timesPerDayLanguage2 = setStringProperty("timesPerDayLanguage2");
 		timesPerDayLanguage3 = setStringProperty("timesPerDayLanguage3");
@@ -303,6 +310,8 @@ public class iDartProperties {
 		sb.append("\n");
 		sb.append("country="+country);
 		sb.append("\n");
+		sb.append("currency="+currency);
+		sb.append("\n");
 		sb.append("timesPerDayLanguage1="+timesPerDayLanguage1);
 		sb.append("\n");
 		sb.append("timesPerDayLanguage2="+timesPerDayLanguage2);
@@ -354,6 +363,7 @@ public class iDartProperties {
 		sb.append("intValueOfAlternativeBarcodeEndChar="+ intValueOfAlternativeBarcodeEndChar);
 		sb.append("\n");
 		sb.append("cidaStudy=" + isCidaStudy);
+		sb.append("\n");
 		sb.append("FARMAC=" + FARMAC);
 		sb.append("\n");
 
