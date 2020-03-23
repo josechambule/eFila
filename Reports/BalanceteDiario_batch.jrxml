@@ -38,7 +38,7 @@
 	<queryString>
 		<![CDATA[select
 
-COALESCE((a.allreceived * 30 - COALESCE((b.allissued*30) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned*30) + h.allpills, 0)), 0)
+COALESCE((a.allreceived * $P{packsize} - COALESCE((b.allissued*30) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned*$P{packsize}) + h.allpills, 0)), 0)
 
 as openingpills,
 
@@ -178,7 +178,7 @@ ORDER BY movdate]]>
 	<variable name="totalString" class="java.lang.String">
 		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0)?
 (new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()
-:(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString() + " ("+ (new Long($V{totalPills}.longValue()%$P{packsize}.intValue())).toString() +")"]]></variableExpression>
+:(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()]]></variableExpression>
 	</variable>
 	<variable name="somaUnidadesRecebidas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$V{somaUnidadesRecebidas} + $F{received}*$P{packsize}.intValue()]]></variableExpression>
@@ -232,7 +232,7 @@ ORDER BY movdate]]>
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{dispensedpills}.intValue()==0?$F{dispensed}.toString():
-($F{dispensed}).toString() +" (" + ($F{dispensedpills}).toString() + ")"]]></textFieldExpression>
+($F{dispensed}).toString()]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-8" mode="Opaque" x="72" y="0" width="1" height="21" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -276,7 +276,7 @@ ORDER BY movdate]]>
 					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[($F{adjusted}.intValue()%$P{packsize}.intValue())==0?new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString():
-(new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString() + " (" + new Integer($F{adjusted}.intValue()%$P{packsize}.intValue()).toString() + ")")]]></textFieldExpression>
+(new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString())]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="1" y="-1" width="547" height="1"/>

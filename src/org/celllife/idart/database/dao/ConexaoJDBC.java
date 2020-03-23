@@ -93,7 +93,8 @@ public class ConexaoJDBC {
                 "CASE " +
                 "	WHEN p.dispensasemestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipods " +
                 "	ELSE 'Transporte' " +
-                "END  tipods " +
+                "END  tipods, " +
+                "COALESCE(pa.weekssupply,0) weekssupply " +
                 "FROM (select max(pre.date) predate, pat.id " +
                 "from package pa " +
                 "inner join packageddrugs pds on pds.parentpackage = pa.id " +
@@ -122,6 +123,7 @@ public class ConexaoJDBC {
         int mesesdispensadosparaDM = 0;
         int mesesdispensadosparaDT = 0;
         int mesesdispensadosparaDS = 0;
+        int mesedispennsados = 0;
 
         int totalpacientesppe = 0;
         int totalpacientesprep = 0;
@@ -148,8 +150,11 @@ public class ConexaoJDBC {
                 // Paciente Transito ou Inicio na Maternidade
                 if (nonuspatient) {
                     totalpacientestransito++;
-                } else
+                } else {
                     pacientesEmTarv++;
+                    //Total de semanas de dispensa
+                    mesedispennsados = mesedispennsados + rs.getInt("weekssupply");
+                }
 
                 // Tipo de Pacinte
                 if (!nonuspatient && rs.getString("reasonforupdate").contains("Inicia")) {
@@ -162,16 +167,22 @@ public class ConexaoJDBC {
                     totalpacientestransferidoDe++;
                 }
 
-                // Manuntencao Transporte
+                // Manuntencao Transporte DT
                 if (!nonuspatient && rs.getString("tipodt") != null) {
-                    if (rs.getString("tipodt").contains("Transporte"))
-                    totalpacientesmanterTransporte++;
+                    if (rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Transporte")){
+                        totalpacientesmanterTransporte++;
+                        mesedispennsados = mesedispennsados - rs.getInt("weekssupply");
+                    }
+
                 }
 
-                // Manuntencao Transporte
+                // Manuntencao Transporte DS
                 if (!nonuspatient && rs.getString("tipods") != null) {
-                    if (rs.getString("tipods").contains("Transporte"))
+                    if (rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Transporte")){
                         totalpacientesmanterTransporte++;
+                        mesedispennsados = mesedispennsados - rs.getInt("weekssupply");
+                    }
+
                 }
 
                 // Dispensa Trimenstral ou Semestral
@@ -232,6 +243,7 @@ public class ConexaoJDBC {
         map.put("mesesdispensadosparaDM", mesesdispensadosparaDM);
         map.put("mesesdispensadosparaDT", mesesdispensadosparaDT);
         map.put("mesesdispensadosparaDS", mesesdispensadosparaDS);
+        map.put("mesesdispensados", mesedispennsados / 4);
         map.put("totalpacientesmanterTransporte", totalpacientesmanterTransporte);
         map.put("totalpacientesppe", totalpacientesppe);
         map.put("totallinhas1", totallinhas1);
@@ -526,7 +538,7 @@ public class ConexaoJDBC {
         return map;
 
     }
-    
+
     /**
      * @param startDate
      * @param endDate
@@ -569,28 +581,28 @@ public class ConexaoJDBC {
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         List<DispensaTrimestralSemestral> dispensaTrimestralXLS = new ArrayList<DispensaTrimestralSemestral>();
         ResultSet rs = st.executeQuery(query);
-        
+
         if (rs != null) {
 
             while (rs.next()) {
-            	DispensaTrimestralSemestral lstDispensaTrimestral = new DispensaTrimestralSemestral();
-            	lstDispensaTrimestral.setPatientIdentifier(rs.getString("patientid"));
-            	lstDispensaTrimestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
-            	lstDispensaTrimestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
-            	lstDispensaTrimestral.setTipoPaciente(rs.getString("tipodt")); 
-            	lstDispensaTrimestral.setDataPrescricao(rs.getString("dataprescricao"));
-            	lstDispensaTrimestral.setDataLevantamento(rs.getString("dataLevantamento"));
-            	lstDispensaTrimestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
+                DispensaTrimestralSemestral lstDispensaTrimestral = new DispensaTrimestralSemestral();
+                lstDispensaTrimestral.setPatientIdentifier(rs.getString("patientid"));
+                lstDispensaTrimestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
+                lstDispensaTrimestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
+                lstDispensaTrimestral.setTipoPaciente(rs.getString("tipodt"));
+                lstDispensaTrimestral.setDataPrescricao(rs.getString("dataprescricao"));
+                lstDispensaTrimestral.setDataLevantamento(rs.getString("dataLevantamento"));
+                lstDispensaTrimestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
 
-            	dispensaTrimestralXLS.add(lstDispensaTrimestral);
+                dispensaTrimestralXLS.add(lstDispensaTrimestral);
             }
             rs.close();
         }
 
         st.close();
         conn_db.close();
-        
-		return dispensaTrimestralXLS;
+
+        return dispensaTrimestralXLS;
     }
 
     /**
@@ -666,8 +678,8 @@ public class ConexaoJDBC {
         map.put("totalpacienteCumulativo", totalpacienteCumulativo);
         return map;
     }
-    
-    
+
+
     /**
      * @param startDate
      * @param endDate
@@ -710,28 +722,28 @@ public class ConexaoJDBC {
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         List<DispensaTrimestralSemestral> dispensaSemestralXLS = new ArrayList<DispensaTrimestralSemestral>();
         ResultSet rs = st.executeQuery(query);
-        
+
         if (rs != null) {
 
             while (rs.next()) {
-            	DispensaTrimestralSemestral lstDispensaSemestral = new DispensaTrimestralSemestral();
-            	lstDispensaSemestral.setPatientIdentifier(rs.getString("patientid"));
-            	lstDispensaSemestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
-            	lstDispensaSemestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
-            	lstDispensaSemestral.setTipoPaciente(rs.getString("tipods")); 
-            	lstDispensaSemestral.setDataPrescricao(rs.getString("dataprescricao"));
-            	lstDispensaSemestral.setDataLevantamento(rs.getString("dataLevantamento"));
-            	lstDispensaSemestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
+                DispensaTrimestralSemestral lstDispensaSemestral = new DispensaTrimestralSemestral();
+                lstDispensaSemestral.setPatientIdentifier(rs.getString("patientid"));
+                lstDispensaSemestral.setNome(rs.getString("firstnames") + rs.getString("lastname"));
+                lstDispensaSemestral.setRegimeTerapeutico(rs.getString("regimeesquema"));
+                lstDispensaSemestral.setTipoPaciente(rs.getString("tipods"));
+                lstDispensaSemestral.setDataPrescricao(rs.getString("dataprescricao"));
+                lstDispensaSemestral.setDataLevantamento(rs.getString("dataLevantamento"));
+                lstDispensaSemestral.setDataProximoLevantamento(rs.getString("proximoLevantamento"));
 
-            	dispensaSemestralXLS.add(lstDispensaSemestral);
+                dispensaSemestralXLS.add(lstDispensaSemestral);
             }
             rs.close();
         }
 
         st.close();
         conn_db.close();
-        
-		return dispensaSemestralXLS;
+
+        return dispensaSemestralXLS;
     }
 
 
@@ -4233,25 +4245,25 @@ public class ConexaoJDBC {
                     iDartProperties.hibernatePassword);
 
             String query = "select distinct p.id as id,p.patientId as nid, p.dateOfBirth AS dob, " +
-                            "p.firstnames ||' '|| p.lastname as nome, "+
-                            "c.clinicName as clinic, "+
-                            "p.cellphone as cellno, "+
-                            "date_part('year',age(p.dateofbirth))::Integer as idade, "+
-                            "(p.address1 ||' '||p.address2||' '||p.address3) as endereco, "+
-                            "CASE WHEN (p.sex = 'F' OR p.sex = 'f')  THEN 'Feminino'  "+
-                            "WHEN (p.sex = 'M' OR p.sex = 'm') THEN 'Masculino'  "+
-                            "ELSE 'Outro'  "+
-                            "END as sex,  "+
-                            "rt.regimeesquema as esquematerapeutico, "+
-                            "l.linhanome as linhaterapeutica, "+
-                            "pr.reasonforupdate as tipoPaciente "+
-                            "from Patient as p "+
-                            "inner join clinic c on c.id = p.clinic "+
-                            "inner join prescription pr on pr.patient = p.id "+
-                            "inner join regimeterapeutico rt on rt.regimeid = pr.regimeid "+
-                            "inner join linhat l on l.linhaid = pr.linhaid "+
-                            "where (l.linhanome like '%2%')  and pr.date between '"+dataInicio+"' AND '"+dataFim+"' "+
-                            "group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,rt.regimeesquema ";
+                    "p.firstnames ||' '|| p.lastname as nome, " +
+                    "c.clinicName as clinic, " +
+                    "p.cellphone as cellno, " +
+                    "date_part('year',age(p.dateofbirth))::Integer as idade, " +
+                    "(p.address1 ||' '||p.address2||' '||p.address3) as endereco, " +
+                    "CASE WHEN (p.sex = 'F' OR p.sex = 'f')  THEN 'Feminino'  " +
+                    "WHEN (p.sex = 'M' OR p.sex = 'm') THEN 'Masculino'  " +
+                    "ELSE 'Outro'  " +
+                    "END as sex,  " +
+                    "rt.regimeesquema as esquematerapeutico, " +
+                    "l.linhanome as linhaterapeutica, " +
+                    "pr.reasonforupdate as tipoPaciente " +
+                    "from Patient as p " +
+                    "inner join clinic c on c.id = p.clinic " +
+                    "inner join prescription pr on pr.patient = p.id " +
+                    "inner join regimeterapeutico rt on rt.regimeid = pr.regimeid " +
+                    "inner join linhat l on l.linhaid = pr.linhaid " +
+                    "where (l.linhanome like '%2%')  and pr.date between '" + dataInicio + "' AND '" + dataFim + "' " +
+                    "group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,rt.regimeesquema ";
 
 
             ResultSet rs = st.executeQuery(query);
@@ -4300,9 +4312,9 @@ public class ConexaoJDBC {
                     "pat.cellphone as cellno,\n" +
                     "date_part('year',age(pat.dateofbirth)) as idade,\n" +
                     "app.appointmentDate::date as dateexpected,\n" +
-                    "('"+dataInicial+"'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
+                    "('" + dataInicial + "'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
                     "CASE\n" +
-                    "    WHEN (('"+dataInicial+"'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "    WHEN (('" + dataInicial + "'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
                     "    ELSE\n" +
                     "\tCASE\n" +
                     "\t    WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
@@ -4324,14 +4336,14 @@ public class ConexaoJDBC {
                     "and idt.id = pi.type_id\n" +
                     "and app.appointmentDate is not null\n" +
                     "and (app.visitDate is null)\n" +
-                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+" and "+Integer.parseInt(maxDays)+"\n" +
+                    "and ('" + dataInicial + "'::date - app.appointmentDate::date) between " + Integer.parseInt(minDays) + " and " + Integer.parseInt(maxDays) + "\n" +
                     "and exists (select prescription.id\n" +
                     "from prescription\n" +
                     "where prescription.patient = pat.id\n" +
                     "and prescription.dispensatrimestral = 1\n" +
-                    "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
+                    "and (('" + dataInicial + "'::date between prescription.date and prescription.endDate)or(('" + dataInicial + "'::date > prescription.date)) and (prescription.endDate is null)))\n" +
                     "and exists (select id from episode where episode.patient = pat.id\n" +
-                    "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
+                    "and (('" + dataInicial + "'::date between episode.startdate and episode.stopdate)or(('" + dataInicial + "'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
                     "group by 1,2,3,4,5,6,7,8,9,10\n" +
                     "order by nid asc";
 
@@ -4384,9 +4396,9 @@ public class ConexaoJDBC {
                     "pat.cellphone as cellno,\n" +
                     "date_part('year',age(pat.dateofbirth)) as idade,\n" +
                     "app.appointmentDate::date as dateexpected,\n" +
-                    "('"+dataInicial+"'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
+                    "('" + dataInicial + "'::date - app.appointmentDate::date)::integer as dayssinceexpected,\n" +
                     "CASE\n" +
-                    "    WHEN (('"+dataInicial+"'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "    WHEN (('" + dataInicial + "'::date - app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
                     "    ELSE\n" +
                     "\tCASE\n" +
                     "\t    WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
@@ -4408,15 +4420,15 @@ public class ConexaoJDBC {
                     "and idt.id = pi.type_id\n" +
                     "and app.appointmentDate is not null\n" +
                     "and (app.visitDate is null)\n" +
-                    "and ('"+dataInicial+"'::date - app.appointmentDate::date) between "+Integer.parseInt(minDays)+" and "+Integer.parseInt(maxDays)+"\n" +
+                    "and ('" + dataInicial + "'::date - app.appointmentDate::date) between " + Integer.parseInt(minDays) + " and " + Integer.parseInt(maxDays) + "\n" +
                     "and exists (select prescription.id\n" +
                     "from prescription\n" +
                     "where prescription.patient = pat.id\n" +
                     "and prescription.dispensatrimestral = 0\n" +
                     "and prescription.reasonforupdate = 'Inicia'\n" +
-                    "and (('"+dataInicial+"'::date between prescription.date and prescription.endDate)or(('"+dataInicial+"'::date > prescription.date)) and (prescription.endDate is null)))\n" +
+                    "and (('" + dataInicial + "'::date between prescription.date and prescription.endDate)or(('" + dataInicial + "'::date > prescription.date)) and (prescription.endDate is null)))\n" +
                     "and exists (select id from episode where episode.patient = pat.id\n" +
-                    "and (('"+dataInicial+"'::date between episode.startdate and episode.stopdate)or(('"+dataInicial+"'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
+                    "and (('" + dataInicial + "'::date between episode.startdate and episode.stopdate)or(('" + dataInicial + "'::date > episode.startdate)) and (episode.stopdate is null)))\n" +
                     "group by 1,2,3,4,5,6,7,8,9,10\n" +
                     "order by nid asc";
 
@@ -4456,6 +4468,7 @@ public class ConexaoJDBC {
 
     /**
      * Actualiza a ultima prescricao para current T depois de remover a current
+     *
      * @param patient
      * @throws ClassNotFoundException
      * @throws SQLException
@@ -4465,10 +4478,10 @@ public class ConexaoJDBC {
                 iDartProperties.hibernatePassword);
 
         st.executeUpdate("update prescription set current = 'T' " +
-                " where patient =  " +patient.getId()+
+                " where patient =  " + patient.getId() +
                 " and date = (select max(date) " +
                 "            from prescription " +
-                "               where patient = "+patient.getId()+" ) ");
+                "               where patient = " + patient.getId() + " ) ");
 
     }
 
