@@ -52,12 +52,12 @@ public class DispensaSemestral extends AbstractJasperReport {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            Map mapaDispensaTrimestral = conn.DispensaSemestral(dateFormat.format(theStartDate),dateFormat.format(theEndDate));
+            Map mapaDispensaSemestral = conn.DispensaSemestral(dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 
-            int totalpacientesmanter = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesmanter").toString());
-            int totalpacientesnovos = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesnovos").toString());
-            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteManuntencaoTransporte").toString());
-            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteCumulativo").toString());
+            int totalpacientesmanter = Integer.parseInt(mapaDispensaSemestral.get("totalpacientesmanter").toString());
+            int totalpacientesnovos = Integer.parseInt(mapaDispensaSemestral.get("totalpacientesnovos").toString());
+            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaSemestral.get("totalpacienteManuntencaoTransporte").toString());
+            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaSemestral.get("totalpacienteCumulativo").toString());
 
             map.put("totalpacientesnovos", String.valueOf(totalpacientesnovos));
             map.put("totalpacientesmanter", String.valueOf(totalpacientesmanter));

@@ -148,7 +148,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
 			return;
 		}
 		
@@ -182,7 +182,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	protected void cmdViewReportXlsWidgetSelected() {
 				
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
 			return;
 		}
 		

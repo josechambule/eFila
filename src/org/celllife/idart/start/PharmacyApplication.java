@@ -60,7 +60,7 @@ import model.manager.StockManager;
 
 /**
  *
- */
+ **/
 public class PharmacyApplication {
 
     private static Logger log = Logger.getLogger(PharmacyApplication.class);
