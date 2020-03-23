@@ -34,16 +34,12 @@ import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
@@ -58,6 +54,10 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 	private Button btnRemoveRow;
 
 	private Group grpStockTable;
+
+	private Label lblNumguia;
+
+	private Text txtNumguia;
 
 	private boolean clearAfterSave = false;
 
@@ -99,12 +99,22 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 	protected void createContents() {
 
 		grpStockTable = new Group(getShell(), SWT.BORDER);
-		grpStockTable.setBounds(new Rectangle(5, 137, 882, 369));
+		grpStockTable.setBounds(new Rectangle(5, 137, 882, 426));
+		grpStockTable.setText("Lista de Medicamentos");
+
+		// lblNumGuia & txtNumGuia
+		lblNumguia = new Label(grpStockTable, SWT.NONE);
+		lblNumguia.setBounds(new org.eclipse.swt.graphics.Rectangle(5, 20,130, 20));
+		lblNumguia.setText(Messages.getString("stockArrives.label.numGuia.title")); //$NON-NLS-1$
+		lblNumguia.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+		txtNumguia = new Text(grpStockTable, SWT.BORDER);
+		txtNumguia.setBounds(new org.eclipse.swt.graphics.Rectangle(140, 20,170, 20));
+		txtNumguia.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		createTblDrugs();
 		btnAddStock = new Button(grpStockTable, SWT.NONE);
-		btnAddStock.setBounds(new org.eclipse.swt.graphics.Rectangle(245, 320,
-				160, 30));
+		btnAddStock.setBounds(new org.eclipse.swt.graphics.Rectangle(245, 380,160, 30));
 		btnAddStock.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnAddStock.setText("Adicionar Estoque");
 		btnAddStock
@@ -118,8 +128,7 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 		btnAddStock.setFocus();
 
 		btnRemoveRow = new Button(grpStockTable, SWT.NONE);
-		btnRemoveRow.setBounds(new org.eclipse.swt.graphics.Rectangle(465, 320,
-				160, 30));
+		btnRemoveRow.setBounds(new org.eclipse.swt.graphics.Rectangle(465, 380,160, 30));
 		btnRemoveRow.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRemoveRow.setText("Remover Lote Selecciodo");
 		btnRemoveRow
@@ -141,7 +150,7 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 		tblDrugs = new Table(grpStockTable, SWT.FULL_SELECTION);
 		tblDrugs.setHeaderVisible(true);
 		tblDrugs.setLinesVisible(true);
-		tblDrugs.setBounds(new Rectangle(5, 10, 870, 300));
+		tblDrugs.setBounds(new Rectangle(5, 70, 870, 300));
 		tblDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		TableColumn tblClmNumber = new TableColumn(tblDrugs, SWT.NONE);
@@ -271,53 +280,50 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 
 	@Override
 	protected void cmdSaveWidgetSelected() {
-		Transaction tx = null;
-		try {
-			tx = getHSession().beginTransaction();
-			for (TableItem ti : tblDrugs.getItems()) {
-				if (ti.getData() != null) {
-					Stock newStock = (Stock) ti.getData();
-					getHSession().save(newStock);
-					StockManager.updateStockLevel(getHSession(), newStock);
+
+		if(fieldsOk()) {
+
+			Transaction tx = null;
+			try {
+				tx = getHSession().beginTransaction();
+				for (TableItem ti : tblDrugs.getItems()) {
+					if (ti.getData() != null) {
+						Stock newStock = (Stock) ti.getData();
+						newStock.setNumeroGuia(txtNumguia.getText());
+						getHSession().save(newStock);
+						StockManager.updateStockLevel(getHSession(), newStock);
+					}
 				}
-			}
 
-			getHSession().flush();
-			tx.commit();
-			
-			/*MessageBox m = new MessageBox(getShell(), SWT.ICON_QUESTION
-					| SWT.YES | SWT.NO);
-			m.setMessage("O Stock foi actualizado. Gostaria de visualizar o relatório de entradas de stock?");
-			m.setText("Actualização da base de dados com a entrada de stock");*/
-			
-			MessageDialog dialog = new MessageDialog(getShell(),"O Stock foi actualizado. Gostaria de visualizar o relatório de entradas de stock?", 
-					null, "Actualização da base de dados com a entrada de stock", MessageDialog.QUESTION,new String[] { "Sim","Não"}, 0);
-			
-			if (dialog.open() == 0) {
-				Date today = new Date();
-				// hack to allow the table to be cleared without asking the user
-				clearAfterSave = true;
-				StockReceiptReport report = new StockReceiptReport(getShell(),today, today);
-				viewReport(report);
-			}
-			else {
-				clearAfterSave = true;
-				cmdClearWidgetSelected();
-			}
+				getHSession().flush();
+				tx.commit();
 
-			cmdCancelSelected();
+				MessageDialog dialog = new MessageDialog(getShell(), "O Stock foi actualizado. Gostaria de visualizar o relatório de entradas de stock?",
+						null, "Actualização da base de dados com a entrada de stock", MessageDialog.QUESTION, new String[]{"Sim", "Não"}, 0);
 
-		}
+				if (dialog.open() == 0) {
+					Date today = new Date();
+					// hack to allow the table to be cleared without asking the user
+					clearAfterSave = true;
+					StockReceiptReport report = new StockReceiptReport(getShell(), today, today);
+					viewReport(report);
+				} else {
+					clearAfterSave = true;
+					cmdClearWidgetSelected();
+				}
 
-		catch (HibernateException he) {
-			MessageBox m = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			m
-			.setMessage("Houve algum problema ao salvar o stock na base de dados.");
-			m.setText("Falha na actualização da base de dados");
-			if (tx != null) {
-				tx.rollback();
+				cmdCancelSelected();
+
+			} catch (HibernateException he) {
+				MessageBox m = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+				m
+						.setMessage("Houve algum problema ao salvar o stock na base de dados.");
+				m.setText("Falha na actualização da base de dados");
+				if (tx != null) {
+					tx.rollback();
+				}
+				getLog().error("Hibernate Exception Saving Stock", he);
 			}
-			getLog().error("Hibernate Exception Saving Stock", he);
 		}
 	}
 
@@ -328,7 +334,7 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 					| SWT.YES | SWT.NO);
 			m.setText("Cancelar sem gravar a informação na base de dados?");
 			m
-			.setMessage("O stock que registou não foi gravado na base de dados. \n\nTem a certeza que quer fechar esta tela sem gravar as esntradas de stock?");
+			.setMessage("O stock que registou não foi gravado na base de dados. \n\nTem a certeza que quer fechar esta tela sem gravar as entradas de stock?");
 
 			if (m.open() == SWT.YES) {
 				cmdCloseSelected();
@@ -383,7 +389,18 @@ public class StockArrives extends GenericFormGui implements iDARTChangeListener{
 	 */
 	@Override
 	protected boolean fieldsOk() {
-		return false;
+
+		boolean result = true;
+		if (txtNumguia.getText().equals("")) {
+			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+			m.setMessage("O campo Número da guia não pode ser vazio. Por favor, introduza o  Número da guia");
+			m.setText("O campo  Número da guia não pode ser vazio.");
+			m.open();
+			txtNumguia.setFocus();
+			result = false;
+		}
+
+		return result;
 	}
 
 	/*

@@ -152,7 +152,6 @@ public class DeliveryDetails extends GenericFormGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		//String headerTxt = "Delivery Details";
 		String headerTxt = "Detalhes da Entrada";
 		iDartImage icoImage = iDartImage.PACKAGESARRIVE;
 		buildCompHeader(headerTxt, icoImage);
@@ -604,29 +603,29 @@ public class DeliveryDetails extends GenericFormGui {
 		if (txtDrugName.getText().equals("")) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m
-			.setMessage("Please load a drug by either searching for the drug (using the 'Drug Search' button), or \nby entering a valid drug barcode into the space provided (followed by 'Enter').");
-			m.setText("Missing Information");
+			.setMessage("Por favor, carregue o medicamento apresentado na lista de medicamentos (Utilize o botão 'Pesquisar medicamento').");
+			m.setText("O campo  Nome do medicamento não pode ser vazio");
 			m.open();
 			txtDrugName.setFocus();
 			result = false;
 		} else if (cmbExpiryMonth.getText().equals("")) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-			m.setMessage("Please enter an expiry month.");
-			m.setText("Missing Information");
+			m.setMessage("Por favor, introduza o mes de validade.");
+			m.setText("O campo Mes de Validade não pode ser vazio");
 			m.open();
 			cmbExpiryMonth.setFocus();
 			result = false;
 		} else if (cmbExpiryYear.getText().equals("")) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-			m.setMessage("Please enter an expiry year.");
-			m.setText("Missing Information");
+			m.setMessage("Por favor, introduza o ano de validade.");
+			m.setText("O campo ano de Validade não pode ser vazio");
 			m.open();
 			cmbExpiryYear.setFocus();
 			result = false;
 		} else if (txtUnitsReceived.getText().equals("")) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-			m.setMessage("Please enter number of units.");
-			m.setText("Missing Information");
+			m.setMessage("Por favor, introduza a quantidade recebida.");
+			m.setText("O campo quantidade recebida não pode ser vazio");
 			m.open();
 			txtUnitsReceived.setFocus();
 			result = false;
@@ -634,8 +633,8 @@ public class DeliveryDetails extends GenericFormGui {
 				.checkPositiveIntegerValue(txtUnitsReceived)) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m
-			.setMessage("The number of units needs to be a positive whole number (e.g. '1000').");
-			m.setText("Incorrect Information");
+			.setMessage("Introduza um valor maior que zero (Ex. '1000').");
+			m.setText("Valor incorrecto no campo quantidade recebida");
 			m.open();
 			txtUnitsReceived.setText("");
 			txtUnitsReceived.setFocus();
@@ -645,8 +644,8 @@ public class DeliveryDetails extends GenericFormGui {
 						.checkPositiveNumericValue(txtUnitPrice))) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m
-			.setMessage("The unit price needs to be a positive number (e.g. '2.50'). Or, if you do not wish to store the unit price, you can leave this box empty.");
-			m.setText("Incorrect Information");
+			.setMessage("TIntroduza um valor maior que zero (Ex. '5.00'). Caso nao queira especificar o valor, pode deixar este campo em branco.");
+			m.setText("Valor incorrecto");
 			m.open();
 			txtUnitPrice.setText("");
 			txtUnitPrice.setFocus();
@@ -793,8 +792,8 @@ public class DeliveryDetails extends GenericFormGui {
 
 		if (!match) {
 			MessageBox feedback = new MessageBox(getShell(), SWT.OK);
-			feedback.setMessage("Expiry Date is invalid.");
-			feedback.setText("Invalid Expiry Date");
+			feedback.setMessage("A data de Validade invalida.");
+			feedback.setText("A data de Validade invalida.");
 			feedback.open();
 			expiryDateOkay = false;
 			return expiryDateOkay;
@@ -819,9 +818,9 @@ public class DeliveryDetails extends GenericFormGui {
 				if (expiryDate.before(today)) {
 					MessageBox m = new MessageBox(getShell(), SWT.ICON_QUESTION
 							| SWT.YES | SWT.NO);
-					m.setText("Stock Has Already Expired");
+					m.setText("O Stock ja esta expirado");
 					m
-					.setMessage("This stock has already expired. Are you sure you want to add this stock to the system?");
+					.setMessage("Este stock ja esta expirado. Tem a certeza que pretende adicionar?");
 
 					switch (m.open()) {
 
@@ -838,9 +837,9 @@ public class DeliveryDetails extends GenericFormGui {
 				else if (expiryDate.before(sixMonthsFromNow)) {
 					MessageBox m = new MessageBox(getShell(), SWT.ICON_QUESTION
 							| SWT.YES | SWT.NO);
-					m.setText("Stock Will Expire Soon");
+					m.setText("Este Stock expira dentro de alguns meses");
 					m
-					.setMessage("This stock will expire within the next 6 months. Are you sure you want to add this stock to the system?");
+					.setMessage("Este stock expira dentro de 6 meses. Tem a certeza que pretende adicionar?");
 
 					switch (m.open()) {
 
@@ -879,8 +878,8 @@ public class DeliveryDetails extends GenericFormGui {
 			} else {
 				MessageBox m = new MessageBox(getShell(), SWT.ICON_ERROR
 						| SWT.OK);
-				m.setText("Error recording stock arrival");
-				m.setMessage("Could not save stock batch. Please try again.");
+				m.setText("Erro ao gravar a entrada do stock");
+				m.setMessage("Erro ao gravar a entrada do stock. Tenta novamente.");
 				clearForm();
 
 			}

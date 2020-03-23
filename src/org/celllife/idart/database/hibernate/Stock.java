@@ -69,6 +69,8 @@ public class Stock {
 
 	private String shelfNumber;
 
+	private String numeroGuia;
+
 	private int unitsReceived;
 
 	private String manufacturer;
@@ -152,6 +154,14 @@ public class Stock {
 	}
 
 	/**
+	 * Method getNumeroGuia.
+	 * @return String
+	 */
+	public String getNumeroGuia() {
+		return numeroGuia;
+	}
+
+	/**
 	 * Method getUnitsReceived.
 	 * @return int
 	 */
@@ -222,6 +232,14 @@ public class Stock {
 	 */
 	public void setShelfNumber(String shelfNumber) {
 		this.shelfNumber = shelfNumber;
+	}
+
+	/**
+	 * Method getNumeroGuia.
+	 * @return String
+	 */
+	public void setNumeroGuia(String numeroGuia) {
+		 this.numeroGuia = numeroGuia;
 	}
 
 	/**
