@@ -1,12 +1,29 @@
 package org.celllife.idart.gui.reportParameters;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -27,6 +44,7 @@ import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
 import model.manager.AdministrationManager;
+import model.manager.reports.PrescricaoSemFilaXLS;
 
 public class PrescriptionsWithNoEncounter extends GenericReportGui {
 	
@@ -40,8 +58,11 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 
 	private CCombo cmbStockCenter;
 
+	private final Shell parent;
 
-
+	private List<PrescricaoSemFilaXLS> prescricaoSemFilaXLSs;
+	
+    private FileOutputStream out = null; 
 	
 	/**
 	 * Constructor
@@ -53,6 +74,7 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 	 */
 	public PrescriptionsWithNoEncounter(Shell parent, boolean activate) {
 		super(parent, REPORTTYPE_MIA, activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -318,5 +340,146 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
+		
+		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
+			return;
+		}
+		
+		try {
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+			
+			SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+
+			 
+			Date theStartDate = calendarStart.getCalendar().getTime(); 
+		
+			Date theEndDate=  calendarEnd.getCalendar().getTime(); 
+			
+			//theStartDate = sdf.parse(strTheDate);
+			
+			prescricaoSemFilaXLSs = new ArrayList<PrescricaoSemFilaXLS>();
+			
+			ConexaoJDBC con=new ConexaoJDBC();
+			
+			prescricaoSemFilaXLSs = con.getQueryPrescricoeSemDispensasXLS(sdf.format(calendarStart.getCalendar().getTime()), sdf.format(calendarEnd.getCalendar().getTime()));
+			
+			if(prescricaoSemFilaXLSs.size() > 0) {
+				
+				FileInputStream currentXls = new FileInputStream("PrescricoesSemDispensa.xls");
+				
+				HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+				
+				HSSFSheet sheet = workbook.getSheetAt(0);
+				
+				HSSFCellStyle cellStyle = workbook.createCellStyle();
+				cellStyle.setBorderBottom(BorderStyle.THIN);
+				cellStyle.setBorderTop(BorderStyle.THIN);
+				cellStyle.setBorderLeft(BorderStyle.THIN);
+				cellStyle.setBorderRight(BorderStyle.THIN);
+				cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+										
+				HSSFRow healthFacility = sheet.getRow(10); 
+				HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+				healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+				healthFacilityCell.setCellStyle(cellStyle); 
+				
+				HSSFRow reportPeriod = sheet.getRow(10);
+				HSSFCell reportPeriodCell = reportPeriod.createCell(6);
+				reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
+				reportPeriodCell.setCellStyle(cellStyle); 
+
+				HSSFRow reportYear = sheet.getRow(11);
+				HSSFCell reportYearCell = reportYear.createCell(6);
+				reportYearCell.setCellValue(sdfYear.format(theStartDate));
+				reportYearCell.setCellStyle(cellStyle); 
+
+				for(int i=14; i<= sheet.getLastRowNum(); i++) 
+				{ 
+				  HSSFRow row = sheet.getRow(i);
+				  deleteRow(sheet,row);  
+				}
+				
+				extracted(sheet);
+				
+				 out = new FileOutputStream(new File("PrescricoesSemDispensa.xls"));
+				 workbook.write(out);
+				  
+				int rowNum = 14;
+				
+				for (PrescricaoSemFilaXLS xls : prescricaoSemFilaXLSs) { 
+					
+					HSSFRow row = sheet.createRow(rowNum++);
+					
+					System.out.println(sheet.getNumMergedRegions()); 
+					
+					sheet.addMergedRegion(CellRangeAddress.valueOf("C" + (rowNum) + ":D" + (rowNum)));
+					sheet.addMergedRegion(CellRangeAddress.valueOf("E" + (rowNum) + ":F" + (rowNum)));
+					sheet.addMergedRegion(CellRangeAddress.valueOf("G" + (rowNum) + ":H" + (rowNum)));
+					
+					
+					HSSFCell createCellNid = row.createCell(1);
+					createCellNid.setCellValue(xls.getPatientIdentifier());
+					createCellNid.setCellStyle(cellStyle); 
+					
+					HSSFCell createCellNome = row.createCell(2);
+					createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
+					createCellNome.setCellStyle(cellStyle);
+					
+					
+					HSSFCell createCellUuid = row.createCell(4);
+					createCellUuid.setCellValue(xls.getUuidOpenmrs());
+					createCellUuid.setCellStyle(cellStyle); 
+					  
+					HSSFCell dataPrescricao = row.createCell(6);
+					dataPrescricao.setCellValue(xls.getDataPrescricao());
+					dataPrescricao.setCellStyle(cellStyle);
+					 
+				}
+				
+				
+				for(int i = 1; i < PrescricaoSemFilaXLS.class.getClass().getDeclaredFields().length; i++) { 
+			        sheet.autoSizeColumn(i);
+			    }
+				
+				currentXls.close();
+				
+				FileOutputStream outputStream = new FileOutputStream(new File("PrescricoesSemDispensa.xls")); 
+				workbook.write(outputStream);
+				workbook.close();
+				
+				Desktop.getDesktop().open(new File("PrescricoesSemDispensa.xls"));
+				
+			} else {
+				MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+				mNoPages.setText("O relatório não possui páginas");
+				mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+				mNoPages.open();
+			}
+			
+		} catch (Exception e) {
+			getLog().error("Error ao correr o relatorio Prescricoes Sem Dispensa",e);
+		}
+	}
+
+	private void extracted(HSSFSheet sheet) {
+		while (sheet.getNumMergedRegions() > 10) {
+		    for (int i = 10; i < sheet.getNumMergedRegions(); i++) {
+		        sheet.removeMergedRegion(i);
+		    }
+		}
+	}
+	
+	private void deleteRow(HSSFSheet sheet, Row row) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (lastRowNum > 0) {
+			int rowIndex = row.getRowNum();
+			HSSFRow removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+			}
+		}
 	}
 }

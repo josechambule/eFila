@@ -26,6 +26,8 @@ import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.DispensaTrimestralSemestral;
 import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.PrescricaoSemFilaXLS;
+import model.manager.reports.PrescriptionsWithNoEncounter;
 import model.manager.reports.SecondLinePatients;
 
 /**
@@ -3782,6 +3784,52 @@ public class ConexaoJDBC {
                 " AND pr.current='T';";
 
         return query;
+    }
+    
+    public List<PrescricaoSemFilaXLS> getQueryPrescricoeSemDispensasXLS(String startDate, String endDate) {
+
+    	List<PrescricaoSemFilaXLS> prescricaoSemFilaXLSs = new ArrayList<PrescricaoSemFilaXLS>();
+    	
+        try {
+			conecta(iDartProperties.hibernateUsername,
+			        iDartProperties.hibernatePassword);
+			
+			String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" +
+					" FROM prescription pr\r\n" +
+					" INNER JOIN patient pa ON pa.id=pr.patient\r\n" +
+					" WHERE pr.id NOT IN (\r\n" +
+					" SELECT prescription FROM package\r\n" +
+					")\r\n" +
+					" AND pr.date::timestamp::date >= '" + startDate + "'::timestamp::date\r\n" +
+					" AND pr.date::timestamp::date <= '" + endDate + "'::timestamp::date\r\n" +
+					" AND pr.current='T';";
+						
+			ResultSet rs = st.executeQuery(query);
+			
+			if (rs != null) {
+				
+				while (rs.next()) {
+					PrescricaoSemFilaXLS prescricaoSemFilaXLS = new PrescricaoSemFilaXLS();
+					prescricaoSemFilaXLS.setPatientIdentifier(rs.getString("nid"));
+					prescricaoSemFilaXLS.setNome(rs.getString("firstname"));
+					prescricaoSemFilaXLS.setApelido(rs.getString("lastname"));
+					prescricaoSemFilaXLS.setUuidOpenmrs(rs.getString("uuid"));
+					prescricaoSemFilaXLS.setDataPrescricao(rs.getString("dataprescricao"));
+					
+					prescricaoSemFilaXLSs.add(prescricaoSemFilaXLS);
+				}
+				rs.close();
+			}
+			
+			st.close();
+			conn_db.close();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+    	
+        
+		return prescricaoSemFilaXLSs;
     }
 
     public void insere_sync_temp_dispense() {
