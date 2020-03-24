@@ -450,6 +450,8 @@ public class NewReports extends GenericAdminGui {
                 new MonthlyReceiptsAndIssues(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_DRUG_USAGE,
                 new ARVDrugUsage(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_BALANCETE_DIARIO,
+                new BalanceteDiario(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_ARV_FICHA_STOCK,
                 new FichaStock(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_APSS,

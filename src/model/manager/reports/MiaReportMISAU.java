@@ -67,7 +67,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
             int totalpacientesprep = Integer.parseInt(mapaDoMMIA.get("totalpacientesprep").toString());
             int totalpacientesCE = Integer.parseInt(mapaDoMMIA.get("totalpacientesCE").toString());
             int totalpacienteptv = Integer.parseInt(mapaDoMMIA.get("totalpacienteptv").toString());
-            int mesesdispensados =mesesdispensadosparaDM + mesesdispensadosparaDS + mesesdispensadosparaDT;
+            int mesesdispensados = Integer.parseInt(mapaDoMMIA.get("mesesdispensados").toString());
             int pacientesEmTarv = Integer.parseInt(mapaDoMMIA.get("pacientesEmTarv").toString());
             int adultosEmTarv = Integer.parseInt(mapaDoMMIA.get("adultosEmTarv").toString());
             int pediatrico04EmTARV = Integer.parseInt(mapaDoMMIA.get("pediatrico04EmTARV").toString());
