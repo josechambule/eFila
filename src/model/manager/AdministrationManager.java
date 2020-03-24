@@ -245,11 +245,19 @@ public class AdministrationManager {
 
     }
 
-//Previous PTV
-    public static String loadPtv(int idPatient) throws ClassNotFoundException, SQLException {
+//Previous PrEP
+    public static String loadPrEP(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
-        return conn.carregaPtv(idPatient);
+        return conn.carregaPrEP(idPatient);
+
+    }
+
+    //Previous CE
+    public static String loadCE(int idPatient) throws ClassNotFoundException, SQLException {
+        ConexaoJDBC conn = new ConexaoJDBC();
+
+        return conn.carregaCE(idPatient);
 
     }
 
