@@ -267,8 +267,8 @@ public class CommonObjects {
 
 		if (combo.getItemCount() > 0) {
 			// Set the default to the first item in the combo box
-			// combo.setText(combo.getItem(1));
-			combo.setText("1 month");
+			 combo.setText(combo.getItem(2));
+//			combo.setText("1 mes");
 		}
 
 	}

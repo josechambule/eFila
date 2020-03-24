@@ -38,7 +38,7 @@
 	<queryString>
 		<![CDATA[select
 
-COALESCE((a.allreceived * $P{packsize} - COALESCE((b.allissued*30) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned*$P{packsize}) + h.allpills, 0)), 0)
+COALESCE((a.allreceived * $P{packsize} - COALESCE((b.allissued * $P{packsize}) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned * $P{packsize}) + h.allpills, 0)), 0)
 
 as openingpills,
 
