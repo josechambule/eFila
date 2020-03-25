@@ -2689,6 +2689,69 @@ public class ConexaoJDBC {
         return tb;
 
     }
+ /**
+     * Devolve tb duma prescricao
+     *
+     * @param idpaciente
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public String carregaPrescricaoEspecial(int idpaciente) throws ClassNotFoundException,
+            SQLException {
+
+        String query = " " + " SELECT " + " prescricaoespecial " + "  FROM " + "   "
+                + "  prescription " + "  WHERE " + "   " + "  "
+                + "  prescription.patient=" + idpaciente + "  AND "
+                + "  prescription.current=\'T\'" + "";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String prescricaoespecial = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                prescricaoespecial = rs.getString("prescricaoespecial");
+
+            }
+            rs.close(); //
+        }
+
+        return prescricaoespecial;
+
+    }
+
+    public String carregaMotivoCriacaEspecial(int idpaciente) throws ClassNotFoundException,
+            SQLException {
+
+        String query = " " + " SELECT " + " motivocriacaoespecial " + "  FROM " + "   "
+                + "  prescription " + "  WHERE " + "   " + "  "
+                + "  prescription.patient=" + idpaciente + "  AND "
+                + "  prescription.current=\'T\'" + "";
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String motivocriacaoespecial = "";
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                motivocriacaoespecial = rs.getString("motivocriacaoespecial");
+
+            }
+            rs.close(); //
+        }
+
+        return motivocriacaoespecial;
+
+    }
 
     public String carregaCcr(int idpaciente) throws ClassNotFoundException, SQLException {
 

@@ -79,18 +79,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -196,6 +185,10 @@ public class AddPrescription extends GenericFormGui implements
 
     private Button chkBtnDC;
 
+    private Button chkBtnPrescicaoEspecial;
+
+    private CCombo cmbMotivoCriacao;
+
     private Patient thePatient;
 
     private TableColumn tblDescription;
@@ -296,7 +289,7 @@ public class AddPrescription extends GenericFormGui implements
                 checkFirstPrescription();
                 loadPatientDetails();
                 enableFields(true);
-                //cmbLinha.setEnabled(Boolean.FALSE);
+
                 txtPatientId.setEnabled(false);
                 btnSearch.setEnabled(false);
                 btnEkapaSearch.setEnabled(false);
@@ -985,20 +978,62 @@ public class AddPrescription extends GenericFormGui implements
         cmbLinha.setFocus();
 
         // Prescription Notes
-        Label lblNotes = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
-        lblNotes.setBounds(new Rectangle(620, 22, 170, 20));
+        chkBtnPrescicaoEspecial = new Button(grpParticulars, SWT.CHECK);
+        chkBtnPrescicaoEspecial.setBounds(new Rectangle(620, 10, 170, 20));
+        chkBtnPrescicaoEspecial.setText("Prescrição Especial");
+        chkBtnPrescicaoEspecial.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        chkBtnPrescicaoEspecial.setSelection(false);
+        chkBtnPrescicaoEspecial.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent selectionEvent) {
+                if (chkBtnPrescicaoEspecial.getSelection()) {
+                    cmbMotivoCriacao.setEnabled(true);
+                    cmbMotivoCriacao.setText("");
+                    cmbMotivoCriacao.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
+                } else {
+                    cmbMotivoCriacao.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent selectionEvent) {
+                if (chkBtnPrescicaoEspecial.getSelection()) {
+                    cmbMotivoCriacao.setEnabled(true);
+                    cmbMotivoCriacao.setText("");
+                    cmbMotivoCriacao.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
+                } else {
+                    cmbMotivoCriacao.setEnabled(false);
+                }
+            }
+        });
+
+        // Motivo Prescricao
+        Label lblMotivoPrescriacao = new Label(grpParticulars, SWT.NONE);
+        lblMotivoPrescriacao.setBounds(new Rectangle(620, 35, 90, 20));
+        lblMotivoPrescriacao.setText("Motivo de Criação:");
+        lblMotivoPrescriacao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        cmbMotivoCriacao = new CCombo(grpParticulars, SWT.BORDER | SWT.READ_ONLY);
+        cmbMotivoCriacao.setBounds(new Rectangle(620, 50, 130, 20));
+        cmbMotivoCriacao.setVisibleItemCount(10);
+        cmbMotivoCriacao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        cmbMotivoCriacao.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        //popula o ccombo motivos de criacao da prescricao
+        CommonObjects.populateMotivosPrescricao(getHSession(), cmbMotivoCriacao);
+        cmbMotivoCriacao.setEnabled(false);
+
+        Label lblNotes = new Label(grpParticulars, SWT.BORDER);
+        lblNotes.setBounds(new Rectangle(620, 75, 170, 20));
         lblNotes.setText(Messages.getString("patient.prescription.dialog.prescription.notes"));
         lblNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-        txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP
-                | SWT.V_SCROLL | SWT.BORDER);
-        txtAreaNotes.setBounds(new Rectangle(620, 40, 170, 80));
+        txtAreaNotes = new Text(grpParticulars, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
+        txtAreaNotes.setBounds(new Rectangle(620, 90, 170, 30));
         txtAreaNotes.setText("");
         txtAreaNotes.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         // New Prescription ID
-        lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER
-                | SWT.BORDER);
+        lblNewPrescriptionId = new Label(grpParticulars, SWT.CENTER | SWT.BORDER);
         lblNewPrescriptionId.setBounds(new Rectangle(620, 120, 170, 20));
         lblNewPrescriptionId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -1396,9 +1431,9 @@ public class AddPrescription extends GenericFormGui implements
 
             MessageBox dataNoutroServico = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
-            dataNoutroServico.setText("Pacite ja iniciou tarv");
+            dataNoutroServico.setText("Paciente ja iniciou tarv");
             dataNoutroServico
-                    .setMessage("Este paciente já iniciou o tarv....mude o TIPOTARV para Manter");
+                    .setMessage("Este paciente já iniciou o tarv....mude o TIPO TARV para Manter");
             dataNoutroServico.open();
             cmbMotivoMudanca.setFocus();
 
@@ -1451,6 +1486,25 @@ public class AddPrescription extends GenericFormGui implements
             missingTipoDispensaSemestral.setMessage("O campo 'Tipo DS: Deve ser preenchido(Novo ou Manutencao)?");
             cmbUpdateReason.setFocus();
             missingTipoDispensaSemestral.open();
+            return false;
+        } else if (chkBtnPrescicaoEspecial.getSelection() && cmbMotivoCriacao.getText().length() == 0) {
+
+            MessageBox motivocriacaoprecricao = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            motivocriacaoprecricao.setText("Seleccione o motivo da prescrição especial");
+            motivocriacaoprecricao.setMessage("Se seleccionou o campo Prescrição Especial deve escolher o motivo.");
+            motivocriacaoprecricao.open();
+            cmbMotivoCriacao.setFocus();
+
+            return false;
+        }
+        if (cmbMotivoCriacao.getText().equalsIgnoreCase("Outro") && txtAreaNotes.getText().length() == 0) {
+
+            MessageBox motivocriacaoprecricao = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            motivocriacaoprecricao.setText("Notas da prescrição vazia");
+            motivocriacaoprecricao.setMessage("Se seleccionou o 'Outro' no motivo de criação, deve adicionar as notas da prescrição.");
+            motivocriacaoprecricao.open();
+            cmbMotivoCriacao.setFocus();
+
             return false;
         }
 
@@ -1807,6 +1861,40 @@ public class AddPrescription extends GenericFormGui implements
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        // set the previous PrescicaoEspecial
+        try {
+
+            String prescicaoespecial = (AdministrationManager.loadPrescricaoEspecial(localPrescription.getPatient().getId()));
+
+            System.out.println(" PrescicaoEspecial actual " + prescicaoespecial);
+            if (prescicaoespecial.trim().equals("T")) {
+                chkBtnPrescicaoEspecial.setSelection(true);
+                cmbMotivoCriacao.setEnabled(true);
+            }
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // set the previous Motivo Criacao
+        try {
+
+            String motivocriacaoespecial = (AdministrationManager.loadMotivoEspecial(localPrescription.getPatient().getId()));
+
+            System.out.println(" Motivo Criacao " + motivocriacaoespecial);
+            cmbMotivoCriacao.setText(motivocriacaoespecial);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
 
         // Generate a new prescription id
         cmdUpdatePrescriptionId();
@@ -2564,6 +2652,7 @@ public class AddPrescription extends GenericFormGui implements
         localPrescription.setTipoDT(cmbTipoDispensaTrimestral.getText());
         localPrescription.setTipoDS(cmbTipoDispensaSemestral.getText());
         localPrescription.setDurationSentence(cmbDuration.getText());
+        localPrescription.setMotivocriacaoespecial(cmbMotivoCriacao.getText());
 
         //PTV , PPE and Tb
         if (chkBtnPPE.getSelection()) {
@@ -2646,6 +2735,12 @@ public class AddPrescription extends GenericFormGui implements
             localPrescription.setDc('T');
         } else {
             localPrescription.setDc('F');
+        }
+
+        if (chkBtnPrescicaoEspecial.getSelection()) {
+            localPrescription.setPrescricaoespecial('T');
+        } else {
+            localPrescription.setPrescricaoespecial('F');
         }
 
         localPrescription.setTpc('F');
@@ -2862,6 +2957,7 @@ public class AddPrescription extends GenericFormGui implements
         try {
             //cmbDispensaTrimestral.setText("");
             //cmbDispensaTrimestral.setEnabled(false);
+            chkBtnPrescicaoEspecial.setSelection(false);
             txtPatientId.setText("");
             cmbMotivoMudanca.setText("");
             txtName.setText("");
@@ -2960,6 +3056,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbDuration.setEnabled(enable);
         cmbRegime.setEnabled(enable);
         txtWeight.setEnabled(enable);
+        chkBtnPrescicaoEspecial.setEnabled(enable);
         txtAreaNotes.setEnabled(enable);
 
         btnCaptureDate.setEnabled(enable);
@@ -3885,7 +3982,7 @@ public class AddPrescription extends GenericFormGui implements
                                                     chkBtnFR.setEnabled(false);
                                                     chkBtnCPN.setEnabled(false);
                                                     chkBtnCE.setEnabled(false);
-                                                }else {
+                                                } else {
                                                     if (chkBtnCE.getSelection()) {
                                                         chkBtnTB.setEnabled(false);
                                                         chkBtnCCR.setEnabled(false);

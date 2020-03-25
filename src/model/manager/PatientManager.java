@@ -19,41 +19,21 @@
 
 package model.manager;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import model.manager.exports.iedea.ArtDto;
 import model.nonPersistent.PatientIdAndName;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.AttributeType;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.IdentifierType;
-import org.celllife.idart.database.hibernate.Logging;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.Pregnancy;
-import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  */
@@ -103,7 +83,7 @@ public class PatientManager {
 	 * Add a PatientAttribute to a patient.
 	 * 
 	 * @param sess
-	 * @param patt
+	 * @param patient
 	 * @throws HibernateException
 	 */
 	public static boolean addPatientAttributeToPatient(Session sess,
@@ -587,6 +567,26 @@ public class PatientManager {
 				.setInteger("patientId", patientId).setMaxResults(1)
 				.uniqueResult();
 		return pat;
+	}
+
+	public static String lastNextPickup(Session session, int patientId)
+			throws HibernateException {
+
+		SQLQuery query = session.createSQLQuery("select dateexpectedstring from packagedruginfotmp packdrugtemp \n" +
+				"inner join (select max(packinfo.pickupdate), packinfo.id \n" +
+				"from prescription pre \n" +
+				"inner join package pack on pack.prescription = pre.id \n" +
+				"inner join packageddrugs packdg on packdg.parentpackage = pack.id \n" +
+				"inner join packagedruginfotmp packinfo on packinfo.packageddrug = packdg.id \n" +
+				"where pre.patient = :patid \n" +
+				"group by 2) lastpickupdate on lastpickupdate.id = packdrugtemp.id");
+		query.setInteger("patid", patientId);
+//		query.setResultTransformer(new AliasToBeanResultTransformer(String.class));
+
+		@SuppressWarnings("unchecked")
+		List<String> list = query.list();
+
+		return list.get(0);
 	}
 
 	/**

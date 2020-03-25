@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -658,6 +659,19 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     adjustForNewAppointmentDate(theCal.getTime());
                 }
 
+            }
+        }
+
+        Prescription pre = localPatient.getCurrentPrescription();
+
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), localPatient.getId());
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
             }
         }
 
@@ -1995,6 +2009,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             return;
         }
 
+
         Clinic clinic = localPatient.getCurrentClinic();
         setDispenseTypeFromClinic();
         lblClinic.setText(clinic.getClinicName());
@@ -2147,6 +2162,18 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     }
 
                 }
+
+
+            }
+        }
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), patientID);
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
 
             }
         }
@@ -3002,10 +3029,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
 
                 adjustForNewDispDate(btnCaptureDate.getDate());
-
             }
         }
-
         // else, patient is inactive
         else {
             // set the colours for all the active fields
@@ -3025,6 +3050,20 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
             }
         }
+
+        Prescription pre = localPatient.getCurrentPrescription();
+
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), localPatient.getId());
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
+            }
+        }
+
     }
 
     private void adjustForNewAppointmentDate(Date theNextAppDate) {

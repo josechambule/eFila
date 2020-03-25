@@ -435,6 +435,24 @@ public class CommonObjects {
 
 	}
 
+	public static void populateMotivosPrescricao(Session sess, CCombo combo) {
+
+		List<SimpleDomain> sdList = AdministrationManager
+				.getAllMotivoPrescricao(sess);
+
+		if (sdList != null) {
+			for (SimpleDomain s : sdList) {
+				combo.add(s.getValue());
+			}
+		}
+		combo.add("");
+
+		combo.setVisibleItemCount(combo.getItemCount());
+		combo.setEditable(false);
+
+	}
+
+
 	/**
 	 *
 	 * @param sess
