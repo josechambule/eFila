@@ -116,6 +116,15 @@ public class AdministrationManager {
         return result;
     }
 
+    public static List<SimpleDomain> getAllMotivoPrescricao(Session sess)
+            throws HibernateException {
+        String qString = "select s from SimpleDomain as s where s.description = 'prescription_reason' order by s.id asc";
+        Query q = sess.createQuery(qString);
+        List<SimpleDomain> result = q.list();
+
+        return result;
+    }
+
     /**
      * Saves the current doctor
      *
@@ -245,11 +254,19 @@ public class AdministrationManager {
 
     }
 
-//Previous PTV
-    public static String loadPtv(int idPatient) throws ClassNotFoundException, SQLException {
+//Previous PrEP
+    public static String loadPrEP(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
-        return conn.carregaPtv(idPatient);
+        return conn.carregaPrEP(idPatient);
+
+    }
+
+    //Previous CE
+    public static String loadCE(int idPatient) throws ClassNotFoundException, SQLException {
+        ConexaoJDBC conn = new ConexaoJDBC();
+
+        return conn.carregaCE(idPatient);
 
     }
 
@@ -322,6 +339,22 @@ public class AdministrationManager {
         ConexaoJDBC conn = new ConexaoJDBC();
 
         return conn.carregaSAAJ(idPatient);
+
+    }
+
+    //Previous PrescricaoEspecial
+    public static String loadPrescricaoEspecial(int idPatient) throws ClassNotFoundException, SQLException {
+        ConexaoJDBC conn = new ConexaoJDBC();
+
+        return conn.carregaPrescricaoEspecial(idPatient);
+
+    }
+
+    //Previous Motivo Especial
+    public static String loadMotivoEspecial(int idPatient) throws ClassNotFoundException, SQLException {
+        ConexaoJDBC conn = new ConexaoJDBC();
+
+        return conn.carregaMotivoCriacaEspecial(idPatient);
 
     }
 

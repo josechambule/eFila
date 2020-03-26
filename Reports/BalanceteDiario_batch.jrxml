@@ -38,7 +38,7 @@
 	<queryString>
 		<![CDATA[select
 
-COALESCE((a.allreceived * $P{packsize} - COALESCE((b.allissued*30) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned*$P{packsize}) + h.allpills, 0)), 0)
+COALESCE((a.allreceived * $P{packsize} - COALESCE((b.allissued * $P{packsize}) + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned * $P{packsize}) + h.allpills, 0)), 0)
 
 as openingpills,
 
@@ -70,7 +70,7 @@ left join
 ) as a on a.id = drug.id
 
 left join
-(select round(floor(sum(pd.amount::real)/30)::numeric,0) as allissued, MOD(sum(pd.amount),30) as allpill,d.id
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as allissued, MOD(sum(pd.amount),$P{packsize}) as allpill,d.id
 from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre
 where d.id = d.id and s.stockCenter = $P{stockCenterId}
 and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
@@ -91,7 +91,7 @@ group by 2
 ) as f on f.id = drug.id
 left join
 
-(select round(floor(sum(pd.amount::real)/30)::numeric,0) as allreturned, MOD(sum(pd.amount),30) as allpills,d.id
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as allreturned, MOD(sum(pd.amount),$P{packsize}) as allpills,d.id
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = d.id
 and s.stockCenter = $P{stockCenterId}
@@ -113,7 +113,7 @@ where d.id = d.id and s.stockCenter = $P{stockCenterId} and s.drug = d.id
 ) as c on c.id = drug.id and pg_catalog.date(c.datereceived) = pg_catalog.date(drug.searchdate)
 left join
 
-(select round(floor(sum(pd.amount::real)/30)::numeric,0) as issued, MOD(sum(pd.amount),30) as pill,p.packdate,d.id
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill,p.packdate,d.id
 from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre
 where d.id = d.id and s.stockCenter = $P{stockCenterId}
 and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
@@ -122,7 +122,7 @@ and p.prescription = pre.id
 ) as d on d.id = drug.id and pg_catalog.date(d.packdate) = pg_catalog.date(drug.searchdate)
 left join
 
-(select round(floor(sum(pd.amount::real)/30)::numeric,0) as issued, MOD(sum(pd.amount),30) as pill,p.packdate,d.id
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill,p.packdate,d.id
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = d.id and s.stockCenter = $P{stockCenterId}
 and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
@@ -141,7 +141,7 @@ group by 2,3,4
 ) as g on g.id = drug.id and pg_catalog.date(g.captureDate) = pg_catalog.date(drug.searchdate)
 left join
 
-(select round(floor(sum(pd.amount::real)/30)::numeric,0) as returned, MOD(sum(pd.amount),30) as pills,p.dateReturned,d.id
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, MOD(sum(pd.amount),$P{packsize}) as pills,p.dateReturned,d.id
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = d.id
 and s.stockCenter = $P{stockCenterId}

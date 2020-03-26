@@ -125,6 +125,10 @@ public class Prescription {
 	private char cpn;
 	private char ccr;
 	private char dc;
+	private char prep;
+	private char ce;
+	private char prescricaoespecial;
+	private String motivocriacaoespecial;
 
 	/**
 	 * @param clinicalStage
@@ -156,7 +160,8 @@ public class Prescription {
 			List<PrescribedDrugs> prescribedDrugs, String prescriptionId,
 			String reasonForUpdate, String notes, RegimeTerapeutico regimeTerapeutico,  Clinic clinic, 
 			Date datainicionoutroservico, String motivoMudanca, char ppe, char ptv, char tb, char tpc, 
-			char tpi, char saaj, char gaac, char af, char ca, char fr, char cpn, char ccr, int dispensaSemestral, String tipoDS, char dc) {
+			char tpi, char saaj, char gaac, char af, char ca, char fr, char cpn, char ccr, int dispensaSemestral,
+						String tipoDS, char dc, char prep, char ce, char prescricaoespecial, String motivocriacaoespecial) {
 		super();
 		this.clinicalStage = clinicalStage;
 		this.current = current;
@@ -189,6 +194,10 @@ public class Prescription {
 		this.dispensaSemestral = dispensaSemestral; 
 		this.tipoDS = tipoDS;
 		this.dc = dc;
+		this.prep = prep;
+		this.ce = ce;
+		this.prescricaoespecial = prescricaoespecial;
+		this.motivocriacaoespecial = motivocriacaoespecial;
 	}
 
 	public Prescription() {
@@ -675,7 +684,39 @@ public class Prescription {
 	public void setDc(char dc) {
 		this.dc = dc;
 	}
-	
+
+	public char getPrep() {
+		return prep;
+	}
+
+	public void setPrep(char prep) {
+		this.prep = prep;
+	}
+
+	public char getCe() {
+		return ce;
+	}
+
+	public void setCe(char ce) {
+		this.ce = ce;
+	}
+
+	public char getPrescricaoespecial() {
+		return prescricaoespecial;
+	}
+
+	public void setPrescricaoespecial(char prescricaoespecial) {
+		this.prescricaoespecial = prescricaoespecial;
+	}
+
+	public String getMotivocriacaoespecial() {
+		return motivocriacaoespecial;
+	}
+
+	public void setMotivocriacaoespecial(String motivocriacaoespecial) {
+		this.motivocriacaoespecial = motivocriacaoespecial;
+	}
+
 	public void setLinha(LinhaT linha) {
 		this.linha=linha;
 		

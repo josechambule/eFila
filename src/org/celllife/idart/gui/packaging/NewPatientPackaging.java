@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -658,6 +659,19 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     adjustForNewAppointmentDate(theCal.getTime());
                 }
 
+            }
+        }
+
+        Prescription pre = localPatient.getCurrentPrescription();
+
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), localPatient.getId());
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
             }
         }
 
@@ -1604,12 +1618,12 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
      */
     private boolean fieldsOkay(java.util.List<PackageDrugInfo> allPackagedDrugsList) {
         Patient patient = PatientManager.getPatient(getHSession(), localPatient.getId());
-        int amountperPackage = (int) (allPackagedDrugsList.get(0).getDispensedQty() / (allPackagedDrugsList.get(0).getTimesPerDay() * Integer.parseInt(allPackagedDrugsList.get(0).getAmountPerTime())))/7;
+        int amountperPackage = (int) (allPackagedDrugsList.get(0).getDispensedQty() / (allPackagedDrugsList.get(0).getTimesPerDay() * Integer.parseInt(allPackagedDrugsList.get(0).getAmountPerTime()))) / 7;
 
         if (localPatient.getCurrentPrescription().getDuration() != newPack.getWeekssupply()) {
             MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
             mb.setText("Dispensa Trimestral");
-            mb.setMessage("A duração da prescrição é de " + localPatient.getCurrentPrescription().getDuration()/4 + " mes(es) e não é a mesma que a da dispensa. "
+            mb.setMessage("A duração da prescrição é de " + localPatient.getCurrentPrescription().getDuration() / 4 + " mes(es) e não é a mesma que a da dispensa. "
                     + "PRETENDE MESMO DISPENSAR ESTA PRESCRIÇÃO?");
             int resposta = mb.open();
             if (resposta == SWT.NO) {
@@ -1995,6 +2009,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             return;
         }
 
+
         Clinic clinic = localPatient.getCurrentClinic();
         setDispenseTypeFromClinic();
         lblClinic.setText(clinic.getClinicName());
@@ -2047,7 +2062,22 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             // }
 
             // weeks supply = script duration
-            int numPeriods = pre.getDuration() >= 4 ? 4 : pre.getDuration();
+            int numPeriods = Math.min(pre.getDuration(), 4);
+
+            if (pre.getDispensaTrimestral() == 1) {
+                if (pre.getDuration() <= (2 * 4)) {
+                    numPeriods = pre.getDuration();
+                } else {
+                    numPeriods = 12; // (means 3 monnths)
+                }
+            } else if (pre.getDispensaSemestral() == 1) {
+                if (pre.getDuration() < (6 * 4)) {
+                    numPeriods = pre.getDuration();
+                } else {
+                    numPeriods = 24; // (means 6 monnths)
+                }
+            }
+
             newPack.setWeekssupply(numPeriods);
 
             btnCaptureDate.setDate(new Date());
@@ -2089,6 +2119,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 // Display the next appointment date if there is one,
                 // or else base next appointment on todays date.
                 Appointment nextApp = PatientManager.getLatestAppointmentForPatient(localPatient, true);
+
                 if (nextApp == null) {
                     Calendar theCal = Calendar.getInstance();
                     attemptCaptureDateReset();
@@ -2132,6 +2163,18 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                 }
 
+
+            }
+        }
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), patientID);
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
+
             }
         }
     }
@@ -2159,6 +2202,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
      * Populates the prescription details on the form. This includes notes.
      */
     private void populatePrescriptionDetails() {
+
+        int item = 2;
 
         if (localPharmacy == null) {
             getLog().error("Tried to populate prescription details, but localPharmacy is null");
@@ -2209,7 +2254,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
         else {
             lblDuration.setText(String.valueOf(dur / 4));
             lblPackageInfo3.setText("prescrição/mes");
-            cmbSupply.setText("1 mes");
+            item = 1 + (newPack.getWeekssupply() / 4);
+            cmbSupply.setText(cmbSupply.getItem(item));
             lblIndex.setText(String.valueOf(index));
 
             // check is prescription has been used up or if this is the last
@@ -2983,10 +3029,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
 
                 adjustForNewDispDate(btnCaptureDate.getDate());
-
             }
         }
-
         // else, patient is inactive
         else {
             // set the colours for all the active fields
@@ -3006,6 +3050,20 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
             }
         }
+
+        Prescription pre = localPatient.getCurrentPrescription();
+
+        if (pre.getMotivocriacaoespecial().contains("Perda")) {
+            String dateExpected = PatientManager.lastNextPickup(getHSession(), localPatient.getId());
+            if (dateExpected != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                Date dataproximolev = new Date(dateExpected);
+                adjustForNewAppointmentDate(dataproximolev);
+                btnNextAppDate.setText(sdf.format(dataproximolev));
+                btnNextAppDate.setEnabled(false);
+            }
+        }
+
     }
 
     private void adjustForNewAppointmentDate(Date theNextAppDate) {

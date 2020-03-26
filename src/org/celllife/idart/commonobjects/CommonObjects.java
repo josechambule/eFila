@@ -267,8 +267,8 @@ public class CommonObjects {
 
 		if (combo.getItemCount() > 0) {
 			// Set the default to the first item in the combo box
-			// combo.setText(combo.getItem(1));
-			combo.setText("1 month");
+			 combo.setText(combo.getItem(2));
+//			combo.setText("1 mes");
 		}
 
 	}
@@ -434,6 +434,24 @@ public class CommonObjects {
 		}
 
 	}
+
+	public static void populateMotivosPrescricao(Session sess, CCombo combo) {
+
+		List<SimpleDomain> sdList = AdministrationManager
+				.getAllMotivoPrescricao(sess);
+
+		if (sdList != null) {
+			for (SimpleDomain s : sdList) {
+				combo.add(s.getValue());
+			}
+		}
+		combo.add("");
+
+		combo.setVisibleItemCount(combo.getItemCount());
+		combo.setEditable(false);
+
+	}
+
 
 	/**
 	 *

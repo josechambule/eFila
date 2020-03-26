@@ -204,7 +204,7 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
                 Date theEndDate = calendarEnd.getCalendar().getTime();
 
-                //theStartDate = sdf.parse(strTheDate);
+//                theStartDate = sdf.parse(strTheDate);
                 DispensaTrimestral report = new DispensaTrimestral(getShell(), theStartDate, theEndDate);
                 viewReport(report);
             } catch (Exception e) {
