@@ -25,9 +25,9 @@ import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
 import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.DispensaTrimestralSemestral;
+import model.manager.reports.FollowupFaulty;
 import model.manager.reports.HistoricoLevantamentoXLS;
 import model.manager.reports.PrescricaoSemFilaXLS;
-import model.manager.reports.PrescriptionsWithNoEncounter;
 import model.manager.reports.SecondLinePatients;
 
 /**
@@ -4647,7 +4647,195 @@ public class ConexaoJDBC {
         return absenteeForSupportCallsXLS;
 
     }
+    
+    
+    public List<FollowupFaulty> lostToFollowupFaultyQuartelyLayOff(String minDays, String maxDays, String date, String clinicid) {
+    	
+        List<FollowupFaulty> faultyQuartelyLayOffs = new ArrayList<FollowupFaulty>();
 
+    	try {
+    	
+    	conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+    	
+    	String query = "select pat.patientid as patID, "+
+    		    "(pat.firstnames||', '|| pat.lastname) as name, "+
+    		    "pat.nextofkinname as supportername, "+
+    		    "pat.nextofkinphone as supporterphone, "+
+    		    "pat.cellphone as cellno, "+
+    		    "pat.homephone as homeno, "+
+    		    "pat.workphone as workno, "+
+    		    "date_part('year',age(pat.dateofbirth))::Integer as age, "+
+    		    "app.appointmentDate::date as dateexpected, "+
+    		    "('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected, "+
+    		    "CASE "+
+    		        "WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
+    		        "ELSE "+
+    		    	"CASE "+
+    		    	    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
+    		                  "ELSE null "+
+    		        	"END "+
+    		    "END "+
+    		      "AS datelostfollowup, "+
+    		      "CASE "+
+    		        "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
+    		        "ELSE null "+
+    		      "END "+
+    		      "AS datereturn, "+
+    		      "pat.address1 || "+
+    		    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' "+
+    		    "else ',' || pat.address2 "+
+    		    "end "+
+    		    "|| "+
+    		    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' "+
+    		    "else ',' || pat.address3 "+
+    		    "end "+
+    		    "as address, "+
+    		    "max(app.appointmentDate) as ultimaData "+
+    		    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc "+
+    		    "where app.patient = pat.id "+
+    		    "and presc.patient = pat.id "+
+    		    "and presc.current = 'T' "+
+    		    "and presc.dispensatrimestral = 1 "+
+    		    "and idt.name = 'NID' "+
+    		    "and pi.value = pat.patientid "+
+    		    "and idt.id = pi.type_id "+
+    		    "and '"+clinicid+"' = pat.clinic "+ 
+    		    "and app.appointmentDate is not null "+
+    		    "and (app.visitdate::date is null) "+
+    		    "and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minDays+"' and '"+maxDays+"') "+ 
+    		    "and exists (select prescription.id "+
+    		    "from prescription "+
+    		    "where prescription.patient = pat.id "+
+    		    "and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null))) "+
+    		    "and exists (select id from episode where episode.patient = pat.id "+
+    		    "and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null))) "+
+    		    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 "+
+    		    "order by age asc"; 
+    	
+	        ResultSet rs = st.executeQuery(query);
+	        	
+	        if (rs != null) {
+	
+	            while (rs.next()) {
+	            	FollowupFaulty faultyQuartelyLayOff = new FollowupFaulty();
+	                faultyQuartelyLayOff.setPatientIdentifier(rs.getString("patID"));
+	                faultyQuartelyLayOff.setNome(rs.getString("name"));
+	                faultyQuartelyLayOff.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+	                faultyQuartelyLayOff.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+	                faultyQuartelyLayOff.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
+	                
+	                faultyQuartelyLayOffs.add(faultyQuartelyLayOff); 
+	            }
+	            rs.close();
+	        }
+	
+	        st.close();
+	        conn_db.close();
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    	
+		return faultyQuartelyLayOffs; 
+    }
+    
+    
+    public List<FollowupFaulty> lostToFollowupFaultySemiAnnual(String minDays, String maxDays, String date, String clinicid) {
+    	
+        List<FollowupFaulty> lostToFollowupFaultySemiAnnuals = new ArrayList<FollowupFaulty>();
+    	
+    	try {
+    	
+    	conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+    	
+    	String query = "select pat.patientid as patID, "+
+    		    "(pat.firstnames||', '|| pat.lastname) as name, "+
+    		    "pat.nextofkinname as supportername, "+
+    		    "pat.nextofkinphone as supporterphone, "+
+    		    "pat.cellphone as cellno, "+
+    		    "pat.homephone as homeno, "+
+    		    "pat.workphone as workno, "+
+    		    "date_part('year',age(pat.dateofbirth))::Integer as age, "+
+    		    "app.appointmentDate::date as dateexpected, "+
+    		    "('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected, "+
+    		    "CASE "+
+    		        "WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
+    		        "ELSE "+
+    		    	"CASE "+
+    		    	    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
+    		                  "ELSE null "+
+    		        	"END "+
+    		    "END "+
+    		      "AS datelostfollowup, "+
+    		      "CASE "+
+    		        "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
+    		        "ELSE null "+
+    		      "END "+
+    		      "AS datereturn, "+
+    		      "pat.address1 || "+
+    		    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' "+
+    		    "else ',' || pat.address2 "+
+    		    "end "+
+    		    "|| "+
+    		    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' "+
+    		    "else ',' || pat.address3 "+
+    		    "end "+
+    		    "as address, "+
+    		    "max(app.appointmentDate) as ultimaData "+
+    		    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc "+
+    		    "where app.patient = pat.id "+
+    		    "and presc.patient = pat.id "+
+    		    "and presc.current = 'T' "+
+    		    "and presc.dispensasemestral = 1 "+
+    		    "and idt.name = 'NID' "+
+    		    "and pi.value = pat.patientid "+
+    		    "and idt.id = pi.type_id "+
+    		    "and '"+clinicid+"' = pat.clinic "+ 
+    		    "and app.appointmentDate is not null "+
+    		    "and (app.visitdate::date is null) "+
+    		    "and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minDays+"' and '"+maxDays+"') "+ 
+    		    "and exists (select prescription.id "+
+    		    "from prescription "+
+    		    "where prescription.patient = pat.id "+
+    		    "and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null))) "+
+    		    "and exists (select id from episode where episode.patient = pat.id "+
+    		    "and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null))) "+
+    		    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 "+
+    		    "order by age asc"; 
+    	
+	        ResultSet rs = st.executeQuery(query);
+	
+	        if (rs != null) {
+	
+	            while (rs.next()) {
+	            	FollowupFaulty lostToFollowupFaultySemiAnnual = new FollowupFaulty();
+	            	lostToFollowupFaultySemiAnnual.setPatientIdentifier(rs.getString("patID"));
+	            	lostToFollowupFaultySemiAnnual.setNome(rs.getString("name"));
+	            	lostToFollowupFaultySemiAnnual.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+	            	lostToFollowupFaultySemiAnnual.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+	            	lostToFollowupFaultySemiAnnual.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
+	                
+	            	lostToFollowupFaultySemiAnnuals.add(lostToFollowupFaultySemiAnnual); 
+	                
+	            }
+	            rs.close();
+	        }
+	
+	        st.close();
+	        conn_db.close();
+        
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    	
+		return lostToFollowupFaultySemiAnnuals; 
+    }
 
     /**
      * Actualiza a ultima prescricao para current T depois de remover a current

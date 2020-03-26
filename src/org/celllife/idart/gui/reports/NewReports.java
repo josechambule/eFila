@@ -462,6 +462,8 @@ public class NewReports extends GenericAdminGui {
                 new MissedAppointmentsChamadas(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_DT,
                 new MissedAppointmentsDT(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_DS,
+                new MissedAppointmentsDS(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_LOST_TO_FOLLOW_UP_RETURNED,
                 new LostToFollowUpReturned(getShell(), false));
 

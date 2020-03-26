@@ -31,11 +31,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import model.manager.reports.AbsenteeForSupportCall;
-import model.manager.reports.FollowupFaulty;
-import model.manager.reports.MissedAppointmentsReport;
-import model.manager.reports.MissedAppointmentsReportDT;
-
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -51,7 +46,6 @@ import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_DT;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -67,9 +61,13 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import model.manager.reports.FollowupFaulty;
+import model.manager.reports.MissedAppointmentsReportDS;
+import model.manager.reports.MissedAppointmentsReportDT;
+
 /**
  */
-public class MissedAppointmentsDT extends GenericReportGui {
+public class MissedAppointmentsDS extends GenericReportGui {
 
 	private Group grpClinicSelection;
 
@@ -91,7 +89,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 	
 	private final Shell parent;
 	
-    private List<FollowupFaulty> faultyQuartelyLayOffs;
+    private List<FollowupFaulty> lostToFollowupFaultySemiAnnual;
     
     private FileOutputStream out = null; 
 
@@ -103,7 +101,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 	 * @param activate
 	 *            boolean
 	 */
-	public MissedAppointmentsDT(Shell parent, boolean activate) {
+	public MissedAppointmentsDS(Shell parent, boolean activate) {
 		super(parent, GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT,
 				activate);
 		this.parent = parent;
@@ -114,7 +112,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 	 */
 	@Override
 	protected void createShell() {
-		buildShell(REPORT_MISSED_APPOINTMENTS_DT, new Rectangle(100, 50, 600,
+		buildShell(REPORT_MISSED_APPOINTMENTS_DS, new Rectangle(100, 50, 600,
 				510));
 		// create the composites
 		createMyGroups();
@@ -132,7 +130,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 	@Override
 	protected void createCompHeader() {
 		iDartImage icoImage = iDartImage.REPORT_PATIENTDEFAULTERS;
-		buildCompdHeader(REPORT_MISSED_APPOINTMENTS_DT, icoImage);
+		buildCompdHeader(REPORT_MISSED_APPOINTMENTS_DS, icoImage);
 	}
 
 	/**
@@ -142,7 +140,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 	private void createGrpClinicSelection() {
 
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("Configuração do Relatório de Faltosos e/ou Abandonos na Dispensa Trimenstral");
+		grpClinicSelection.setText("Configuração do Relatório de Faltosos e/ou Abandonos na Dispensa Semenstral");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(60, 79, 465, 114));
 
@@ -312,7 +310,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 		}
 
 		if (viewReport) {
-                        MissedAppointmentsReportDT report = new MissedAppointmentsReportDT(getShell(),cmbClinic.getText(),
+                        MissedAppointmentsReportDS report = new MissedAppointmentsReportDS(getShell(),cmbClinic.getText(),
                         Integer.parseInt(txtMinimumDaysLate.getText()),
                         Integer.parseInt(txtMaximumDaysLate.getText()),
                         swtCal.getCalendar().getTime());
@@ -321,20 +319,6 @@ public class MissedAppointmentsDT extends GenericReportGui {
 
 	}
 
-	/**
-	 * This method is called when the user presses "Close" button
-	 * 
-	 */
-	@Override
-	protected void cmdCloseWidgetSelected() {
-		cmdCloseSelected();
-	}
-	
-	@Override
-	protected void setLogger() {
-		setLog(Logger.getLogger(this.getClass()));
-	}
-	
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
 		
@@ -416,15 +400,15 @@ public class MissedAppointmentsDT extends GenericReportGui {
 		
 		if (viewReport) {
 			
-			faultyQuartelyLayOffs = new ArrayList<FollowupFaulty>();
+			lostToFollowupFaultySemiAnnual = new ArrayList<FollowupFaulty>();
 			
 			try {
-				faultyQuartelyLayOffs = con.lostToFollowupFaultyQuartelyLayOff(txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText(), 
+				lostToFollowupFaultySemiAnnual = con.lostToFollowupFaultySemiAnnual(txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText(), 
 						sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
 				
-				if(faultyQuartelyLayOffs.size() > 0) {
+				if(lostToFollowupFaultySemiAnnual.size() > 0) {
 					
-					FileInputStream currentXls = new FileInputStream("FaltososAbandonosDT.xls");
+					FileInputStream currentXls = new FileInputStream("FaltososAbandonosDS.xls");
 					
 					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 					
@@ -468,12 +452,12 @@ public class MissedAppointmentsDT extends GenericReportGui {
 					  	deleteRow(sheet,row);  
 					  }
 					 
-					  out = new FileOutputStream(new File("FaltososAbandonosDT.xls"));
+					  out = new FileOutputStream(new File("FaltososAbandonosDS.xls"));
 					  workbook.write(out); 
 					
 					int rowNum = 14;
 					
-					for (FollowupFaulty xls : faultyQuartelyLayOffs) { 
+					for (FollowupFaulty xls : lostToFollowupFaultySemiAnnual) { 
 						
 						HSSFRow row = sheet.createRow(rowNum++);
 						
@@ -508,11 +492,11 @@ public class MissedAppointmentsDT extends GenericReportGui {
 					
 					currentXls.close();
 					
-					FileOutputStream outputStream = new FileOutputStream(new File("FaltososAbandonosDT.xls")); 
+					FileOutputStream outputStream = new FileOutputStream(new File("FaltososAbandonosDS.xls")); 
 					workbook.write(outputStream);
 					workbook.close();
 					
-					Desktop.getDesktop().open(new File("FaltososAbandonosDT.xls"));
+					Desktop.getDesktop().open(new File("FaltososAbandonosDS.xls"));
 					
 				} else {
 					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
@@ -538,5 +522,19 @@ public class MissedAppointmentsDT extends GenericReportGui {
 				sheet.removeRow(removingRow);
 			}
 		}
+	}
+
+	/**
+	 * This method is called when the user presses "Close" button
+	 * 
+	 */
+	@Override
+	protected void cmdCloseWidgetSelected() {
+		cmdCloseSelected();
+	}
+
+	@Override
+	protected void setLogger() {
+		setLog(Logger.getLogger(this.getClass()));
 	}
 }
