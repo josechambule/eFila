@@ -178,13 +178,6 @@ public class FichaStock extends GenericReportGui {
 
         }
 
-        else
-
-        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-            showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
-            return;
-        }
-
         else {
             try {
 
@@ -192,9 +185,7 @@ public class FichaStock extends GenericReportGui {
 
                 Date theStartDate = calendarStart.getCalendar().getTime();
 
-                Date theEndDate=  calendarEnd.getCalendar().getTime();
-
-                FichaStockReport report = new FichaStockReport(getShell(), pharm, theStartDate, theEndDate,localDrug.getId());
+                FichaStockReport report = new FichaStockReport(getShell(), pharm, theStartDate, theStartDate,localDrug.getId());
                 viewReport(report);
             } catch (Exception e) {
                 getLog().error("Exception while running Monthly Receipts and Issues report",e);
@@ -247,30 +238,17 @@ public class FichaStock extends GenericReportGui {
         grpDateRange = new Group(getShell(), SWT.NONE);
         grpDateRange.setText("Período:");
         grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        grpDateRange.setBounds(new Rectangle(55, 100, 520, 201));
+        grpDateRange.setBounds(new Rectangle(140, 100, 320, 201));
         grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,180, 20));
-        lblStartDate.setText("Data Início:");
+        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(70, 30,180, 20));
+        lblStartDate.setText("Data Pesquisa:");
         lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-        Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-        lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,180, 20));
-        lblEndDate.setText("Data Fim:");
-        lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
         calendarStart = new SWTCalendar(grpDateRange);
-        calendarStart.setBounds(20, 55, 220, 140);
+        calendarStart.setBounds(50, 50, 220, 140);
 
-        calendarEnd = new SWTCalendar(grpDateRange);
-        calendarEnd.setBounds(280, 55, 220, 140);
-        calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
-            @Override
-            public void dateChanged(SWTCalendarEvent calendarEvent) {
-                Date date = calendarEvent.getCalendar().getTime();
-            }
-        });
     }
 
     /**
