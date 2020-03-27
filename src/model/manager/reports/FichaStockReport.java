@@ -44,8 +44,6 @@ public class FichaStockReport extends AbstractJasperReport {
             map.put("monthStart", dateFormat.format(theStartDate));
             User localUser = LocalObjects.getUser(getHSession());
             map.put("username", localUser.getUsername());
-            map.put("monthEnd", dateFormat.format(theEndDate));
-            map.put("dateEnd", theEndDate);
             map.put("stockCenterName", stockCenter.getStockCenterName());
             map.put("path", getReportPath());
             map.put("facilityName", LocalObjects.currentClinic.getClinicName());

@@ -34,7 +34,7 @@
 	</parameter>
 	<parameter name="date" class="java.util.Date">
 		<parameterDescription><![CDATA[Date for Report]]></parameterDescription>
-		<defaultValueExpression><![CDATA[new Date("15/01/2006")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Date("24/01/2018")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="stockCenterName" class="java.lang.String">
 		<defaultValueExpression><![CDATA["CIPRA"]]></defaultValueExpression>
@@ -44,7 +44,7 @@
 	</parameter>
 	<parameter name="stockCenterId" class="java.lang.Integer">
 		<parameterDescription><![CDATA[An Integer of the Clnic's Identifier]]></parameterDescription>
-		<defaultValueExpression><![CDATA[new Integer(131)]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Integer(42112)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="dateFormat" class="java.lang.String">
 		<parameterDescription><![CDATA[Exact same value as date, but formatted]]></parameterDescription>
@@ -59,12 +59,13 @@
 	<parameter name="dataelaboracao" class="java.lang.String"/>
 	<parameter name="username" class="java.lang.String"/>
 	<parameter name="drugId" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new Integer('8')]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Integer(41287)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mes" class="java.lang.String"/>
 	<parameter name="mes2" class="java.lang.String"/>
-	<parameter name="monthEnd" class="java.lang.String"/>
-	<parameter name="monthStart" class="java.lang.String"/>
+	<parameter name="monthStart" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2018-01-24"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT DISTINCT
      d."id",
@@ -326,7 +327,7 @@ GROUP BY 1,2,3,4]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[(new SimpleDateFormat("dd/MM/yyyy")).format($P{date}) +"  -  "+ (new SimpleDateFormat("dd/MM/yyyy")).format($P{dateEnd})]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{date})]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="1" y="54" width="546" height="1"/>
@@ -523,16 +524,23 @@ GROUP BY 1,2,3,4]]>
 				</textElement>
 				<text><![CDATA[Número da Guia]]></text>
 			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20">
 			<subreport isUsingCache="true">
-				<reportElement key="subreport-1" positionType="Float" mode="Opaque" x="0" y="171" width="548" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="subreport-1" positionType="Float" mode="Opaque" x="0" y="0" width="548" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<subreportParameter name="id">
 					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="StockCode">
 					<subreportParameterExpression><![CDATA[$F{stockcode}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="monthEnd">
-					<subreportParameterExpression><![CDATA[$P{monthEnd}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="formlanguage1">
 					<subreportParameterExpression><![CDATA[$F{formlanguage1}]]></subreportParameterExpression>
@@ -562,15 +570,6 @@ GROUP BY 1,2,3,4]]>
 				<subreportExpression class="java.lang.String"><![CDATA[($P{path} + java.io.File.separator+ "FichadeStock_batch.jasper")]]></subreportExpression>
 			</subreport>
 		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band height="20"/>
 		<band/>
 	</detail>
 	<columnFooter>
