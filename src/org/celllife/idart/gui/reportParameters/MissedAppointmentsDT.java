@@ -448,12 +448,12 @@ public class MissedAppointmentsDT extends GenericReportGui {
 					healthFacilityCell.setCellStyle(cellStyle); 
 					
 					HSSFRow reportPeriod = sheet.getRow(10);
-					HSSFCell reportPeriodCell = reportPeriod.createCell(6);
+					HSSFCell reportPeriodCell = reportPeriod.createCell(7);
 					reportPeriodCell.setCellValue(sdf.format(swtCal.getCalendar().getTime()));
 					reportPeriodCell.setCellStyle(cellStyle); 
 
 					HSSFRow reportYear = sheet.getRow(11);
-					HSSFCell reportYearCell = reportYear.createCell(6);
+					HSSFCell reportYearCell = reportYear.createCell(7);
 					reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
 					reportYearCell.setCellStyle(cellStyle);
 					
