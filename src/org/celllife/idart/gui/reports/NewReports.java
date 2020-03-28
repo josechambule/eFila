@@ -384,7 +384,7 @@ public class NewReports extends GenericAdminGui {
       	reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
 
         reportGUIs.put(GenericReportGuiInterface.REPORT_LIVRO_ELETRONICO_ARV,
-                new LivroEletronicoDispensaARV(getShell(), false));
+                new LivroREgistoDiario(getShell(), false));
 
         reportGUIs.put(GenericReportGuiInterface.REPORT_IDART,
                 new RegisteredIdart(getShell(), false));

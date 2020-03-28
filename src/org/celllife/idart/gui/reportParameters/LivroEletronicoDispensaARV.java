@@ -94,7 +94,7 @@ public class LivroEletronicoDispensaARV extends GenericReportGui {
 	@Override
 	protected void createCompHeader() {
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
-		buildCompdHeader("LIVRO ELECTRONICO ARV MISAU", icoImage);
+		buildCompdHeader("Livro de Registo Diário de ARVs", icoImage);
 	}
 
 	/**
