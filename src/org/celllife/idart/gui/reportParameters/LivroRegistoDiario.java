@@ -60,7 +60,7 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.LivroRegistoDiarioXLS;
 
 /**
  */
@@ -80,7 +80,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 	
 	private Button chkBtnAlteraccao;
 	
-	private List<LivroRegistoDiario> livroRegistoDiarios;
+	private List<LivroRegistoDiarioXLS> livroRegistoDiarios;
 	
 	private final Shell parent;
 	
@@ -204,15 +204,15 @@ public class LivroRegistoDiario extends GenericReportGui {
 				
 				//theStartDate = sdf.parse(strTheDate);
 				
-				historicoLevantamentoXLS = new ArrayList<HistoricoLevantamentoXLS>();
+				livroRegistoDiarios = new ArrayList<LivroRegistoDiarioXLS>(); 
 				
 				try {
 					ConexaoJDBC con=new ConexaoJDBC();
 					
-					historicoLevantamentoXLS = con.getLivroRegistoDiarioXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
+					livroRegistoDiarios = con.getLivroRegistoDiarioXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
 							chkBtnAlteraccao.getSelection(), sdf.format(theStartDate), sdf.format(theEndDate));
 					
-					if(historicoLevantamentoXLS.size() > 0) {
+					if(livroRegistoDiarios.size() > 0) {
 						
 						FileInputStream currentXls = new FileInputStream("HistoricoLevantamento.xls");
 						
@@ -254,7 +254,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 						
 						int rowNum = 14;
 						
-						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
+						for (LivroRegistoDiarioXLS xls : livroRegistoDiarios) { 
 							
 							HSSFRow row = sheet.createRow(rowNum++);
 							
@@ -287,7 +287,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
 						}
 						
-						for(int i = 1; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
+						for(int i = 1; i < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length; i++) { 
 				            sheet.autoSizeColumn(i);
 				        }
 						
