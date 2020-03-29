@@ -214,7 +214,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 					
 					if(livroRegistoDiarios.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("HistoricoLevantamento.xls");
+						FileInputStream currentXls = new FileInputStream("LivroRegistoDiarioARV.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -234,25 +234,25 @@ public class LivroRegistoDiario extends GenericReportGui {
 						healthFacilityCell.setCellStyle(cellStyle); 
 						
 						HSSFRow reportPeriod = sheet.getRow(10);
-						HSSFCell reportPeriodCell = reportPeriod.createCell(6);
+						HSSFCell reportPeriodCell = reportPeriod.createCell(16);
 						reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
 						reportPeriodCell.setCellStyle(cellStyle); 
 
 						HSSFRow reportYear = sheet.getRow(11);
-						HSSFCell reportYearCell = reportYear.createCell(6);
+						HSSFCell reportYearCell = reportYear.createCell(16);
 						reportYearCell.setCellValue(sdfYear.format(theStartDate));
 						reportYearCell.setCellStyle(cellStyle); 
 
-						  for(int i=14; i<= sheet.getLastRowNum(); i++) 
+						  for(int i=15; i<= sheet.getLastRowNum(); i++) 
 						  { 
 							HSSFRow row = sheet.getRow(i);
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("HistoricoLevantamento.xls"));
+						  out = new FileOutputStream(new File("LivroRegistoDiarioARV.xls"));
 						  workbook.write(out); 
 						
-						int rowNum = 14;
+						int rowNum = 15;
 						
 						for (LivroRegistoDiarioXLS xls : livroRegistoDiarios) { 
 							
@@ -265,39 +265,75 @@ public class LivroRegistoDiario extends GenericReportGui {
 							HSSFCell createCellNome = row.createCell(2);
 							createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
 							createCellNome.setCellStyle(cellStyle);
-	
-							HSSFCell createCellTipoTarv = row.createCell(3);
+							
+							HSSFCell zeroQuatro = row.createCell(3);
+							zeroQuatro.setCellValue(xls.getZeroQuatro());
+							zeroQuatro.setCellStyle(cellStyle);
+							
+							HSSFCell cincoNove = row.createCell(4);
+							cincoNove.setCellValue(xls.getCincoNove());
+							cincoNove.setCellStyle(cellStyle);
+							
+							HSSFCell dezCatorze = row.createCell(5);
+							dezCatorze.setCellValue(xls.getDezCatorze());
+							dezCatorze.setCellStyle(cellStyle);
+
+							HSSFCell maiorQuinze = row.createCell(6);
+							maiorQuinze.setCellValue(xls.getMaiorQuinze());
+							maiorQuinze.setCellStyle(cellStyle);
+							
+							HSSFCell createCellTipoTarv = row.createCell(7);
 							createCellTipoTarv.setCellValue(xls.getTipoTarv());
 							createCellTipoTarv.setCellStyle(cellStyle);
 	
-							HSSFCell createCellRegimeTerapeutico = row.createCell(4); 
+							HSSFCell createCellRegimeTerapeutico = row.createCell(8); 
 							createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
 							createCellRegimeTerapeutico.setCellStyle(cellStyle);
+							
+							HSSFCell produtos = row.createCell(9); 
+							produtos.setCellValue("");
+							produtos.setCellStyle(cellStyle);
 	
-							HSSFCell createCellTipoDispensa = row.createCell(5); 
+							HSSFCell createCellTipoDispensa = row.createCell(10); 
 							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
 							createCellTipoDispensa.setCellStyle(cellStyle);
-	
-							HSSFCell createCellDataLevantamento = row.createCell(6); 
+							
+							HSSFCell linhaNome = row.createCell(11); 
+							linhaNome.setCellValue(xls.getLinha());
+							linhaNome.setCellStyle(cellStyle);
+							
+							HSSFCell createCellDataLevantamento = row.createCell(12); 
 							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
 							createCellDataLevantamento.setCellStyle(cellStyle);
 	
-							HSSFCell createCellDataProximoLevantamento = row.createCell(7);
+							HSSFCell createCellDataProximoLevantamento = row.createCell(13);
 							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
+							
+							HSSFCell ppe = row.createCell(14);
+							ppe.setCellValue(xls.getPpe());
+							ppe.setCellStyle(cellStyle);
+							
+							HSSFCell prep = row.createCell(15);
+							prep.setCellValue(xls.getPrep());
+							prep.setCellStyle(cellStyle);
+							
+							HSSFCell criancaExposta = row.createCell(16);
+							criancaExposta.setCellValue("");
+							criancaExposta.setCellStyle(cellStyle);
 						}
 						
-						for(int i = 1; i < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length; i++) { 
+						for(int i = 1; i < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length+1; i++) { 
 				            sheet.autoSizeColumn(i);
 				        }
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("HistoricoLevantamento.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("LivroRegistoDiarioARV.xls")); 
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("HistoricoLevantamento.xls"));
+						Desktop.getDesktop().open(new File("LivroRegistoDiarioARV.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
@@ -311,7 +347,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 				}
 				
 			} catch (Exception e) {
-				getLog().error("Exception while running Historico levantamento report",e);
+				getLog().error("Erro ao executar o relatorio Registo Diario de ARVs",e);
 			}
 		}
 	}
