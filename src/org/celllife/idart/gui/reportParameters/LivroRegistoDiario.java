@@ -60,13 +60,11 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import model.manager.reports.HHistoricoLevantamentos;
 import model.manager.reports.HistoricoLevantamentoXLS;
-import model.manager.reports.LivroRegistoDiario;
 
 /**
  */
-public class LivroREgistoDiario extends GenericReportGui {
+public class LivroRegistoDiario extends GenericReportGui {
 	
 	private Group grpDateRange;
 	
@@ -82,7 +80,7 @@ public class LivroREgistoDiario extends GenericReportGui {
 	
 	private Button chkBtnAlteraccao;
 	
-	private List<HistoricoLevantamentoXLS> historicoLevantamentoXLS;
+	private List<LivroRegistoDiario> livroRegistoDiarios;
 	
 	private final Shell parent;
 	
@@ -96,7 +94,7 @@ public class LivroREgistoDiario extends GenericReportGui {
 	 * @param activate
 	 *            boolean
 	 */
-	public LivroREgistoDiario(Shell parent, boolean activate) {
+	public LivroRegistoDiario(Shell parent, boolean activate) {
 		super(parent, REPORTTYPE_MIA, activate);
 		this.parent = parent;
 	}
@@ -107,7 +105,7 @@ public class LivroREgistoDiario extends GenericReportGui {
 	@Override
 	protected void createShell() {
 		Rectangle bounds = new Rectangle(100, 50, 600, 510);
-		buildShell(REPORT_LEVANTAMENTOS_ARV, bounds);
+		buildShell(REPORT_LIVRO_ELETRONICO_ARV, bounds);
 		// create the composites
 		createMyGroups();
 	}
@@ -125,7 +123,7 @@ public class LivroREgistoDiario extends GenericReportGui {
 	@Override
 	protected void createCompHeader() {
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
-		buildCompdHeader(REPORT_LEVANTAMENTOS_ARV, icoImage);
+		buildCompdHeader(REPORT_LIVRO_ELETRONICO_ARV, icoImage);
 	}
 
 	/**
@@ -168,9 +166,8 @@ public class LivroREgistoDiario extends GenericReportGui {
 			
 				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
 				
-				//theStartDate = sdf.parse(strTheDate);
-				
-				LivroRegistoDiario report = new LivroRegistoDiario(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
+				model.manager.reports.LivroRegistoDiario report = 
+						new model.manager.reports.LivroRegistoDiario(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
 				viewReport(report);
 			} catch (Exception e) {
 				getLog().error("Exception while running Historico levantamento report",e);
@@ -212,7 +209,7 @@ public class LivroREgistoDiario extends GenericReportGui {
 				try {
 					ConexaoJDBC con=new ConexaoJDBC();
 					
-					historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
+					historicoLevantamentoXLS = con.getLivroRegistoDiarioXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
 							chkBtnAlteraccao.getSelection(), sdf.format(theStartDate), sdf.format(theEndDate));
 					
 					if(historicoLevantamentoXLS.size() > 0) {

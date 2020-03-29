@@ -27,6 +27,8 @@ import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.DispensaTrimestralSemestral;
 import model.manager.reports.FollowupFaulty;
 import model.manager.reports.HistoricoLevantamentoXLS;
+import model.manager.reports.LivroRegistoDiario;
+import model.manager.reports.LivroRegistoDiarioXLS;
 import model.manager.reports.PrescricaoSemFilaXLS;
 import model.manager.reports.SecondLinePatients;
 
@@ -4052,6 +4054,183 @@ public class ConexaoJDBC {
         return levantamentoXLSs;
 
     }
+    
+    
+    /**
+     * @param i
+     * @param m
+     * @param a
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public List<LivroRegistoDiarioXLS> getLivroRegistoDiarioXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+        
+        List<LivroRegistoDiarioXLS> diarioXLS;
+
+        Vector<String> v = new Vector<String>();
+
+        if (i)
+            v.add("Inicia");
+        if (m)
+            v.add("Manter");
+        if (a)
+            v.add("Alterar");
+
+        String condicao = "(\'";
+
+        if (v.size() == 3) {
+            for (int j = 0; j < v.size() - 1; j++)
+
+                condicao += v.get(j) + "\' , \'";
+
+            condicao += v.get(v.size() - 1) + "\')";
+        }
+
+        if (v.size() == 2) {
+            for (int j = 0; j < v.size() - 1; j++)
+
+                condicao += v.get(j) + "\' , \'";
+
+            condicao += v.get(v.size() - 1) + "\')";
+        }
+
+        if (v.size() == 1) {
+
+            condicao += v.get(0) + "\')";
+        }
+
+		String query = ""
+		+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
+		+ " dispensas_e_prescricoes.tipotarv,  "
+		+ "   dispensas_e_prescricoes.regime, "
+		+ " CASE "
+		+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' "
+		+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
+		+ " ELSE 'DM' "
+		+ "  END AS tipodispensa, "
+		+ " CASE WHEN dispensas_e_prescricoes.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
+		+ " CASE WHEN dispensas_e_prescricoes.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
+		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, " 
+		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, " 
+		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, " 
+		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, " 
+		+ "   dispensas_e_prescricoes.datalevantamento,"
+		+ "    dispensas_e_prescricoes.dataproximolevantamento, "
+		+ " dispensas_e_prescricoes.linhanome " 
+		+ "    FROM "
+		+ "  (SELECT   "
+		+ "  dispensa_packege.nid , "
+		+ "    prescription_package.tipotarv,  "
+		+ "    prescription_package.regime, "
+		+ " prescription_package.dispensatrimestral, "
+		+ " prescription_package.dispensasemestral, "
+		+ "    dispensa_packege.datalevantamento, "
+		+ "    dispensa_packege.dataproximolevantamento, "
+	    + " prescription_package.linhanome, "
+	    + " prescription_package.prep, "
+	    + " prescription_package.ppe " 
+		+ " 	FROM  "
+		+ " 	( "
+		+ "   SELECT  "
+		+ " 		prescription.id, prescription.prep, prescription.ppe, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
+		+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime, linhat.linhanome"
+		+ " 	 FROM  "
+		+ " 	 prescription,  " + " package , regimeterapeutico, linhat "
+		+ "  WHERE   "
+		+ " prescription.id = package.prescription  "
+		+ "  AND  " + " 	 prescription.ppe=\'F\' "
+		+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
+		+ " AND prescription.linhaid = linhat.linhaid AND "
+		+ "  	 prescription.reasonforupdate IN "
+		+ condicao
+		+ " 	 )as prescription_package,  "
+		+ " 	 (  "
+		+ " 	 SELECT  "
+		+ " 	 packagedruginfotmp.patientid as nid,  "
+		+ " 	 packagedruginfotmp.packageid,"
+		+ " 	 packagedruginfotmp.dispensedate as datalevantamento,"
+		+ "  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento "
+		+ "  	 FROM "
+		+ "  	 package, packagedruginfotmp  "
+		+ " 	 WHERE  "
+		+ " 	 package.packageid=packagedruginfotmp.packageid  "
+		+ " 	 AND  "
+		+ "  					 packagedruginfotmp.dispensedate::timestamp::date >=  "
+		+ "  \'"
+		+ startDate
+		+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+		+ "   \'"
+		+ endDate
+		+ "\'::timestamp::date  "
+		+ " 	) as dispensa_packege,"
+		+ "     ( "
+		+ "     select packagedruginfotmp.patientid,  "
+		+ " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
+		+ " 	 FROM "
+		+ " 	 package, packagedruginfotmp  "
+		+ "  WHERE  "
+		+ "  package.packageid=packagedruginfotmp.packageid  "
+		+ " 	 AND  "
+		+ " 			 packagedruginfotmp.dispensedate::timestamp::date >=  "
+		+ "  \'"
+		+ startDate
+		+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
+		+ "   \'"
+		+ endDate
+		+ "\'::timestamp::date  "
+		+ "   group by packagedruginfotmp.patientid "
+		+ "       ) as ultimadatahora  "
+		+ "  	 WHERE  "
+		+ "  	 dispensa_packege.packageid=prescription_package.packageid  "
+		+ " 	 and "
+		+ "    dispensa_packege.datalevantamento=ultimadatahora.lastdispense "
+		+ "    ) as dispensas_e_prescricoes "
+		+ "     ,"
+		+ "     patient "
+		+ "    where "
+		+ "    dispensas_e_prescricoes.nid=patient.patientid";
+
+
+        diarioXLS = new ArrayList<LivroRegistoDiarioXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+            	LivroRegistoDiarioXLS registoDiarioXLS = new LivroRegistoDiarioXLS(); 
+            	registoDiarioXLS.setPatientIdentifier(rs.getString("nid"));
+            	registoDiarioXLS.setNome(rs.getString("nome"));
+            	registoDiarioXLS.setApelido(rs.getString("apelido"));
+            	registoDiarioXLS.setZeroQuatro(rs.getString("zeroquatro"));
+            	registoDiarioXLS.setCincoNove(rs.getString("cinconove"));
+            	registoDiarioXLS.setDezCatorze(rs.getString("dezcatorze"));
+            	registoDiarioXLS.setMaiorQuinze(rs.getString("maior15"));  
+            	registoDiarioXLS.setTipoTarv(rs.getString("tipotarv"));
+            	registoDiarioXLS.setRegimeTerapeutico(rs.getString("regime"));
+            	registoDiarioXLS.setTipoDispensa(rs.getString("tipodispensa"));
+            	registoDiarioXLS.setLinha(rs.getString("linhanome")); 
+            	registoDiarioXLS.setDataLevantamento(rs.getString("datalevantamento"));
+            	registoDiarioXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+            	registoDiarioXLS.setPpe(rs.getString("ppe"));
+            	registoDiarioXLS.setPrep(rs.getString("prep"));
+
+            	diarioXLS.add(registoDiarioXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return diarioXLS;
+    }
+    
 
     public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
 
