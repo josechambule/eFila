@@ -30,6 +30,7 @@ import model.manager.reports.HistoricoLevantamentoXLS;
 import model.manager.reports.LivroRegistoDiario;
 import model.manager.reports.LivroRegistoDiarioXLS;
 import model.manager.reports.PrescricaoSemFilaXLS;
+import model.manager.reports.RegistoChamadaTelefonicaXLS;
 import model.manager.reports.SecondLinePatients;
 
 /**
@@ -5170,5 +5171,353 @@ public class ConexaoJDBC {
 
     }
 
-}
+    /**
+     * 
+     * @param clinicid 
+     * @param parseInt
+     * @param parseInt2
+     * @param time
+     */
+	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsReport(String minimumDate, String maximumDate, Date date, String clinicid) {
+		
+		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
+		
+    	try {
+			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+			
+			
+			String query = "select" +
+					" pat.patientid as patID," +
+					" (pat.firstnames||', '|| pat.lastname) as name," +
+					" pat.nextofkinname as supportername," +
+					" pat.nextofkinphone as supporterphone," +
+					" pat.cellphone as cellno," +
+					" pat.homephone as homeno," +
+					" pat.workphone as workno," +
+					" date_part('year',age(pat.dateofbirth))::Integer as age," +
+					" app.appointmentDate::date as dateexpected," +
+					" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+					" CASE" +
+					"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+					"    ELSE" +
+					"  CASE" +
+					"      WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+					"              ELSE null" +
+					"      END" +
+					" END" +
+					"  AS datelostfollowup," +
+					"  CASE" +
+					"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+					"    ELSE null" +
+					"  END" +
+					"  AS datereturn," +
+					"  pat.address1 ||" +
+					" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+					" else ',' || pat.address2" +
+					" end" +
+					" ||" +
+					" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+					" else ',' || pat.address3" +
+					" end" +
+					" as address," +
+					" case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
+					" else 'Nao'" +
+					" end as tarv," +
+					" case when (presc.ptv <> 'F')  then 'Sim'" +
+					" else 'Nao'" +
+					" end as ptv," +
+					" case when (presc.tb <> 'F')  then 'Sim'" +
+					" else 'Nao'" +
+					" end as tb," +
+					" max(app.appointmentDate) as ultimaData" +
+					" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+					" where app.patient = pat.id" +
+					" and presc.patient = pat.id" +
+					" and presc.\"current\" = 'T'" +
+					" and presc.tb = 'F'" +
+					" and presc.ptv = 'F'" +
+					" and presc.ccr = 'F'" +
+					" and idt.name = 'NID'" +
+					" and pi.value = pat.patientid" +
+					" and idt.id = pi.type_id" +
+					" and '"+clinicid+"' = pat.clinic" + 
+					" and app.appointmentDate is not null" +
+					" and (app.visitdate::date is null)" +
+					" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
+					" and exists (select prescription.id" +
+					" from prescription" +
+					" where prescription.patient = pat.id" +
+					" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
+					" and exists (select id from episode where episode.patient = pat.id" +
+					" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
+					" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+					" order by age asc";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+	        if (rs != null) {
+	        	
+	            while (rs.next()) {
+	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+	            	chamadaTelefonica.setNome(rs.getString("name"));
+	            	chamadaTelefonica.setNid(rs.getString("patid"));
+	            	chamadaTelefonica.setIdade(rs.getString("age"));
+	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
+	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
+	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
+	            							: rs.getString("workno") + " (w)"));
+	            	chamadaTelefonica.setEndereco(rs.getString("address"));
+	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
+	            	chamadaTelefonica.setTb(rs.getString("tb"));
+	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
+	            	
+	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
+	            }
+	            rs.close();
+	        }
+	
+	        st.close();
+	        conn_db.close();
 
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+		return chamadaTelefonicaXLS;
+	}
+	
+	
+    /**
+     * 
+     * @param clinicid 
+     * @param parseInt
+     * @param parseInt2
+     * @param time
+     */
+	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsPTV(String minimumDate, String maximumDate, Date date, String clinicid) {
+		
+		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
+		
+    	try {
+			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+			String query = "select" +
+			" pat.patientid as patID," +
+			" (pat.firstnames||', '|| pat.lastname) as name," +
+			" pat.nextofkinname as supportername," +
+			" pat.nextofkinphone as supporterphone," +
+			" pat.cellphone as cellno," +
+			" pat.homephone as homeno," +
+			" pat.workphone as workno," +
+			" date_part('year',age(pat.dateofbirth))::Integer as age," +
+			" app.appointmentDate::date as dateexpected," +
+			" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+			" CASE" +
+			"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+			"    ELSE" +
+			"	CASE" +
+			"	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+			"              ELSE null" +
+			"    	END" +
+			" END" +
+			"  AS datelostfollowup," +
+			"  CASE" +
+			"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+			"    ELSE null" +
+			"  END" +
+			"  AS datereturn," +
+			"  pat.address1 ||" +
+			" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+			" else ',' || pat.address2" +
+			" end" +
+			" ||" +
+			" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+			" else ',' || pat.address3" +
+			" end" +
+			" as address," +
+			" case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as tarv," +
+			" case when (presc.ptv <> 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as ptv," +
+			" case when (presc.tb <> 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as tb," +
+			" max(app.appointmentDate) as ultimaData" +
+			" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+			" where app.patient = pat.id" +
+			" and presc.patient = pat.id" +
+			" and presc.\"current\" = 'T'" +
+			" and presc.tb='T'" +
+			" and idt.name = 'NID'" +
+			" and pi.value = pat.patientid" +
+			" and idt.id = pi.type_id" +
+			" and '"+clinicid+"' = pat.clinic" +
+			" and app.appointmentDate is not null" +
+			" and (app.visitdate::date is null)" +
+			" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
+			" and exists (select prescription.id" +
+			" from prescription" +
+			" where prescription.patient = pat.id" +
+			" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
+			" and exists (select id from episode where episode.patient = pat.id" +
+			" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
+			" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+			" order by age asc";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+	        if (rs != null) {
+	        	
+	            while (rs.next()) {
+	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+	            	chamadaTelefonica.setNome(rs.getString("name"));
+	            	chamadaTelefonica.setNid(rs.getString("patid"));
+	            	chamadaTelefonica.setIdade(rs.getString("age"));
+	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
+	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
+	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
+	            							: rs.getString("workno") + " (w)"));
+	            	chamadaTelefonica.setEndereco(rs.getString("address"));
+	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
+	            	chamadaTelefonica.setTb(rs.getString("tb"));
+	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
+	            	
+	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
+	            }
+	            rs.close();
+	        }
+	
+	        st.close();
+	        conn_db.close();
+
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+		return chamadaTelefonicaXLS;
+	}
+	
+	
+    /**
+     * 
+     * @param clinicid 
+     * @param parseInt
+     * @param parseInt2
+     * @param time
+     */
+	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsSMI(String minimumDate, String maximumDate, Date date, String clinicid) {
+		
+		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
+		
+    	try {
+			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+			String query = "select" +
+			" pat.patientid as patID," +
+			" (pat.firstnames||', '|| pat.lastname) as name," +
+			" pat.nextofkinname as supportername," +
+			" pat.nextofkinphone as supporterphone," +
+			" pat.cellphone as cellno," +
+			" pat.homephone as homeno," +
+			" pat.workphone as workno," +
+			" date_part('year',age(pat.dateofbirth))::Integer as age," +
+			" app.appointmentDate::date as dateexpected," +
+			" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+			" CASE" +
+			"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+			"    ELSE" +
+			"	CASE" +
+			"	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+			"              ELSE null" +
+			"    	END" +
+			" END" +
+			"  AS datelostfollowup," +
+			"  CASE" +
+			"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+			"    ELSE null" +
+			"  END" +
+			"  AS datereturn," +
+			"  pat.address1 ||" +
+			" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+			" else ',' || pat.address2" +
+			" end" +
+			" ||" +
+			" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+			" else ',' || pat.address3" +
+			" end" +
+			" as address," +
+			" case when (presc.ptv = 'F' and presc.tb = 'F' and presc.ccr = 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as tarv," +
+			" case when (presc.ptv <> 'F' OR presc.ccr <> 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as ptv," +
+			" case when (presc.tb <> 'F')  then 'Sim'" +
+			" else 'Nao'" +
+			" end as tb," +
+			" max(app.appointmentDate) as ultimaData" +
+			" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+			" where app.patient = pat.id" +
+			" and presc.patient = pat.id" +
+			" and presc.\"current\" = 'T'" +
+			" and (presc.ptv='T' OR presc.ccr='T')" +
+			" and idt.name = 'NID'" +
+			" and pi.value = pat.patientid" +
+			" and idt.id = pi.type_id" +
+			" and '"+clinicid+"' = pat.clinic" +
+			" and app.appointmentDate is not null" +
+			" and (app.visitdate::date is null)" +
+			" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
+			" and exists (select prescription.id" +
+			" from prescription" +
+			" where prescription.patient = pat.id" +
+			" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
+			" and exists (select id from episode where episode.patient = pat.id" +
+			" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
+			" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+			" order by age asc";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+	        if (rs != null) {
+	        	
+	            while (rs.next()) {
+	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+	            	chamadaTelefonica.setNome(rs.getString("name"));
+	            	chamadaTelefonica.setNid(rs.getString("patid"));
+	            	chamadaTelefonica.setIdade(rs.getString("age"));
+	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
+	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
+	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
+	            							: rs.getString("workno") + " (w)"));
+	            	chamadaTelefonica.setEndereco(rs.getString("address"));
+	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
+	            	chamadaTelefonica.setTb(rs.getString("tb"));
+	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
+	            	
+	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
+	            }
+	            rs.close();
+	        }
+	
+	        st.close();
+	        conn_db.close();
+
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+		return chamadaTelefonicaXLS;
+	}
+}
