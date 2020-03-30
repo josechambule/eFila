@@ -192,7 +192,7 @@ public class SecondLineReport extends GenericReportGui {
 
 				if(secondLinePatients.size() > 0) {
 
-					FileInputStream currentXls = new FileInputStream("SegundaLinha.xls");
+					FileInputStream currentXls = new FileInputStream("Reports/SegundaLinha.xls");
 
 					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 
@@ -227,7 +227,7 @@ public class SecondLineReport extends GenericReportGui {
 					  	deleteRow(sheet,row);
 					  }
 
-					  out = new FileOutputStream(new File("SegundaLinha.xls"));
+					  out = new FileOutputStream(new File("Reports/SegundaLinha.xls"));
 					  workbook.write(out);
 
 					int rowNum = 14;

@@ -463,7 +463,7 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 					
 					if(supportCallListQuartelyDispensation.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("ChamadasFaltososDT.xls");
+						FileInputStream currentXls = new FileInputStream("Reports/ChamadasFaltososDT.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -507,7 +507,7 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("ChamadasFaltososDT.xls"));
+						  out = new FileOutputStream(new File("Reports/ChamadasFaltososDT.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 14;
@@ -555,11 +555,11 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("ChamadasFaltososDT.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("Reports/ChamadasFaltososDT.xls")); 
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("ChamadasFaltososDT.xls"));
+						Desktop.getDesktop().open(new File("Reports/ChamadasFaltososDT.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
@@ -580,7 +580,7 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 					
 					if(supportCallListHold.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("ChamadasFaltososRET.xls");
+						FileInputStream currentXls = new FileInputStream("Reports/ChamadasFaltososRET.xls"); 
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -624,7 +624,7 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("ChamadasFaltososRET.xls"));
+						  out = new FileOutputStream(new File("Reports/ChamadasFaltososRET.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 14;
@@ -672,11 +672,11 @@ public class MissedAppointmentsChamadas extends GenericReportGui {
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("ChamadasFaltososRET.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("Reports/ChamadasFaltososRET.xls"));  
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("ChamadasFaltososRET.xls"));
+						Desktop.getDesktop().open(new File("Reports/ChamadasFaltososRET.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);

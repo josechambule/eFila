@@ -216,7 +216,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 					
 					if(historicoLevantamentoXLS.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("HistoricoLevantamento.xls");
+						FileInputStream currentXls = new FileInputStream("Reports/HistoricoLevantamento.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -251,7 +251,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("HistoricoLevantamento.xls"));
+						  out = new FileOutputStream(new File("Reports/HistoricoLevantamento.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 14;
@@ -295,11 +295,11 @@ public class HistoricoLevantamentos extends GenericReportGui {
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("HistoricoLevantamento.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("Reports/HistoricoLevantamento.xls")); 
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("HistoricoLevantamento.xls"));
+						Desktop.getDesktop().open(new File("Reports/HistoricoLevantamento.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);

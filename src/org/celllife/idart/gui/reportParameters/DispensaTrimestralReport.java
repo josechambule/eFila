@@ -369,7 +369,7 @@ public class DispensaTrimestralReport extends GenericReportGui {
 			
 			if(dispensaTrimestralXLS.size() > 0) {
 				
-				FileInputStream currentXls = new FileInputStream("DispensaTrimestral.xls");
+				FileInputStream currentXls = new FileInputStream("Reports/DispensaTrimestral.xls");
 				
 				HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 				
@@ -419,7 +419,7 @@ public class DispensaTrimestralReport extends GenericReportGui {
 				  	deleteRow(sheet,row);  
 				  }
 				 
-				  out = new FileOutputStream(new File("DispensaTrimestral.xls"));
+				  out = new FileOutputStream(new File("Reports/DispensaTrimestral.xls"));
 				  workbook.write(out); 
 				
 				int rowNum = 21;
@@ -464,11 +464,11 @@ public class DispensaTrimestralReport extends GenericReportGui {
 				
 				currentXls.close();
 				
-				FileOutputStream outputStream = new FileOutputStream(new File("DispensaTrimestral.xls")); 
+				FileOutputStream outputStream = new FileOutputStream(new File("Reports/DispensaTrimestral.xls")); 
 				workbook.write(outputStream);
 				workbook.close();
 				
-				Desktop.getDesktop().open(new File("DispensaTrimestral.xls"));
+				Desktop.getDesktop().open(new File("Reports/DispensaTrimestral.xls"));
 				
 			} else {
 				MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);

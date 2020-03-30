@@ -20,7 +20,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
@@ -367,7 +366,7 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 			
 			if(prescricaoSemFilaXLSs.size() > 0) {
 				
-				FileInputStream currentXls = new FileInputStream("PrescricoesSemDispensa.xls");
+				FileInputStream currentXls = new FileInputStream("Reports/PrescricoesSemDispensa.xls");
 				
 				HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 				
@@ -387,12 +386,12 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 				healthFacilityCell.setCellStyle(cellStyle); 
 				
 				HSSFRow reportPeriod = sheet.getRow(10);
-				HSSFCell reportPeriodCell = reportPeriod.createCell(6);
+				HSSFCell reportPeriodCell = reportPeriod.createCell(4);
 				reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
 				reportPeriodCell.setCellStyle(cellStyle); 
 
 				HSSFRow reportYear = sheet.getRow(11);
-				HSSFCell reportYearCell = reportYear.createCell(6);
+				HSSFCell reportYearCell = reportYear.createCell(4);
 				reportYearCell.setCellValue(sdfYear.format(theStartDate));
 				reportYearCell.setCellStyle(cellStyle); 
 
@@ -402,9 +401,9 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 				  deleteRow(sheet,row);  
 				}
 				
-				extracted(sheet);
+				//extracted(sheet);
 				
-				 out = new FileOutputStream(new File("PrescricoesSemDispensa.xls"));
+				 out = new FileOutputStream(new File("Reports/PrescricoesSemDispensa.xls"));
 				 workbook.write(out);
 				  
 				int rowNum = 14;
@@ -413,12 +412,12 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 					
 					HSSFRow row = sheet.createRow(rowNum++);
 					
-					System.out.println(sheet.getNumMergedRegions()); 
-					
-					sheet.addMergedRegion(CellRangeAddress.valueOf("C" + (rowNum) + ":D" + (rowNum)));
-					sheet.addMergedRegion(CellRangeAddress.valueOf("E" + (rowNum) + ":F" + (rowNum)));
-					sheet.addMergedRegion(CellRangeAddress.valueOf("G" + (rowNum) + ":H" + (rowNum)));
-					
+					/*
+					 * sheet.addMergedRegion(CellRangeAddress.valueOf("C" + (rowNum) + ":D" +
+					 * (rowNum))); sheet.addMergedRegion(CellRangeAddress.valueOf("E" + (rowNum) +
+					 * ":F" + (rowNum))); sheet.addMergedRegion(CellRangeAddress.valueOf("G" +
+					 * (rowNum) + ":H" + (rowNum)));
+					 */
 					
 					HSSFCell createCellNid = row.createCell(1);
 					createCellNid.setCellValue(xls.getPatientIdentifier());
@@ -428,15 +427,13 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 					createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
 					createCellNome.setCellStyle(cellStyle);
 					
-					
-					HSSFCell createCellUuid = row.createCell(4);
+					HSSFCell createCellUuid = row.createCell(3);
 					createCellUuid.setCellValue(xls.getUuidOpenmrs());
 					createCellUuid.setCellStyle(cellStyle); 
 					  
-					HSSFCell dataPrescricao = row.createCell(6);
+					HSSFCell dataPrescricao = row.createCell(4);
 					dataPrescricao.setCellValue(xls.getDataPrescricao());
 					dataPrescricao.setCellStyle(cellStyle);
-					 
 				}
 				
 				
@@ -446,11 +443,11 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 				
 				currentXls.close();
 				
-				FileOutputStream outputStream = new FileOutputStream(new File("PrescricoesSemDispensa.xls")); 
+				FileOutputStream outputStream = new FileOutputStream(new File("Reports/PrescricoesSemDispensa.xls"));
 				workbook.write(outputStream);
 				workbook.close();
 				
-				Desktop.getDesktop().open(new File("PrescricoesSemDispensa.xls"));
+				Desktop.getDesktop().open(new File("Reports/PrescricoesSemDispensa.xls"));
 				
 			} else {
 				MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
@@ -464,6 +461,7 @@ public class PrescriptionsWithNoEncounter extends GenericReportGui {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void extracted(HSSFSheet sheet) {
 		while (sheet.getNumMergedRegions() > 10) {
 		    for (int i = 10; i < sheet.getNumMergedRegions(); i++) {
