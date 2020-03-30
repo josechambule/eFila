@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LivroRegistoDiarioARV_Sub" language="groovy" pageWidth="151" pageHeight="20" columnWidth="151" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.8531167061100056"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="packId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(1087658)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select drug.name, sum(packdrug.amount) as amount
+from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug,
+package as pack,
+prescription as pre
+where packdrug.stock = stock.id
+and stock.drug = drug.id
+and packdrug.parentPackage = pack.id
+and pack.prescription = pre.id
+and predrug.prescription = pre.id
+and predrug.drug = drug.id
+and pack.id = $P{packId}
+group by drug.name]]>
+	</queryString>
+	<field name="name" class="java.lang.String"/>
+	<field name="amount" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band/>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="13">
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="116" height="13" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name} ]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="116" y="0" width="35" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
