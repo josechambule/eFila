@@ -131,7 +131,7 @@ order by age asc]]>
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-2" mode="Transparent" x="2" y="1" width="104" height="19" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField-2" mode="Transparent" x="3" y="1" width="104" height="19" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[new Boolean($P{showPatientNames}.booleanValue()==true)]]></printWhenExpression>
 				</reportElement>
 				<box>

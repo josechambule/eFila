@@ -5,15 +5,30 @@
  */
 package org.celllife.idart.gui.reportParameters;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import model.manager.reports.MissedAppointmentsAPSSReport;
-import model.manager.reports.MissedAppointmentsReport;
+import java.util.List;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -32,6 +47,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import model.manager.reports.MissedAppointmentsAPSSReport;
+import model.manager.reports.RegistoChamadaTelefonicaXLS;
 
 /**
  *
@@ -57,11 +75,17 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 
 	private SWTCalendar swtCal;
         
-        private Button chkBtnALL;
+    private Button chkBtnALL;
 
-        private Button chkBtnPTV;
+    private Button chkBtnPTV;
         
-        private Button chkBtnTB;
+    private Button chkBtnTB;
+    
+    private List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLSs;
+    
+    private final Shell parent;
+    
+    private FileOutputStream out = null;
 
 	/**
 	 * Constructor
@@ -74,6 +98,7 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 	public MissedAppointmentsAPSS(Shell parent, boolean activate) {
 		super(parent, GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT,
 				activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -376,6 +401,265 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
 
+		boolean viewReport = true;
+		int max = 0;
+		int min = 0;
+
+		if (cmbClinic.getText().equals("")) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("No Clinic Was Selected");
+			missing
+			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			missing.open();
+			viewReport = false;
+
+		}
+
+                  if(!chkBtnALL.getSelection() && !chkBtnPTV.getSelection() && !chkBtnTB.getSelection()){
+                    MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("Nenhum tipo de relatorio foi seleccionado");
+			missing
+			.setMessage("Nenhum tipo de relatorio foi seleccionado. Por favor selecione ALL, TB ou PTV.");
+			missing.open();
+			viewReport = false;
+                }
+                
+		if (txtMinimumDaysLate.getText().equals("")
+				|| txtMaximumDaysLate.getText().equals("")) {
+			MessageBox incorrectData = new MessageBox(getShell(),
+					SWT.ICON_ERROR | SWT.OK);
+			incorrectData.setText("Invalid Information");
+			incorrectData
+			.setMessage("The minimum and maximum days late must both be numbers.");
+			incorrectData.open();
+			txtMinimumDaysLate.setText("");
+			txtMinimumDaysLate.setFocus();
+			viewReport = false;
+		} else if (!txtMinimumDaysLate.getText().equals("")
+				&& !txtMaximumDaysLate.getText().equals("")) {
+			try {
+				min = Integer.parseInt(txtMinimumDaysLate.getText());
+				max = Integer.parseInt(txtMaximumDaysLate.getText());
+
+				if ((min < 0) || (max < 0)) {
+					MessageBox incorrectData = new MessageBox(getShell(),
+							SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Invalid Information");
+					incorrectData
+					.setMessage("The minimum and maximum days late must both be positive numbers.");
+					incorrectData.open();
+					txtMinimumDaysLate.setText("");
+					txtMinimumDaysLate.setFocus();
+
+					viewReport = false;
+				}
+
+				if (min >= max) {
+					MessageBox incorrectData = new MessageBox(getShell(),
+							SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Invalid Information");
+					incorrectData
+					.setMessage("The minimum days late must be smaller than the maximum days late.");
+					incorrectData.open();
+					txtMinimumDaysLate.setFocus();
+
+					viewReport = false;
+				}
+
+			} catch (NumberFormatException nfe) {
+				MessageBox incorrectData = new MessageBox(getShell(),
+						SWT.ICON_ERROR | SWT.OK);
+				incorrectData.setText("Invalid Information");
+				incorrectData
+				.setMessage("The minimum and maximum days late must both be whole numbers.");
+				incorrectData.open();
+				txtMinimumDaysLate.setText("");
+				txtMinimumDaysLate.setFocus();
+
+				viewReport = false;
+
+			}
+		}
+		
+		if(viewReport) {	
+			ConexaoJDBC con=new ConexaoJDBC();
+			if (chkBtnALL.getSelection()) { 
+				
+				chamadaTelefonicaXLSs = con.getMissedAppointmentsReport(txtMinimumDaysLate.getText(),txtMaximumDaysLate.getText(),
+						swtCal.getCalendar().getTime(),String.valueOf(LocalObjects.mainClinic.getId())); 
+			} else if (chkBtnTB.getSelection()) {
+				
+				chamadaTelefonicaXLSs = con.getMissedAppointmentsPTV(txtMinimumDaysLate.getText(),txtMaximumDaysLate.getText(),
+						swtCal.getCalendar().getTime(),String.valueOf(LocalObjects.mainClinic.getId()));
+			} else {
+				
+				chamadaTelefonicaXLSs = con.getMissedAppointmentsSMI(txtMinimumDaysLate.getText(),txtMaximumDaysLate.getText(),
+						swtCal.getCalendar().getTime(),String.valueOf(LocalObjects.mainClinic.getId()));
+			}
+			
+			try {
+				if(chamadaTelefonicaXLSs.size() > 0) {
+					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+					
+					SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+					
+					FileInputStream currentXls = new FileInputStream("RegistoChamadaTelefonica.xls");
+					
+					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
+					
+					HSSFSheet sheet = workbook.getSheetAt(0);
+					
+					HSSFCellStyle cellStyle = workbook.createCellStyle();
+					cellStyle.setBorderBottom(BorderStyle.THIN);
+					cellStyle.setBorderTop(BorderStyle.THIN);
+					cellStyle.setBorderLeft(BorderStyle.THIN);
+					cellStyle.setBorderRight(BorderStyle.THIN);
+					cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+											
+					HSSFRow healthFacility = sheet.getRow(10); 
+					HSSFCell healthFacilityCell = healthFacility.createCell(2); 
+					healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
+					healthFacilityCell.setCellStyle(cellStyle); 
+					
+					HSSFRow reportPeriod = sheet.getRow(10);
+					HSSFCell reportPeriodCell = reportPeriod.createCell(20);
+					reportPeriodCell.setCellValue(sdf.format(DateUtils.addDays(swtCal.getCalendar().getTime(), -(Integer.parseInt(txtMaximumDaysLate.getText())))) +" à "+ 
+							sdf.format(DateUtils.addDays(swtCal.getCalendar().getTime(), -(Integer.parseInt(txtMinimumDaysLate.getText())))));
+					reportPeriodCell.setCellStyle(cellStyle); 
+
+					HSSFRow reportYear = sheet.getRow(11);
+					HSSFCell reportYearCell = reportYear.createCell(20);
+					reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
+					reportYearCell.setCellStyle(cellStyle); 
+					
+					HSSFRow daysPeriod = sheet.getRow(11);
+					HSSFCell daysCell = daysPeriod.createCell(5);
+					daysCell.setCellValue("Este relatório mostra os pacientes que têm entre " + txtMinimumDaysLate.getText() + " e " + txtMaximumDaysLate.getText());
+					daysCell.setCellStyle(cellStyle); 
+
+					  for(int i=15; i<= sheet.getLastRowNum(); i++) 
+					  { 
+						HSSFRow row = sheet.getRow(i);
+					  	deleteRow(sheet,row);  
+					  }
+					 
+					  out = new FileOutputStream(new File("RegistoChamadaTelefonica.xls"));
+					  workbook.write(out); 
+					
+					int rowNum = 15;
+					
+					for (RegistoChamadaTelefonicaXLS xls : chamadaTelefonicaXLSs) { 
+						
+						HSSFRow row = sheet.createRow(rowNum++);
+						
+						HSSFCell createCellNome = row.createCell(1);
+						createCellNome.setCellValue(xls.getNome());
+						createCellNome.setCellStyle(cellStyle); 
+						
+						HSSFCell createCellNid = row.createCell(2);
+						createCellNid.setCellValue(xls.getNid());
+						createCellNid.setCellStyle(cellStyle);
+
+						HSSFCell createCellIdade = row.createCell(3);
+						createCellIdade.setCellValue(xls.getIdade());
+						createCellIdade.setCellStyle(cellStyle);
+
+						HSSFCell createCellContacto = row.createCell(4); 
+						createCellContacto.setCellValue(xls.getContacto());
+						createCellContacto.setCellStyle(cellStyle);
+
+						HSSFCell createCellEndereco = row.createCell(5); 
+						createCellEndereco.setCellValue(xls.getEndereco());
+						createCellEndereco.setCellStyle(cellStyle);
+
+						HSSFCell createCellTarv = row.createCell(6); 
+						createCellTarv.setCellValue(xls.getTarv());
+						createCellTarv.setCellStyle(cellStyle);
+
+						HSSFCell createCellTb = row.createCell(7);
+						createCellTb.setCellValue(xls.getTb());
+						createCellTb.setCellStyle(cellStyle);
+						
+						HSSFCell createCellSmi = row.createCell(8);
+						createCellSmi.setCellValue(xls.getSmi());
+						createCellSmi.setCellStyle(cellStyle);
+						
+						HSSFCell apoio = row.createCell(9);
+						apoio.setCellValue("");
+						apoio.setCellStyle(cellStyle);
+
+						HSSFCell reintegracao = row.createCell(10);
+						reintegracao.setCellValue("");
+						reintegracao.setCellStyle(cellStyle);
+
+						HSSFCell incontactavel = row.createCell(11);
+						incontactavel.setCellValue("");
+						incontactavel.setCellStyle(cellStyle);
+
+						HSSFCell esqueceuData = row.createCell(12);
+						esqueceuData.setCellValue("");
+						esqueceuData.setCellStyle(cellStyle);
+
+						HSSFCell estaDoente = row.createCell(13);
+						estaDoente.setCellValue("");
+						estaDoente.setCellStyle(cellStyle);
+
+						HSSFCell transporte = row.createCell(14);
+						transporte.setCellValue("");
+						transporte.setCellStyle(cellStyle);
+
+						HSSFCell viagem = row.createCell(15);
+						viagem.setCellValue("");
+						viagem.setCellStyle(cellStyle);
+
+						HSSFCell obito = row.createCell(16);
+						obito.setCellValue("");
+						obito.setCellStyle(cellStyle);
+
+						HSSFCell retornou = row.createCell(17);
+						retornou.setCellValue("");
+						retornou.setCellStyle(cellStyle);
+
+						HSSFCell visitado = row.createCell(18);
+						visitado.setCellValue("");
+						visitado.setCellStyle(cellStyle);
+
+						HSSFCell observacao = row.createCell(19);
+						observacao.setCellValue("");
+						observacao.setCellStyle(cellStyle);
+
+						HSSFCell responsavel = row.createCell(20);
+						responsavel.setCellValue("");
+						responsavel.setCellStyle(cellStyle);
+					}
+					
+					for(int i = 1; i < RegistoChamadaTelefonicaXLS.class.getClass().getDeclaredFields().length; i++) { 
+			            sheet.autoSizeColumn(i);
+			        }
+					
+					currentXls.close();
+					
+					FileOutputStream outputStream = new FileOutputStream(new File("RegistoChamadaTelefonica.xls")); 
+					workbook.write(outputStream);
+					workbook.close();
+					
+					Desktop.getDesktop().open(new File("RegistoChamadaTelefonica.xls"));
+					
+				} else {
+					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -390,5 +674,16 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 	@Override
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
+	}
+	
+	private void deleteRow(HSSFSheet sheet, Row row) {
+		int lastRowNum = sheet.getLastRowNum();
+		if (lastRowNum > 0) {
+			int rowIndex = row.getRowNum();
+			HSSFRow removingRow = sheet.getRow(rowIndex);
+			if (removingRow != null) {
+				sheet.removeRow(removingRow);
+			}
+		}
 	}
 }
