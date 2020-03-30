@@ -256,7 +256,7 @@ public class DatabaseTools {
 		// /src/com/u2d/persist/LiquibaseCommander.java?rev=1387
 
 		liquibase.forceReleaseLocks();
-		liquibase.update(null);
+		//liquibase.update(null);
 
 	}
 

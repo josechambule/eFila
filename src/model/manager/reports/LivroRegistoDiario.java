@@ -61,7 +61,25 @@ public class LivroRegistoDiario extends AbstractJasperReport {
 		ConexaoJDBC con=new ConexaoJDBC();
 		
 		String query = con.getLivroRegistoDiario(this.inicio, this.manutencao, this.alteraccao,dateFormat.format(theStartDate),dateFormat.format(theEndDate));
-				
+
+		if (this.inicio) {
+			map.put("inicia", "Inicia");
+		} else {
+			map.put("inicia", null);
+		}
+
+		if (this.manutencao) {
+			map.put("manter", "Manter");
+		} else {
+			map.put("manter", null);
+		}
+
+		if (this.alteraccao) {
+			map.put("alterar", "Alterar");
+		} else {
+			map.put("alterar", null);
+		}
+
 		map.put("query",query);
 		map.put("path", getReportPath());
 		map.put("provincia","Zambézia");
