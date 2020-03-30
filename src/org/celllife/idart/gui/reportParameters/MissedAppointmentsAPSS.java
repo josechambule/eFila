@@ -507,7 +507,7 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 					
 					SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 					
-					FileInputStream currentXls = new FileInputStream("RegistoChamadaTelefonica.xls");
+					FileInputStream currentXls = new FileInputStream("Reports/RegistoChamadaTelefonica.xls");
 					
 					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 					
@@ -548,7 +548,7 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 					  	deleteRow(sheet,row);  
 					  }
 					 
-					  out = new FileOutputStream(new File("RegistoChamadaTelefonica.xls"));
+					  out = new FileOutputStream(new File("Reports/RegistoChamadaTelefonica.xls"));
 					  workbook.write(out); 
 					
 					int rowNum = 15;
@@ -644,11 +644,11 @@ public class MissedAppointmentsAPSS extends GenericReportGui {
 					
 					currentXls.close();
 					
-					FileOutputStream outputStream = new FileOutputStream(new File("RegistoChamadaTelefonica.xls")); 
+					FileOutputStream outputStream = new FileOutputStream(new File("Reports/RegistoChamadaTelefonica.xls")); 
 					workbook.write(outputStream);
 					workbook.close();
 					
-					Desktop.getDesktop().open(new File("RegistoChamadaTelefonica.xls"));
+					Desktop.getDesktop().open(new File("Reports/RegistoChamadaTelefonica.xls"));  
 					
 				} else {
 					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);

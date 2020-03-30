@@ -214,7 +214,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 					
 					if(livroRegistoDiarios.size() > 0) {
 						
-						FileInputStream currentXls = new FileInputStream("LivroRegistoDiarioARV.xls");
+						FileInputStream currentXls = new FileInputStream("Reports/LivroRegistoDiarioARV.xls");
 						
 						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 						
@@ -249,7 +249,7 @@ public class LivroRegistoDiario extends GenericReportGui {
 						  	deleteRow(sheet,row);  
 						  }
 						 
-						  out = new FileOutputStream(new File("LivroRegistoDiarioARV.xls"));
+						  out = new FileOutputStream(new File("Reports/LivroRegistoDiarioARV.xls"));
 						  workbook.write(out); 
 						
 						int rowNum = 15;
@@ -329,11 +329,11 @@ public class LivroRegistoDiario extends GenericReportGui {
 						
 						currentXls.close();
 						
-						FileOutputStream outputStream = new FileOutputStream(new File("LivroRegistoDiarioARV.xls")); 
+						FileOutputStream outputStream = new FileOutputStream(new File("Reports/LivroRegistoDiarioARV.xls")); 
 						workbook.write(outputStream);
 						workbook.close();
 						
-						Desktop.getDesktop().open(new File("LivroRegistoDiarioARV.xls"));
+						Desktop.getDesktop().open(new File("Reports/LivroRegistoDiarioARV.xls"));
 						
 					} else {
 						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);

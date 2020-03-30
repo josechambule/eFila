@@ -424,7 +424,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 				
 				if(faultyQuartelyLayOffs.size() > 0) {
 					
-					FileInputStream currentXls = new FileInputStream("FaltososAbandonosDT.xls");
+					FileInputStream currentXls = new FileInputStream("Reports/FaltososAbandonosDT.xls");
 					
 					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
 					
@@ -468,7 +468,7 @@ public class MissedAppointmentsDT extends GenericReportGui {
 					  	deleteRow(sheet,row);  
 					  }
 					 
-					  out = new FileOutputStream(new File("FaltososAbandonosDT.xls"));
+					  out = new FileOutputStream(new File("Reports/FaltososAbandonosDT.xls"));
 					  workbook.write(out); 
 					
 					int rowNum = 14;
@@ -508,11 +508,11 @@ public class MissedAppointmentsDT extends GenericReportGui {
 					
 					currentXls.close();
 					
-					FileOutputStream outputStream = new FileOutputStream(new File("FaltososAbandonosDT.xls")); 
+					FileOutputStream outputStream = new FileOutputStream(new File("Reports/FaltososAbandonosDT.xls")); 
 					workbook.write(outputStream);
 					workbook.close();
 					
-					Desktop.getDesktop().open(new File("FaltososAbandonosDT.xls"));
+					Desktop.getDesktop().open(new File("Reports/FaltososAbandonosDT.xls"));
 					
 				} else {
 					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
