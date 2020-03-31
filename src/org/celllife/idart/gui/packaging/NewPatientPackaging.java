@@ -2608,9 +2608,9 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             // Re-enabling the printing of the next appointment date.
             if (iDartProperties.nextAppointmentDateOnLabels) {
                 rdBtnYesAppointmentDate.setEnabled(true);
-                rdBtnYesAppointmentDate.setSelection(true);
+                rdBtnYesAppointmentDate.setSelection(false);
                 rdBtnNoAppointmentDate.setEnabled(true);
-                rdBtnNoAppointmentDate.setSelection(false);
+                rdBtnNoAppointmentDate.setSelection(true);
             } else {
                 rdBtnYesAppointmentDate.setEnabled(true);
                 rdBtnYesAppointmentDate.setSelection(false);

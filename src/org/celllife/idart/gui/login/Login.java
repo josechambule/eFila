@@ -511,7 +511,7 @@ public class Login implements GenericGuiInterface {
 				txtPassword.setText(""); //$NON-NLS-1$
 			} else if(verificaLoginOpenMRS() ) {
 				
-				File myFile = new File("src/jdbc_auto_generated.properties");
+				File myFile = new File("jdbc_auto_generated.properties");
 	            Properties properties = new Properties();
 	          
 	            	
