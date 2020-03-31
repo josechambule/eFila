@@ -27,7 +27,6 @@ import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.DispensaTrimestralSemestral;
 import model.manager.reports.FollowupFaulty;
 import model.manager.reports.HistoricoLevantamentoXLS;
-import model.manager.reports.LivroRegistoDiario;
 import model.manager.reports.LivroRegistoDiarioXLS;
 import model.manager.reports.PrescricaoSemFilaXLS;
 import model.manager.reports.RegistoChamadaTelefonicaXLS;
@@ -4106,96 +4105,142 @@ public class ConexaoJDBC {
             condicao += v.get(0) + "\')";
         }
 
-		String query = ""
-		+ " SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido, "
-		+ " dispensas_e_prescricoes.tipotarv,  "
-		+ "   dispensas_e_prescricoes.regime, "
-		+ " CASE "
-		+ " WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' "
-		+ " WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' "
-		+ " ELSE 'DM' "
-		+ "  END AS tipodispensa, "
-		+ " CASE WHEN dispensas_e_prescricoes.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
-		+ " CASE WHEN dispensas_e_prescricoes.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
-		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, " 
-		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, " 
-		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, " 
-		+ " CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, " 
-		+ "   dispensas_e_prescricoes.datalevantamento,"
-		+ "    dispensas_e_prescricoes.dataproximolevantamento, "
-		+ " dispensas_e_prescricoes.linhanome " 
-		+ "    FROM "
-		+ "  (SELECT   "
-		+ "  dispensa_packege.nid , "
-		+ "    prescription_package.tipotarv,  "
-		+ "    prescription_package.regime, "
-		+ " prescription_package.dispensatrimestral, "
-		+ " prescription_package.dispensasemestral, "
-		+ "    dispensa_packege.datalevantamento, "
-		+ "    dispensa_packege.dataproximolevantamento, "
-	    + " prescription_package.linhanome, "
-	    + " prescription_package.prep, "
-	    + " prescription_package.ppe " 
-		+ " 	FROM  "
-		+ " 	( "
-		+ "   SELECT  "
-		+ " 		prescription.id, prescription.prep, prescription.ppe, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral, "
-		+ " package.packageid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime, linhat.linhanome"
-		+ " 	 FROM  "
-		+ " 	 prescription,  " + " package , regimeterapeutico, linhat "
-		+ "  WHERE   "
-		+ " prescription.id = package.prescription  "
-		+ "  AND  " + " 	 prescription.ppe=\'F\' "
-		+ " 	AND 	prescription.regimeid=regimeterapeutico.regimeid "
-		+ " AND prescription.linhaid = linhat.linhaid AND "
-		+ "  	 prescription.reasonforupdate IN "
-		+ condicao
-		+ " 	 )as prescription_package,  "
-		+ " 	 (  "
-		+ " 	 SELECT  "
-		+ " 	 packagedruginfotmp.patientid as nid,  "
-		+ " 	 packagedruginfotmp.packageid,"
-		+ " 	 packagedruginfotmp.dispensedate as datalevantamento,"
-		+ "  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento "
-		+ "  	 FROM "
-		+ "  	 package, packagedruginfotmp  "
-		+ " 	 WHERE  "
-		+ " 	 package.packageid=packagedruginfotmp.packageid  "
-		+ " 	 AND  "
-		+ "  					 packagedruginfotmp.dispensedate::timestamp::date >=  "
-		+ "  \'"
-		+ startDate
-		+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-		+ "   \'"
-		+ endDate
-		+ "\'::timestamp::date  "
-		+ " 	) as dispensa_packege,"
-		+ "     ( "
-		+ "     select packagedruginfotmp.patientid,  "
-		+ " 	  max(packagedruginfotmp.dispensedate) as lastdispense"
-		+ " 	 FROM "
-		+ " 	 package, packagedruginfotmp  "
-		+ "  WHERE  "
-		+ "  package.packageid=packagedruginfotmp.packageid  "
-		+ " 	 AND  "
-		+ " 			 packagedruginfotmp.dispensedate::timestamp::date >=  "
-		+ "  \'"
-		+ startDate
-		+ "\'::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=  "
-		+ "   \'"
-		+ endDate
-		+ "\'::timestamp::date  "
-		+ "   group by packagedruginfotmp.patientid "
-		+ "       ) as ultimadatahora  "
-		+ "  	 WHERE  "
-		+ "  	 dispensa_packege.packageid=prescription_package.packageid  "
-		+ " 	 and "
-		+ "    dispensa_packege.datalevantamento=ultimadatahora.lastdispense "
-		+ "    ) as dispensas_e_prescricoes "
-		+ "     ,"
-		+ "     patient "
-		+ "    where "
-		+ "    dispensas_e_prescricoes.nid=patient.patientid";
+        String query = "SELECT" +
+        		"      last_dataset.nid, " +
+        		"      last_dataset.nome, " +
+        		"      last_dataset.apelido, " +
+        		"      last_dataset.tipotarv, " +
+        		"      last_dataset.regime, " +
+        		"      last_dataset.tipodispensa, " +
+        		"      last_dataset.prep, " +
+        		"      last_dataset.ppe, " +
+        		"      last_dataset.ZeroQuatro, " +
+        		"      last_dataset.CincoNove, " +
+        		"      last_dataset.DezCatorze, " +
+        		"      last_dataset.Maior15, " +
+        		"      last_dataset.datalevantamento, " +
+        		"      last_dataset.dataproximolevantamento, " +
+        		"      last_dataset.linhanome," +
+        		"      last_dataset.packid," +
+        		"      last_dataset.name," +
+        		"      last_dataset.amount " +
+        		"FROM" +
+        		"(     " +
+        		"      SELECT" +
+        		"              main_dataset.nid, " +
+        		"              main_dataset.nome, " +
+        		"              main_dataset.apelido, " +
+        		"              main_dataset.tipotarv, " +
+        		"              main_dataset.regime, " +
+        		"              main_dataset.tipodispensa, " +
+        		"              main_dataset.prep, " +
+        		"              main_dataset.ppe, " +
+        		"              main_dataset.ZeroQuatro, " +
+        		"              main_dataset.CincoNove, " +
+        		"              main_dataset.DezCatorze, " +
+        		"              main_dataset.Maior15, " +
+        		"              main_dataset.datalevantamento, " +
+        		"              main_dataset.dataproximolevantamento, " +
+        		"              main_dataset.linhanome," +
+        		"              main_dataset.packid," +
+        		"              drug_set.name," +
+        		"              drug_set.amount" +
+        		"      FROM" +
+        		"      (  " +
+        		"        SELECT DISTINCT dispensas_e_prescricoes.nid, " +
+        		"                        patient.firstnames AS nome, " +
+        		"                        patient.lastname   AS apelido, " +
+        		"                        dispensas_e_prescricoes.tipotarv, " +
+        		"                        dispensas_e_prescricoes.regime, " +
+        		"                        CASE WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' ELSE 'DM' END AS tipodispensa, " +
+        		"                        CASE WHEN dispensas_e_prescricoes.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, " +
+        		"                        CASE WHEN dispensas_e_prescricoes.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, " +
+        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, " +
+        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, " +
+        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, " +
+        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, " +
+        		"                        dispensas_e_prescricoes.datalevantamento, " +
+        		"                        dispensas_e_prescricoes.dataproximolevantamento, " +
+        		"                        dispensas_e_prescricoes.linhanome," +
+        		"                        dispensas_e_prescricoes.packid as packid " +
+        		"        FROM   (SELECT dispensa_packege.nid, " +
+        		"                       prescription_package.tipotarv, " +
+        		"                       prescription_package.regime, " +
+        		"                       prescription_package.dispensatrimestral, " +
+        		"                       prescription_package.dispensasemestral, " +
+        		"                       dispensa_packege.datalevantamento, " +
+        		"                       dispensa_packege.dataproximolevantamento, " +
+        		"                       prescription_package.linhanome, " +
+        		"                       prescription_package.prep, " +
+        		"                       prescription_package.ppe," +
+        		"                       prescription_package.packid " +
+        		"                FROM   (SELECT prescription.id, " +
+        		"                               prescription.prep, " +
+        		"                               prescription.ppe, " +
+        		"                               prescription.dispensatrimestral AS dispensatrimestral, " +
+        		"                               prescription.dispensasemestral  AS dispensasemestral, " +
+        		"                               PACKAGE.packageid,package.id as packid," +
+        		"                               prescription.reasonforupdate    AS tipotarv, " +
+        		"                               regimeterapeutico.regimeesquema AS regime, " +
+        		"                               linhat.linhanome " +
+        		"                        FROM   prescription, " +
+        		"                               PACKAGE, " +
+        		"                               regimeterapeutico, " +
+        		"                               linhat " +
+        		"                        WHERE  prescription.id = PACKAGE.prescription " +
+        		"                               AND prescription.ppe = 'F' " +
+        		"                               AND prescription.regimeid = regimeterapeutico.regimeid " +
+        		"                               AND prescription.linhaid = linhat.linhaid " +
+        		"                               AND prescription.reasonforupdate IN " +condicao+ ") AS " +
+        		"                       prescription_package, " +
+        		"                       (SELECT packagedruginfotmp.patientid " +
+        		"                               AS " +
+        		"                               nid, " +
+        		"                               packagedruginfotmp.packageid, " +
+        		"                               packagedruginfotmp.dispensedate " +
+        		"                               AS " +
+        		"                               datalevantamento, " +
+        		"                               To_date(packagedruginfotmp.dateexpectedstring, " +
+        		"                               'DD-Mon-YYYY') AS " +
+        		"                               dataproximolevantamento " +
+        		"                        FROM   PACKAGE, " +
+        		"                               packagedruginfotmp " +
+        		"                        WHERE  PACKAGE.packageid = packagedruginfotmp.packageid " +
+        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
+        		"                                   >= '"+startDate+"' :: timestamp :: DATE " +
+        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
+        		"                                   <= '"+endDate+"' :: timestamp :: DATE) AS dispensa_packege, " +
+        		"                       (SELECT packagedruginfotmp.patientid, " +
+        		"                               Max(packagedruginfotmp.dispensedate) AS lastdispense " +
+        		"                        FROM   PACKAGE, " +
+        		"                               packagedruginfotmp " +
+        		"                        WHERE  PACKAGE.packageid = packagedruginfotmp.packageid " +
+        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
+        		"                                   >= '"+startDate+"' :: timestamp :: DATE " +
+        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
+        		"                                   <= '"+endDate+"' :: timestamp :: DATE " +
+        		"                        GROUP  BY packagedruginfotmp.patientid) AS ultimadatahora " +
+        		"                WHERE  dispensa_packege.packageid = prescription_package.packageid " +
+        		"                       AND dispensa_packege.datalevantamento = " +
+        		"                           ultimadatahora.lastdispense) AS " +
+        		"               dispensas_e_prescricoes, " +
+        		"               patient " +
+        		"        WHERE  dispensas_e_prescricoes.nid = patient.patientid" +
+        		"      ) main_dataset" +
+        		"      LEFT JOIN (" +
+        		"      select drug.name, sum(packdrug.amount) as amount, pack.id as drugid" +
+        		"      from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug," +
+        		"      package as pack," +
+        		"      prescription as pre" +
+        		"      where packdrug.stock = stock.id" +
+        		"      and stock.drug = drug.id" +
+        		"      and packdrug.parentPackage = pack.id" +
+        		"      and pack.prescription = pre.id" +
+        		"      and predrug.prescription = pre.id" +
+        		"      and predrug.drug = drug.id" +
+        		"      group by drug.name,pack.id) drug_set ON main_dataset.packid = drug_set.drugid" +
+        		") last_dataset";
+
 
 
         diarioXLS = new ArrayList<LivroRegistoDiarioXLS>();
@@ -4220,6 +4265,8 @@ public class ConexaoJDBC {
             	registoDiarioXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
             	registoDiarioXLS.setPpe(rs.getString("ppe"));
             	registoDiarioXLS.setPrep(rs.getString("prep"));
+            	registoDiarioXLS.setProdutos(rs.getString("name"));
+            	registoDiarioXLS.setQuantidade(rs.getString("amount"));
 
             	diarioXLS.add(registoDiarioXLS);
             }

@@ -22,6 +22,8 @@ public class LivroRegistoDiarioXLS {
 	
 	private String produtos;
 	
+	private String quantidade;
+	
 	private String tipoDispensa;
 	
 	private String linha;
@@ -138,6 +140,14 @@ public class LivroRegistoDiarioXLS {
 
 	public void setProdutos(String produtos) {
 		this.produtos = produtos;
+	}
+	
+	public String getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(String quantidade) {
+		this.quantidade = quantidade;
 	}
 
 	public String getLinha() {
