@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,9 +25,11 @@ import model.nonPersistent.Autenticacao;
 public class RestClient {
 	
 	Properties prop = new Properties();
-	InputStream input = null;
-	
+	//InputStream input = null;
+
+	 File input = new File("jdbc.properties");
 	 File myFile = new File("jdbc_auto_generated.properties");
+
     Properties prop_dynamic = new Properties();
   
     
@@ -37,6 +38,7 @@ public class RestClient {
 		
 		try {
 			prop_dynamic.load(new FileInputStream(myFile));
+			prop.load(new FileInputStream(input));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -44,20 +46,7 @@ public class RestClient {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
-		input = getClass().getClassLoader().getResourceAsStream("jdbc.properties");
-		
-		
-		try {
-			prop.load(input);
-
-		    
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	
 		ApiAuthRest.setURLBase(prop.getProperty("urlBase"));
 		ApiAuthRest.setUsername(prop_dynamic.getProperty("userName"));
 		//ApiAuthRest.setPassword(prop_dynamic.getProperty("password"));
