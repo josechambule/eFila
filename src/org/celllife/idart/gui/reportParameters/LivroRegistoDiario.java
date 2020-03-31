@@ -291,39 +291,43 @@ public class LivroRegistoDiario extends GenericReportGui {
 							createCellRegimeTerapeutico.setCellStyle(cellStyle);
 							
 							HSSFCell produtos = row.createCell(9); 
-							produtos.setCellValue("");
+							produtos.setCellValue(xls.getProdutos());
 							produtos.setCellStyle(cellStyle);
+							
+							HSSFCell quantidade = row.createCell(10); 
+							quantidade.setCellValue(xls.getQuantidade());
+							quantidade.setCellStyle(cellStyle);
 	
-							HSSFCell createCellTipoDispensa = row.createCell(10); 
+							HSSFCell createCellTipoDispensa = row.createCell(11); 
 							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
 							createCellTipoDispensa.setCellStyle(cellStyle);
 							
-							HSSFCell linhaNome = row.createCell(11); 
+							HSSFCell linhaNome = row.createCell(12); 
 							linhaNome.setCellValue(xls.getLinha());
 							linhaNome.setCellStyle(cellStyle);
 							
-							HSSFCell createCellDataLevantamento = row.createCell(12); 
+							HSSFCell createCellDataLevantamento = row.createCell(13); 
 							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
 							createCellDataLevantamento.setCellStyle(cellStyle);
 	
-							HSSFCell createCellDataProximoLevantamento = row.createCell(13);
+							HSSFCell createCellDataProximoLevantamento = row.createCell(14);
 							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
 							createCellDataProximoLevantamento.setCellStyle(cellStyle);
 							
-							HSSFCell ppe = row.createCell(14);
+							HSSFCell ppe = row.createCell(15);
 							ppe.setCellValue(xls.getPpe());
 							ppe.setCellStyle(cellStyle);
 							
-							HSSFCell prep = row.createCell(15);
+							HSSFCell prep = row.createCell(16);
 							prep.setCellValue(xls.getPrep());
 							prep.setCellStyle(cellStyle);
 							
-							HSSFCell criancaExposta = row.createCell(16);
+							HSSFCell criancaExposta = row.createCell(17);
 							criancaExposta.setCellValue("");
 							criancaExposta.setCellStyle(cellStyle);
 						}
 						
-						for(int i = 1; i < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length+1; i++) { 
+						for(int i = 1; i < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length; i++) { 
 				            sheet.autoSizeColumn(i);
 				        }
 						

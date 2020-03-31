@@ -23,7 +23,7 @@ public class RegistoDiario {
 	private String dataLevantamento;
 	
 	private String dataProximoLevantamento;
-
+	
 	public String getPatientIdentifier() {
 		return patientIdentifier;
 	}
