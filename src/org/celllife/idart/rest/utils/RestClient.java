@@ -26,9 +26,10 @@ public class RestClient {
 	
 	Properties prop = new Properties();
 	//InputStream input = null;
-	
-	File myFile = new File("src/jdbc_auto_generated.properties");
-	File input = new File("jdbc.properties");
+
+	 File input = new File("jdbc.properties");
+	 File myFile = new File("jdbc_auto_generated.properties");
+
     Properties prop_dynamic = new Properties();
   
     

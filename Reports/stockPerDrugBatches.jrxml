@@ -228,7 +228,7 @@ s.expirydate, s.id, d.packsize]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					</textElement>
-					<text><![CDATA[Date]]></text>
+					<text><![CDATA[Data]]></text>
 				</staticText>
 				<line>
 					<reportElement key="line_1" mode="Opaque" x="46" y="10" width="1" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -247,7 +247,7 @@ s.expirydate, s.id, d.packsize]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					</textElement>
-					<text><![CDATA[No. Items Received]]></text>
+					<text><![CDATA[Quantidade Recebida]]></text>
 				</staticText>
 				<line>
 					<reportElement key="line_2" mode="Opaque" x="112" y="10" width="1" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -266,7 +266,7 @@ s.expirydate, s.id, d.packsize]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					</textElement>
-					<text><![CDATA[Batch Number]]></text>
+					<text><![CDATA[Lote]]></text>
 				</staticText>
 				<line>
 					<reportElement key="line_3" mode="Opaque" x="192" y="10" width="1" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -285,7 +285,7 @@ s.expirydate, s.id, d.packsize]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					</textElement>
-					<text><![CDATA[Expiry Date]]></text>
+					<text><![CDATA[Validade]]></text>
 				</staticText>
 				<line>
 					<reportElement key="line_big" mode="Opaque" x="254" y="11" width="1" height="31" forecolor="#000000" backcolor="#000000"/>
@@ -304,7 +304,7 @@ s.expirydate, s.id, d.packsize]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					</textElement>
-					<text><![CDATA[No. Tablets Issued]]></text>
+					<text><![CDATA[Dispensados]]></text>
 				</staticText>
 				<line>
 					<reportElement key="line_5" mode="Opaque" x="302" y="10" width="1" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -443,11 +443,11 @@ s.expirydate, s.id, d.packsize]]>
 				<subreportParameter name="packsize">
 					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="path">
-					<subreportParameterExpression><![CDATA[$P{p_path}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="stockId">
 					<subreportParameterExpression><![CDATA[$F{stockid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="path">
+					<subreportParameterExpression><![CDATA[$P{p_path}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="totalReceived">
 					<subreportParameterExpression><![CDATA[new Integer($F{unitsreceived}.intValue())]]></subreportParameterExpression>
