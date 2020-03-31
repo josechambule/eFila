@@ -20,6 +20,7 @@
 
 package org.celllife.idart.start;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
@@ -30,6 +31,7 @@ import org.celllife.idart.database.DatabaseEmptyException;
 import org.celllife.idart.database.DatabaseException;
 import org.celllife.idart.database.DatabaseTools;
 import org.celllife.idart.database.DatabaseWizard;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
@@ -101,6 +103,16 @@ public class PharmacyApplication {
         }
     }
 
+    private static void updateDatabase(){
+        try {
+            ConexaoJDBC conn = new ConexaoJDBC();
+            conn.UpdateDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private static void launch(String[] args) {
 
         closeSplash();
@@ -114,6 +126,9 @@ public class PharmacyApplication {
     }
 
     private static void performStartupChecks() {
+
+
+
         try {
             if (!DatabaseTools._().checkDatabase()) {
                 startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
@@ -130,7 +145,7 @@ public class PharmacyApplication {
         }
 
         loginLoad.updateProgress(30);
-
+        updateDatabase();
         try {
             DatabaseTools._().update();
         } catch (DatabaseException e) {
@@ -420,6 +435,8 @@ public class PharmacyApplication {
             } catch (Exception e) {
             }
         }
+
+
     }
 
     private static void setPatientAttributes() {
