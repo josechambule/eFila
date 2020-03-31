@@ -127,16 +127,17 @@ public class PharmacyApplication {
 
     private static void performStartupChecks() {
 
-
-
         try {
             if (!DatabaseTools._().checkDatabase()) {
                 startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
+                updateDatabase();
             }
         } catch (ConnectException e) {
             startSetupWizard(DatabaseWizard.PAGE_CONNECTION_DETAILS);
+            updateDatabase();
         } catch (DatabaseEmptyException e) {
             startSetupWizard(DatabaseWizard.PAGE_CREATE_DB);
+            updateDatabase();
         } catch (DatabaseException e) {
             String msg = "Error while checking database consistency: ";
             log.error(msg, e);
@@ -145,7 +146,7 @@ public class PharmacyApplication {
         }
 
         loginLoad.updateProgress(30);
-        updateDatabase();
+
         try {
             DatabaseTools._().update();
         } catch (DatabaseException e) {
