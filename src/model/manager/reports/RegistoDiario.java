@@ -24,10 +24,6 @@ public class RegistoDiario {
 	
 	private String dataProximoLevantamento;
 	
-	private String produto;
-	
-	private String quantidade;
-
 	public String getPatientIdentifier() {
 		return patientIdentifier;
 	}
@@ -114,21 +110,5 @@ public class RegistoDiario {
 
 	public void setDataProximoLevantamento(String dataProximoLevantamento) {
 		this.dataProximoLevantamento = dataProximoLevantamento;
-	}
-
-	public String getProduto() {
-		return produto;
-	}
-
-	public void setProduto(String produto) {
-		this.produto = produto;
-	}
-
-	public String getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(String quantidade) {
-		this.quantidade = quantidade;
 	}
 }

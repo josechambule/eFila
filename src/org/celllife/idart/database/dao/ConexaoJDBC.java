@@ -27,7 +27,6 @@ import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.DispensaTrimestralSemestral;
 import model.manager.reports.FollowupFaulty;
 import model.manager.reports.HistoricoLevantamentoXLS;
-import model.manager.reports.LivroRegistoDiario;
 import model.manager.reports.LivroRegistoDiarioXLS;
 import model.manager.reports.PrescricaoSemFilaXLS;
 import model.manager.reports.RegistoChamadaTelefonicaXLS;
@@ -4192,7 +4191,7 @@ public class ConexaoJDBC {
         		"                               AND prescription.ppe = 'F' " +
         		"                               AND prescription.regimeid = regimeterapeutico.regimeid " +
         		"                               AND prescription.linhaid = linhat.linhaid " +
-        		"                               AND prescription.reasonforupdate IN condicao ) AS " +
+        		"                               AND prescription.reasonforupdate IN " +condicao+ ") AS " +
         		"                       prescription_package, " +
         		"                       (SELECT packagedruginfotmp.patientid " +
         		"                               AS " +
@@ -4266,6 +4265,8 @@ public class ConexaoJDBC {
             	registoDiarioXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
             	registoDiarioXLS.setPpe(rs.getString("ppe"));
             	registoDiarioXLS.setPrep(rs.getString("prep"));
+            	registoDiarioXLS.setProdutos(rs.getString("name"));
+            	registoDiarioXLS.setQuantidade(rs.getString("amount"));
 
             	diarioXLS.add(registoDiarioXLS);
             }
