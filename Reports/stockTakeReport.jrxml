@@ -2,9 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockTakeSheet" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="path" class="java.lang.String">
 		<parameterDescription><![CDATA[Path for the report files]]></parameterDescription>
 		<defaultValueExpression><![CDATA["D://development//workspace//Pharmacy//Reports"]]></defaultValueExpression>
@@ -27,7 +30,7 @@
 	<queryString>
 		<![CDATA[select distinct d.name, d.packSize as packsize, d.id as id
 from drug as d, stock as s, stockAdjustment sa, stockTake st
-where s.stockCenter = $P{stockCenterId} 
+where s.stockCenter = $P{stockCenterId}
 and s.drug = d.id
 and sa.stock = s.id
 and sa.stockTake = st.id
@@ -57,7 +60,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Stock Take Report]]></text>
+				<text><![CDATA[Relatorio de Stock]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_pharmacist" mode="Opaque" x="2" y="50" width="121" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -70,7 +73,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Responsible Pharmacist:]]></text>
+				<text><![CDATA[Responsavel]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_facilityName" mode="Opaque" x="132" y="35" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -96,7 +99,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Stock take number:]]></text>
+				<text><![CDATA[Numero do Stock]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_date" mode="Opaque" x="132" y="65" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -122,7 +125,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Pharmacy]]></text>
+				<text><![CDATA[Farmacia]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_area" mode="Transparent" x="2" y="80" width="130" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -135,7 +138,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Area (Pharmacy / Store):]]></text>
+				<text><![CDATA[US]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_pharmacist" mode="Opaque" x="132" y="50" width="278" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -206,7 +209,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Batch Number]]></text>
+				<text><![CDATA[Numero do Lote]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-4" x="127" y="48" width="82" height="32"/>
@@ -217,7 +220,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Date of Adjustment]]></text>
+				<text><![CDATA[DAta de Ajuste]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-5" x="213" y="48" width="44" height="32"/>
@@ -228,7 +231,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Packs counted]]></text>
+				<text><![CDATA[Frascos Cont.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-6" x="261" y="48" width="44" height="32"/>
@@ -239,7 +242,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Pills Counted]]></text>
+				<text><![CDATA[Comp. Cont]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-7" x="309" y="48" width="44" height="32"/>
@@ -250,7 +253,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Packs on Hand]]></text>
+				<text><![CDATA[Saldo Frascos]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-8" x="357" y="48" width="44" height="32"/>
@@ -261,7 +264,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Pills on Hand]]></text>
+				<text><![CDATA[Saldo Compr.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-10" x="405" y="48" width="127" height="32"/>
@@ -272,7 +275,7 @@ order by d.name asc]]>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Notes]]></text>
+				<text><![CDATA[Nota]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-1" x="1" y="46" width="534" height="1"/>
@@ -300,11 +303,11 @@ order by d.name asc]]>
 				<subreportParameter name="stockTake">
 					<subreportParameterExpression><![CDATA[$P{stockTake}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="packsize">
-					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="stockCenterId">
 					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="packsize">
+					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="path">
 					<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
