@@ -2,9 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockReceiptPerMonth" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="p_path" class="java.lang.String">
 		<defaultValueExpression><![CDATA["/home/melissa/newWorkspace/iDARTpharmacy/Reports"]]></defaultValueExpression>
 	</parameter>
@@ -38,7 +41,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Roman" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Monthly Stock Receipt Report for Pharmacy]]></text>
+				<text><![CDATA[Stock Mensal Recebido]]></text>
 			</staticText>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false">
 				<reportElement key="image-1" mode="Opaque" x="414" y="0" width="120" height="45" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -62,7 +65,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Month:]]></text>
+				<text><![CDATA[Mes:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_facilityName-1" mode="Opaque" x="141" y="26" width="268" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -88,7 +91,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Facility Name:]]></text>
+				<text><![CDATA[US:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_pharmacist-1" mode="Opaque" x="141" y="42" width="267" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -121,7 +124,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Date Rec]]></text>
+				<text><![CDATA[Data]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_name" mode="Transparent" x="49" y="4" width="155" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -134,7 +137,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Drug Name]]></text>
+				<text><![CDATA[Medicamento]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_batchNo" mode="Transparent" x="204" y="4" width="53" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -147,7 +150,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Batch No]]></text>
+				<text><![CDATA[Lote]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_expiryDate" mode="Transparent" x="310" y="4" width="55" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -160,7 +163,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Exp Date]]></text>
+				<text><![CDATA[Data Validade]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_unitsReceived" mode="Transparent" x="364" y="4" width="52" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -173,7 +176,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Units Rec]]></text>
+				<text><![CDATA[ Recebidos]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line_01" mode="Opaque" x="0" y="5" width="1" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -218,7 +221,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Made By]]></text>
+				<text><![CDATA[Fornecedor]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line_06-1" mode="Opaque" x="309" y="4" width="1" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -239,7 +242,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Unit Price]]></text>
+				<text><![CDATA[Preco/Uni]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_totalReceived" mode="Transparent" x="472" y="4" width="52" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -252,7 +255,7 @@ and s.drug=d.id and s.stockCenter = $P{stockCenterId}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Total price]]></text>
+				<text><![CDATA[Total preco]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line_06-2" mode="Opaque" x="470" y="4" width="1" height="15" forecolor="#000000" backcolor="#FFFFFF"/>

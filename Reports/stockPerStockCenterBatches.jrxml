@@ -2,9 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockPerClinicBatches" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="pharmid" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(131)]]></defaultValueExpression>
 	</parameter>
@@ -18,19 +21,19 @@
 		<defaultValueExpression><![CDATA["2006-12-12"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select s.batchnumber, s.manufacturer,  s.datereceived, s.expirydate, s.unitsreceived, s.id, ceil(sum(pt.amount::real/d.packsize::real)) as used 
+		<![CDATA[select s.batchnumber, s.manufacturer,  s.datereceived, s.expirydate, s.unitsreceived, s.id, ceil(sum(pt.amount::real/d.packsize::real)) as used
 from drug as d, stock as s
 
 full join (
 select packdrug.amount, packdrug.stock, packdrug.parentpackage
 from packageddrugs as packdrug, package as pack
-where packdrug.parentpackage=pack.id 
+where packdrug.parentpackage=pack.id
 and pack.packdate between $P{startDate} and $P{endDate}
-) 
+)
 
-as pt on pt.stock = s.id 
-where s.drug = d.id 
-and s.pharmacy = $P{pharmid} 
+as pt on pt.stock = s.id
+where s.drug = d.id
+and s.pharmacy = $P{pharmid}
 and d.id = $P{drugId}
 and s.datereceived between $P{startDate} and $P{endDate}
 
@@ -75,7 +78,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Batch No.]]></text>
+				<text><![CDATA[Lote]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-4" mode="Opaque" x="192" y="0" width="99" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -88,7 +91,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Date Received]]></text>
+				<text><![CDATA[Data de Entrada]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-4" mode="Opaque" x="302" y="1" width="99" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -101,7 +104,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Expiry Date]]></text>
+				<text><![CDATA[Data Validade]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-6" mode="Opaque" x="415" y="1" width="101" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -114,7 +117,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Units Received]]></text>
+				<text><![CDATA[Quantidade]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-4" mode="Opaque" x="640" y="0" width="105" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -127,7 +130,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Units Remaining]]></text>
+				<text><![CDATA[Saldo]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-8" mode="Opaque" x="521" y="1" width="113" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -140,7 +143,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Units Dispensed]]></text>
+				<text><![CDATA[Dispensados]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-9" mode="Opaque" x="84" y="1" width="101" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -153,7 +156,7 @@ order by s.datereceived asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Manufacturer]]></text>
+				<text><![CDATA[Fornecedor]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
