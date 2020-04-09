@@ -1,46 +1,59 @@
-ALTER TABLE stock ADD COLUMN numeroGuia character  varying(255) default 'Sem Info.';
-ALTER TABLE drug DROP CONSTRAINT fk_drug_atccode;
-ALTER TABLE drug DROP COLUMN atccode_id;
-ALTER TABLE drug ADD COLUMN atccode_id character varying(30);
-ALTER TABLE drug ADD COLUMN active boolean default true;
-ALTER TABLE drug ADD COLUMN tipoDoenca character  varying(30) default 'ARV';
+ALTER TABLE stock ADD COLUMN IF NOT EXISTS numeroGuia character varying(255) default 'Sem Info.';
+ALTER TABLE drug DROP CONSTRAINT IF EXISTS fk_drug_atccode;
+ALTER TABLE drug ALTER COLUMN atccode_id TYPE CHARACTER VARYING(30);
+ALTER TABLE drug ADD COLUMN IF NOT EXISTS active boolean default true;
+ALTER TABLE drug ADD COLUMN IF NOT EXISTS tipoDoenca character  varying(30) default 'TARV';
+ALTER TABLE regimendrugs DROP CONSTRAINT IF EXISTS regimen_fkey;
+ALTER TABLE regimendrugs DROP CONSTRAINT IF EXISTS fk281dee122dfb779f;
+ALTER TABLE regimendrugs ADD CONSTRAINT IF NOT EXISTS regimen_fkey FOREIGN KEY (regimen) REFERENCES regimeterapeutico (regimeid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS pediatrico;
+ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS linhaid;
+ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS adult;
+ALTER TABLE regimeTerapeutico ALTER COLUMN codigoregime TYPE character varying(255);
+ALTER TABLE regimeTerapeutico ADD COLUMN IF NOT EXISTS codigoregime character varying(255);
+ALTER TABLE regimeTerapeutico ADD COLUMN IF NOT EXISTS regimeesquemaidart character varying(255);
+ALTER TABLE regimeTerapeutico ADD COLUMN IF NOT EXISTS regimenomeespecificado character varying(255);
+ALTER TABLE regimeTerapeutico ALTER COLUMN regimeesquemaidart TYPE character varying(255);
+ALTER TABLE regimeTerapeutico ALTER COLUMN regimenomeespecificado TYPE character varying(255);
+ALTER TABLE prescription DROP CONSTRAINT IF EXISTS prescription_regime;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS durationsentence character varying(255) default null;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS dispensatrimestral integer NOT NULL DEFAULT 0;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS tipodt character varying(255);
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS dispensasemestral integer NOT NULL DEFAULT 0;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS tipods character varying(255);
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS dc character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS prep character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS ce character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS cpn character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS af character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS ca character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS ccr character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS fr character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS gaac character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS saaj character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS linhaid integer;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS prescricaoespecial character(1) DEFAULT 'F'::bpchar;
+ALTER TABLE prescription ADD COLUMN IF NOT EXISTS motivocriacaoespecial character varying(255) DEFAULT '';
+ALTER TABLE patient ADD COLUMN IF NOT EXISTS uuidopenmrs character varying(255) default null;
+UPDATE prescription set cpn='T' where ptv = 'T';
+UPDATE prescription set dispensatrimestral = 0 where dispensatrimestral is null;
+UPDATE prescription set linhaid = (select linhaid from linhat limit 1) where linhaid is null;
 UPDATE drug SET atccode_id = '' WHERE atccode_id IS NULL;
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Perda de Medicamento');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Auxencia do Clinico');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Laboratorio');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Rotura de Estoque');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Outro');	
-ALTER TABLE regimendrugs DROP CONSTRAINT regimen_fkey;
-ALTER TABLE regimendrugs DROP CONSTRAINT fk281dee122dfb779f;
-ALTER TABLE regimendrugs ADD CONSTRAINT regimen_fkey FOREIGN KEY (regimen) REFERENCES regimeterapeutico (regimeid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE regimeTerapeutico DROP COLUMN pediatrico;
-ALTER TABLE regimeTerapeutico DROP IF EXISTS COLUMN linhaid;
-ALTER TABLE regimeTerapeutico DROP COLUMN adult;
-ALTER TABLE prescription DROP CONSTRAINT prescription_regime;
-ALTER TABLE regimeTerapeutico DROP COLUMN codigoregime;	
-ALTER TABLE regimeTerapeutico ADD COLUMN codigoregime character varying(255);
-ALTER TABLE regimeTerapeutico ADD COLUMN regimeesquemaidart character varying(255);
-ALTER TABLE regimeterapeutico ALTER COLUMN codigoregime TYPE CHARACTER VARYING(255);
-ALTER TABLE regimeTerapeutico ADD COLUMN regimenomeespecificado character varying(255);
 UPDATE regimeTerapeutico SET codigoregime = '' WHERE codigoregime IS NULL;
-UPDATE regimeTerapeutico SET regimenomeespecificado= '' WHERE regimenomeespecificado IS NULL;	
-ALTER TABLE prescription add column durationsentence character varying(255) default null;
-ALTER TABLE prescription add column dispensasemestral integer NOT NULL DEFAULT 0;
-ALTER TABLE prescription add column tipods character varying(255);
-ALTER TABLE prescription add column dc character(1) DEFAULT 'F'::bpchar;
-ALTER TABLE prescription add column prep character(1) DEFAULT 'F'::bpchar;
-ALTER TABLE prescription add column ce character(1) DEFAULT 'F'::bpchar;
-ALTER TABLE prescription add column cpn character(1) DEFAULT 'F'::bpchar;
-ALTER TABLE prescription add column prescricaoespecial character(1) DEFAULT 'F'::bpchar;
-ALTER TABLE prescription add column motivocriacaoespecial character varying(255) DEFAULT '';
-Update prescription set cpn='T' where ptv = 'T';
-Update prescription set dispensatrimestral = 0 where dispensatrimestral is null;
-ALTER TABLE patient add column uuidopenmrs character varying(255) default null;
-INSERT INTO identifiertype (id, name, index, voided) VALUES (NEXTVAL('hibernate_sequence')::integer, 'CRAM'::character varying(255), '1'::integer, false::boolean);	
+UPDATE regimeTerapeutico SET regimenomeespecificado= '' WHERE regimenomeespecificado IS NULL;
+DELETE FROM simpledomain WHERE description  = 'prescription_reason';
+DELETE FROM simpledomain WHERE description  = 'Disease';
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Perda de Medicamento');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Ausencia do Clinico');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Laboratorio');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Rotura de Stock');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'prescription_reason','prescription_reason','Outro');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'Disease','TARV','TARV');
+INSERT INTO identifiertype (id, name, index, voided) VALUES (NEXTVAL('hibernate_sequence')::integer, 'CRAM'::character varying(255), '1'::integer, false::boolean);
 INSERT INTO identifiertype (id, name, index, voided) VALUES (NEXTVAL('hibernate_sequence')::integer, 'PREP'::character varying(255), '2'::integer, false::boolean);
 INSERT INTO identifiertype (id, name, index, voided) VALUES (NEXTVAL('hibernate_sequence')::integer, 'PPE'::character varying(255), '3'::integer, false::boolean);
 INSERT INTO identifiertype (id, name, index, voided) VALUES (NEXTVAL('hibernate_sequence')::integer, 'Outro'::character varying(255), '4'::integer, false::boolean);
-DROP  TABLE public.sync_temp_dispense CASCADE;
+DROP TABLE IF EXISTS public.sync_temp_dispense CASCADE;
 CREATE TABLE public.sync_temp_dispense
 (
     id integer NOT NULL,
@@ -94,8 +107,10 @@ WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
-ALTER TABLE public.sync_temp_dispense OWNER to postgres;
-DROP  TABLE public.sync_temp_patients CASCADE;
+
+ALTER TABLE public.sync_temp_dispense
+    OWNER to postgres;
+DROP  TABLE IF EXISTS public.sync_temp_patients CASCADE;
 CREATE TABLE public.sync_temp_patients
 (
     id integer NOT NULL,
