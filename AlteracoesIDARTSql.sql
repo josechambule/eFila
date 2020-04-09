@@ -146,3 +146,21 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.sync_temp_patients
     OWNER to postgres;
+CREATE TABLE IF NOT EXISTS public.openmrserrorlog
+(
+    id integer NOT NULL,
+    datecreated timestamp without time zone,
+    errordescription character varying(255) COLLATE pg_catalog."default",
+    patient integer,
+    pickupdate timestamp without time zone,
+    prescription integer,
+    returnpickupdate timestamp without time zone,
+    CONSTRAINT openmrserrorlog_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.openmrserrorlog
+    OWNER to postgres;
