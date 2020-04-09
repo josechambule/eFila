@@ -5,7 +5,7 @@ ALTER TABLE drug ADD COLUMN IF NOT EXISTS active boolean default true;
 ALTER TABLE drug ADD COLUMN IF NOT EXISTS tipoDoenca character  varying(30) default 'TARV';
 ALTER TABLE regimendrugs DROP CONSTRAINT IF EXISTS regimen_fkey;
 ALTER TABLE regimendrugs DROP CONSTRAINT IF EXISTS fk281dee122dfb779f;
-ALTER TABLE regimendrugs ADD CONSTRAINT IF NOT EXISTS regimen_fkey FOREIGN KEY (regimen) REFERENCES regimeterapeutico (regimeid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE regimendrugs ADD CONSTRAINT regimen_fkey FOREIGN KEY (regimen) REFERENCES regimeterapeutico (regimeid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS pediatrico;
 ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS linhaid;
 ALTER TABLE regimeTerapeutico DROP COLUMN IF EXISTS adult;
