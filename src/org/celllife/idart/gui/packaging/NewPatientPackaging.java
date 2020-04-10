@@ -850,7 +850,12 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             public void widgetDisposed(DisposeEvent e) {
                 Patient patient = myPrescription.getPatient();
                 closeAndReopenSession();
-                patient = PatientManager.getPatient(getHSession(), patient.getId());
+
+                if (patient != null)
+                    patient = PatientManager.getPatient(getHSession(), patient.getId());
+                else
+                    clearForm();
+
                 if ((patient != null) && (patient.getCurrentPrescription() != null)) {
                     populatePatientDetails(patient.getId());
                 } else {
@@ -1618,8 +1623,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
      */
     private boolean fieldsOkay(java.util.List<PackageDrugInfo> allPackagedDrugsList) {
         Patient patient = PatientManager.getPatient(getHSession(), localPatient.getId());
-        int amountperPackage = (int) (allPackagedDrugsList.get(0).getDispensedQty() / (allPackagedDrugsList.get(0).getTimesPerDay() * 
-        		Double.parseDouble(allPackagedDrugsList.get(0).getAmountPerTime()))) / 7;
+        int amountperPackage = (int) (allPackagedDrugsList.get(0).getDispensedQty() / (allPackagedDrugsList.get(0).getTimesPerDay() *
+                Double.parseDouble(allPackagedDrugsList.get(0).getAmountPerTime()))) / 7;
 
         if (localPatient.getCurrentPrescription().getDuration() != newPack.getWeekssupply()) {
             MessageBox mb = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
