@@ -335,7 +335,9 @@ public class DrugManager {
 
             Drug d = rd.getDrug();
 
-            result.add(d);
+            if (d != null)
+                if (d.isActive())
+                    result.add(d);
         }
 
         return result;

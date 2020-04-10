@@ -80,7 +80,7 @@ public class BalanceteDiario extends GenericReportGui {
     @Override
     protected void createShell() {
         Rectangle bounds = new Rectangle(100, 50, 600, 510);
-        buildShell(REPORT_ARV_FICHA_STOCK, bounds);
+        buildShell(REPORT_ARV_BALANCETE_DIARIO, bounds);
         // create the composites
         createMyGroups();
     }
@@ -99,7 +99,7 @@ public class BalanceteDiario extends GenericReportGui {
     @Override
     protected void createCompHeader() {
         iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
-        buildCompdHeader(REPORT_ARV_FICHA_STOCK, icoImage);
+        buildCompdHeader(REPORT_ARV_BALANCETE_DIARIO, icoImage);
     }
 
     /**
