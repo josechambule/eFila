@@ -1,10 +1,7 @@
 package model.manager.reports;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
@@ -62,25 +59,45 @@ public class LivroRegistoDiario extends AbstractJasperReport {
 		
 		String query = con.getLivroRegistoDiario(this.inicio, this.manutencao, this.alteraccao,dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 
-		if (this.inicio) {
-			map.put("inicia", "Inicia");
-		} else {
-			map.put("inicia", null);
-		}
-
-		if (this.manutencao) {
-			map.put("manter", "Manter");
-		} else {
-			map.put("manter", null);
-		}
-
-		if (this.alteraccao) {
-			map.put("alterar", "Alterar");
-		} else {
-			map.put("alterar", null);
-		}
+//		Vector<String> v = new Vector<String>();
+//
+//		if (this.inicio) {
+//			v.add("Inicia");
+//			v.add("Transfer de");
+//		}
+//		if (this.manutencao) {
+//			v.add("Manter");
+//			v.add("Reiniciar");
+//		}
+//		if (this.alteraccao) {
+//			v.add("Alterar");
+//		}
+//
+//		String condicao = "\'";
+//
+//		if (v.size() == 5) {
+//			for (int j = 0; j < v.size() - 1; j++) {
+//				condicao += v.get(j) + "\' , \'";
+//			}
+//
+//			condicao += v.get(v.size() - 1) + "\'";
+//		}
+//
+//		if (v.size() == 2) {
+//			for (int j = 0; j < v.size() - 1; j++) {
+//				condicao += v.get(j) + "\' , \'";
+//			}
+//
+//			condicao += v.get(v.size() - 1) + "\'";
+//		}
+//
+//		if (v.size() == 1) {
+//
+//			condicao += v.get(0) + "\'";
+//		}
 
 		map.put("query",query);
+//		map.put("condicao",condicao);
 		map.put("path", getReportPath());
 		map.put("provincia","Zambézia");
 		map.put("distrito","Nicoadala");

@@ -53,31 +53,37 @@
 	<queryString>
 		<![CDATA[SELECT 	distinct pat.patientid, pat.firstnames,
 		pat.lastname,
-		pg_catalog.date(pre.date) dataprescricao,
-		pg_catalog.date(pack.pickupdate) dataLevantamento,
-		pack.dateexpectedstring proximoLevantamento ,
+		pg_catalog.date(p.date) dataprescricao,
+		pg_catalog.date(pa.pickupdate) dataLevantamento,
+		pg_catalog.date(to_date(pack.dateexpectedstring,'DD Mon YYYY')) proximoLevantamento ,
 		reg.regimeesquema,
 		CASE
-			WHEN pack.pickupdate >= $P{dateStart} THEN pre.tipodt
+			WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= $P{dateStart} THEN p.tipodt
 			ELSE 'Transporte'
 		END  tipodt
-FROM (select max(pre.date) predate, pat.id,max(pa.pickupdate) pickupdate, max(pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY'))) dateexpectedstring
-from package pa
-inner join packageddrugs pds on pds.parentpackage = pa.id
-inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
-inner join prescription pre on pre.id = pa.prescription
-inner join patient pat ON pre.patient=pat.id
-where (pg_catalog.date(pa.pickupdate) >= $P{dateStart} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd}) OR
-(pg_catalog.date(pa.pickupdate) < $P{dateStart} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dateEnd})
-GROUP BY 2 order by 2) pack
-inner join prescription pre on pre.date = pack.predate and pre.patient=pack.id
-inner join patient pat on pat.id = pack.id
-INNER JOIN regimeterapeutico reg ON pre.regimeid=reg.regimeid
-INNER JOIN (SELECT MAX (startdate),patient, episode.startreason
-			 from episode WHERE stopdate is null
-			 GROUP BY 2,3
-) visit on visit.patient = pack.id
-WHERE pre.dispensatrimestral = 1 and (visit.startreason not like '%nsito%' and visit.startreason not like '%ternidade%')
+FROM  (
+	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(visit.id) episode,
+	pat.id 	from package pa
+	inner join packageddrugs pds on pds.parentpackage = pa.id
+	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
+	inner join prescription pre on pre.id = pa.prescription
+	inner join patient pat ON pre.patient=pat.id
+	INNER JOIN (SELECT MAX (startdate), patient, id
+				from episode WHERE stopdate is null
+				GROUP BY 2,3) visit on visit.patient = pat.id
+	where (pg_catalog.date(pa.pickupdate) >= $P{dateStart} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd})
+	OR (pg_catalog.date(pa.pickupdate) < $P{dateStart} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dateEnd}
+		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer))::date >= $P{dateStart}
+		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer))::date <= $P{dateEnd}
+	   )
+	   GROUP BY 5 order by 5) pack
+	   inner join prescription p on p.date = pack.predate and p.patient=pack.id
+	   inner join patient pat on pat.id = pack.id
+	   inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate
+	   inner join linhat l on l.linhaid = p.linhaid
+	   inner join regimeterapeutico reg on reg.regimeid = p.regimeid
+	   inner join episode ep on ep.id = pack.episode
+	   WHERE p.dispensatrimestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%')
 order by 8]]>
 	</queryString>
 	<field name="patientid" class="java.lang.String"/>

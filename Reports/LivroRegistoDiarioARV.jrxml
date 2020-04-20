@@ -55,7 +55,6 @@
 	<parameter name="mes2" class="java.lang.String"/>
 	<parameter name="query" class="java.lang.String"/>
 	<parameter name="provincia" class="java.lang.String"/>
-	<parameter name="parameter1" class="java.lang.String"/>
 	<parameter name="distrito" class="java.lang.String"/>
 	<parameter name="alterar" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Alterar"]]></defaultValueExpression>
@@ -66,101 +65,27 @@
 	<parameter name="inicia" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Inicia"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="condicao" class="java.lang.String">
+		<defaultValueExpression><![CDATA["'Inicia' , 'Transfer de' , 'Manter' , 'Reiniciar' , 'Alterar'"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[SELECT DISTINCT dispensas_e_prescricoes.nid, patient.firstnames as nome, patient.lastname as apelido,
-		 dispensas_e_prescricoes.tipotarv,
-		   dispensas_e_prescricoes.regime,
-		 CASE
-		 WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT'
-		 WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS'
-		 ELSE 'DM'
-		  END AS tipodispensa,
-		 CASE WHEN dispensas_e_prescricoes.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep,
-		 CASE WHEN dispensas_e_prescricoes.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe,
-		 CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro,
-		 CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove,
-		 CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze,
-		 CASE WHEN EXTRACT(year FROM age(current_date,patient.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15,
-		   dispensas_e_prescricoes.datalevantamento,
-		    dispensas_e_prescricoes.dataproximolevantamento,
-		 dispensas_e_prescricoes.linhanome,
-		 dispensas_e_prescricoes.packid as packid
-		    FROM
-		  (SELECT
-		  dispensa_packege.nid ,
-		    prescription_package.tipotarv,
-		    prescription_package.regime,
-		 prescription_package.dispensatrimestral,
-		 prescription_package.dispensasemestral,
-		    dispensa_packege.datalevantamento,
-		    dispensa_packege.dataproximolevantamento,
-	     prescription_package.linhanome,
-	     prescription_package.prep,
-	     prescription_package.ppe,
-		 prescription_package.packid
-		 	FROM
-		 	(
-		   SELECT
-		 		prescription.id, prescription.prep, prescription.ppe, prescription.dispensatrimestral AS dispensatrimestral, prescription.dispensasemestral AS dispensasemestral,
-		 package.packageid,package.id as packid ,prescription.reasonforupdate as tipotarv, regimeterapeutico.regimeesquema as regime, linhat.linhanome
-		 	 FROM
-		 	 prescription,    package , regimeterapeutico, linhat
-		  WHERE
-		 prescription.id = package.prescription
-		  AND    	 prescription.ppe='F'
-		 	AND 	prescription.regimeid=regimeterapeutico.regimeid
-		 AND prescription.linhaid = linhat.linhaid
-		 AND (prescription.reasonforupdate = $P{inicia} OR  prescription.reasonforupdate = $P{manter}  OR prescription.reasonforupdate = $P{alterar})
-
-		 	 )as prescription_package,
-		 	 (
-		 	 SELECT
-		 	 packagedruginfotmp.patientid as nid,
-		 	 packagedruginfotmp.packageid,
-		 	 packagedruginfotmp.dispensedate as datalevantamento,
-		  	 to_date(packagedruginfotmp.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento
-		  	 FROM
-		  	 package, packagedruginfotmp
-		 	 WHERE
-		 	 package.packageid=packagedruginfotmp.packageid
-		 	 AND packagedruginfotmp.dispensedate::timestamp::date >= $P{date}::timestamp::date
-			AND  packagedruginfotmp.dispensedate::timestamp::date < ($P{dateEnd}::date + INTERVAL '1 day')::timestamp::date
-		 	) as dispensa_packege,
-		     (
-		     select packagedruginfotmp.patientid,
-		 	  max(packagedruginfotmp.dispensedate) as lastdispense
-		 	 FROM
-		 	 package, packagedruginfotmp
-		  WHERE
-		  package.packageid=packagedruginfotmp.packageid
-		 	 AND packagedruginfotmp.dispensedate::timestamp::date >= $P{date}::timestamp::date
-			 AND  packagedruginfotmp.dispensedate::timestamp::date <($P{dateEnd}::date + INTERVAL '1 day')::timestamp::date
-		   group by packagedruginfotmp.patientid
-		       ) as ultimadatahora
-		  	 WHERE
-		  	 dispensa_packege.packageid=prescription_package.packageid
-		 	 and
-		    dispensa_packege.datalevantamento=ultimadatahora.lastdispense
-		    ) as dispensas_e_prescricoes
-		     ,
-		     patient
-		    where
-		    dispensas_e_prescricoes.nid=patient.patientid;]]>
+		<![CDATA[$P!{query}]]>
 	</queryString>
+	<field name="patient" class="java.lang.Integer"/>
 	<field name="nid" class="java.lang.String"/>
 	<field name="nome" class="java.lang.String"/>
 	<field name="apelido" class="java.lang.String"/>
 	<field name="tipotarv" class="java.lang.String"/>
 	<field name="regime" class="java.lang.String"/>
 	<field name="tipodispensa" class="java.lang.String"/>
+	<field name="datalevantamento" class="java.sql.Date"/>
+	<field name="dataproximolevantamento" class="java.sql.Date"/>
 	<field name="prep" class="java.lang.String"/>
 	<field name="ppe" class="java.lang.String"/>
 	<field name="zeroquatro" class="java.lang.String"/>
 	<field name="cinconove" class="java.lang.String"/>
 	<field name="dezcatorze" class="java.lang.String"/>
 	<field name="maior15" class="java.lang.String"/>
-	<field name="datalevantamento" class="java.sql.Timestamp"/>
-	<field name="dataproximolevantamento" class="java.sql.Date"/>
 	<field name="linhanome" class="java.lang.String"/>
 	<field name="packid" class="java.lang.Integer"/>
 	<variable name="test" class="java.lang.String" resetType="None">
