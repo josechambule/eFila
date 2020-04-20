@@ -37,27 +37,46 @@
 		<defaultValueExpression><![CDATA[new Date("2018/01/20")]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select distinct p.id as id,p.patientId as patientid, p.dateOfBirth AS dob,
-p.firstnames as nome,
-p.lastname as apelido,
+		<![CDATA[select distinct pat.id as id,
+pat.patientId as patientid,
+pat.dateOfBirth AS dob,
+pat.firstnames as nome,
+pat.lastname as apelido,
 c.clinicName as clinic,
-p.cellphone as cellno,
-date_part('year',age(p.dateofbirth))::Integer as age,
-(p.address1 ||' '||p.address2||' '||p.address3) as endereco,
-CASE WHEN (p.sex = 'F' OR p.sex = 'f')  THEN 'Feminino'
-WHEN (p.sex = 'M' OR p.sex = 'm') THEN 'Masculino'
+pat.cellphone as cellno,
+EXTRACT(year FROM age($P{dataFinal},pat.dateofbirth))::Integer as age,
+(pat.address1 ||' '||pat.address2||' '||pat.address3) as endereco,
+CASE WHEN (pat.sex = 'F' OR pat.sex = 'f')  THEN 'Feminino'
+WHEN (pat.sex = 'M' OR pat.sex = 'm') THEN 'Masculino'
 ELSE 'Outro'
 END as sex,
-rt.regimeesquema as esquematerapeutico,
+reg.regimeesquema as esquematerapeutico,
 l.linhanome as linhaterapeutica,
-pr.reasonforupdate as tipoPaciente
-from Patient as p
-inner join clinic c on c.id = p.clinic
-inner join prescription pr on pr.patient = p.id
-inner join regimeterapeutico rt on rt.regimeid = pr.regimeid
-inner join linhat l on l.linhaid = pr.linhaid
-where (l.linhanome like '%2%') and pr.date between $P{date} AND $P{dataFinal}
-group by p.id,c.clinicname,l.linhanome,pr.reasonforupdate,rt.regimeesquema]]>
+p.reasonforupdate as tipoPaciente
+FROM  (
+	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid,
+	pat.id 	from package pa
+	inner join packageddrugs pds on pds.parentpackage = pa.id
+	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
+	inner join prescription pre on pre.id = pa.prescription
+	inner join patient pat ON pre.patient=pat.id
+	INNER JOIN (SELECT MAX (startdate), patient, id
+				from episode WHERE stopdate is null
+				GROUP BY 2,3) visit on visit.patient = pat.id
+	where (pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dataFinal})
+	OR (pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dataFinal}
+		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp))::integer))::date >= $P{date}
+		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp))::integer))::date <= $P{dataFinal}
+	   )
+	   GROUP BY 5 order by 5) pack
+	   inner join prescription p on p.date = pack.predate and p.patient=pack.id
+	   inner join patient pat on pat.id = pack.id
+	   inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate
+	   inner join linhat l on l.linhaid = p.linhaid
+	   inner join regimeterapeutico reg on reg.regimeid = p.regimeid
+	   inner join clinic c on c.id = pat.clinic
+	   where l.linhanome like '%2%'
+]]>
 	</queryString>
 	<field name="id" class="java.lang.Integer"/>
 	<field name="patientid" class="java.lang.String"/>
