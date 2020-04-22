@@ -26,10 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -165,9 +162,16 @@ public class HistoricoLevantamentos extends GenericReportGui {
 				 
 				Date theStartDate = calendarStart.getCalendar().getTime(); 
 			
-				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-				
-				//theStartDate = sdf.parse(strTheDate);
+				Date theEndDate=  calendarEnd.getCalendar().getTime();
+
+				Calendar c = Calendar.getInstance(Locale.US);
+				c.setLenient(true);
+				c.setTime(theStartDate);
+
+				if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+					c.add(Calendar.DAY_OF_WEEK, -2);
+					theStartDate = c.getTime();
+				}
 				
 				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
 				viewReport(report);
@@ -341,7 +345,6 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	/**
 	 * Method getMonthName.
 	 *
-	 * @param intMonth
 	 *            int
 	 * @return String
 	 */
