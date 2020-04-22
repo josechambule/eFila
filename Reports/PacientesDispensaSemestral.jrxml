@@ -51,7 +51,7 @@
 	</parameter>
 	<parameter name="totalpacienteCumulativo" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[	   SELECT 	distinct pat.patientid, pat.firstnames,
+		<![CDATA[SELECT 	distinct pat.patientid, pat.firstnames,
 		pat.lastname,
 		pg_catalog.date(p.date) dataprescricao,
 		pg_catalog.date(pa.pickupdate) dataLevantamento,
@@ -72,9 +72,9 @@ FROM  (
 				from episode WHERE stopdate is null
 				GROUP BY 2,3) visit on visit.patient = pat.id
 	where (pg_catalog.date(pa.pickupdate) >= $P{dateStart} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd})
-	OR (pg_catalog.date(pa.pickupdate) < $P{dateStart} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dateEnd}
-		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer))::date >= $P{dateStart}
-		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer))::date <= $P{dateEnd}
+	OR (pg_catalog.date(pa.pickupdate) < $P{dateStart} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dateEnd}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer)/30)::date >= $P{dateStart}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp))::integer)/30)::date <= $P{dateEnd}
 	   )
 	   GROUP BY 5 order by 5) pack
 	   inner join prescription p on p.date = pack.predate and p.patient=pack.id

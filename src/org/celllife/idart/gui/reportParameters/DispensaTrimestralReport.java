@@ -26,12 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -204,7 +199,15 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
                 Date theEndDate = calendarEnd.getCalendar().getTime();
 
-//                theStartDate = sdf.parse(strTheDate);
+                Calendar c = Calendar.getInstance(Locale.US);
+                c.setLenient(true);
+                c.setTime(theStartDate);
+
+                if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+                    c.add(Calendar.DAY_OF_WEEK, -2);
+                    theStartDate = c.getTime();
+                }
+
                 DispensaTrimestral report = new DispensaTrimestral(getShell(), theStartDate, theEndDate);
                 viewReport(report);
             } catch (Exception e) {
