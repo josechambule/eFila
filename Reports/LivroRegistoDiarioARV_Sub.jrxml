@@ -4,7 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="packId" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new Integer(1087658)]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Integer(1087659)]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select drug.name, sum(packdrug.amount) as amount
