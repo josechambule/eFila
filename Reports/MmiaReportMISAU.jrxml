@@ -48,7 +48,7 @@
 	</parameter>
 	<parameter name="dateFormat" class="java.lang.String">
 		<parameterDescription><![CDATA[Exact same value as date, but formatted]]></parameterDescription>
-		<defaultValueExpression><![CDATA["2005-09-01"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["2009-09-01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pharmacist1" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="pharmacist2" class="java.lang.String" isForPrompting="false"/>

@@ -23,7 +23,7 @@
 		<defaultValueExpression><![CDATA[new Integer(18)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="date" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new Date("2017/12/21")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Date("2018/12/21")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pharmacist1" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="pharmacist2" class="java.lang.String" isForPrompting="false"/>

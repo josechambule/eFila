@@ -34,7 +34,7 @@
 	</parameter>
 	<parameter name="date" class="java.util.Date">
 		<parameterDescription><![CDATA[Date for Report]]></parameterDescription>
-		<defaultValueExpression><![CDATA[new Date("15/01/2006")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Date("15/01/2009")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="facilityName" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Desmond Tutu Centre Pharmacy"]]></defaultValueExpression>

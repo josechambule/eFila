@@ -17,10 +17,10 @@
 		<defaultValueExpression><![CDATA["JHB Gen ARV Pharmacy"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="startDate" class="java.util.Date" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new Date("2019/01/01")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Date("2019/01/21")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new Date("2019/02/01")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Date("2019/02/20")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="adultnovosdt" class="java.lang.String"/>
 	<parameter name="adultmanuntencaodt" class="java.lang.String"/>
