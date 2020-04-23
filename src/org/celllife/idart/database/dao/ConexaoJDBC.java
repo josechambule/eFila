@@ -3744,8 +3744,6 @@ public class ConexaoJDBC {
                     +"	inner join linhat l on l.linhaid = p.linhaid "
                     +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
                     +"	where p.reasonforupdate IN "+condicao+" ";
-
-            System.out.println("Livro de Registo " + query);
 	
 	return query;
 	}
@@ -3826,8 +3824,6 @@ public class ConexaoJDBC {
                 +"	inner join linhat l on l.linhaid = p.linhaid "
                 +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
                 +"	where p.reasonforupdate IN "+condicao+" ";
-
-        System.out.println("Historico de levantamento " + query);
 
         return query;
     }
@@ -3925,7 +3921,6 @@ public class ConexaoJDBC {
                 +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
                 +"	where p.reasonforupdate IN "+condicao+" ";
 
-
         List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
         ResultSet rs = st.executeQuery(query);
 
@@ -3972,7 +3967,7 @@ public class ConexaoJDBC {
         
         List<LivroRegistoDiarioXLS> diarioXLS;
 
-        Vector<String> v = new Vector<String>();
+    	Vector<String> v = new Vector<String>();
 
         if (i) {
             v.add("Inicia");
