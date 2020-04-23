@@ -55,7 +55,7 @@ l.linhanome as linhaterapeutica,
 p.reasonforupdate as tipoPaciente
 FROM  (
 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid,
-	pat.id 	from package pa
+	pat.id,  max(visit.id) episode 	from package pa
 	inner join packageddrugs pds on pds.parentpackage = pa.id
 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
 	inner join prescription pre on pre.id = pa.prescription
@@ -64,9 +64,9 @@ FROM  (
 				from episode WHERE stopdate is null
 				GROUP BY 2,3) visit on visit.patient = pat.id
 	where (pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dataFinal})
-	OR (pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dataFinal}
-		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp))::integer))::date >= $P{date}
-		and (pa.pickupdate + (INTERVAL '1 day'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp))::integer))::date <= $P{dataFinal}
+	OR (pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dataFinal}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= $P{date}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dataFinal}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= $P{dataFinal}
 	   )
 	   GROUP BY 5 order by 5) pack
 	   inner join prescription p on p.date = pack.predate and p.patient=pack.id
@@ -75,8 +75,8 @@ FROM  (
 	   inner join linhat l on l.linhaid = p.linhaid
 	   inner join regimeterapeutico reg on reg.regimeid = p.regimeid
 	   inner join clinic c on c.id = pat.clinic
-	   where l.linhanome like '%2%'
-]]>
+	   inner join episode ep on ep.id = pack.episode
+	   where l.linhanome like '%2%' and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%')]]>
 	</queryString>
 	<field name="id" class="java.lang.Integer"/>
 	<field name="patientid" class="java.lang.String"/>
