@@ -19,14 +19,12 @@
 
 package org.celllife.idart.gui.patientAdmin;
 
-import migracao.swingreverse.SyncPacientesFarmac;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.gui.patient.AddPatient;
 import org.celllife.idart.gui.patient.AddPatientIdart;
 import org.celllife.idart.gui.patient.AddPatientOpenMrs;
 import org.celllife.idart.gui.patient.MergePatients;
-import org.celllife.idart.gui.patient.ShowPAVAS;
 import org.celllife.idart.gui.platform.GenericAdminGui;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.prescription.AddPrescription;
@@ -39,8 +37,6 @@ import org.celllife.idart.misc.Screens;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -48,6 +44,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import migracao.swingreverse.SyncPacientesFarmac;
 
 /**
  */
@@ -78,9 +76,9 @@ public class PatientAdmin extends GenericAdminGui {
 
 	private Label lblPicMergePatients;
 
-	private Label lblPicPatientVisitsandStats;
+	//private Label lblPicPatientVisitsandStats;
 
-	private Button btnPatientVisitsandStats;
+	//private Button btnPatientVisitsandStats;
 
 	/**
 	 * Constructor for PatientAdmin.
@@ -350,6 +348,7 @@ public class PatientAdmin extends GenericAdminGui {
 			lblExportFarmac.setLayoutData(gdPic);
 			lblExportFarmac.setImage(ResourceUtils.getImage(iDartImage.PHARMACYUSER));
 			lblExportFarmac.addMouseListener(new MouseAdapter() {
+				@SuppressWarnings("static-access")
 				@Override
 				public void mouseUp(MouseEvent mu) {
 					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
@@ -366,6 +365,7 @@ public class PatientAdmin extends GenericAdminGui {
 			btnExportFarmac.setToolTipText(Messages.getString("Exportar Pacientes Referidos para FARMAC")); //$NON-NLS-1$
 
 			btnExportFarmac.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				@SuppressWarnings("static-access")
 				@Override
 				public void widgetSelected(
 						org.eclipse.swt.events.SelectionEvent e) {
@@ -423,10 +423,6 @@ public class PatientAdmin extends GenericAdminGui {
 	@Override
 	protected void cmdCloseSelectedWidget() {
 		cmdCloseSelected();
-	}
-
-	private void cmdViewPAVASWidgetSelected2() {
-		new ShowPAVAS(getShell());
 	}
 
 }

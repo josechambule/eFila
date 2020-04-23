@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -34,13 +35,17 @@ import model.manager.DrugManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.reports.PatientHistoryReport;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.function.AndRule;
 import org.celllife.function.DateRuleFactory;
 import org.celllife.function.IRule;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Doctor;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Episode;
@@ -75,6 +80,7 @@ import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.FloatValidator;
 import org.celllife.idart.misc.PatientBarcodeParser;
 import org.celllife.idart.misc.iDARTUtil;
+import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -1380,8 +1386,10 @@ public class AddPrescription extends GenericFormGui implements
     @Override
     protected boolean fieldsOk() {
 
+    	RestClient restClient = new RestClient();
         ConexaoJDBC conexao = new ConexaoJDBC();
         Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
+        String regimenomeespecificado = AdministrationManager.getRegimeTerapeutico(getHSession(), cmbRegime.getText()).getRegimenomeespecificado();
 
         if (oldPrescription != null)
             if (Integer.parseInt(String.valueOf(cmbLinha.getText().charAt(0))) < Integer.parseInt(String.valueOf(oldPrescription.getLinha().getLinhanome().charAt(0)))) {
@@ -1393,6 +1401,57 @@ public class AddPrescription extends GenericFormGui implements
                 errorBox.open();
                 return false;
             }
+        
+		String strProvider = cmbDoctor.getText().split(",")[1].trim() + " " + cmbDoctor.getText().split(",")[0].trim(); 
+
+        String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
+
+        String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+        
+        String facility = new ArrayList<Clinic>(LocalObjects.getUser(getHSession()).getClinics()).get(0).getClinicName().trim(); 
+        
+        // Location
+        String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
+        
+     	if (StringUtils.isEmpty(restClient.getOpenMRSResource("concept/"+regimenomeespecificado))) {
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+            m.setText("Informação sobre estado do programa");
+            m.setMessage("O uuid "+ regimenomeespecificado +" parametrizado para o regime " + cmbRegime.getText() + " não existe no OpenMRS.");
+            m.open();
+
+            return false;
+		}
+
+        try {
+            response.substring(21, 57);
+        } catch (StringIndexOutOfBoundsException siobe) {
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+            m.setText("Informação sobre estado do programa");
+            m.setMessage("Verifica se o nome do provedor " + cmbDoctor.getText().trim() + " existe no OpenMRS.");
+            m.open();
+
+            return false;
+        }
+        
+        try {
+            strFacility.substring(21, 57);
+        } catch (StringIndexOutOfBoundsException siobe) {
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+            m.setText("Informação sobre estado do programa");
+            m.setMessage("Verifica se o nome da Unidade Sanitaria " + facility + " existe no OpenMRS.");
+            m.open();
+            return false;
+        }
+        
+		if (StringUtils.isEmpty(regimenomeespecificado)) { 
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+            m.setText("Informação sobre estado do programa");
+            m.setMessage("Verifica a parametrização do uuid do regime "+ cmbRegime.getText() +" na base de dados do iDART.");
+            m.open();
+            return false;
+		}
+		
+		
 
         if ((cmbLinha.getText().trim().equals("")) || (cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
                 || (lblNewPrescriptionId.getText().trim().equals(""))

@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,17 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
-import model.manager.AdministrationManager;
-import model.manager.DrugManager;
-import model.manager.OpenmrsErrorLogManager;
-import model.manager.PackageManager;
-import model.manager.PatientManager;
-import model.manager.SearchManager;
-import model.manager.StockManager;
-import model.manager.TemporaryRecordsManager;
-import model.manager.reports.PatientHistoryReport;
-import model.nonPersistent.PatientIdAndName;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -145,6 +133,17 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import model.manager.AdministrationManager;
+import model.manager.DrugManager;
+import model.manager.OpenmrsErrorLogManager;
+import model.manager.PackageManager;
+import model.manager.PatientManager;
+import model.manager.SearchManager;
+import model.manager.StockManager;
+import model.manager.TemporaryRecordsManager;
+import model.manager.reports.PatientHistoryReport;
+import model.nonPersistent.PatientIdAndName;
 
 /**
  *
@@ -2867,20 +2866,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
             String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
 
-            String providerUuid = null;
-
-            //Verifica se o provedor retornado na prescricao existe,  se nao alerta
-            try {
-                // Provider
-                providerUuid = response.substring(21, 57);
-            } catch (StringIndexOutOfBoundsException siobe) {
-                MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-                m.setText("Informação sobre estado do programa");
-                m.setMessage("Verifica se o nome do provedor " + newPack.getPrescription().getDoctor().getFullname() + " existe no OpenMRS.");
-                m.open();
-
-                return;
-            }
+            String providerUuid = response.substring(21, 57);
 
             String facility = newPack.getClinic().getClinicName().trim();
 
@@ -2888,28 +2874,10 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
 
             // Health Facility
-            String strFacilityUuid = null;
-
-            //Verifica se o provedor retornado na prescricao existe,  se nao alerta
-            try {
-                strFacilityUuid = strFacility.substring(21, 57);
-            } catch (StringIndexOutOfBoundsException siobe) {
-                MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-                m.setText("Informação sobre estado do programa");
-                m.setMessage("Verifica se o nome da Unidade Sanitaria " + newPack.getClinic().getClinicName() + " existe no OpenMRS.");
-                m.open();
-                return;
-            }
+            String strFacilityUuid = strFacility.substring(21, 57);
 
             // Regimen
             String regimenAnswer = newPack.getPrescription().getRegimeTerapeutico().getRegimenomeespecificado().trim();
-
-            // String strRegimenAnswer =
-            // restClient.getOpenMRSResource("concept?q="+StringUtils.replace(regimenAnswer,
-            // " ", "%20"));
-
-            // Regimen answer Uuid
-            // String strRegimenAnswerUuid = strRegimenAnswer.substring(21, 57);
 
             List<PrescribedDrugs> prescribedDrugs = newPack.getPrescription().getPrescribedDrugs();
 
@@ -2921,7 +2889,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
 
             try {
-
 
                 postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, uuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                         strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
