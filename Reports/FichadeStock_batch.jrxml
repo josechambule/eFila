@@ -200,7 +200,7 @@ where drug.id = $P{id}]]>
 	<variable name="totalString" class="java.lang.String">
 		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0) ?
 (new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()
-:(new Long($V{totalPills}.longValue()/$P{packsize}.intValue() + 1)).toString()]]></variableExpression>
+:((new Long($V{totalPills}.longValue()/$P{packsize}.intValue())) + 1)]]></variableExpression>
 	</variable>
 	<variable name="somaUnidadesRecebidas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
 		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Requisição" ) ? $V{somaUnidadesRecebidas} + $F{quantidade}.longValue() : 0)]]></variableExpression>
@@ -295,8 +295,7 @@ where drug.id = $P{id}]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[( new SimpleDateFormat("dd/MM/yyyy").format($F{datamovimento}) != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{datamovimento}) : "")
-]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[( new SimpleDateFormat("dd/MM/yyyy").format($F{datamovimento}) != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{datamovimento}) : "")]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-11" mode="Opaque" x="547" y="0" width="1" height="21" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -320,12 +319,16 @@ where drug.id = $P{id}]]>
 			</textField>
 			<textField>
 				<reportElement x="250" y="1" width="82" height="19"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[( $F{tipomovimento} != null ? $F{tipomovimento} : "")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="333" y="0" width="60" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[( $F{quantidade} != null ? $F{quantidade} : "")]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -375,7 +378,7 @@ where drug.id = $P{id}]]>
 - $V{somaUnidadesDestruidas}.longValue()*$P{packsize}.intValue()
 - $V{somaUnidadesAjustadas}.longValue()*$P{packsize}.intValue()
 - $F{destroyed}.longValue()*$P{packsize}.intValue()
-- $F{destroyedpills}.longValue())/$P{packsize}.intValue() + 1)]]></textFieldExpression>
+- $F{destroyedpills}.longValue())/$P{packsize}.intValue()) + 1]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="1" width="1" height="19"/>

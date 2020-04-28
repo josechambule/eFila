@@ -39,6 +39,8 @@ UPDATE prescription set cpn='T' where ptv = 'T';
 UPDATE prescription set dispensatrimestral = 0 where dispensatrimestral is null;
 UPDATE prescription set linhaid = (select linhaid from linhat limit 1) where linhaid is null;
 UPDATE drug SET atccode_id = '' WHERE atccode_id IS NULL;
+update drug set sidetreatment = 'F' where tipodoenca like '%ARV';
+update drug set tipodoenca = 'TARV' where tipodoenca = 'ARV';
 UPDATE regimeTerapeutico SET codigoregime = '' WHERE codigoregime IS NULL;
 UPDATE regimeTerapeutico SET regimenomeespecificado= '' WHERE regimenomeespecificado IS NULL;
 DELETE FROM simpledomain WHERE description  = 'prescription_reason';
