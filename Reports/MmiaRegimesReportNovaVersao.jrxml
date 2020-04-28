@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaRegimesReport" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MmiaRegimesReportNovaVersao" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error">
 	<property name="ireport.zoom" value="1.4483218986834392"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="date" class="java.util.Date" isForPrompting="false">
+	<parameter name="date" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="dateEnd" class="java.util.Date" isForPrompting="false">
+	<parameter name="dateEnd" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="totalpacientesfarmacia" class="java.lang.String"/>
@@ -31,7 +31,7 @@ inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
 inner join prescription pre on pre.id = pa.prescription
 inner join patient pat ON pre.patient=pat.id
 where (pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd}) OR
-(pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >= $P{dateEnd})
+(pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dateEnd})
 GROUP BY 2 order by 2) pack
 inner join prescription p on p.date = pack.predate and p.patient=pack.id
 inner join regimeterapeutico rt on rt.regimeid = p.regimeid
@@ -238,13 +238,6 @@ group by 1,2 order by 1]]>
 					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement x="65" y="0" width="198" height="20"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{regimeesquema}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement key="line-3" mode="Opaque" x="0" y="0" width="1" height="20" forecolor="#000000" backcolor="#000000"/>
 				<graphicElement fill="Solid">
@@ -263,13 +256,6 @@ group by 1,2 order by 1]]>
 					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="267" y="2" width="44" height="16"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{count}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement key="line-3" mode="Opaque" x="365" y="0" width="1" height="21" forecolor="#000000" backcolor="#000000"/>
 				<graphicElement fill="Solid">
@@ -277,11 +263,25 @@ group by 1,2 order by 1]]>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="1" y="2" width="59" height="17"/>
+				<reportElement x="72" y="0" width="191" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{regimeesquema}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="0" width="59" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="8"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{codigoregime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="267" y="1" width="46" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{count}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
