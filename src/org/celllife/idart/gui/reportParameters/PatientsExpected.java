@@ -110,7 +110,7 @@ public class PatientsExpected extends GenericReportGui {
 	private void createGrpClinicSelection() {
 
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("Configura��o do Relat�rio de Pacientes Esperados em um dia");
+		grpClinicSelection.setText("Configuração do Relatório de Pacientes Esperados em um dia");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(60, 69, 465, 107));
 
@@ -168,13 +168,13 @@ public class PatientsExpected extends GenericReportGui {
 		lblWarning = new Label(getShell(), SWT.CENTER);
 		lblWarning.setBounds(new Rectangle(60, 183, 465, 40));
 		lblWarning.setText(""
-				+ "Note que se voc� gerar este relat�rio para uma data passada, ir� incluir pacientes que s�o aguardados e que foram atendidos neste dia."
+				+ "Note que se você gerar este relatório para uma data passada, irá incluir pacientes que são aguardados e que foram atendidos neste dia."
 				+ "");
 		lblWarning.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		lblWarning.setForeground(ResourceUtils.getColor(iDartColor.RED));
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Seleccione a Data do Relat�rio:");
+		grpDateRange.setText("Seleccione a Data do Relatório:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(142, 224, 309, 211));
 
