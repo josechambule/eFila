@@ -3,8 +3,8 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="2.143588810000003"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="177"/>
+	<property name="ireport.x" value="64"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -92,7 +92,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["Este relatório mostra os pacientes esperados no dia "+ (new SimpleDateFormat("dd/MM/yyyy")).format($P{date})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="st_drug" mode="Opaque" x="20" y="107" width="104" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_drug" mode="Opaque" x="20" y="107" width="123" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -119,7 +119,7 @@
 				<text><![CDATA[US:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="st_stockOnHand" mode="Transparent" x="269" y="107" width="70" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_stockOnHand" mode="Transparent" x="282" y="107" width="72" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -133,7 +133,7 @@
 				<text><![CDATA[Data Marcada]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="st_openingBalance-2" mode="Transparent" x="124" y="107" width="145" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_openingBalance-2" mode="Transparent" x="143" y="107" width="139" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -147,7 +147,7 @@
 				<text><![CDATA[Nome]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="st_stockReceived-2" mode="Transparent" x="339" y="107" width="75" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_stockReceived-2" mode="Transparent" x="354" y="107" width="84" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -161,7 +161,7 @@
 				<text><![CDATA[Contacto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="st_outstandingOrders-1" mode="Transparent" x="414" y="107" width="120" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_outstandingOrders-1" mode="Transparent" x="438" y="107" width="96" height="40" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -217,7 +217,7 @@
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-9" stretchType="RelativeToBandHeight" mode="Transparent" x="269" y="0" width="70" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-9" stretchType="RelativeToBandHeight" mode="Transparent" x="282" y="0" width="72" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -245,7 +245,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$V{row_count}.toString()]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-10" stretchType="RelativeToBandHeight" mode="Transparent" x="20" y="0" width="104" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-10" stretchType="RelativeToBandHeight" mode="Transparent" x="20" y="0" width="123" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -259,7 +259,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientID}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-8" stretchType="RelativeToBandHeight" mode="Transparent" x="124" y="0" width="145" height="20" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField-8" stretchType="RelativeToBandHeight" mode="Transparent" x="143" y="0" width="139" height="20" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[new Boolean($P{showPatientNames}.booleanValue()==true)]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -275,7 +275,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-11" stretchType="RelativeToBandHeight" mode="Transparent" x="339" y="0" width="75" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-11" stretchType="RelativeToBandHeight" mode="Transparent" x="354" y="0" width="84" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box leftPadding="0">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -289,7 +289,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{contactno}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement stretchType="RelativeToBandHeight" x="414" y="0" width="120" height="20"/>
+				<reportElement stretchType="RelativeToBandHeight" x="438" y="0" width="96" height="20"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
