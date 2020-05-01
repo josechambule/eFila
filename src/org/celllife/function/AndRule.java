@@ -25,7 +25,7 @@ public class AndRule<T> extends AbstractRule<T> {
 	public String getDescription() {
 		String desc = rules[0].getDescription();
 		for (int i = 1; i < rules.length; i++) {
-			desc += " AND " + rules[i].getDescription();
+			desc += " e " + rules[i].getDescription();
 		}
 		return desc;
 	}
