@@ -101,7 +101,7 @@ public class PepfarReportGUI extends GenericReportGui {
 		lblWaitWhileLoading = new Label(getShell(), SWT.CENTER);
 		lblWaitWhileLoading.setBounds(new Rectangle(104, 451, 448, 21));
 		lblWaitWhileLoading
-		.setText("This report takes a while to load - please be patient.");
+		.setText("Este relatório pode levar algum tempo para executar, por favor seja paciente.");
 		lblWaitWhileLoading
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	}
@@ -128,13 +128,13 @@ public class PepfarReportGUI extends GenericReportGui {
 	private void createGrpClinicSelection() {
 
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("");
+		grpClinicSelection.setText("Unidade Sanitária");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(151, 83, 386, 123));
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(9, 25, 151, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -147,23 +147,23 @@ public class PepfarReportGUI extends GenericReportGui {
 		lblYoungCutoffAge = new Label(grpClinicSelection, SWT.NONE);
 		lblYoungCutoffAge.setBounds(new Rectangle(10, 57, 230, 21));
 		lblYoungCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblYoungCutoffAge.setText("Cutoff Age for Young Paediatric Patients:");
+		lblYoungCutoffAge.setText("Idade Mínima para Pacientes Pediátricos:");
 
 		txtYoungCutoffAge = new Text(grpClinicSelection, SWT.BORDER);
 		txtYoungCutoffAge.setBounds(new Rectangle(242, 57, 45, 20));
-		txtYoungCutoffAge.setText("5");
+		txtYoungCutoffAge.setText("0");
 		txtYoungCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblYoungCutoffYears = new Label(grpClinicSelection, SWT.NONE);
 		lblYoungCutoffYears.setBounds(new Rectangle(295, 58, 50, 20));
-		lblYoungCutoffYears.setText("years");
+		lblYoungCutoffYears.setText("Ano(s)");
 		lblYoungCutoffYears
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblCutoffAge = new Label(grpClinicSelection, SWT.NONE);
 		lblCutoffAge.setBounds(new Rectangle(10, 86, 227, 20));
 		lblCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCutoffAge.setText("Cutoff Age for Paediatric Patients:");
+		lblCutoffAge.setText("Idade Máxima para Pacientes Pediátricos:");
 
 		txtCutoffAge = new Text(grpClinicSelection, SWT.BORDER);
 		txtCutoffAge.setBounds(new Rectangle(243, 87, 43, 19));
@@ -172,7 +172,7 @@ public class PepfarReportGUI extends GenericReportGui {
 
 		lblCuttoffYears = new Label(grpClinicSelection, SWT.NONE);
 		lblCuttoffYears.setBounds(new Rectangle(295, 87, 50, 20));
-		lblCuttoffYears.setText("years");
+		lblCuttoffYears.setText("Ano(s)");
 		lblCuttoffYears.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 	}
@@ -184,7 +184,7 @@ public class PepfarReportGUI extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(68, 231, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -192,13 +192,13 @@ public class PepfarReportGUI extends GenericReportGui {
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -290,9 +290,9 @@ public class PepfarReportGUI extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 			viewReport = false;
 
@@ -301,9 +301,9 @@ public class PepfarReportGUI extends GenericReportGui {
 		if (txtYoungCutoffAge.getText().equals("")) {
 			MessageBox incorrectData = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			incorrectData.setText("Incorrect Numeric Value");
+			incorrectData.setText("Número incorreto");
 			incorrectData
-			.setMessage("The minimum days late that was entered is incorrect. Please enter a number.");
+			.setMessage("Por favor introduza um número mínimo correcto.");
 			incorrectData.open();
 			txtYoungCutoffAge.setText("");
 			txtYoungCutoffAge.setFocus();
@@ -317,9 +317,9 @@ public class PepfarReportGUI extends GenericReportGui {
 			} catch (NumberFormatException nfe) {
 				MessageBox incorrectData = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
-				incorrectData.setText("Incorrect Numeric Value");
+				incorrectData.setText("Número incorreto");
 				incorrectData
-				.setMessage("The minimum days late that was entered is incorrect. Please enter a number.");
+				.setMessage("Por favor introduza um número mínimo correcto.");
 				incorrectData.open();
 				txtYoungCutoffAge.setText("");
 				txtYoungCutoffAge.setFocus();
@@ -332,9 +332,9 @@ public class PepfarReportGUI extends GenericReportGui {
 		if (txtCutoffAge.getText().equals("")) {
 			MessageBox incorrectData = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			incorrectData.setText("Incorrect Numeric Value");
+			incorrectData.setText("Número incorreto");
 			incorrectData
-			.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+			.setMessage("Por favor introduza um número máximo correcto.");
 			incorrectData.open();
 			txtCutoffAge.setText("");
 			txtCutoffAge.setFocus();
@@ -348,9 +348,9 @@ public class PepfarReportGUI extends GenericReportGui {
 			} catch (NumberFormatException nfe) {
 				MessageBox incorrectData = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
-				incorrectData.setText("Incorrect Numeric Value");
+				incorrectData.setText("Número incorreto");
 				incorrectData
-				.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+				.setMessage("Por favor introduza um número máximo correcto.");
 				incorrectData.open();
 				txtCutoffAge.setText("");
 				txtCutoffAge.setFocus();
@@ -364,8 +364,8 @@ public class PepfarReportGUI extends GenericReportGui {
 				calendarEnd.getCalendar().getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Invalid End Date");
-			mb.setMessage("Please select an end date after the start date");
+			mb.setText("Data Fim Inválida");
+			mb.setMessage("Por favor seleccione uma data fim que é depois da data inicio");
 			mb.open();
 
 			viewReport = false;

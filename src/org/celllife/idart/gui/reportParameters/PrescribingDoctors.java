@@ -93,7 +93,7 @@ public class PrescribingDoctors extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 80, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -101,13 +101,13 @@ public class PrescribingDoctors extends GenericReportGui {
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione Data Inicio:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -187,8 +187,8 @@ public class PrescribingDoctors extends GenericReportGui {
 				.getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Invalid End Date");
-			mb.setMessage("Please select an end date after the start date");
+			mb.setText("Data Fim Inválida");
+			mb.setMessage("Por favor seleccione uma data fim que é depois da data inicio");
 			mb.open();
 		}
 		else {

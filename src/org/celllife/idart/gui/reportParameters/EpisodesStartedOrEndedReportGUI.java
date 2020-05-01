@@ -65,12 +65,12 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 
 		// the fieldName is used in the order by of a query of form 'select ep
 		// from Episode as ep order by fieldname'
-		PATIENT_ID("Patient Number", "patient.patientId"), PATIENT_NAME(
-				"Patient Name", "patient.lastname"), START_DATE(
-						"Start Date", "startDate"), START_REASON("Start Reason",
-						"startReason"), START_NOTES("Start Notes", "startNotes"), STOP_DATE(
-								"Stop Date", "stopDate"), STOP_REASON("Stop Reason",
-								"stopReason"), STOP_NOTES("Stop Notes", "stopNotes");
+		PATIENT_ID("NID", "patient.patientId"), PATIENT_NAME(
+				"Nome do Paciente", "patient.lastname"), START_DATE(
+						"Data Início", "startDate"), START_REASON("Início",
+						"startReason"), START_NOTES("Notas de Início", "startNotes"), STOP_DATE(
+								"Data Fim", "stopDate"), STOP_REASON("Fim",
+								"stopReason"), STOP_NOTES("Notas de Fim", "stopNotes");
 
 		private final String displayName;
 		private final String fieldName;
@@ -160,7 +160,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 
 		Label lblClinic = new Label(grpReportTypeAndClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(20, 28, 151, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpReportTypeAndClinicSelection, SWT.BORDER
@@ -173,7 +173,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 		Label lblStartedOrEnded = new Label(grpReportTypeAndClinicSelection,
 				SWT.NONE);
 		lblStartedOrEnded.setBounds(new Rectangle(20, 58, 151, 20));
-		lblStartedOrEnded.setText("Show all episodes ");
+		lblStartedOrEnded.setText("Todas as visitas ");
 		lblStartedOrEnded.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbStartedOrEnded = new Combo(grpReportTypeAndClinicSelection,
@@ -182,19 +182,19 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 		cmbStartedOrEnded.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbStartedOrEnded.setBackground(ResourceUtils
 				.getColor(iDartColor.WHITE));
-		cmbStartedOrEnded.add("Started during period");
-		cmbStartedOrEnded.add("Ended during period");
+		cmbStartedOrEnded.add("Início durante o período");
+		cmbStartedOrEnded.add("Fim durante o período");
 		cmbStartedOrEnded.setText(cmbStartedOrEnded.getItem(0));
 		cmbStartedOrEnded.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
 				OrderByField
 				.populateOrderByOptions(cmbOrderBy1, (cmbStartedOrEnded
-						.getText().startsWith("Started")) ? true
+						.getText().startsWith("In")) ? true
 								: false);
 				OrderByField
 				.populateOrderByOptions(cmbOrderBy2, (cmbStartedOrEnded
-						.getText().startsWith("Started")) ? true
+						.getText().startsWith("In")) ? true
 								: false);
 				cmbOrderBy2.setText(cmbOrderBy2.getItem(1));
 			}
@@ -211,7 +211,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 
 		Label lblOrderBy1 = new Label(grpOrderByFieldSelection, SWT.NONE);
 		lblOrderBy1.setBounds(new Rectangle(20, 13, 110, 20));
-		lblOrderBy1.setText("Order results by ");
+		lblOrderBy1.setText("Ordenar por ");
 		lblOrderBy1.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbOrderBy1 = new Combo(grpOrderByFieldSelection, SWT.BORDER
@@ -220,11 +220,11 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 		cmbOrderBy1.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbOrderBy1.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 		OrderByField.populateOrderByOptions(cmbOrderBy1, (cmbStartedOrEnded
-				.getText().startsWith("Started")) ? true : false);
+				.getText().startsWith("In")) ? true : false);
 
 		Label lblOrderBy2 = new Label(grpOrderByFieldSelection, SWT.NONE);
 		lblOrderBy2.setBounds(new Rectangle(270, 13, 30, 20));
-		lblOrderBy2.setText("then");
+		lblOrderBy2.setText("e");
 		lblOrderBy2.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbOrderBy2 = new Combo(grpOrderByFieldSelection, SWT.BORDER
@@ -233,7 +233,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 		cmbOrderBy2.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		cmbOrderBy2.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 		OrderByField.populateOrderByOptions(cmbOrderBy2, (cmbStartedOrEnded
-				.getText().startsWith("Started")) ? true : false);
+				.getText().startsWith("In")) ? true : false);
 		cmbOrderBy2.setText(cmbOrderBy2.getItem(1));
 	}
 
@@ -244,7 +244,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		Group grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Seleccione o Período de Reporte:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(70, 270, 545, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -252,13 +252,13 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 30,
 				250, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(283, 30,
 				250, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -348,9 +348,9 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		} else if ((cmbStartedOrEnded.getText() == null)
@@ -373,7 +373,7 @@ public class EpisodesStartedOrEndedReportGUI extends GenericReportGui {
 					c,
 					calendarStart.getCalendar().getTime(),
 					calendarEnd.getCalendar().getTime(),
-					(cmbStartedOrEnded.getText().startsWith("Started")) ? true
+					(cmbStartedOrEnded.getText().startsWith("In")) ? true
 							: false,
 							OrderByField.getByDisplayName(cmbOrderBy1.getText()).fieldName,
 							OrderByField.getByDisplayName(cmbOrderBy2.getText()).fieldName);

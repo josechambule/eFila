@@ -97,7 +97,7 @@ public class TransactionLog extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Per�odo de Tempo:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 80, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -105,13 +105,13 @@ public class TransactionLog extends GenericReportGui {
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Seleccione Data Inicial:");
+		lblStartDate.setText("Seleccione Data Inicio:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Seleccione Data Final:");
+		lblEndDate.setText("Seleccione Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -192,8 +192,8 @@ public class TransactionLog extends GenericReportGui {
 				.getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Data Final Inv�lida");
-			mb.setMessage("Por favor seleccione uma data final que � depois da data inicial");
+			mb.setText("Data Fim Inválida");
+			mb.setMessage("Por favor seleccione uma data fim que é depois da data inicio");
 			mb.open();
 		}
 		else {

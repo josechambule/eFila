@@ -122,7 +122,7 @@ public class ARVDrugUsage extends GenericReportGui {
 	private void createGrpPharmacySelection() {
 
 		grpPharmacySelection = new Group(getShell(), SWT.NONE);
-		grpPharmacySelection.setText("Pharmacy");
+		grpPharmacySelection.setText("Unidade Sanitária");
 		grpPharmacySelection.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
@@ -130,7 +130,7 @@ public class ARVDrugUsage extends GenericReportGui {
 
 		Label lblClinic = new Label(grpPharmacySelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(6, 25, 100, 20));
-		lblClinic.setText("Select pharmacy");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbPharmacy = new CCombo(grpPharmacySelection, SWT.BORDER);
@@ -150,7 +150,7 @@ public class ARVDrugUsage extends GenericReportGui {
 	private void createGrpDrugSelection() {
 
 		grpDrugSelection = new Group(getShell(), SWT.NONE);
-		grpDrugSelection.setText("Drugs:");
+		grpDrugSelection.setText("Medicamento:");
 		grpDrugSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDrugSelection.setBounds(new Rectangle(79, 330, 517, 275));
 
@@ -159,7 +159,7 @@ public class ARVDrugUsage extends GenericReportGui {
 		lblSelectDrugs.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8_ITALIC));
 		lblSelectDrugs
-		.setText("Please select a maximum of 11 drugs by clicking the checkboxes");
+		.setText("Por favor, seleccione no máximo 11 medicamentos");
 
 		createTblDrugs();
 	}
@@ -172,12 +172,12 @@ public class ARVDrugUsage extends GenericReportGui {
 		tblDrugs.setHeaderVisible(true);
 
 		tblColDrugName = new TableColumn(tblDrugs, SWT.NONE);
-		tblColDrugName.setText("Drug Name");
+		tblColDrugName.setText("Nome do Medicamento");
 		tblColDrugName.setWidth(325);
 
 		tblColPacksize = new TableColumn(tblDrugs, SWT.NONE);
 		tblColPacksize.setWidth(60);
-		tblColPacksize.setText("Packsize");
+		tblColPacksize.setText("Tamanho do frasco");
 
 		populateTblDrugs();
 
@@ -213,7 +213,7 @@ public class ARVDrugUsage extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 120, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -221,13 +221,13 @@ public class ARVDrugUsage extends GenericReportGui {
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -311,7 +311,7 @@ public class ARVDrugUsage extends GenericReportGui {
 
 		// Extra button added for clearing values from parameters
 		Button btnClear = new Button(getCompButtons(), SWT.NONE);
-		btnClear.setText("Clear");
+		btnClear.setText("Limpar");
 		btnClear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnClear
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -354,20 +354,20 @@ public class ARVDrugUsage extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Pharmacy Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		} else if (pharm == null) {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("Pharmacy not found");
+			missing.setText("A US seleccionada não foi localizada");
 			missing
-			.setMessage("There is no pharmacy called '"
+			.setMessage("Não existe nenhuma US: '"
 					+ cmbPharmacy.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+					+ "' na base de dados.");
 			missing.open();
 
 		} else {
@@ -375,16 +375,14 @@ public class ARVDrugUsage extends GenericReportGui {
 			List<Drug> drugList = getCheckedDrugs(tblDrugs);
 			if (drugList.size() == 0) {
 				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-				mb.setText("No Drugs Added");
-				mb.setMessage("Please " + "use the check boxes to select "
-						+ "up to 11 drugs to be included in this report.");
+				mb.setText("Nenhumm medicamento foi adicionado");
+				mb.setMessage("Por favor, seleccione no máximo 11 medicamentos. Use a caixa de selecção");
 				mb.open();
 
 			} else if (drugList.size() > 11) {
 				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-				mb.setText("Too Many Drugs Added");
-				mb.setMessage("Please " + "use the check boxes to select "
-						+ "up to 11 drugs to be included in this report.");
+				mb.setText("Seleccionou mais de 11 medicamentos.");
+				mb.setMessage("Por favor, seleccione no máximo 11 medicamentos. Use a caixa de selecção");
 				mb.open();
 
 			} else if (calendarStart.getCalendar().getTime().after(
@@ -392,8 +390,8 @@ public class ARVDrugUsage extends GenericReportGui {
 					.getTime())) {
 
 				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-				mb.setText("Invalid End Date");
-				mb.setMessage("Please select an end date after the start date");
+				mb.setText("Data Fim inválida");
+				mb.setMessage("A data Fim não pode ser menor que a data Inicio");
 				mb.open();
 			}
 			else {
