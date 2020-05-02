@@ -152,15 +152,15 @@ public class InaccurateEpisodes extends DataQualityBase{
 	public String getMessage() {
 		String message=null;
 		if(num == 1){
-			message="Episodes - Multiple 'New Patient'";	
+			message="Pacientes marcados como 'Novo Paciente' mais de uma vez ";
 		}else if(num == 2){
-			message="Episodes - Multiple 'Deceased'";
+			message="Pacientes marcados como 'Óbito' mais de uma vez";
 		}else if(num == 3){
-			message="Episodes - Overlapping in time";
+			message="Levantamentos com sobreposição";
 		}else if(num == 4){
-			message="Multiple Open Episodes";
+			message="Multiplas visitas marcadas";
 		}else if(num == 5){
-			message="Inconsistent Start an Stop Reasons";
+			message="Inconsistência nas notas de inicio e fim de tratamento";
 		}
 		return message;
 	}

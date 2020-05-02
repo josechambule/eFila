@@ -75,7 +75,7 @@ public class RegimenBreakdowns extends DataQualityBase {
 
 	@Override
 	public String getMessage() {
-		return "Regimen Breakdowns";
+		return "Falência Terapeutica";
 
 	}
 

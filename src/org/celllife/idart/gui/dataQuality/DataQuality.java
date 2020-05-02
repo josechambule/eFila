@@ -58,7 +58,7 @@ public class DataQuality extends GenericOthersGui {
 	 */
 	@Override
 	protected void createShell() {
-		buildShell("Data Quality Report", new Rectangle(0, 0, 600, 500));
+		buildShell("Relatório Qualidade de Dados", new Rectangle(0, 0, 600, 500));
 
 	}
 
@@ -68,7 +68,7 @@ public class DataQuality extends GenericOthersGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		buildCompHeader(" Data Quality ", iDartImage.PATIENTINFOLABEL);
+		buildCompHeader(" Qualidade de Dados ", iDartImage.PATIENTINFOLABEL);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class DataQuality extends GenericOthersGui {
 	protected void createCompButtons() {
 
 		Button btnRunData = new Button(getCompButtons(), SWT.PUSH);
-		btnRunData.setText("Run Data Quality Report");
+		btnRunData.setText("Executar Qualidade de Dados");
 		btnRunData.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRunData
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -156,7 +156,7 @@ public class DataQuality extends GenericOthersGui {
 		btnRunData.setEnabled(true);
 
 		Button btnClose = new Button(getCompButtons(), SWT.PUSH);
-		btnClose.setText("Close");
+		btnClose.setText("Fechar");
 		btnClose.setToolTipText(Messages.getString("dataquality.button.close.tooltip"));
 		btnClose
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -186,11 +186,11 @@ public class DataQuality extends GenericOthersGui {
 			new ProgressMonitorDialog(getShell()).run(true, true, dqr);
 
 			if (dqr.isReportSuccessfullyCompleted()) {
-				showMessage(MessageDialog.INFORMATION, "Report Complete",
-						"Report completed");
+				showMessage(MessageDialog.INFORMATION, "Relatório Concluído",
+						"Relatório Concluído");
 			}
 			else {
-				showMessage(MessageDialog.WARNING,"File Open", dqr.alreadyUsed());
+				showMessage(MessageDialog.WARNING,"Ficheiro aberto", dqr.alreadyUsed());
 			}
 
 			Program.launch(fileName);

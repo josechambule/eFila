@@ -91,49 +91,49 @@ public class ConexaoJDBC {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String query = " SELECT  distinct p.patient, "
-                +" 		p.reasonforupdate,  "
-                +" 		p.dispensatrimestral, "
-                +" 		p.dispensasemestral,  "
-                +" 		p.prep, "
-                +" 		p.ptv, "
-                +" 		p.dc, "
-                +" 		p.ppe, "
-                +" 		p.ce, "
-                +" 		l.linhanome, "
-                +" 		EXTRACT(year FROM age('"+endDate+"',pack.dateofbirth)) :: int dateofbirth,  "
-                +" 		ep.startreason,  "
-                +" 		CASE "
-                +" 			WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '"+startDate+"' THEN p.tipodt "
-                +" 			ELSE 'Transporte'  "
-                +" 		END  tipodt, "
-                +" 		CASE "
-                +" 			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '"+startDate+"' THEN p.tipods "
-                +" 			ELSE 'Transporte'  "
-                +" 		END  tipods, "
-                +" 		COALESCE(pack.weekssupply,0) weekssupply  "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode ";
+                + " 		p.reasonforupdate,  "
+                + " 		p.dispensatrimestral, "
+                + " 		p.dispensasemestral,  "
+                + " 		p.prep, "
+                + " 		p.ptv, "
+                + " 		p.dc, "
+                + " 		p.ppe, "
+                + " 		p.ce, "
+                + " 		l.linhanome, "
+                + " 		EXTRACT(year FROM age('" + endDate + "',pack.dateofbirth)) :: int dateofbirth,  "
+                + " 		ep.startreason,  "
+                + " 		CASE "
+                + " 			WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipodt "
+                + " 			ELSE 'Transporte'  "
+                + " 		END  tipodt, "
+                + " 		CASE "
+                + " 			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipods "
+                + " 			ELSE 'Transporte'  "
+                + " 		END  tipods, "
+                + " 		COALESCE(pack.weekssupply,0) weekssupply  "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode ";
 
         int totalpacientestransito = 0;
         int totalpacientesinicio = 0;
@@ -191,7 +191,7 @@ public class ConexaoJDBC {
 
                 // Manuntencao Transporte DT
                 if (!nonuspatient && rs.getString("tipodt") != null) {
-                    if (rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Transporte")){
+                    if (rs.getInt("dispensatrimestral") == 1 && rs.getString("tipodt").contains("Transporte")) {
                         totalpacientesmanterTransporte++;
                         mesedispennsados = mesedispennsados - rs.getInt("weekssupply");
                     }
@@ -200,7 +200,7 @@ public class ConexaoJDBC {
 
                 // Manuntencao Transporte DS
                 if (!nonuspatient && rs.getString("tipods") != null) {
-                    if (rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Transporte")){
+                    if (rs.getInt("dispensasemestral") == 1 && rs.getString("tipods").contains("Transporte")) {
                         totalpacientesmanterTransporte++;
                         mesedispennsados = mesedispennsados - rs.getInt("weekssupply");
                     }
@@ -309,29 +309,29 @@ public class ConexaoJDBC {
                 "	WHEN p.dispensasemestral = 1 AND pa.pickupdate >= '" + startDate + "' THEN p.tipods " +
                 "	ELSE 'Transporte' " +
                 "END  tipods "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode ";
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode ";
 
         int adultnovosdt = 0;
         int adultmanuntencaodt = 0;
@@ -505,42 +505,42 @@ public class ConexaoJDBC {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String query = "SELECT 	distinct pat.patientid, pat.firstnames, "
-                +"		pat.lastname, "
-                +"		pg_catalog.date(p.date) dataprescricao, "
-                +"		pg_catalog.date(pack.pickupdate) dataLevantamento, "
-                +"		pack.dateexpectedstring proximoLevantamento , "
-                +"		reg.regimeesquema, "
-                +"		CASE "
-                +"          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) = 1 from package where prescription = p.id and pickupdate <= '"+ endDate +"' ) THEN p.tipodt "
-                +"          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) > 1 from package where prescription = p.id and pickupdate <= '"+ endDate +"' ) THEN 'Manuntencao' "
-                +"			ELSE 'Transporte' "
-                +"		END  tipodt "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode "
-                +"  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +" WHERE p.dispensatrimestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
-                +" order by 8";
+                + "		pat.lastname, "
+                + "		pg_catalog.date(p.date) dataprescricao, "
+                + "		pg_catalog.date(pack.pickupdate) dataLevantamento, "
+                + "		pack.dateexpectedstring proximoLevantamento , "
+                + "		reg.regimeesquema, "
+                + "		CASE "
+                + "          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) = 1 from package where prescription = p.id and pickupdate <= '" + endDate + "' ) THEN p.tipodt "
+                + "          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) > 1 from package where prescription = p.id and pickupdate <= '" + endDate + "' ) THEN 'Manuntencao' "
+                + "			ELSE 'Transporte' "
+                + "		END  tipodt "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode "
+                + "  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " WHERE p.dispensatrimestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
+                + " order by 8";
 
         int totalpacientesmanter = 0;
         int totalpacientesnovos = 0;
@@ -587,42 +587,42 @@ public class ConexaoJDBC {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String query = "SELECT 	distinct pat.patientid, pat.firstnames, "
-                +"		pat.lastname, "
-                +"		pg_catalog.date(p.date) dataprescricao, "
-                +"		pg_catalog.date(pack.pickupdate) dataLevantamento, "
-                +"		pack.dateexpectedstring proximoLevantamento , "
-                +"		reg.regimeesquema, "
-                +"		CASE "
-                +"          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) = 1 from package where prescription = p.id and pickupdate <= '"+ endDate +"') THEN p.tipodt "
-                +"          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) > 1 from package where prescription = p.id and pickupdate <= '"+ endDate +"') THEN 'Manuntencao' "
-                +"			ELSE 'Transporte' "
-                +"		END  tipodt "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode "
-                +"  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +" WHERE p.dispensatrimestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
-                +" order by 8";
+                + "		pat.lastname, "
+                + "		pg_catalog.date(p.date) dataprescricao, "
+                + "		pg_catalog.date(pack.pickupdate) dataLevantamento, "
+                + "		pack.dateexpectedstring proximoLevantamento , "
+                + "		reg.regimeesquema, "
+                + "		CASE "
+                + "          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) = 1 from package where prescription = p.id and pickupdate <= '" + endDate + "') THEN p.tipodt "
+                + "          WHEN p.dispensatrimestral = 1 AND pack.pickupdate >= '" + startDate + "' AND (select count(id) > 1 from package where prescription = p.id and pickupdate <= '" + endDate + "') THEN 'Manuntencao' "
+                + "			ELSE 'Transporte' "
+                + "		END  tipodt "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode "
+                + "  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " WHERE p.dispensatrimestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
+                + " order by 8";
 
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         List<DispensaTrimestralSemestral> dispensaTrimestralXLS = new ArrayList<DispensaTrimestralSemestral>();
@@ -665,41 +665,41 @@ public class ConexaoJDBC {
         Map<String, Object> map = new HashMap<String, Object>();
 
         String query = "SELECT 	distinct pat.patientid, pat.firstnames, "
-                +"		pat.lastname, "
-                +"		pg_catalog.date(p.date) dataprescricao, "
-                +"		pg_catalog.date(pack.pickupdate) dataLevantamento, "
-                +"		pack.dateexpectedstring proximoLevantamento , "
-                +"		reg.regimeesquema, "
-                +"		CASE "
-                +"			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipods "
-                +"			ELSE 'Transporte' "
-                +"		END  tipods "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode "
-                +"  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +" WHERE p.dispensasemestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
-                +" order by 8";
+                + "		pat.lastname, "
+                + "		pg_catalog.date(p.date) dataprescricao, "
+                + "		pg_catalog.date(pack.pickupdate) dataLevantamento, "
+                + "		pack.dateexpectedstring proximoLevantamento , "
+                + "		reg.regimeesquema, "
+                + "		CASE "
+                + "			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipods "
+                + "			ELSE 'Transporte' "
+                + "		END  tipods "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode "
+                + "  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " WHERE p.dispensasemestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
+                + " order by 8";
 
         int totalpacientesmanter = 0;
         int totalpacientesnovos = 0;
@@ -747,41 +747,41 @@ public class ConexaoJDBC {
         Map<String, Object> map = new HashMap<String, Object>();
 
         String query = "SELECT 	distinct pat.patientid, pat.firstnames, "
-                +"		pat.lastname, "
-                +"		pg_catalog.date(p.date) dataprescricao, "
-                +"		pg_catalog.date(pack.pickupdate) dataLevantamento, "
-                +"		pack.dateexpectedstring proximoLevantamento , "
-                +"		reg.regimeesquema, "
-                +"		CASE "
-                +"			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipods "
-                +"			ELSE 'Transporte' "
-                +"		END  tipods "
-                +" FROM  "
-                +" ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
-                +" 			pat.id, max(visit.id) episode "
-                +" 	from package pa  "
-                +" 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
-                +" 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
-                +" 	inner join prescription pre on pre.id = pa.prescription  "
-                +" 	inner join patient pat ON pre.patient=pat.id  "
-                +" 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +" 				from episode WHERE stopdate is null "
-                +" 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +" 	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +" 	GROUP BY 5 order by 5) pack  "
-                +" 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +" 	inner join patient pat on pat.id = pack.id  "
-                +" 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                +" 	inner join linhat l on l.linhaid = p.linhaid  "
-                +" 	inner join episode ep on ep.id = pack.episode "
-                +"  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +" WHERE p.dispensasemestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
-                +" order by 8";
+                + "		pat.lastname, "
+                + "		pg_catalog.date(p.date) dataprescricao, "
+                + "		pg_catalog.date(pack.pickupdate) dataLevantamento, "
+                + "		pack.dateexpectedstring proximoLevantamento , "
+                + "		reg.regimeesquema, "
+                + "		CASE "
+                + "			WHEN p.dispensasemestral = 1 AND pack.pickupdate >= '" + startDate + "' THEN p.tipods "
+                + "			ELSE 'Transporte' "
+                + "		END  tipods "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pdit.dateexpectedstring) dateexpectedstring, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode "
+                + "  inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " WHERE p.dispensasemestral = 1 and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') "
+                + " order by 8";
 
         conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
         List<DispensaTrimestralSemestral> dispensaSemestralXLS = new ArrayList<DispensaTrimestralSemestral>();
@@ -2753,7 +2753,8 @@ public class ConexaoJDBC {
         return tb;
 
     }
- /**
+
+    /**
      * Devolve tb duma prescricao
      *
      * @param idpaciente
@@ -3661,94 +3662,94 @@ public class ConexaoJDBC {
         }
         return total;
     }
-    
-	    public String getLivroRegistoDiario(boolean i, boolean m,
-	            boolean a, String startDate, String endDate) {
-	
-	    	Vector<String> v = new Vector<String>();
 
-            if (i) {
-                v.add("Inicia");
-                v.add("Transfer de");
-            }
-            if (m) {
-                v.add("Manter");
-                v.add("Reiniciar");
-            }
-            if (a) {
-                v.add("Alterar");
-            }
+    public String getLivroRegistoDiario(boolean i, boolean m,
+                                        boolean a, String startDate, String endDate) {
 
-            String condicao = "(\'";
+        Vector<String> v = new Vector<String>();
 
-            if (v.size() == 5) {
-                for (int j = 0; j < v.size() - 1; j++) {
-                    condicao += v.get(j) + "\' , \'";
-                }
+        if (i) {
+            v.add("Inicia");
+            v.add("Transfer de");
+        }
+        if (m) {
+            v.add("Manter");
+            v.add("Reiniciar");
+        }
+        if (a) {
+            v.add("Alterar");
+        }
 
-                condicao += v.get(v.size() - 1) + "\')";
+        String condicao = "(\'";
+
+        if (v.size() == 5) {
+            for (int j = 0; j < v.size() - 1; j++) {
+                condicao += v.get(j) + "\' , \'";
             }
 
-            if (v.size() == 2) {
-                for (int j = 0; j < v.size() - 1; j++) {
-                    condicao += v.get(j) + "\' , \'";
-                }
+            condicao += v.get(v.size() - 1) + "\')";
+        }
 
-                condicao += v.get(v.size() - 1) + "\')";
+        if (v.size() == 2) {
+            for (int j = 0; j < v.size() - 1; j++) {
+                condicao += v.get(j) + "\' , \'";
             }
 
-            if (v.size() == 1) {
+            condicao += v.get(v.size() - 1) + "\')";
+        }
 
-                condicao += v.get(0) + "\')";
-            }
+        if (v.size() == 1) {
 
-            String query =  " SELECT  distinct p.patient, "
-                    +" pat.patientid as nid, "
-                    +" pat.firstnames as nome, "
-                    +" pat.lastname as apelido,  "
-                    +" p.reasonforupdate as tipotarv, "
-                    +" reg.regimeesquema as regime,  "
-                    +" CASE  "
-                    +" 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                    +" 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
-                    +" 	ELSE 'DM' "
-                    +" END AS tipodispensa, "
-                    +" pa.pickupdate::date as datalevantamento, "
-                    +" to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
-                    +" CASE WHEN p.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
-                    +" CASE WHEN p.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
-                    +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, "
-                    +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, "
-                    +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, "
-                    +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, "
-                    +" l.linhanome, "
-                    +" pack.packid as packid "
-                    +" FROM  ( "
-                    +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                    +" 			pat.id "
-                    +"	from package pa "
-                    +"	inner join packageddrugs pds on pds.parentpackage = pa.id "
-                    +"	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
-                    +"	inner join prescription pre on pre.id = pa.prescription  "
-                    +"	inner join patient pat ON pre.patient=pat.id  "
-                    +"	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                    +"				from episode WHERE stopdate is null "
-                    +"				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                    +"	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                    +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                    +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                    +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                    +"	   )   "
-                    +"	GROUP BY 5 order by 5) pack  "
-                    +"	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                    +"	inner join patient pat on pat.id = pack.id  "
-                    +"	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
-                    +"	inner join linhat l on l.linhaid = p.linhaid "
-                    +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                    +"	where p.reasonforupdate IN "+condicao+" ";
-	
-	return query;
-	}
+            condicao += v.get(0) + "\')";
+        }
+
+        String query = " SELECT  distinct p.patient, "
+                + " pat.patientid as nid, "
+                + " pat.firstnames as nome, "
+                + " pat.lastname as apelido,  "
+                + " p.reasonforupdate as tipotarv, "
+                + " reg.regimeesquema as regime,  "
+                + " CASE  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
+                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	ELSE 'DM' "
+                + " END AS tipodispensa, "
+                + " pa.pickupdate::date as datalevantamento, "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
+                + " CASE WHEN p.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
+                + " CASE WHEN p.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, "
+                + " l.linhanome, "
+                + " pack.packid as packid "
+                + " FROM  ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
+                + " 			pat.id "
+                + "	from package pa "
+                + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
+                + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "	inner join prescription pre on pre.id = pa.prescription  "
+                + "	inner join patient pat ON pre.patient=pat.id  "
+                + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + "				from episode WHERE stopdate is null "
+                + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + "	GROUP BY 5 order by 5) pack  "
+                + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + "	inner join patient pat on pat.id = pack.id  "
+                + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
+                + "	inner join linhat l on l.linhaid = p.linhaid "
+                + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + "	where p.reasonforupdate IN " + condicao + " ";
+
+        return query;
+    }
 
     public String getQueryHistoricoLevantamentos(boolean i, boolean m,
                                                  boolean a, String startDate, String endDate) {
@@ -3790,49 +3791,46 @@ public class ConexaoJDBC {
             condicao += v.get(0) + "\')";
         }
 
-        String query =  " SELECT  distinct p.patient, "
-                +" pat.patientid as nid, "
-                +" pat.firstnames as nome, "
-                +" pat.lastname as apelido,  "
-                +" p.reasonforupdate as tipotarv, "
-                +" reg.regimeesquema as regime,  "
-                +" CASE  "
-                +" 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                +" 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
-                +" 	ELSE 'DM' "
-                +" END AS tipodispensa, "
-                +" pa.pickupdate::date as datalevantamento, "
-                +" to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
-                +" FROM  ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                +" 			pat.id "
-                +"	from package pa "
-                +"	inner join packageddrugs pds on pds.parentpackage = pa.id "
-                +"	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
-                +"	inner join prescription pre on pre.id = pa.prescription  "
-                +"	inner join patient pat ON pre.patient=pat.id  "
-                +"	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +"				from episode WHERE stopdate is null "
-                +"				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +"	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +"	GROUP BY 5 order by 5) pack  "
-                +"	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +"	inner join patient pat on pat.id = pack.id  "
-                +"	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
-                +"	inner join linhat l on l.linhaid = p.linhaid "
-                +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +"	where p.reasonforupdate IN "+condicao+" ";
+        String query = " SELECT  distinct p.patient, "
+                + " pat.patientid as nid, "
+                + " pat.firstnames as nome, "
+                + " pat.lastname as apelido,  "
+                + " p.reasonforupdate as tipotarv, "
+                + " reg.regimeesquema as regime,  "
+                + " CASE  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
+                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	ELSE 'DM' "
+                + " END AS tipodispensa, "
+                + " pa.pickupdate::date as datalevantamento, "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
+                + " FROM  ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
+                + " 			pat.id "
+                + "	from package pa "
+                + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
+                + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "	inner join prescription pre on pre.id = pa.prescription  "
+                + "	inner join patient pat ON pre.patient=pat.id  "
+                + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + "				from episode WHERE stopdate is null "
+                + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + "	GROUP BY 5 order by 5) pack  "
+                + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + "	inner join patient pat on pat.id = pack.id  "
+                + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
+                + "	inner join linhat l on l.linhaid = p.linhaid "
+                + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + "	where p.reasonforupdate IN " + condicao + " ";
 
         return query;
     }
-    
-    
-    
-    
+
 
     /**
      * @param i
@@ -3886,42 +3884,42 @@ public class ConexaoJDBC {
             condicao += v.get(0) + "\')";
         }
 
-        String query =  " SELECT  distinct p.patient, "
-                +" pat.patientid as nid, "
-                +" pat.firstnames as nome, "
-                +" pat.lastname as apelido,  "
-                +" p.reasonforupdate as tipotarv, "
-                +" reg.regimeesquema as regime,  "
-                +" CASE  "
-                +" 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                +" 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
-                +" 	ELSE 'DM' "
-                +" END AS tipodispensa, "
-                +" pa.pickupdate::date as datalevantamento, "
-                +" to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
-                +" FROM  ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                +" 			pat.id "
-                +"	from package pa "
-                +"	inner join packageddrugs pds on pds.parentpackage = pa.id "
-                +"	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
-                +"	inner join prescription pre on pre.id = pa.prescription  "
-                +"	inner join patient pat ON pre.patient=pat.id  "
-                +"	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +"				from episode WHERE stopdate is null "
-                +"				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +"	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +"	GROUP BY 5 order by 5) pack  "
-                +"	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +"	inner join patient pat on pat.id = pack.id  "
-                +"	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
-                +"	inner join linhat l on l.linhaid = p.linhaid "
-                +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +"	where p.reasonforupdate IN "+condicao+" ";
+        String query = " SELECT  distinct p.patient, "
+                + " pat.patientid as nid, "
+                + " pat.firstnames as nome, "
+                + " pat.lastname as apelido,  "
+                + " p.reasonforupdate as tipotarv, "
+                + " reg.regimeesquema as regime,  "
+                + " CASE  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
+                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	ELSE 'DM' "
+                + " END AS tipodispensa, "
+                + " pa.pickupdate::date as datalevantamento, "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
+                + " FROM  ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
+                + " 			pat.id "
+                + "	from package pa "
+                + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
+                + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "	inner join prescription pre on pre.id = pa.prescription  "
+                + "	inner join patient pat ON pre.patient=pat.id  "
+                + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + "				from episode WHERE stopdate is null "
+                + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + "	GROUP BY 5 order by 5) pack  "
+                + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + "	inner join patient pat on pat.id = pack.id  "
+                + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
+                + "	inner join linhat l on l.linhaid = p.linhaid "
+                + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + "	where p.reasonforupdate IN " + condicao + " ";
 
         List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
         ResultSet rs = st.executeQuery(query);
@@ -3950,8 +3948,8 @@ public class ConexaoJDBC {
         return levantamentoXLSs;
 
     }
-    
-    
+
+
     /**
      * @param i
      * @param m
@@ -3966,10 +3964,10 @@ public class ConexaoJDBC {
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
-        
+
         List<LivroRegistoDiarioXLS> diarioXLS;
 
-    	Vector<String> v = new Vector<String>();
+        Vector<String> v = new Vector<String>();
 
         if (i) {
             v.add("Inicia");
@@ -4006,201 +4004,64 @@ public class ConexaoJDBC {
             condicao += v.get(0) + "\')";
         }
 
-        String query =  " SELECT  distinct p.patient, "
-                +" pat.patientid as nid, "
-                +" pat.firstnames as nome, "
-                +" pat.lastname as apelido,  "
-                +" p.reasonforupdate as tipotarv, "
-                +" reg.regimeesquema as regime,  "
-                +" CASE  "
-                +" 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                +" 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
-                +" 	ELSE 'DM' "
-                +" END AS tipodispensa, "
-                +" pa.pickupdate::date as datalevantamento, "
-                +" to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
-                +" CASE WHEN p.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
-                +" CASE WHEN p.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
-                +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, "
-                +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, "
-                +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, "
-                +" CASE WHEN EXTRACT(year FROM age('"+endDate+"',pat.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, "
-                +" l.linhanome, "
-                +" pack.packid as packid,"
-                +" drug_set.name, "
-                +" drug_set.amount "
-                +" FROM  ( "
-                +" 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                +" 			pat.id "
-                +"	from package pa "
-                +"	inner join packageddrugs pds on pds.parentpackage = pa.id "
-                +"	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
-                +"	inner join prescription pre on pre.id = pa.prescription  "
-                +"	inner join patient pat ON pre.patient=pat.id  "
-                +"	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                +"				from episode WHERE stopdate is null "
-                +"				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                +"	where (pg_catalog.date(pa.pickupdate) >= '"+startDate+"' and pg_catalog.date(pa.pickupdate) <= '"+endDate+"')  "
-                +"	OR (pg_catalog.date(pa.pickupdate) < '"+startDate+"' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '"+endDate+"'  "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '"+startDate+"' "
-                +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '"+endDate+"' "
-                +"	   )   "
-                +"	GROUP BY 5 order by 5) pack  "
-                +"	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
-                +"	inner join patient pat on pat.id = pack.id  "
-                +"	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
-                +"	inner join linhat l on l.linhaid = p.linhaid "
-                +"	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                +"  LEFT JOIN ("
-                +"      select drug.name, sum(packdrug.amount) as amount, pack.id as drugid"
-                +"      from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug,"
-                +"      package as pack,"
-                +"      prescription as pre"
-                +"      where packdrug.stock = stock.id"
-                +"      and stock.drug = drug.id"
-                +"      and packdrug.parentPackage = pack.id"
-                +"      and pack.prescription = pre.id"
-                +"      and predrug.prescription = pre.id"
-                +"      and predrug.drug = drug.id"
-                +"      group by drug.name,pack.id) drug_set ON main_dataset.packid = drug_set.drugid"
-                +"	where p.reasonforupdate IN "+condicao+" ";
-
-//        String query = "SELECT" +
-//        		"      last_dataset.nid, " +
-//        		"      last_dataset.nome, " +
-//        		"      last_dataset.apelido, " +
-//        		"      last_dataset.tipotarv, " +
-//        		"      last_dataset.regime, " +
-//        		"      last_dataset.tipodispensa, " +
-//        		"      last_dataset.prep, " +
-//        		"      last_dataset.ppe, " +
-//        		"      last_dataset.ZeroQuatro, " +
-//        		"      last_dataset.CincoNove, " +
-//        		"      last_dataset.DezCatorze, " +
-//        		"      last_dataset.Maior15, " +
-//        		"      last_dataset.datalevantamento, " +
-//        		"      last_dataset.dataproximolevantamento, " +
-//        		"      last_dataset.linhanome," +
-//        		"      last_dataset.packid," +
-//        		"      last_dataset.name," +
-//        		"      last_dataset.amount " +
-//        		"FROM" +
-//        		"(     " +
-//        		"      SELECT" +
-//        		"              main_dataset.nid, " +
-//        		"              main_dataset.nome, " +
-//        		"              main_dataset.apelido, " +
-//        		"              main_dataset.tipotarv, " +
-//        		"              main_dataset.regime, " +
-//        		"              main_dataset.tipodispensa, " +
-//        		"              main_dataset.prep, " +
-//        		"              main_dataset.ppe, " +
-//        		"              main_dataset.ZeroQuatro, " +
-//        		"              main_dataset.CincoNove, " +
-//        		"              main_dataset.DezCatorze, " +
-//        		"              main_dataset.Maior15, " +
-//        		"              main_dataset.datalevantamento, " +
-//        		"              main_dataset.dataproximolevantamento, " +
-//        		"              main_dataset.linhanome," +
-//        		"              main_dataset.packid," +
-//        		"              drug_set.name," +
-//        		"              drug_set.amount" +
-//        		"      FROM" +
-//        		"      (  " +
-//        		"        SELECT DISTINCT dispensas_e_prescricoes.nid, " +
-//        		"                        patient.firstnames AS nome, " +
-//        		"                        patient.lastname   AS apelido, " +
-//        		"                        dispensas_e_prescricoes.tipotarv, " +
-//        		"                        dispensas_e_prescricoes.regime, " +
-//        		"                        CASE WHEN dispensas_e_prescricoes.dispensatrimestral = 1 THEN 'DT' WHEN dispensas_e_prescricoes.dispensasemestral = 1 THEN 'DS' ELSE 'DM' END AS tipodispensa, " +
-//        		"                        CASE WHEN dispensas_e_prescricoes.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, " +
-//        		"                        CASE WHEN dispensas_e_prescricoes.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, " +
-//        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, " +
-//        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, " +
-//        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, " +
-//        		"                        CASE WHEN Extract(year FROM Age(current_date, patient.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, " +
-//        		"                        dispensas_e_prescricoes.datalevantamento, " +
-//        		"                        dispensas_e_prescricoes.dataproximolevantamento, " +
-//        		"                        dispensas_e_prescricoes.linhanome," +
-//        		"                        dispensas_e_prescricoes.packid as packid " +
-//        		"        FROM   (SELECT dispensa_packege.nid, " +
-//        		"                       prescription_package.tipotarv, " +
-//        		"                       prescription_package.regime, " +
-//        		"                       prescription_package.dispensatrimestral, " +
-//        		"                       prescription_package.dispensasemestral, " +
-//        		"                       dispensa_packege.datalevantamento, " +
-//        		"                       dispensa_packege.dataproximolevantamento, " +
-//        		"                       prescription_package.linhanome, " +
-//        		"                       prescription_package.prep, " +
-//        		"                       prescription_package.ppe," +
-//        		"                       prescription_package.packid " +
-//        		"                FROM   (SELECT prescription.id, " +
-//        		"                               prescription.prep, " +
-//        		"                               prescription.ppe, " +
-//        		"                               prescription.dispensatrimestral AS dispensatrimestral, " +
-//        		"                               prescription.dispensasemestral  AS dispensasemestral, " +
-//        		"                               PACKAGE.packageid,package.id as packid," +
-//        		"                               prescription.reasonforupdate    AS tipotarv, " +
-//        		"                               regimeterapeutico.regimeesquema AS regime, " +
-//        		"                               linhat.linhanome " +
-//        		"                        FROM   prescription, " +
-//        		"                               PACKAGE, " +
-//        		"                               regimeterapeutico, " +
-//        		"                               linhat " +
-//        		"                        WHERE  prescription.id = PACKAGE.prescription " +
-//        		"                               AND prescription.ppe = 'F' " +
-//        		"                               AND prescription.regimeid = regimeterapeutico.regimeid " +
-//        		"                               AND prescription.linhaid = linhat.linhaid " +
-//        		"                               AND prescription.reasonforupdate IN " +condicao+ ") AS " +
-//        		"                       prescription_package, " +
-//        		"                       (SELECT packagedruginfotmp.patientid " +
-//        		"                               AS " +
-//        		"                               nid, " +
-//        		"                               packagedruginfotmp.packageid, " +
-//        		"                               packagedruginfotmp.dispensedate " +
-//        		"                               AS " +
-//        		"                               datalevantamento, " +
-//        		"                               To_date(packagedruginfotmp.dateexpectedstring, " +
-//        		"                               'DD-Mon-YYYY') AS " +
-//        		"                               dataproximolevantamento " +
-//        		"                        FROM   PACKAGE, " +
-//        		"                               packagedruginfotmp " +
-//        		"                        WHERE  PACKAGE.packageid = packagedruginfotmp.packageid " +
-//        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
-//        		"                                   >= '"+startDate+"' :: timestamp :: DATE " +
-//        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
-//        		"                                   <= '"+endDate+"' :: timestamp :: DATE) AS dispensa_packege, " +
-//        		"                       (SELECT packagedruginfotmp.patientid, " +
-//        		"                               Max(packagedruginfotmp.dispensedate) AS lastdispense " +
-//        		"                        FROM   PACKAGE, " +
-//        		"                               packagedruginfotmp " +
-//        		"                        WHERE  PACKAGE.packageid = packagedruginfotmp.packageid " +
-//        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
-//        		"                                   >= '"+startDate+"' :: timestamp :: DATE " +
-//        		"                               AND packagedruginfotmp.dispensedate :: timestamp :: DATE " +
-//        		"                                   <= '"+endDate+"' :: timestamp :: DATE " +
-//        		"                        GROUP  BY packagedruginfotmp.patientid) AS ultimadatahora " +
-//        		"                WHERE  dispensa_packege.packageid = prescription_package.packageid " +
-//        		"                       AND dispensa_packege.datalevantamento = " +
-//        		"                           ultimadatahora.lastdispense) AS " +
-//        		"               dispensas_e_prescricoes, " +
-//        		"               patient " +
-//        		"        WHERE  dispensas_e_prescricoes.nid = patient.patientid" +
-//        		"      ) main_dataset" +
-//        		"      LEFT JOIN (" +
-//        		"      select drug.name, sum(packdrug.amount) as amount, pack.id as drugid" +
-//        		"      from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug," +
-//        		"      package as pack," +
-//        		"      prescription as pre" +
-//        		"      where packdrug.stock = stock.id" +
-//        		"      and stock.drug = drug.id" +
-//        		"      and packdrug.parentPackage = pack.id" +
-//        		"      and pack.prescription = pre.id" +
-//        		"      and predrug.prescription = pre.id" +
-//        		"      and predrug.drug = drug.id" +
-//        		"      group by drug.name,pack.id) drug_set ON main_dataset.packid = drug_set.drugid" +
-//        		") last_dataset";
-
+        String query = " SELECT  distinct p.patient, "
+                + " pat.patientid as nid, "
+                + " pat.firstnames as nome, "
+                + " pat.lastname as apelido,  "
+                + " p.reasonforupdate as tipotarv, "
+                + " reg.regimeesquema as regime,  "
+                + " CASE  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
+                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	ELSE 'DM' "
+                + " END AS tipodispensa, "
+                + " pa.pickupdate::date as datalevantamento, "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
+                + " CASE WHEN p.prep = 'T' THEN 'Sim' ELSE 'Nao' END AS prep, "
+                + " CASE WHEN p.ppe = 'T' THEN 'Sim' ELSE 'Nao' END AS ppe, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 0 AND 4 THEN 'Sim' ELSE 'Nao' END AS ZeroQuatro, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 5 AND 9 THEN 'Sim' ELSE 'Nao' END AS CincoNove, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, "
+                + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, "
+                + " l.linhanome, "
+                + " pack.packid as packid,"
+                + " drug_set.name, "
+                + " drug_set.amount "
+                + " FROM  ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
+                + " 			pat.id "
+                + "	from package pa "
+                + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
+                + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                + "	inner join prescription pre on pre.id = pa.prescription  "
+                + "	inner join patient pat ON pre.patient=pat.id  "
+                + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + "				from episode WHERE stopdate is null "
+                + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
+                + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
+                + "	   )   "
+                + "	GROUP BY 5 order by 5) pack  "
+                + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + "	inner join patient pat on pat.id = pack.id  "
+                + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
+                + "	inner join linhat l on l.linhaid = p.linhaid "
+                + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + "  LEFT JOIN ("
+                + "      select drug.name, sum(packdrug.amount) as amount, pack.id as drugid"
+                + "      from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug,"
+                + "      package as pack,"
+                + "      prescription as pre"
+                + "      where packdrug.stock = stock.id"
+                + "      and stock.drug = drug.id"
+                + "      and packdrug.parentPackage = pack.id"
+                + "      and pack.prescription = pre.id"
+                + "      and predrug.prescription = pre.id"
+                + "      and predrug.drug = drug.id"
+                + "      group by drug.name,pack.id) drug_set ON pack.packid = drug_set.drugid"
+                + "	where p.reasonforupdate IN " + condicao + " ";
 
         diarioXLS = new ArrayList<LivroRegistoDiarioXLS>();
         ResultSet rs = st.executeQuery(query);
@@ -4208,26 +4069,26 @@ public class ConexaoJDBC {
         if (rs != null) {
 
             while (rs.next()) {
-            	LivroRegistoDiarioXLS registoDiarioXLS = new LivroRegistoDiarioXLS(); 
-            	registoDiarioXLS.setPatientIdentifier(rs.getString("nid"));
-            	registoDiarioXLS.setNome(rs.getString("nome"));
-            	registoDiarioXLS.setApelido(rs.getString("apelido"));
-            	registoDiarioXLS.setZeroQuatro(rs.getString("zeroquatro"));
-            	registoDiarioXLS.setCincoNove(rs.getString("cinconove"));
-            	registoDiarioXLS.setDezCatorze(rs.getString("dezcatorze"));
-            	registoDiarioXLS.setMaiorQuinze(rs.getString("maior15"));  
-            	registoDiarioXLS.setTipoTarv(rs.getString("tipotarv"));
-            	registoDiarioXLS.setRegimeTerapeutico(rs.getString("regime"));
-            	registoDiarioXLS.setTipoDispensa(rs.getString("tipodispensa"));
-            	registoDiarioXLS.setLinha(rs.getString("linhanome")); 
-            	registoDiarioXLS.setDataLevantamento(rs.getString("datalevantamento"));
-            	registoDiarioXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
-            	registoDiarioXLS.setPpe(rs.getString("ppe"));
-            	registoDiarioXLS.setPrep(rs.getString("prep"));
-            	registoDiarioXLS.setProdutos(rs.getString("name"));
-            	registoDiarioXLS.setQuantidade(rs.getString("amount"));
+                LivroRegistoDiarioXLS registoDiarioXLS = new LivroRegistoDiarioXLS();
+                registoDiarioXLS.setPatientIdentifier(rs.getString("nid"));
+                registoDiarioXLS.setNome(rs.getString("nome"));
+                registoDiarioXLS.setApelido(rs.getString("apelido"));
+                registoDiarioXLS.setZeroQuatro(rs.getString("zeroquatro"));
+                registoDiarioXLS.setCincoNove(rs.getString("cinconove"));
+                registoDiarioXLS.setDezCatorze(rs.getString("dezcatorze"));
+                registoDiarioXLS.setMaiorQuinze(rs.getString("maior15"));
+                registoDiarioXLS.setTipoTarv(rs.getString("tipotarv"));
+                registoDiarioXLS.setRegimeTerapeutico(rs.getString("regime"));
+                registoDiarioXLS.setTipoDispensa(rs.getString("tipodispensa"));
+                registoDiarioXLS.setLinha(rs.getString("linhanome"));
+                registoDiarioXLS.setDataLevantamento(rs.getString("datalevantamento"));
+                registoDiarioXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+                registoDiarioXLS.setPpe(rs.getString("ppe"));
+                registoDiarioXLS.setPrep(rs.getString("prep"));
+                registoDiarioXLS.setProdutos(rs.getString("name"));
+                registoDiarioXLS.setQuantidade(rs.getString("amount"));
 
-            	diarioXLS.add(registoDiarioXLS);
+                diarioXLS.add(registoDiarioXLS);
             }
             rs.close();
         }
@@ -4237,7 +4098,7 @@ public class ConexaoJDBC {
 
         return diarioXLS;
     }
-    
+
 
     public String getQueryPrescricoeSemDispensas(String startDate, String endDate) {
 
@@ -4253,51 +4114,51 @@ public class ConexaoJDBC {
 
         return query;
     }
-    
+
     public List<PrescricaoSemFilaXLS> getQueryPrescricoeSemDispensasXLS(String startDate, String endDate) {
 
-    	List<PrescricaoSemFilaXLS> prescricaoSemFilaXLSs = new ArrayList<PrescricaoSemFilaXLS>();
-    	
+        List<PrescricaoSemFilaXLS> prescricaoSemFilaXLSs = new ArrayList<PrescricaoSemFilaXLS>();
+
         try {
-			conecta(iDartProperties.hibernateUsername,
-			        iDartProperties.hibernatePassword);
-			
-			String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" +
-					" FROM prescription pr\r\n" +
-					" INNER JOIN patient pa ON pa.id=pr.patient\r\n" +
-					" WHERE pr.id NOT IN (\r\n" +
-					" SELECT prescription FROM package\r\n" +
-					")\r\n" +
-					" AND pr.date::timestamp::date >= '" + startDate + "'::timestamp::date\r\n" +
-					" AND pr.date::timestamp::date <= '" + endDate + "'::timestamp::date\r\n" +
-					" AND pr.current='T';";
-						
-			ResultSet rs = st.executeQuery(query);
-			
-			if (rs != null) {
-				
-				while (rs.next()) {
-					PrescricaoSemFilaXLS prescricaoSemFilaXLS = new PrescricaoSemFilaXLS();
-					prescricaoSemFilaXLS.setPatientIdentifier(rs.getString("nid"));
-					prescricaoSemFilaXLS.setNome(rs.getString("firstname"));
-					prescricaoSemFilaXLS.setApelido(rs.getString("lastname"));
-					prescricaoSemFilaXLS.setUuidOpenmrs(rs.getString("uuid"));
-					prescricaoSemFilaXLS.setDataPrescricao(rs.getString("dataprescricao"));
-					
-					prescricaoSemFilaXLSs.add(prescricaoSemFilaXLS);
-				}
-				rs.close();
-			}
-			
-			st.close();
-			conn_db.close();
-			
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-    	
-        
-		return prescricaoSemFilaXLSs;
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "SELECT pa.patientid nid, pa.firstnames firstname, pa.lastname lastname,pa.uuidopenmrs uuid,pr.date dataprescricao \r\n" +
+                    " FROM prescription pr\r\n" +
+                    " INNER JOIN patient pa ON pa.id=pr.patient\r\n" +
+                    " WHERE pr.id NOT IN (\r\n" +
+                    " SELECT prescription FROM package\r\n" +
+                    ")\r\n" +
+                    " AND pr.date::timestamp::date >= '" + startDate + "'::timestamp::date\r\n" +
+                    " AND pr.date::timestamp::date <= '" + endDate + "'::timestamp::date\r\n" +
+                    " AND pr.current='T';";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    PrescricaoSemFilaXLS prescricaoSemFilaXLS = new PrescricaoSemFilaXLS();
+                    prescricaoSemFilaXLS.setPatientIdentifier(rs.getString("nid"));
+                    prescricaoSemFilaXLS.setNome(rs.getString("firstname"));
+                    prescricaoSemFilaXLS.setApelido(rs.getString("lastname"));
+                    prescricaoSemFilaXLS.setUuidOpenmrs(rs.getString("uuid"));
+                    prescricaoSemFilaXLS.setDataPrescricao(rs.getString("dataprescricao"));
+
+                    prescricaoSemFilaXLSs.add(prescricaoSemFilaXLS);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return prescricaoSemFilaXLSs;
     }
 
     public void insere_sync_temp_dispense() {
@@ -4749,44 +4610,44 @@ public class ConexaoJDBC {
                     iDartProperties.hibernatePassword);
 
             String query = "select distinct pat.id as id, "
-                    +"pat.patientId as nid, "
-                    +"pat.dateOfBirth AS dob, "
-                    +"pat.firstnames || ' ' || pat.lastname as nome, "
-                    +"c.clinicName as clinic, "
-                    +"pat.cellphone as cellno, "
-                    +"EXTRACT(year FROM age('" + dataFim + "',pat.dateofbirth))::Integer as idade, "
-                    +"(pat.address1 ||' '||pat.address2||' '||pat.address3) as endereco, "
-                    +"CASE WHEN (pat.sex = 'F' OR pat.sex = 'f')  THEN 'Feminino' "
-                    +"WHEN (pat.sex = 'M' OR pat.sex = 'm') THEN 'Masculino' "
-                    +"ELSE 'Outro' "
-                    +"END as sex, "
-                    +"reg.regimeesquema as esquematerapeutico, "
-                    +"l.linhanome as linhaterapeutica, "
-                    +"p.reasonforupdate as tipoPaciente "
-                    +"FROM  ( "
-                    +"	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                    +"	pat.id,  max(visit.id) episode 	from package pa "
-                    +"	inner join packageddrugs pds on pds.parentpackage = pa.id "
-                    +"	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
-                    +"	inner join prescription pre on pre.id = pa.prescription "
-                    +"	inner join patient pat ON pre.patient=pat.id "
-                    +"	INNER JOIN (SELECT MAX (startdate), patient, id "
-                    +"				from episode WHERE stopdate is null "
-                    +"				GROUP BY 2,3) visit on visit.patient = pat.id "
-                    +"	where (pg_catalog.date(pa.pickupdate) >= '" + dataInicio + "' and pg_catalog.date(pa.pickupdate) <= '" + dataFim + "') "
-                    +"	OR (pg_catalog.date(pa.pickupdate) < '" + dataInicio + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + dataFim + "' "
-                    +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + dataInicio + "' "
-                    +"		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + dataFim + "' "
-                    +"	   ) "
-                    +"	   GROUP BY 5 order by 5) pack "
-                    +"	   inner join prescription p on p.date = pack.predate and p.patient=pack.id "
-                    +"	   inner join patient pat on pat.id = pack.id "
-                    +"	   inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
-                    +"	   inner join linhat l on l.linhaid = p.linhaid "
-                    +"	   inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
-                    +"	   inner join clinic c on c.id = pat.clinic "
-                    +"	   inner join episode ep on ep.id = pack.episode "
-                    +"	   where l.linhanome like '%2%' and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') ";
+                    + "pat.patientId as nid, "
+                    + "pat.dateOfBirth AS dob, "
+                    + "pat.firstnames || ' ' || pat.lastname as nome, "
+                    + "c.clinicName as clinic, "
+                    + "pat.cellphone as cellno, "
+                    + "EXTRACT(year FROM age('" + dataFim + "',pat.dateofbirth))::Integer as idade, "
+                    + "(pat.address1 ||' '||pat.address2||' '||pat.address3) as endereco, "
+                    + "CASE WHEN (pat.sex = 'F' OR pat.sex = 'f')  THEN 'Feminino' "
+                    + "WHEN (pat.sex = 'M' OR pat.sex = 'm') THEN 'Masculino' "
+                    + "ELSE 'Outro' "
+                    + "END as sex, "
+                    + "reg.regimeesquema as esquematerapeutico, "
+                    + "l.linhanome as linhaterapeutica, "
+                    + "p.reasonforupdate as tipoPaciente "
+                    + "FROM  ( "
+                    + "	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
+                    + "	pat.id,  max(visit.id) episode 	from package pa "
+                    + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
+                    + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
+                    + "	inner join prescription pre on pre.id = pa.prescription "
+                    + "	inner join patient pat ON pre.patient=pat.id "
+                    + "	INNER JOIN (SELECT MAX (startdate), patient, id "
+                    + "				from episode WHERE stopdate is null "
+                    + "				GROUP BY 2,3) visit on visit.patient = pat.id "
+                    + "	where (pg_catalog.date(pa.pickupdate) >= '" + dataInicio + "' and pg_catalog.date(pa.pickupdate) <= '" + dataFim + "') "
+                    + "	OR (pg_catalog.date(pa.pickupdate) < '" + dataInicio + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + dataFim + "' "
+                    + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + dataInicio + "' "
+                    + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + dataFim + "' "
+                    + "	   ) "
+                    + "	   GROUP BY 5 order by 5) pack "
+                    + "	   inner join prescription p on p.date = pack.predate and p.patient=pack.id "
+                    + "	   inner join patient pat on pat.id = pack.id "
+                    + "	   inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                    + "	   inner join linhat l on l.linhaid = p.linhaid "
+                    + "	   inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                    + "	   inner join clinic c on c.id = pat.clinic "
+                    + "	   inner join episode ep on ep.id = pack.episode "
+                    + "	   where l.linhanome like '%2%' and (ep.startreason not like '%nsito%' and ep.startreason not like '%ternidade%') ";
 
 
             ResultSet rs = st.executeQuery(query);
@@ -4987,194 +4848,194 @@ public class ConexaoJDBC {
         return absenteeForSupportCallsXLS;
 
     }
-    
-    
+
+
     public List<FollowupFaulty> lostToFollowupFaultyQuartelyLayOff(String minDays, String maxDays, String date, String clinicid) {
-    	
+
         List<FollowupFaulty> faultyQuartelyLayOffs = new ArrayList<FollowupFaulty>();
 
-    	try {
-    	
-    	conecta(iDartProperties.hibernateUsername,
-                iDartProperties.hibernatePassword);
-    	
-    	String query = "select pat.patientid as patID, "+
-    		    "(pat.firstnames||', '|| pat.lastname) as name, "+
-    		    "pat.nextofkinname as supportername, "+
-    		    "pat.nextofkinphone as supporterphone, "+
-    		    "pat.cellphone as cellno, "+
-    		    "pat.homephone as homeno, "+
-    		    "pat.workphone as workno, "+
-    		    "date_part('year',age(pat.dateofbirth))::Integer as age, "+
-    		    "app.appointmentDate::date as dateexpected, "+
-    		    "('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected, "+
-    		    "CASE "+
-    		        "WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
-    		        "ELSE "+
-    		    	"CASE "+
-    		    	    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
-    		                  "ELSE null "+
-    		        	"END "+
-    		    "END "+
-    		      "AS datelostfollowup, "+
-    		      "CASE "+
-    		        "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
-    		        "ELSE null "+
-    		      "END "+
-    		      "AS datereturn, "+
-    		      "pat.address1 || "+
-    		    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' "+
-    		    "else ',' || pat.address2 "+
-    		    "end "+
-    		    "|| "+
-    		    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' "+
-    		    "else ',' || pat.address3 "+
-    		    "end "+
-    		    "as address, "+
-    		    "max(app.appointmentDate) as ultimaData "+
-    		    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc "+
-    		    "where app.patient = pat.id "+
-    		    "and presc.patient = pat.id "+
-    		    "and presc.current = 'T' "+
-    		    "and presc.dispensatrimestral = 1 "+
-    		    "and idt.name = 'NID' "+
-    		    "and pi.value = pat.patientid "+
-    		    "and idt.id = pi.type_id "+
-    		    "and '"+clinicid+"' = pat.clinic "+ 
-    		    "and app.appointmentDate is not null "+
-    		    "and (app.visitdate::date is null) "+
-    		    "and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minDays+"' and '"+maxDays+"') "+ 
-    		    "and exists (select prescription.id "+
-    		    "from prescription "+
-    		    "where prescription.patient = pat.id "+
-    		    "and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null))) "+
-    		    "and exists (select id from episode where episode.patient = pat.id "+
-    		    "and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null))) "+
-    		    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 "+
-    		    "order by age asc"; 
-    	
-	        ResultSet rs = st.executeQuery(query);
-	        	
-	        if (rs != null) {
-	
-	            while (rs.next()) {
-	            	FollowupFaulty faultyQuartelyLayOff = new FollowupFaulty();
-	                faultyQuartelyLayOff.setPatientIdentifier(rs.getString("patID"));
-	                faultyQuartelyLayOff.setNome(rs.getString("name"));
-	                faultyQuartelyLayOff.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
-	                faultyQuartelyLayOff.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
-	                faultyQuartelyLayOff.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
-	                
-	                faultyQuartelyLayOffs.add(faultyQuartelyLayOff); 
-	            }
-	            rs.close();
-	        }
-	
-	        st.close();
-	        conn_db.close();
-        
+        try {
+
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select pat.patientid as patID, " +
+                    "(pat.firstnames||', '|| pat.lastname) as name, " +
+                    "pat.nextofkinname as supportername, " +
+                    "pat.nextofkinphone as supporterphone, " +
+                    "pat.cellphone as cellno, " +
+                    "pat.homephone as homeno, " +
+                    "pat.workphone as workno, " +
+                    "date_part('year',age(pat.dateofbirth))::Integer as age, " +
+                    "app.appointmentDate::date as dateexpected, " +
+                    "('" + date + "'::date-app.appointmentDate::date)::integer as dayssinceexpected, " +
+                    "CASE " +
+                    "WHEN (('" + date + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') " +
+                    "ELSE " +
+                    "CASE " +
+                    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') " +
+                    "ELSE null " +
+                    "END " +
+                    "END " +
+                    "AS datelostfollowup, " +
+                    "CASE " +
+                    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date " +
+                    "ELSE null " +
+                    "END " +
+                    "AS datereturn, " +
+                    "pat.address1 || " +
+                    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' " +
+                    "else ',' || pat.address2 " +
+                    "end " +
+                    "|| " +
+                    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' " +
+                    "else ',' || pat.address3 " +
+                    "end " +
+                    "as address, " +
+                    "max(app.appointmentDate) as ultimaData " +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc " +
+                    "where app.patient = pat.id " +
+                    "and presc.patient = pat.id " +
+                    "and presc.current = 'T' " +
+                    "and presc.dispensatrimestral = 1 " +
+                    "and idt.name = 'NID' " +
+                    "and pi.value = pat.patientid " +
+                    "and idt.id = pi.type_id " +
+                    "and '" + clinicid + "' = pat.clinic " +
+                    "and app.appointmentDate is not null " +
+                    "and (app.visitdate::date is null) " +
+                    "and (app.appointmentDate::date < '" + date + "'::date and ('" + date + "'::date - app.appointmentDate::date) between '" + minDays + "' and '" + maxDays + "') " +
+                    "and exists (select prescription.id " +
+                    "from prescription " +
+                    "where prescription.patient = pat.id " +
+                    "and (('" + date + "' between prescription.date and prescription.endDate)or(('" + date + "' > prescription.date)) and (prescription.endDate is null))) " +
+                    "and exists (select id from episode where episode.patient = pat.id " +
+                    "and (('" + date + "' between episode.startdate and episode.stopdate)or(('" + date + "' > episode.startdate)) and (episode.stopdate is null))) " +
+                    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 " +
+                    "order by age asc";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    FollowupFaulty faultyQuartelyLayOff = new FollowupFaulty();
+                    faultyQuartelyLayOff.setPatientIdentifier(rs.getString("patID"));
+                    faultyQuartelyLayOff.setNome(rs.getString("name"));
+                    faultyQuartelyLayOff.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    faultyQuartelyLayOff.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    faultyQuartelyLayOff.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
+
+                    faultyQuartelyLayOffs.add(faultyQuartelyLayOff);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    	
-		return faultyQuartelyLayOffs; 
+
+        return faultyQuartelyLayOffs;
     }
-    
-    
+
+
     public List<FollowupFaulty> lostToFollowupFaultySemiAnnual(String minDays, String maxDays, String date, String clinicid) {
-    	
+
         List<FollowupFaulty> lostToFollowupFaultySemiAnnuals = new ArrayList<FollowupFaulty>();
-    	
-    	try {
-    	
-    	conecta(iDartProperties.hibernateUsername,
-                iDartProperties.hibernatePassword);
-    	
-    	String query = "select pat.patientid as patID, "+
-    		    "(pat.firstnames||', '|| pat.lastname) as name, "+
-    		    "pat.nextofkinname as supportername, "+
-    		    "pat.nextofkinphone as supporterphone, "+
-    		    "pat.cellphone as cellno, "+
-    		    "pat.homephone as homeno, "+
-    		    "pat.workphone as workno, "+
-    		    "date_part('year',age(pat.dateofbirth))::Integer as age, "+
-    		    "app.appointmentDate::date as dateexpected, "+
-    		    "('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected, "+
-    		    "CASE "+
-    		        "WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
-    		        "ELSE "+
-    		    	"CASE "+
-    		    	    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') "+
-    		                  "ELSE null "+
-    		        	"END "+
-    		    "END "+
-    		      "AS datelostfollowup, "+
-    		      "CASE "+
-    		        "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date "+
-    		        "ELSE null "+
-    		      "END "+
-    		      "AS datereturn, "+
-    		      "pat.address1 || "+
-    		    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' "+
-    		    "else ',' || pat.address2 "+
-    		    "end "+
-    		    "|| "+
-    		    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' "+
-    		    "else ',' || pat.address3 "+
-    		    "end "+
-    		    "as address, "+
-    		    "max(app.appointmentDate) as ultimaData "+
-    		    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc "+
-    		    "where app.patient = pat.id "+
-    		    "and presc.patient = pat.id "+
-    		    "and presc.current = 'T' "+
-    		    "and presc.dispensasemestral = 1 "+
-    		    "and idt.name = 'NID' "+
-    		    "and pi.value = pat.patientid "+
-    		    "and idt.id = pi.type_id "+
-    		    "and '"+clinicid+"' = pat.clinic "+ 
-    		    "and app.appointmentDate is not null "+
-    		    "and (app.visitdate::date is null) "+
-    		    "and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minDays+"' and '"+maxDays+"') "+ 
-    		    "and exists (select prescription.id "+
-    		    "from prescription "+
-    		    "where prescription.patient = pat.id "+
-    		    "and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null))) "+
-    		    "and exists (select id from episode where episode.patient = pat.id "+
-    		    "and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null))) "+
-    		    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 "+
-    		    "order by age asc"; 
-    	
-	        ResultSet rs = st.executeQuery(query);
-	
-	        if (rs != null) {
-	
-	            while (rs.next()) {
-	            	FollowupFaulty lostToFollowupFaultySemiAnnual = new FollowupFaulty();
-	            	lostToFollowupFaultySemiAnnual.setPatientIdentifier(rs.getString("patID"));
-	            	lostToFollowupFaultySemiAnnual.setNome(rs.getString("name"));
-	            	lostToFollowupFaultySemiAnnual.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
-	            	lostToFollowupFaultySemiAnnual.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
-	            	lostToFollowupFaultySemiAnnual.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
-	                
-	            	lostToFollowupFaultySemiAnnuals.add(lostToFollowupFaultySemiAnnual); 
-	                
-	            }
-	            rs.close();
-	        }
-	
-	        st.close();
-	        conn_db.close();
-        
+
+        try {
+
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select pat.patientid as patID, " +
+                    "(pat.firstnames||', '|| pat.lastname) as name, " +
+                    "pat.nextofkinname as supportername, " +
+                    "pat.nextofkinphone as supporterphone, " +
+                    "pat.cellphone as cellno, " +
+                    "pat.homephone as homeno, " +
+                    "pat.workphone as workno, " +
+                    "date_part('year',age(pat.dateofbirth))::Integer as age, " +
+                    "app.appointmentDate::date as dateexpected, " +
+                    "('" + date + "'::date-app.appointmentDate::date)::integer as dayssinceexpected, " +
+                    "CASE " +
+                    "WHEN (('" + date + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days') " +
+                    "ELSE " +
+                    "CASE " +
+                    "WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days') " +
+                    "ELSE null " +
+                    "END " +
+                    "END " +
+                    "AS datelostfollowup, " +
+                    "CASE " +
+                    "WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date " +
+                    "ELSE null " +
+                    "END " +
+                    "AS datereturn, " +
+                    "pat.address1 || " +
+                    "case when ((pat.address2 is null)or(pat.address2 like ''))  then '' " +
+                    "else ',' || pat.address2 " +
+                    "end " +
+                    "|| " +
+                    "case when ((pat.address3 is null)or(pat.address3 like '')) then '' " +
+                    "else ',' || pat.address3 " +
+                    "end " +
+                    "as address, " +
+                    "max(app.appointmentDate) as ultimaData " +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc " +
+                    "where app.patient = pat.id " +
+                    "and presc.patient = pat.id " +
+                    "and presc.current = 'T' " +
+                    "and presc.dispensasemestral = 1 " +
+                    "and idt.name = 'NID' " +
+                    "and pi.value = pat.patientid " +
+                    "and idt.id = pi.type_id " +
+                    "and '" + clinicid + "' = pat.clinic " +
+                    "and app.appointmentDate is not null " +
+                    "and (app.visitdate::date is null) " +
+                    "and (app.appointmentDate::date < '" + date + "'::date and ('" + date + "'::date - app.appointmentDate::date) between '" + minDays + "' and '" + maxDays + "') " +
+                    "and exists (select prescription.id " +
+                    "from prescription " +
+                    "where prescription.patient = pat.id " +
+                    "and (('" + date + "' between prescription.date and prescription.endDate)or(('" + date + "' > prescription.date)) and (prescription.endDate is null))) " +
+                    "and exists (select id from episode where episode.patient = pat.id " +
+                    "and (('" + date + "' between episode.startdate and episode.stopdate)or(('" + date + "' > episode.startdate)) and (episode.stopdate is null))) " +
+                    "group by 1,2,3,4,5,6,7,8,9,10,11,12,13 " +
+                    "order by age asc";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    FollowupFaulty lostToFollowupFaultySemiAnnual = new FollowupFaulty();
+                    lostToFollowupFaultySemiAnnual.setPatientIdentifier(rs.getString("patID"));
+                    lostToFollowupFaultySemiAnnual.setNome(rs.getString("name"));
+                    lostToFollowupFaultySemiAnnual.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    lostToFollowupFaultySemiAnnual.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    lostToFollowupFaultySemiAnnual.setDataRegressouUnidadeSanitaria(rs.getString("datereturn"));
+
+                    lostToFollowupFaultySemiAnnuals.add(lostToFollowupFaultySemiAnnual);
+
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    	
-		return lostToFollowupFaultySemiAnnuals; 
+
+        return lostToFollowupFaultySemiAnnuals;
     }
 
     /**
@@ -5197,354 +5058,364 @@ public class ConexaoJDBC {
     }
 
     /**
-     * 
-     * @param clinicid 
+     * @param clinicid
      * @param minimumDate
      * @param maximumDate
      * @param date
      */
-	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsReport(String minimumDate, String maximumDate, Date date, String clinicid) {
-		
-		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
-		
-    	try {
-			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
-			
-			
-			String query = "select" +
-					" pat.patientid as patID," +
-					" (pat.firstnames||', '|| pat.lastname) as name," +
-					" pat.nextofkinname as supportername," +
-					" pat.nextofkinphone as supporterphone," +
-					" pat.cellphone as cellno," +
-					" pat.homephone as homeno," +
-					" pat.workphone as workno," +
-					" date_part('year',age(pat.dateofbirth))::Integer as age," +
-					" app.appointmentDate::date as dateexpected," +
-					" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
-					" CASE" +
-					"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-					"    ELSE" +
-					"  CASE" +
-					"      WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-					"              ELSE null" +
-					"      END" +
-					" END" +
-					"  AS datelostfollowup," +
-					"  CASE" +
-					"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
-					"    ELSE null" +
-					"  END" +
-					"  AS datereturn," +
-					"  pat.address1 ||" +
-					" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
-					" else ',' || pat.address2" +
-					" end" +
-					" ||" +
-					" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
-					" else ',' || pat.address3" +
-					" end" +
-					" as address," +
-					" case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
-					" else 'Nao'" +
-					" end as tarv," +
-					" case when (presc.ptv <> 'F')  then 'Sim'" +
-					" else 'Nao'" +
-					" end as ptv," +
-					" case when (presc.tb <> 'F')  then 'Sim'" +
-					" else 'Nao'" +
-					" end as tb," +
-					" max(app.appointmentDate) as ultimaData" +
-					" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
-					" where app.patient = pat.id" +
-					" and presc.patient = pat.id" +
-					" and presc.\"current\" = 'T'" +
-					" and presc.tb = 'F'" +
-					" and presc.ptv = 'F'" +
-					" and presc.ccr = 'F'" +
-					" and idt.name = 'NID'" +
-					" and pi.value = pat.patientid" +
-					" and idt.id = pi.type_id" +
-					" and '"+clinicid+"' = pat.clinic" + 
-					" and app.appointmentDate is not null" +
-					" and (app.visitdate::date is null)" +
-					" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
-					" and exists (select prescription.id" +
-					" from prescription" +
-					" where prescription.patient = pat.id" +
-					" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
-					" and exists (select id from episode where episode.patient = pat.id" +
-					" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
-					" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
-					" order by age asc";
-			
-			ResultSet rs = st.executeQuery(query);
-			
-	        if (rs != null) {
-	        	
-	            while (rs.next()) {
-	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
-	            	chamadaTelefonica.setNome(rs.getString("name"));
-	            	chamadaTelefonica.setNid(rs.getString("patid"));
-	            	chamadaTelefonica.setIdade(rs.getString("age"));
-	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
-	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
-	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
-	            							: rs.getString("workno") + " (w)"));
-	            	chamadaTelefonica.setEndereco(rs.getString("address"));
-	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
-	            	chamadaTelefonica.setTb(rs.getString("tb"));
-	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
-	            	
-	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
-	            }
-	            rs.close();
-	        }
-	
-	        st.close();
-	        conn_db.close();
+    public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsReport(String minimumDate, String maximumDate, Date date, String clinicid) {
 
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	
-		return chamadaTelefonicaXLS;
-	}
-	
-	
+        List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data = dateFormat.format(date);
+
+
+        try {
+            conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+
+            String query = "select" +
+                    " pat.patientid as patID," +
+                    " (pat.firstnames||', '|| pat.lastname) as name," +
+                    " pat.nextofkinname as supportername," +
+                    " pat.nextofkinphone as supporterphone," +
+                    " pat.cellphone as cellno," +
+                    " pat.homephone as homeno," +
+                    " pat.workphone as workno," +
+                    " date_part('year',age(pat.dateofbirth))::Integer as age," +
+                    " app.appointmentDate::date as dateexpected," +
+                    " ('" + data + "'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+                    " CASE" +
+                    "    WHEN (('" + data + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "    ELSE" +
+                    "  CASE" +
+                    "      WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "              ELSE null" +
+                    "      END" +
+                    " END" +
+                    "  AS datelostfollowup," +
+                    "  CASE" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+                    "    ELSE null" +
+                    "  END" +
+                    "  AS datereturn," +
+                    "  pat.address1 ||" +
+                    " case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+                    " else ',' || pat.address2" +
+                    " end" +
+                    " ||" +
+                    " case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+                    " else ',' || pat.address3" +
+                    " end" +
+                    " as address," +
+                    " case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tarv," +
+                    " case when (presc.ptv <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as ptv," +
+                    " case when (presc.tb <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tb," +
+                    " max(app.appointmentDate) as ultimaData" +
+                    " from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+                    " where app.patient = pat.id" +
+                    " and presc.patient = pat.id" +
+                    " and presc.\"current\" = 'T'" +
+                    " and presc.tb = 'F'" +
+                    " and presc.ptv = 'F'" +
+                    " and presc.ccr = 'F'" +
+                    " and idt.name = 'NID'" +
+                    " and pi.value = pat.patientid" +
+                    " and idt.id = pi.type_id" +
+                    " and '" + clinicid + "' = pat.clinic" +
+                    " and app.appointmentDate is not null" +
+                    " and (app.visitdate::date is null)" +
+                    " and (app.appointmentDate::date < '" + data + "'::date and ('" + data + "'::date - app.appointmentDate::date) between '" + minimumDate + "' and '" + maximumDate + "')" +
+                    " and exists (select prescription.id" +
+                    " from prescription" +
+                    " where prescription.patient = pat.id" +
+                    " and (('" + data + "' between prescription.date and prescription.endDate)or(('" + data + "'::date > prescription.date)) and (prescription.endDate is null)))" +
+                    " and exists (select id from episode where episode.patient = pat.id" +
+                    " and (('" + data + "'::date between episode.startdate and episode.stopdate)or(('" + data + "'::date > episode.startdate)) and (episode.stopdate is null)))" +
+                    " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+                    " order by age asc";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+                    chamadaTelefonica.setNome(rs.getString("name"));
+                    chamadaTelefonica.setNid(rs.getString("patid"));
+                    chamadaTelefonica.setIdade(rs.getString("age"));
+                    chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " "
+                            : rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " "
+                            : rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " "
+                            : rs.getString("workno") + " (w)"));
+                    chamadaTelefonica.setEndereco(rs.getString("address"));
+                    chamadaTelefonica.setTarv(rs.getString("tarv"));
+                    chamadaTelefonica.setTb(rs.getString("tb"));
+                    chamadaTelefonica.setSmi(rs.getString("ptv"));
+
+                    chamadaTelefonicaXLS.add(chamadaTelefonica);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return chamadaTelefonicaXLS;
+    }
+
+
     /**
-     * 
-     * @param clinicid 
+     * @param clinicid
      * @param minimumDate
      * @param maximumDate
      * @param date
      */
-	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsPTV(String minimumDate, String maximumDate, Date date, String clinicid) {
-		
-		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
-		
-    	try {
-			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+    public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsPTV(String minimumDate, String maximumDate, Date date, String clinicid) {
 
-			String query = "select" +
-			" pat.patientid as patID," +
-			" (pat.firstnames||', '|| pat.lastname) as name," +
-			" pat.nextofkinname as supportername," +
-			" pat.nextofkinphone as supporterphone," +
-			" pat.cellphone as cellno," +
-			" pat.homephone as homeno," +
-			" pat.workphone as workno," +
-			" date_part('year',age(pat.dateofbirth))::Integer as age," +
-			" app.appointmentDate::date as dateexpected," +
-			" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
-			" CASE" +
-			"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-			"    ELSE" +
-			"	CASE" +
-			"	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-			"              ELSE null" +
-			"    	END" +
-			" END" +
-			"  AS datelostfollowup," +
-			"  CASE" +
-			"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
-			"    ELSE null" +
-			"  END" +
-			"  AS datereturn," +
-			"  pat.address1 ||" +
-			" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
-			" else ',' || pat.address2" +
-			" end" +
-			" ||" +
-			" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
-			" else ',' || pat.address3" +
-			" end" +
-			" as address," +
-			" case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as tarv," +
-			" case when (presc.ptv <> 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as ptv," +
-			" case when (presc.tb <> 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as tb," +
-			" max(app.appointmentDate) as ultimaData" +
-			" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
-			" where app.patient = pat.id" +
-			" and presc.patient = pat.id" +
-			" and presc.\"current\" = 'T'" +
-			" and presc.tb='T'" +
-			" and idt.name = 'NID'" +
-			" and pi.value = pat.patientid" +
-			" and idt.id = pi.type_id" +
-			" and '"+clinicid+"' = pat.clinic" +
-			" and app.appointmentDate is not null" +
-			" and (app.visitdate::date is null)" +
-			" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
-			" and exists (select prescription.id" +
-			" from prescription" +
-			" where prescription.patient = pat.id" +
-			" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
-			" and exists (select id from episode where episode.patient = pat.id" +
-			" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
-			" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
-			" order by age asc";
-			
-			ResultSet rs = st.executeQuery(query);
-			
-	        if (rs != null) {
-	        	
-	            while (rs.next()) {
-	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
-	            	chamadaTelefonica.setNome(rs.getString("name"));
-	            	chamadaTelefonica.setNid(rs.getString("patid"));
-	            	chamadaTelefonica.setIdade(rs.getString("age"));
-	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
-	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
-	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
-	            							: rs.getString("workno") + " (w)"));
-	            	chamadaTelefonica.setEndereco(rs.getString("address"));
-	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
-	            	chamadaTelefonica.setTb(rs.getString("tb"));
-	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
-	            	
-	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
-	            }
-	            rs.close();
-	        }
-	
-	        st.close();
-	        conn_db.close();
+        List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();
 
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	
-		return chamadaTelefonicaXLS;
-	}
-	
-	
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data = dateFormat.format(date);
+
+        try {
+            conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+            String query = "select" +
+                    " pat.patientid as patID," +
+                    " (pat.firstnames||', '|| pat.lastname) as name," +
+                    " pat.nextofkinname as supportername," +
+                    " pat.nextofkinphone as supporterphone," +
+                    " pat.cellphone as cellno," +
+                    " pat.homephone as homeno," +
+                    " pat.workphone as workno," +
+                    " date_part('year',age(pat.dateofbirth))::Integer as age," +
+                    " app.appointmentDate::date as dateexpected," +
+                    " ('" + data + "'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+                    " CASE" +
+                    "    WHEN (('" + data + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "    ELSE" +
+                    "	CASE" +
+                    "	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "              ELSE null" +
+                    "    	END" +
+                    " END" +
+                    "  AS datelostfollowup," +
+                    "  CASE" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+                    "    ELSE null" +
+                    "  END" +
+                    "  AS datereturn," +
+                    "  pat.address1 ||" +
+                    " case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+                    " else ',' || pat.address2" +
+                    " end" +
+                    " ||" +
+                    " case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+                    " else ',' || pat.address3" +
+                    " end" +
+                    " as address," +
+                    " case when (presc.ptv = 'F' and presc.tb = 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tarv," +
+                    " case when (presc.ptv <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as ptv," +
+                    " case when (presc.tb <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tb," +
+                    " max(app.appointmentDate) as ultimaData" +
+                    " from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+                    " where app.patient = pat.id" +
+                    " and presc.patient = pat.id" +
+                    " and presc.\"current\" = 'T'" +
+                    " and presc.tb='T'" +
+                    " and idt.name = 'NID'" +
+                    " and pi.value = pat.patientid" +
+                    " and idt.id = pi.type_id" +
+                    " and '" + clinicid + "' = pat.clinic" +
+                    " and app.appointmentDate is not null" +
+                    " and (app.visitdate::date is null)" +
+                    " and (app.appointmentDate::date < '" + data + "'::date and ('" + data + "'::date - app.appointmentDate::date) between '" + minimumDate + "' and '" + maximumDate + "')" +
+                    " and exists (select prescription.id" +
+                    " from prescription" +
+                    " where prescription.patient = pat.id" +
+                    " and (('" + data + "' between prescription.date and prescription.endDate)or(('" + data + "' > prescription.date)) and (prescription.endDate is null)))" +
+                    " and exists (select id from episode where episode.patient = pat.id" +
+                    " and (('" + data + "' between episode.startdate and episode.stopdate)or(('" + data + "' > episode.startdate)) and (episode.stopdate is null)))" +
+                    " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+                    " order by age asc";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+                    chamadaTelefonica.setNome(rs.getString("name"));
+                    chamadaTelefonica.setNid(rs.getString("patid"));
+                    chamadaTelefonica.setIdade(rs.getString("age"));
+                    chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " "
+                            : rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " "
+                            : rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " "
+                            : rs.getString("workno") + " (w)"));
+                    chamadaTelefonica.setEndereco(rs.getString("address"));
+                    chamadaTelefonica.setTarv(rs.getString("tarv"));
+                    chamadaTelefonica.setTb(rs.getString("tb"));
+                    chamadaTelefonica.setSmi(rs.getString("ptv"));
+
+                    chamadaTelefonicaXLS.add(chamadaTelefonica);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return chamadaTelefonicaXLS;
+    }
+
+
     /**
-     * 
-     * @param clinicid 
+     * @param clinicid
      * @param minimumDate
      * @param maximumDate
      * @param date
      */
-	public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsSMI(String minimumDate, String maximumDate, Date date, String clinicid) {
-		
-		List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();;
-		
-    	try {
-			conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+    public List<RegistoChamadaTelefonicaXLS> getMissedAppointmentsSMI(String minimumDate, String maximumDate, Date date, String clinicid) {
 
-			String query = "select" +
-			" pat.patientid as patID," +
-			" (pat.firstnames||', '|| pat.lastname) as name," +
-			" pat.nextofkinname as supportername," +
-			" pat.nextofkinphone as supporterphone," +
-			" pat.cellphone as cellno," +
-			" pat.homephone as homeno," +
-			" pat.workphone as workno," +
-			" date_part('year',age(pat.dateofbirth))::Integer as age," +
-			" app.appointmentDate::date as dateexpected," +
-			" ('"+date+"'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
-			" CASE" +
-			"    WHEN (('"+date+"'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-			"    ELSE" +
-			"	CASE" +
-			"	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
-			"              ELSE null" +
-			"    	END" +
-			" END" +
-			"  AS datelostfollowup," +
-			"  CASE" +
-			"    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
-			"    ELSE null" +
-			"  END" +
-			"  AS datereturn," +
-			"  pat.address1 ||" +
-			" case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
-			" else ',' || pat.address2" +
-			" end" +
-			" ||" +
-			" case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
-			" else ',' || pat.address3" +
-			" end" +
-			" as address," +
-			" case when (presc.ptv = 'F' and presc.tb = 'F' and presc.ccr = 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as tarv," +
-			" case when (presc.ptv <> 'F' OR presc.ccr <> 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as ptv," +
-			" case when (presc.tb <> 'F')  then 'Sim'" +
-			" else 'Nao'" +
-			" end as tb," +
-			" max(app.appointmentDate) as ultimaData" +
-			" from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
-			" where app.patient = pat.id" +
-			" and presc.patient = pat.id" +
-			" and presc.\"current\" = 'T'" +
-			" and (presc.ptv='T' OR presc.ccr='T')" +
-			" and idt.name = 'NID'" +
-			" and pi.value = pat.patientid" +
-			" and idt.id = pi.type_id" +
-			" and '"+clinicid+"' = pat.clinic" +
-			" and app.appointmentDate is not null" +
-			" and (app.visitdate::date is null)" +
-			" and (app.appointmentDate::date < '"+date+"'::date and ('"+date+"'::date - app.appointmentDate::date) between '"+minimumDate+"' and '"+maximumDate+"')" +
-			" and exists (select prescription.id" +
-			" from prescription" +
-			" where prescription.patient = pat.id" +
-			" and (('"+date+"' between prescription.date and prescription.endDate)or(('"+date+"' > prescription.date)) and (prescription.endDate is null)))" +
-			" and exists (select id from episode where episode.patient = pat.id" +
-			" and (('"+date+"' between episode.startdate and episode.stopdate)or(('"+date+"' > episode.startdate)) and (episode.stopdate is null)))" +
-			" group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
-			" order by age asc";
-			
-			ResultSet rs = st.executeQuery(query);
-			
-	        if (rs != null) {
-	        	
-	            while (rs.next()) {
-	            	RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
-	            	chamadaTelefonica.setNome(rs.getString("name"));
-	            	chamadaTelefonica.setNid(rs.getString("patid"));
-	            	chamadaTelefonica.setIdade(rs.getString("age"));
-	            	chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " " 
-	            			: rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " " 
-	            					: rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " " 
-	            							: rs.getString("workno") + " (w)"));
-	            	chamadaTelefonica.setEndereco(rs.getString("address"));
-	            	chamadaTelefonica.setTarv(rs.getString("tarv"));
-	            	chamadaTelefonica.setTb(rs.getString("tb"));
-	            	chamadaTelefonica.setSmi(rs.getString("ptv")); 
-	            	
-	            	chamadaTelefonicaXLS.add(chamadaTelefonica);
-	            }
-	            rs.close();
-	        }
-	
-	        st.close();
-	        conn_db.close();
+        List<RegistoChamadaTelefonicaXLS> chamadaTelefonicaXLS = new ArrayList<RegistoChamadaTelefonicaXLS>();
 
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	
-		return chamadaTelefonicaXLS;
-	}
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data = dateFormat.format(date);
+
+        try {
+            conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+
+            String query = "select" +
+                    " pat.patientid as patID," +
+                    " (pat.firstnames||', '|| pat.lastname) as name," +
+                    " pat.nextofkinname as supportername," +
+                    " pat.nextofkinphone as supporterphone," +
+                    " pat.cellphone as cellno," +
+                    " pat.homephone as homeno," +
+                    " pat.workphone as workno," +
+                    " date_part('year',age(pat.dateofbirth))::Integer as age," +
+                    " app.appointmentDate::date as dateexpected," +
+                    " ('" + data + "'::date-app.appointmentDate::date)::integer as dayssinceexpected," +
+                    " CASE" +
+                    "    WHEN (('" + data + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "    ELSE" +
+                    "	CASE" +
+                    "	    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '61 days')" +
+                    "              ELSE null" +
+                    "    	END" +
+                    " END" +
+                    "  AS datelostfollowup," +
+                    "  CASE" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date" +
+                    "    ELSE null" +
+                    "  END" +
+                    "  AS datereturn," +
+                    "  pat.address1 ||" +
+                    " case when ((pat.address2 is null)or(pat.address2 like ''))  then ''" +
+                    " else ',' || pat.address2" +
+                    " end" +
+                    " ||" +
+                    " case when ((pat.address3 is null)or(pat.address3 like '')) then ''" +
+                    " else ',' || pat.address3" +
+                    " end" +
+                    " as address," +
+                    " case when (presc.ptv = 'F' and presc.tb = 'F' and presc.ccr = 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tarv," +
+                    " case when (presc.ptv <> 'F' OR presc.ccr <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as ptv," +
+                    " case when (presc.tb <> 'F')  then 'Sim'" +
+                    " else 'Nao'" +
+                    " end as tb," +
+                    " max(app.appointmentDate) as ultimaData" +
+                    " from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt, prescription as presc" +
+                    " where app.patient = pat.id" +
+                    " and presc.patient = pat.id" +
+                    " and presc.\"current\" = 'T'" +
+                    " and (presc.ptv='T' OR presc.ccr='T')" +
+                    " and idt.name = 'NID'" +
+                    " and pi.value = pat.patientid" +
+                    " and idt.id = pi.type_id" +
+                    " and '" + clinicid + "' = pat.clinic" +
+                    " and app.appointmentDate is not null" +
+                    " and (app.visitdate::date is null)" +
+                    " and (app.appointmentDate::date < '" + data + "'::date and ('" + data + "'::date - app.appointmentDate::date) between '" + minimumDate + "' and '" + maximumDate + "')" +
+                    " and exists (select prescription.id" +
+                    " from prescription" +
+                    " where prescription.patient = pat.id" +
+                    " and (('" + data + "' between prescription.date and prescription.endDate)or(('" + data + "' > prescription.date)) and (prescription.endDate is null)))" +
+                    " and exists (select id from episode where episode.patient = pat.id" +
+                    " and (('" + data + "' between episode.startdate and episode.stopdate)or(('" + data + "' > episode.startdate)) and (episode.stopdate is null)))" +
+                    " group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" +
+                    " order by age asc";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    RegistoChamadaTelefonicaXLS chamadaTelefonica = new RegistoChamadaTelefonicaXLS();
+                    chamadaTelefonica.setNome(rs.getString("name"));
+                    chamadaTelefonica.setNid(rs.getString("patid"));
+                    chamadaTelefonica.setIdade(rs.getString("age"));
+                    chamadaTelefonica.setContacto(((rs.getString("cellno") == null || "".equals(rs.getString("cellno").trim())) ? " "
+                            : rs.getString("cellno") + " (c) ") + ((rs.getString("homeno") == null || "".equals(rs.getString("homeno").trim())) ? " "
+                            : rs.getString("homeno") + " (h) ") + ((rs.getString("workno") == null || "".equals(rs.getString("workno").trim())) ? " "
+                            : rs.getString("workno") + " (w)"));
+                    chamadaTelefonica.setEndereco(rs.getString("address"));
+                    chamadaTelefonica.setTarv(rs.getString("tarv"));
+                    chamadaTelefonica.setTb(rs.getString("tb"));
+                    chamadaTelefonica.setSmi(rs.getString("ptv"));
+
+                    chamadaTelefonicaXLS.add(chamadaTelefonica);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return chamadaTelefonicaXLS;
+    }
 
     public void UpdateDatabase() throws SQLException {
         String s = new String();
@@ -5577,9 +5448,9 @@ public class ConexaoJDBC {
                         System.out.println(">>" + inst[i]);
                     }
                     break;
-                }catch (SQLException e){
-                    System.out.println("### - SQL Error "+e.getMessage());
-                }finally {
+                } catch (SQLException e) {
+                    System.out.println("### - SQL Error " + e.getMessage());
+                } finally {
 
                     continue;
                 }

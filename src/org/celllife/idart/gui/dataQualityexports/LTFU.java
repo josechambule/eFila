@@ -79,9 +79,9 @@ public class LTFU extends DataQualityBase {
 	public String getMessage() {
 		String message=null;
 		if(num == 2){
-			message="Active Patients who are likely LTFU(over 120 days)";	
+			message="Pacientes abandonos não notificados à mais de 120 dias";
 		}else if(num == 1){
-			message="Uncollected Packages(over 120 days)";
+			message="Frascos criados e não aviados à mais de 120 dias";
 		}
 		return message;
 	}

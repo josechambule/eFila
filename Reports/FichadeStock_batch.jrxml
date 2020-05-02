@@ -327,7 +327,7 @@ $F{openingpills}.longValue()
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[($F{numeroguia} != null ? $F{numeroguia} : "")]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="394" y="1" width="59" height="17"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -381,9 +381,11 @@ $F{openingpills}.longValue()
 				</textElement>
 				<text><![CDATA[Saldo Final]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="394" y="1" width="59" height="19"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
 			</textField>
 		</band>
