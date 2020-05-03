@@ -133,7 +133,7 @@ public class CohortDrugCollections extends GenericReportGui {
 	private void createGrpPharmacySelection() {
 
 		grpExplanation = new Group(getShell(), SWT.NONE);
-		grpExplanation.setText("Report description");
+		grpExplanation.setText("Descrição do Relatório");
 		grpExplanation.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		grpExplanation.setBounds(new org.eclipse.swt.graphics.Rectangle(
@@ -141,9 +141,9 @@ public class CohortDrugCollections extends GenericReportGui {
 
 		Label lblClinic = new Label(grpExplanation, SWT.WRAP);
 		lblClinic.setBounds(new Rectangle(6, 20, 510, 30));
-		lblClinic.setText("This reports shows the details of all packages for" +
-				" patients that have a '"+Episode.REASON_NEW_PATIENT+"' episode" +
-						" between the start and end dates specified.");
+		lblClinic.setText("Este relatório ilustra todos levantamentos de ARV para" +
+				" pacientes que têm visita: '"+Episode.REASON_NEW_PATIENT+"' " +
+						" entre a data inicio e fim especificada.");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 	}
 	
@@ -152,8 +152,8 @@ public class CohortDrugCollections extends GenericReportGui {
 		lnkSelectAllColumns = new Link(getShell(), SWT.NONE);
 		lnkSelectAllColumns.setBounds(new Rectangle(115, 325, 220, 30));
 		lnkSelectAllColumns
-		.setText("Please select the columns you want included " +
-				"in the report or <A>select all</A> columns");
+		.setText("Por favor, seleccione as colunas que pretende incluir " +
+				"no relatório ou <A>Seleccionar todas</A> colunas");
 		lnkSelectAllColumns
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		lnkSelectAllColumns.addListener(SWT.Selection, new Listener() {
@@ -166,8 +166,8 @@ public class CohortDrugCollections extends GenericReportGui {
 		lnkSelectAllPackageColumns = new Link(getShell(), SWT.NONE);
 		lnkSelectAllPackageColumns.setBounds(new Rectangle(375, 325, 220, 30));
 		lnkSelectAllPackageColumns
-		.setText("Please select the package columns you want included in the " +
-				" report or <A>select all</A>");
+		.setText("Por favor, seleccione os medicamentos que pretende incluir " +
+				"no relatório ou <A>Seleccionar todas</A>");
 		lnkSelectAllPackageColumns
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		lnkSelectAllPackageColumns.addListener(SWT.Selection, new Listener() {
@@ -184,7 +184,7 @@ public class CohortDrugCollections extends GenericReportGui {
 		
 		lblColumnTableHeader = new Label(getShell(), SWT.BORDER);
 		lblColumnTableHeader.setBounds(new Rectangle(120, 360, 200, 20));
-		lblColumnTableHeader.setText("Column Name");
+		lblColumnTableHeader.setText("Nome da coluna");
 		lblColumnTableHeader.setAlignment(SWT.CENTER);
 		lblColumnTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -199,7 +199,7 @@ public class CohortDrugCollections extends GenericReportGui {
 
 		lblDrugTableHeader = new Label(getShell(), SWT.BORDER);
 		lblDrugTableHeader.setBounds(new Rectangle(370, 360, 200, 20));
-		lblDrugTableHeader.setText("Drug Name");
+		lblDrugTableHeader.setText("Nome do Medicamento");
 		lblDrugTableHeader.setAlignment(SWT.CENTER);
 		lblDrugTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		
@@ -254,7 +254,7 @@ public class CohortDrugCollections extends GenericReportGui {
 	 */
 	private void createGrpDateRange() {
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Periodos:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 120, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -262,13 +262,13 @@ public class CohortDrugCollections extends GenericReportGui {
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione a Data Inicio:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione a Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -375,8 +375,8 @@ public class CohortDrugCollections extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "Data Fim menor que a data Inicio",
+					"A data fim não deve ser menor que a data inicio.");
 			return;
 		}
 		
@@ -391,15 +391,15 @@ public class CohortDrugCollections extends GenericReportGui {
 			if (patients.size() <= 0){
 				showMessage(
 						MessageDialog.INFORMATION,
-						"No patients",
-						"No patients have a '"
+						"Sem informação",
+						"Nenhum paciente tem visita: '"
 								+ Episode.REASON_NEW_PATIENT
-								+ "' episode starting between the selected dates");
+								+ "' entre as datas inicio e fim especificadas");
 				return;
 			}
 			viewReport(new ExcelReportJob(reportObject, new RowPerPatientExcelExporter(patients)));
-			showMessage(MessageDialog.INFORMATION, "Report complete",
-					"Report generation complete.\n\n" + reportObject.getPath());
+			showMessage(MessageDialog.INFORMATION, "Relatório concluído",
+					"Relatório gerado com sucesso.\n\n" + reportObject.getPath());
 		}
 	}
 
@@ -459,7 +459,7 @@ public class CohortDrugCollections extends GenericReportGui {
 				};
 				diff.setColumnWidth(17);
 				diff.setColumnIndex(-1);
-				diff.setTitle("Days late");
+				diff.setTitle("Dias de atraso");
 				endcolumns.add(diff);
 			}
 		}

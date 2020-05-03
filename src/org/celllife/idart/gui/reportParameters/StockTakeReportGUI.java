@@ -102,13 +102,13 @@ public class StockTakeReportGUI extends GenericReportGui {
 	private void createGrpClinicSelection() {
 
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("");
+		grpClinicSelection.setText("Unidade Sanitária");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(151, 83, 386, 66));
 
 		Label lblPharmacy = new Label(grpClinicSelection, SWT.NONE);
 		lblPharmacy.setBounds(new Rectangle(9, 25, 151, 20));
-		lblPharmacy.setText("Select pharmacy:");
+		lblPharmacy.setText("Seleccione a US:");
 		lblPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbPharmacy = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -128,7 +128,7 @@ public class StockTakeReportGUI extends GenericReportGui {
 	private void creategrpStockTakeSelection() {
 
 		grpStockTakeSelection = new Group(getShell(), SWT.NONE);
-		grpStockTakeSelection.setText("Stock Take:");
+		grpStockTakeSelection.setText("Inventário:");
 		grpStockTakeSelection.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		grpStockTakeSelection.setBounds(new Rectangle(69, 180, 520, 70));
@@ -137,7 +137,7 @@ public class StockTakeReportGUI extends GenericReportGui {
 
 		lblStockTake = new Label(grpStockTakeSelection, SWT.NONE);
 		lblStockTake.setBounds(new Rectangle(9, 25, 101, 20));
-		lblStockTake.setText("Select Stock Take:");
+		lblStockTake.setText("Seleccione o Inventário:");
 		lblStockTake.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		txtStockTake = new Text(grpStockTakeSelection, SWT.BORDER);
@@ -147,7 +147,7 @@ public class StockTakeReportGUI extends GenericReportGui {
 
 		btnSearch = new Button(grpStockTakeSelection, SWT.NONE);
 		btnSearch.setBounds(new Rectangle(330, 20, 150, 30));
-		btnSearch.setText("Stock Take Search");
+		btnSearch.setText("Pesquisar");
 		btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnSearch
 		.setToolTipText("Press this button to search for an existing stock take.");
@@ -181,20 +181,20 @@ public class StockTakeReportGUI extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Pharmacy Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		} else if (pharm == null) {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("Pharmacy not found");
+			missing.setText("A US seleccionada não foi localizada");
 			missing
-			.setMessage("There is no pharmacy called '"
+			.setMessage("Não existe nenhuma US: '"
 					+ cmbPharmacy.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+					+ "' na base de dados.");
 			missing.open();
 
 		}
@@ -203,9 +203,9 @@ public class StockTakeReportGUI extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Stock Take Was Selected");
+			missing.setText("Nenhum invetário seleccionado");
 			missing
-			.setMessage("No Stock Take was selected. Please select a Stock Take using the search button.");
+			.setMessage("Por favor, seleccione um inventário clicando no botão Pesquisar");
 			missing.open();
 
 		}

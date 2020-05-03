@@ -104,7 +104,7 @@ public class MonthlyStockReceipt extends GenericReportGui {
 	private void createGrpPharmacySelection() {
 
 		grpPharmacySelection = new Group(getShell(), SWT.NONE);
-		grpPharmacySelection.setText("Pharmacy");
+		grpPharmacySelection.setText("Unidade Sanitária");
 		grpPharmacySelection.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
@@ -112,7 +112,7 @@ public class MonthlyStockReceipt extends GenericReportGui {
 
 		Label lblClinic = new Label(grpPharmacySelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(6, 25, 136, 20));
-		lblClinic.setText("Select pharmacy");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbPharmacy = new CCombo(grpPharmacySelection, SWT.BORDER);
@@ -138,7 +138,7 @@ public class MonthlyStockReceipt extends GenericReportGui {
 		lblInstructions = new Label(grpDateInfo, SWT.NONE);
 		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(60,
 				20, 160, 20));
-		lblInstructions.setText("Select a Month and Year:");
+		lblInstructions.setText("Seleccione o Mês e o Ano:");
 		lblInstructions.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbMonth = new CCombo(grpDateInfo, SWT.BORDER);
@@ -195,20 +195,20 @@ public class MonthlyStockReceipt extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Pharmacy Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		} else if (pharm == null) {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("Pharmacy not found");
+			missing.setText("A US seleccionada não foi localizada");
 			missing
-			.setMessage("There is no pharmacy called '"
+			.setMessage("Não existe nenhuma US: '"
 					+ cmbPharmacy.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+					+ "' na base de dados.");
 			missing.open();
 
 		} else {

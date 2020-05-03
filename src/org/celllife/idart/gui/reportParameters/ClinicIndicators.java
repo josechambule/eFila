@@ -111,13 +111,13 @@ public class ClinicIndicators extends GenericReportGui {
 	 */
 	private void createGrpClinicSelection() {
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("");
+		grpClinicSelection.setText("Unidade Sanitária");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(108, 81, 386, 123));
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(9, 25, 151, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -127,12 +127,12 @@ public class ClinicIndicators extends GenericReportGui {
 		cmbClinic.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 		CommonObjects.populateClinics(getHSession(), cmbClinic);
 		// Add the "all clinics option"
-		cmbClinic.add("All Clinics");
+		cmbClinic.add("Todas USs");
 
 		lblMinimumDaysLate = new Label(grpClinicSelection, SWT.NONE);
 		lblMinimumDaysLate.setBounds(new Rectangle(10, 57, 174, 21));
 		lblMinimumDaysLate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblMinimumDaysLate.setText("Minimum Days Late:");
+		lblMinimumDaysLate.setText("Mínimos dias de atraso:");
 
 		txtMinimumDaysLate = new Text(grpClinicSelection, SWT.BORDER);
 		txtMinimumDaysLate.setBounds(new Rectangle(217, 55, 45, 20));
@@ -147,11 +147,11 @@ public class ClinicIndicators extends GenericReportGui {
 		lblCutoffAge = new Label(grpClinicSelection, SWT.NONE);
 		lblCutoffAge.setBounds(new Rectangle(10, 86, 195, 20));
 		lblCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCutoffAge.setText("Cutoff Age for Paediatric Patients:");
+		lblCutoffAge.setText("Idade Máxima para Pacientes Pediátricos:");
 
 		lblYears = new Label(grpClinicSelection, SWT.NONE);
 		lblYears.setBounds(new Rectangle(270, 85, 94, 20));
-		lblYears.setText("years");
+		lblYears.setText("Anos");
 		lblYears.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 	}
@@ -163,20 +163,20 @@ public class ClinicIndicators extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setBounds(new Rectangle(30, 220, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -204,9 +204,9 @@ public class ClinicIndicators extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 			viewReport = false;
 
@@ -215,9 +215,9 @@ public class ClinicIndicators extends GenericReportGui {
 		if (txtMinimumDaysLate.getText().equals("")) {
 			MessageBox incorrectData = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			incorrectData.setText("Incorrect Numeric Value");
+			incorrectData.setText("Número incorreto");
 			incorrectData
-			.setMessage("The minimum days late that was entered is incorrect. Please enter a number.");
+			.setMessage("Por favor introduza um número mínimo correcto.");
 			incorrectData.open();
 			txtMinimumDaysLate.setText("");
 			txtMinimumDaysLate.setFocus();
@@ -233,7 +233,7 @@ public class ClinicIndicators extends GenericReportGui {
 						SWT.ICON_ERROR | SWT.OK);
 				incorrectData.setText("Incorrect Numeric Value");
 				incorrectData
-				.setMessage("The minimum days late that was entered is incorrect. Please enter a number.");
+				.setMessage("Por favor introduza um número mínimo correcto.");
 				incorrectData.open();
 				txtMinimumDaysLate.setText("");
 				txtMinimumDaysLate.setFocus();
@@ -246,9 +246,9 @@ public class ClinicIndicators extends GenericReportGui {
 		if (txtCutoffAge.getText().equals("")) {
 			MessageBox incorrectData = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			incorrectData.setText("Incorrect Numeric Value");
+			incorrectData.setText("Número incorreto");
 			incorrectData
-			.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+			.setMessage("Por favor introduza um número máximo correcto.");
 			incorrectData.open();
 			txtCutoffAge.setText("");
 			txtCutoffAge.setFocus();
@@ -262,9 +262,9 @@ public class ClinicIndicators extends GenericReportGui {
 			} catch (NumberFormatException nfe) {
 				MessageBox incorrectData = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
-				incorrectData.setText("Incorrect Numeric Value");
+				incorrectData.setText("Número incorreto");
 				incorrectData
-				.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+				.setMessage("Por favor introduza um número máximo correcto.");
 				incorrectData.open();
 				txtCutoffAge.setText("");
 				txtCutoffAge.setFocus();
@@ -278,8 +278,8 @@ public class ClinicIndicators extends GenericReportGui {
 				calendarEnd.getCalendar().getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Invalid End Date");
-			mb.setMessage("Please select an end date after the start date");
+			mb.setText("Data Fim Inválida");
+			mb.setMessage("Por favor seleccione uma data fim que é depois da data inicio");
 			mb.open();
 
 			viewReport = false;
@@ -287,7 +287,7 @@ public class ClinicIndicators extends GenericReportGui {
 
 		if (viewReport) {
 			ClinicIndicatorReport report = new ClinicIndicatorReport(
-					getShell(), "All CLinics".equalsIgnoreCase(cmbClinic
+					getShell(), "Todas USs".equalsIgnoreCase(cmbClinic
 							.getText()) ? "%" : cmbClinic.getText().trim(),
 					calendarStart
 							.getCalendar().getTime(), calendarEnd.getCalendar()

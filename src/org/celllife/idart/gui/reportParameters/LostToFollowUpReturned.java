@@ -116,7 +116,7 @@ public class LostToFollowUpReturned extends GenericReportGui {
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(59, 25, 100, 20));
-		lblClinic.setText("Seleccione a Unidade Sanitaria:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);

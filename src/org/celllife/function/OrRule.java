@@ -26,7 +26,7 @@ public class OrRule<T> extends AbstractRule<T> {
 	public String getDescription() {
 		String desc = rules[0].getDescription();
 		for (int i = 1; i < rules.length; i++) {
-			desc += " OR " + rules[i].getDescription();
+			desc += " ou " + rules[i].getDescription();
 		}
 		return desc;
 	}

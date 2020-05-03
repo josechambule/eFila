@@ -127,8 +127,8 @@ public class IsoniazidaReport extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "Data Fim inválida",
+					"A data Fim não pode ser menor que a data Inicio.");
 			return;
 		}
 
@@ -201,7 +201,7 @@ public class IsoniazidaReport extends GenericReportGui {
 	
 	private void createGrpDateRange() {
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Per�odo:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -209,7 +209,7 @@ public class IsoniazidaReport extends GenericReportGui {
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Data In�cio:");
+		lblStartDate.setText("Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);

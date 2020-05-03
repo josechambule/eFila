@@ -33,8 +33,9 @@
 	<parameter name="formlanguage1" class="java.lang.String"/>
 	<parameter name="path" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select g.datamovimento,g.cliente,g.tipomovimento,g.quantidade,g.numeroguia,
-saldo.openingpills,saldo.destroyed,saldo.destroyedpills,saldo.returned,saldo.returnedpills,
+		<![CDATA[select g.datamovimento,g.cliente,g.tipomovimento,COALESCE(g.quantidade,0) quantidade ,g.numeroguia,
+COALESCE(saldo.openingpills,0) as openingpills,COALESCE(saldo.destroyed,0) destroyed ,COALESCE(saldo.destroyedpills,0) destroyedpills ,
+COALESCE(saldo.returned,0) returned ,COALESCE(saldo.returnedpills,0) returnedpills ,
 drug.id
 from drug
 left join
@@ -173,7 +174,8 @@ and p.packageReturned = true
 ) as i on i.id = drug.id and pg_catalog.date(i.dateReturned) = pg_catalog.date(drug.searchdate)
 GROUP BY 1,6
 ) saldo on saldo.id = drug.id
-where drug.id = $P{id}]]>
+where drug.id = $P{id}
+Order by 3 desc]]>
 	</queryString>
 	<field name="datamovimento" class="java.sql.Timestamp"/>
 	<field name="cliente" class="java.lang.String"/>
@@ -187,52 +189,46 @@ where drug.id = $P{id}]]>
 	<field name="returnedpills" class="java.math.BigDecimal"/>
 	<field name="id" class="java.lang.Integer"/>
 	<variable name="totalPills" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long($F{openingpills}.longValue()  + $V{somaUnidadesRecebidas}.longValue()*$P{packsize}.intValue()
-+ $V{somaUnidadesDevolvidas}.longValue()*$P{packsize}.intValue()
-+ $F{returned}.longValue()*$P{packsize}.intValue() + $F{returnedpills}.longValue()
-- $V{somaUnidadesDispensadas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesDestruidas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesAjustadas}.longValue()*$P{packsize}.intValue()
+		<variableExpression><![CDATA[new Long(
+$F{openingpills}.longValue()
++ $F{returned}.longValue()*$P{packsize}.intValue()
++ $F{returnedpills}.longValue()
 - $F{destroyed}.longValue()*$P{packsize}.intValue()
 - $F{destroyedpills}.longValue()
-)]]></variableExpression>
+)
++ $V{somaUnidadesRecebidas}*$P{packsize}.intValue() + $V{UnidadesRecebidas}*$P{packsize}.intValue()
+- $V{somaUnidadesDispensadas}*$P{packsize}.intValue() - $V{UnidadesDispensadas}*$P{packsize}.intValue()
+- $V{somaUnidadesAjustadas}*$P{packsize}.intValue() - $V{UnidadesAjustadas}*$P{packsize}.intValue()]]></variableExpression>
+		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="totalString" class="java.lang.String">
-		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0) ?
+		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0)?
 (new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()
-:((new Long($V{totalPills}.longValue()/$P{packsize}.intValue())) + 1)]]></variableExpression>
+:(new Long(($V{totalPills}.longValue()/$P{packsize}.intValue())+1)).toString()]]></variableExpression>
 	</variable>
-	<variable name="somaUnidadesRecebidas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Requisição" ) ? $V{somaUnidadesRecebidas} + $F{quantidade}.longValue() : 0)]]></variableExpression>
+	<variable name="somaUnidadesRecebidas" class="java.lang.Long">
+		<variableExpression><![CDATA[$V{UnidadesRecebidas} + $V{somaUnidadesRecebidas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
-	<variable name="somaUnidadesDispensadas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Distribuição" ) ? $V{somaUnidadesDispensadas} + $F{quantidade}.longValue() : 0)]]></variableExpression>
-		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
-	</variable>
-	<variable name="somaUnidadesDevolvidas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$V{somaUnidadesDevolvidas}+ $F{returned}.longValue()*$P{packsize} + $F{returnedpills}.longValue()]]></variableExpression>
+	<variable name="somaUnidadesDispensadas" class="java.lang.Long" incrementType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$V{UnidadesDispensadas} + $V{somaUnidadesDispensadas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="somaUnidadesAjustadas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Ajuste" ) ? $V{somaUnidadesAjustadas} + $F{quantidade}.longValue() : 0)]]></variableExpression>
-		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
-	</variable>
-	<variable name="somaUnidadesDestruidas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$V{somaUnidadesDestruidas} + $F{destroyed}.longValue()*$P{packsize} + $F{destroyedpills}.longValue()]]></variableExpression>
+		<variableExpression><![CDATA[$V{UnidadesAjustadas} + $V{somaUnidadesAjustadas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="UnidadesRecebidas" class="java.lang.Long" resetType="None">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Requisição" ) ? $F{quantidade}.longValue() : 0)]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{tipomovimento}.startsWith( "Requis" ) ? $F{quantidade}.longValue():0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
-	<variable name="UnidadesDispensadas" class="java.lang.Long">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Distribuição" ) ? $F{quantidade}.longValue() : 0)]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	<variable name="UnidadesDispensadas" class="java.lang.Long" resetType="None">
+		<variableExpression><![CDATA[($F{tipomovimento}.startsWith( "Dist" ) ? $F{quantidade}.longValue(): 0 )]]></variableExpression>
+		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="UnidadesAjustadas" class="java.lang.Long" resetType="None">
-		<variableExpression><![CDATA[( $F{tipomovimento}.equalsIgnoreCase( "Ajuste" ) ? $F{quantidade}.longValue() : 0)]]></variableExpression>
-		<initialValueExpression><![CDATA[]]></initialValueExpression>
+		<variableExpression><![CDATA[($F{tipomovimento}.startsWith( "Ajuste" ) ? $F{quantidade}.longValue() : 0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -290,7 +286,7 @@ where drug.id = $P{id}]]>
 			<line>
 				<reportElement x="1" y="20" width="547" height="1"/>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="1" y="3" width="71" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -303,13 +299,6 @@ where drug.id = $P{id}]]>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement x="394" y="2" width="59" height="16"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[( $V{totalString} != null ? $V{totalString} : "")]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="76" y="0" width="173" height="20"/>
 				<textElement verticalAlignment="Middle">
@@ -324,12 +313,12 @@ where drug.id = $P{id}]]>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[( $F{tipomovimento} != null ? $F{tipomovimento} : "")]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="333" y="0" width="60" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[( $F{quantidade} != null ? $F{quantidade} : "")]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{quantidade}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="454" y="1" width="93" height="18"/>
@@ -337,6 +326,13 @@ where drug.id = $P{id}]]>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[($F{numeroguia} != null ? $F{numeroguia} : "")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="1" width="59" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -348,38 +344,6 @@ where drug.id = $P{id}]]>
 	</pageFooter>
 	<lastPageFooter>
 		<band height="21" splitType="Prevent">
-			<textField>
-				<reportElement x="394" y="0" width="59" height="18"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Long"><![CDATA[((new Long($F{openingpills}.longValue()  + $V{somaUnidadesRecebidas}.longValue()*$P{packsize}.intValue()
-+ $V{somaUnidadesDevolvidas}.longValue()*$P{packsize}.intValue()
-+ $F{returned}.longValue()*$P{packsize}.intValue() + $F{returnedpills}.longValue()
-- $V{somaUnidadesDispensadas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesDestruidas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesAjustadas}.longValue()*$P{packsize}.intValue()
-- $F{destroyed}.longValue()*$P{packsize}.intValue()
-- $F{destroyedpills}.longValue()
-)%$P{packsize}.intValue())==0) ?
-(new Long($F{openingpills}.longValue()  + $V{somaUnidadesRecebidas}.longValue()*$P{packsize}.intValue()
-+ $V{somaUnidadesDevolvidas}.longValue()*$P{packsize}.intValue()
-+ $F{returned}.longValue()*$P{packsize}.intValue() + $F{returnedpills}.longValue()
-- $V{somaUnidadesDispensadas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesDestruidas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesAjustadas}.longValue()*$P{packsize}.intValue()
-- $F{destroyed}.longValue()*$P{packsize}.intValue()
-- $F{destroyedpills}.longValue()
-)/$P{packsize}.intValue())
-:(new Long($F{openingpills}.longValue()  + $V{somaUnidadesRecebidas}.longValue()*$P{packsize}.intValue()
-+ $V{somaUnidadesDevolvidas}.longValue()*$P{packsize}.intValue()
-+ $F{returned}.longValue()*$P{packsize}.intValue() + $F{returnedpills}.longValue()
-- $V{somaUnidadesDispensadas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesDestruidas}.longValue()*$P{packsize}.intValue()
-- $V{somaUnidadesAjustadas}.longValue()*$P{packsize}.intValue()
-- $F{destroyed}.longValue()*$P{packsize}.intValue()
-- $F{destroyedpills}.longValue())/$P{packsize}.intValue()) + 1]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement x="0" y="1" width="1" height="19"/>
 				<graphicElement>
@@ -417,6 +381,13 @@ where drug.id = $P{id}]]>
 				</textElement>
 				<text><![CDATA[Saldo Final]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="394" y="1" width="59" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 	<summary>

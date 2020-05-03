@@ -5,14 +5,16 @@ import java.util.Date;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.gui.utils.iDartImage;
 
+import static org.celllife.idart.gui.platform.GenericReportGuiInterface.*;
+
 /**
  */
 public enum PackageLifeStage {
-	PACKED("Packages Created", iDartImage.REPORT_PACKAGESARRIVE), 
-	SCANNED_OUT("Packages Leaving Pharmacy",iDartImage.REPORT_PACKAGESSCANNEDOUT), 
-	SCANNED_IN("Packages Received at Clinic", iDartImage.REPORT_PACKAGESSCANNEDIN), 
-	PICKED_UP("Packages Collected by Patient",iDartImage.DISPENSEPACKAGE), 
-	RETURNED("Packages Returned", iDartImage.PACKAGERETURN);
+	PACKED(REPORT_PACKAGES_CREATED, iDartImage.REPORT_PACKAGESARRIVE),
+	SCANNED_OUT(REPORT_PACKAGES_LEAVING,iDartImage.REPORT_PACKAGESSCANNEDOUT),
+	SCANNED_IN(REPORT_PACKAGES_RECEIVED, iDartImage.REPORT_PACKAGESSCANNEDIN),
+	PICKED_UP(REPORT_PACKAGES_COLLECTED,iDartImage.DISPENSEPACKAGE),
+	RETURNED(REPORT_PACKAGES_RETURNED, iDartImage.PACKAGERETURN);
 
 	private String action;
 	private iDartImage iconImage;

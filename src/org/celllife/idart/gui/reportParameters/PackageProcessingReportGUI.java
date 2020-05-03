@@ -123,7 +123,7 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(59, 25, 100, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -142,7 +142,7 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Seleccione o Período de Reporte:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(68, 180, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -150,13 +150,13 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 		lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -283,8 +283,8 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 
 			MessageBox mbox = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			mbox.setText("Invalid End Date");
-			mbox.setMessage("Please select an end date after the start date.");
+			mbox.setText("Data Fim Inválida");
+			mbox.setMessage("Selecione uma data maior que a data início.");
 			mbox.open();
 
 			return false;
@@ -294,9 +294,9 @@ public class PackageProcessingReportGUI extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 			return false;

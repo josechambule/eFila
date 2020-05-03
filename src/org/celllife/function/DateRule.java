@@ -117,24 +117,24 @@ public class DateRule extends AbstractRule<Date> {
 		if (boundry == null
 				|| DateFieldComparator.compare(boundry, new Date(),
 						Calendar.DAY_OF_MONTH) == 0) {
-			date = "today";
+			date = "hoje";
 		} else {
 			date = iDARTUtil.format(boundry);
 		}
 
-		String message = "The date must be ";
+		String message = "A data deve ser ";
 		switch (rangeSelection) {
 		case AFTER_BOUNDRY:
-			message += "after ";
+			message += "maior que a data de ";
 			break;
 		case AFTER_BOUNDRY_INCLUSIVE:
-			message += "on or after ";
+			message += "maior ou igual a data de ";
 			break;
 		case BEFORE_BOUNDRY:
-			message += "before ";
+			message += "menor que a data de";
 			break;
 		case BEFORE_BOUNDRY_INCLUSIVE:
-			message += "on or before ";
+			message += "menor ou igual a data de ";
 			break;
 		default:
 			break;

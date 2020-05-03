@@ -104,14 +104,14 @@ public class DailyDispensingTotals extends GenericReportGui {
 	private void createGrpClinicSelection() {
 
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("Clinic");
+		grpClinicSelection.setText("Unidade Sanitária");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
 				140, 90, 320, 65));
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(7, 25, 143, 20));
-		lblClinic.setText("Select Clinic");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -136,7 +136,7 @@ public class DailyDispensingTotals extends GenericReportGui {
 		lblInstructions = new Label(grpDateInfo, SWT.NONE);
 		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(60,
 				20, 160, 20));
-		lblInstructions.setText("Select a Month and Year:");
+		lblInstructions.setText("Seleccione o Mês e o Ano:");
 		lblInstructions.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbMonth = new CCombo(grpDateInfo, SWT.BORDER);
@@ -192,9 +192,9 @@ public class DailyDispensingTotals extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		}

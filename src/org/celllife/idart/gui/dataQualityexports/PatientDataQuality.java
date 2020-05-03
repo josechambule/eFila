@@ -58,7 +58,7 @@ public class PatientDataQuality extends DataQualityBase {
 
 	@Override
 	public String getMessage() {
-		return "Patient Duplicates";
+		return "Pacientes Duplicados";
 	}
 
 }

@@ -105,14 +105,14 @@ public class EpisodeStats extends GenericReportGui {
 	 */
 	private void createGrpClinicSelection() {
 		grpClinicSelection = new Group(getShell(), SWT.NONE);
-		grpClinicSelection.setText("");
+		grpClinicSelection.setText("Unidade Sanitária");
 		grpClinicSelection.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpClinicSelection.setBounds(new Rectangle(108, 81, 386, 123));
 
 		int ystart = 7;
 		Label lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(9, ystart, 151, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -125,7 +125,7 @@ public class EpisodeStats extends GenericReportGui {
 		Label lblStartOrEnd = new Label(grpClinicSelection, SWT.NONE);
 		lblStartOrEnd.setBounds(new Rectangle(10, ystart + 32, 174, 21));
 		lblStartOrEnd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblStartOrEnd.setText("Show episodes:");
+		lblStartOrEnd.setText("Mostrar Visitas:");
 
 		cmbStartOrEnd = new CCombo(grpClinicSelection, SWT.BORDER);
 		cmbStartOrEnd.setBounds(new Rectangle(216, ystart + 30, 160, 20));
@@ -138,22 +138,22 @@ public class EpisodeStats extends GenericReportGui {
 		Label lblCutoffAge = new Label(grpClinicSelection, SWT.NONE);
 		lblCutoffAge.setBounds(new Rectangle(10, ystart + 61, 195, 20));
 		lblCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCutoffAge.setText("Cutoff Age for Young Paediatrics:");
+		lblCutoffAge.setText("Idade Mínima para Pacientes Pediátricos:");
 
 		txtLowerCutoffAge = new Text(grpClinicSelection, SWT.BORDER);
 		txtLowerCutoffAge.setBounds(new Rectangle(218, ystart + 60, 43, 19));
-		txtLowerCutoffAge.setText("5");
+		txtLowerCutoffAge.setText("0");
 		txtLowerCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblYears = new Label(grpClinicSelection, SWT.NONE);
 		lblYears.setBounds(new Rectangle(270, ystart + 60, 94, 20));
-		lblYears.setText("years");
+		lblYears.setText("Ano(s)");
 		lblYears.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		lblCutoffAge = new Label(grpClinicSelection, SWT.NONE);
 		lblCutoffAge.setBounds(new Rectangle(10, ystart + 90, 195, 20));
 		lblCutoffAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblCutoffAge.setText("Cutoff Age for Paediatrics:");
+		lblCutoffAge.setText("Idade Máxima para Pacientes Pediátricos:");
 
 		txtUpperCutoffAge = new Text(grpClinicSelection, SWT.BORDER);
 		txtUpperCutoffAge.setBounds(new Rectangle(218, ystart + 90, 43, 19));
@@ -162,7 +162,7 @@ public class EpisodeStats extends GenericReportGui {
 
 		lblYears = new Label(grpClinicSelection, SWT.NONE);
 		lblYears.setBounds(new Rectangle(270, ystart + 90, 94, 20));
-		lblYears.setText("years");
+		lblYears.setText("Ano(s)");
 		lblYears.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 	}
@@ -174,20 +174,20 @@ public class EpisodeStats extends GenericReportGui {
 	private void createGrpDateRange() {
 
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Período:");
 		grpDateRange.setBounds(new Rectangle(30, 220, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione Data Início:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -215,9 +215,9 @@ public class EpisodeStats extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-			.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 			viewReport = false;
 
@@ -226,9 +226,9 @@ public class EpisodeStats extends GenericReportGui {
 		if (txtUpperCutoffAge.getText().equals("")) {
 			MessageBox incorrectData = new MessageBox(getShell(),
 					SWT.ICON_ERROR | SWT.OK);
-			incorrectData.setText("Incorrect Numeric Value");
+			incorrectData.setText("Número incorreto");
 			incorrectData
-			.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+			.setMessage("Por favor introduza um número correcto.");
 			incorrectData.open();
 			txtUpperCutoffAge.setText("");
 			txtUpperCutoffAge.setFocus();
@@ -242,9 +242,9 @@ public class EpisodeStats extends GenericReportGui {
 			} catch (NumberFormatException nfe) {
 				MessageBox incorrectData = new MessageBox(getShell(),
 						SWT.ICON_ERROR | SWT.OK);
-				incorrectData.setText("Incorrect Numeric Value");
+				incorrectData.setText("Número incorreto");
 				incorrectData
-				.setMessage("The cutoff age that was entered is incorrect. Please enter a number.");
+				.setMessage("Por favor introduza um número correcto.");
 				incorrectData.open();
 				txtUpperCutoffAge.setText("");
 				txtUpperCutoffAge.setFocus();
@@ -258,8 +258,8 @@ public class EpisodeStats extends GenericReportGui {
 				calendarEnd.getCalendar().getTime())) {
 
 			MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
-			mb.setText("Invalid End Date");
-			mb.setMessage("Please select an end date after the start date");
+			mb.setText("Data Fim Inválida");
+			mb.setMessage("Por favor seleccione uma data fim que é depois da data inicio");
 			mb.open();
 
 			viewReport = false;

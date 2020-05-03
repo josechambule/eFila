@@ -47,7 +47,7 @@ public class UnusedPrescriptions extends DataQualityBase {
 
 	@Override
 	public String getMessage() {
-		return "Unused Prescriptions";
+		return "Prescrições sem Dispensa";
 	}
 
 }

@@ -114,7 +114,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 	@Override
 	protected void createShell() {
-		String shellTxt = "Data Exports";
+		String shellTxt = "Relatório";
 		Rectangle bounds = new Rectangle(25, 0, 900, 700);
 		buildShell(shellTxt, bounds);
 		createCompDetails();
@@ -124,10 +124,10 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 	@Override
 	protected void createCompButtons() {
 		btnRunDataExport = new Button(getCompButtons(), SWT.NONE);
-		btnRunDataExport.setText("Run Export");
+		btnRunDataExport.setText("Executar relatorio");
 		btnRunDataExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnRunDataExport
-		.setToolTipText("Press this button to generate the export.");
+		.setToolTipText("Clica no botão para gerar relatório.");
 		btnRunDataExport
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -138,9 +138,9 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		});
 
 		btnCancel = new Button(getCompButtons(), SWT.NONE);
-		btnCancel.setText("Cancel");
+		btnCancel.setText("Cancelar");
 		btnCancel.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		btnCancel.setToolTipText("Press this button to close this screen.");
+		btnCancel.setToolTipText("Clica no botão para limpar o ecrã.");
 		btnCancel
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -163,7 +163,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 		lblExistingExports = new Label(compDetails, SWT.CENTER | SWT.BORDER);
 		lblExistingExports.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblExistingExports.setText("Existing Exports");
+		lblExistingExports.setText("Relatórios Exixtentes");
 		lblExistingExports.setBounds(new org.eclipse.swt.graphics.Rectangle(
 				100, 30, 250, 20));
 		lstExistingExports = new ListViewer(compDetails, SWT.BORDER
@@ -194,14 +194,14 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		lblExportDescription = new Label(compDetails, SWT.CENTER | SWT.BORDER);
 		lblExportDescription.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
-		lblExportDescription.setText("Export Description");
+		lblExportDescription.setText("Descrição do relatório");
 		lblExportDescription.setBounds(new org.eclipse.swt.graphics.Rectangle(
 				500, 30, 250, 20));
 		grpDescription = new Group(compDetails, SWT.NONE);
 		grpDescription.setBounds(new Rectangle(500, 50, 250, 350));
 		lblExportName = new Label(grpDescription, SWT.LEFT);
 		lblExportName.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblExportName.setText("Name: ");
+		lblExportName.setText("Nome: ");
 		lblExportName.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 25,
 				50, 20));
 
@@ -212,7 +212,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 		lblDescription = new Label(grpDescription, SWT.LEFT);
 		lblDescription.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblDescription.setText("Columns: ");
+		lblDescription.setText("Colunas: ");
 		lblDescription.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 60,
 				55, 20));
 		lstExportDescription = new TableViewer(grpDescription, SWT.BORDER
@@ -226,11 +226,11 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		lstExportDescription.setLabelProvider(new ExportColumnLabelProvider());
 
 		btnNewDataExport = new Button(compDetails, SWT.NONE);
-		btnNewDataExport.setText("New Export");
+		btnNewDataExport.setText("Novo Relatório");
 		btnNewDataExport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnNewDataExport.setBounds(new Rectangle(175, 440, 150, 30));
 		btnNewDataExport
-		.setToolTipText("Press this button to create a new export.");
+		.setToolTipText("Clica no botão para criar um novo relatório.");
 		btnNewDataExport
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -241,12 +241,12 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		});
 
 		btnUpdateDataExport = new Button(compDetails, SWT.NONE);
-		btnUpdateDataExport.setText("Update Export");
+		btnUpdateDataExport.setText("Actualizar relatório");
 		btnUpdateDataExport
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnUpdateDataExport.setBounds(new Rectangle(375, 440, 150, 30));
 		btnUpdateDataExport
-		.setToolTipText("Press this button to update an existing export.");
+		.setToolTipText("Clica no botão para actualizar um relatorio existente.");
 		btnUpdateDataExport
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -262,7 +262,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnDeleteDataExport.setBounds(new Rectangle(575, 440, 150, 30));
 		btnDeleteDataExport
-		.setToolTipText("Press this button to delete an existing export.");
+		.setToolTipText("Clica no botão para remover um relatório.");
 		btnDeleteDataExport
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -282,18 +282,17 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 		if (isReportListEmpty()) {
 			MessageBox box = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			box.setText("Template Not Selected");
+			box.setText("Template não seleccionado");
 			box
-			.setMessage("There are currently no exports available. Please create one first.");
+			.setMessage("Não exitem relatorios criados.");
 			box.open();
 			return;
 		}
 
 		if (deo == null) {
 			MessageBox box = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			box.setText("No export has been selected");
-			box.setMessage("Please select the export you want to update,"
-					+ " from the list of existing exports.");
+			box.setText("Nenhum relatório foi seleccionado");
+			box.setMessage("Por favor seleccione o relatorio.");
 			box.open();
 			return;
 		}
@@ -365,9 +364,9 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 		if (isReportListEmpty()) {
 			MessageBox box = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			box.setText("Template Not Selected");
+			box.setText("Template não seleccionado");
 			box
-			.setMessage("There are currently no data exports available. Please create one first.");
+			.setMessage("Não existe nenhum relatório disponível. Por favor, crie um relatório.");
 			box.open();
 			return;
 		}
@@ -376,7 +375,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 			MessageBox mbox = new MessageBox(getShell(), SWT.ICON_INFORMATION
 					| SWT.OK);
-			mbox.setText("Delete Export");
+			mbox.setText("Remover Relatório");
 			mbox
 			.setMessage("Please select an export for deletion, from the list of existing exports.");
 
@@ -386,8 +385,8 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 		MessageBox mbox = new MessageBox(getShell(), SWT.ICON_QUESTION
 				| SWT.YES | SWT.NO);
-		mbox.setText("Delete Export");
-		mbox.setMessage("Are you sure you want to delete the export '"
+		mbox.setText("Remover Relatório");
+		mbox.setMessage("Tem certeza que pretende remover o relatório? '"
 				+ txtExportName.getText() + "'?");
 
 		if (SWT.YES == mbox.open()) {
@@ -396,9 +395,9 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 					iDartProperties.exportDir + File.separator)) {
 				MessageBox box = new MessageBox(getShell(),
 						SWT.ICON_INFORMATION | SWT.OK);
-				box.setText("Export Deleted Successfully");
-				box.setMessage("The '" + txtExportName.getText()
-						+ "' export has been deleted successfully.");
+				box.setText("Relatório removido com sucesso");
+				box.setMessage("O Relatório '" + txtExportName.getText()
+						+ "'  removido com sucesso.");
 				box.open();
 
 				clearFields();
@@ -425,8 +424,8 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 		if (export == null) {
 			MessageBox box = new MessageBox(getShell(), SWT.ICON_WARNING
 					| SWT.OK);
-			box.setText("Nothing selected");
-			box.setMessage("Please select a data export from the list.");
+			box.setText("Nenhum relatório seleccionado");
+			box.setMessage("Seleccione um relatório na lista.");
 			box.open();
 			return;
 		}
@@ -440,15 +439,15 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 				MessageBox success = new MessageBox(getShell(),
 						SWT.ICON_INFORMATION | SWT.OK);
-				success.setText("Export completed successfully");
+				success.setText("Relatório executado comm sucesso");
 				success
-				.setMessage("The export has been completed successfully.");
+				.setMessage("Relatório gerado comm sucesso.");
 				success.open();
 
 			} catch (InvocationTargetException e) {
 				MessageDialog.openError(getShell(), "Error", e.getMessage());
 			} catch (InterruptedException e) {
-				MessageDialog.openInformation(getShell(), "Cancelled", e
+				MessageDialog.openInformation(getShell(), "Cancelado", e
 						.getMessage());
 			}
 		}
@@ -456,7 +455,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 
 	@Override
 	protected void createCompHeader() {
-		String txt = "Data Export";
+		String txt = "Relatório";
 		iDartImage icoImage = iDartImage.REDOPACKAGE;
 		buildCompHeader(txt, icoImage);
 	}
@@ -536,7 +535,7 @@ public class DataExport extends GenericOthersGui implements iDARTChangeListener 
 	/**
 	 * Split complex columns into multiple columns for display purposes.
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=80357
+	 * @see
 	 */
 	class ExportColumnContentProvider implements IStructuredContentProvider {
 

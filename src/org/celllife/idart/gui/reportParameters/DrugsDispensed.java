@@ -111,7 +111,7 @@ public class DrugsDispensed extends GenericReportGui {
 	 */
 	@Override
 	protected void createShell() {
-		String shellTxt = "Drugs Dispensed Report (Clinics, Patients & Drugs)";
+		String shellTxt = "Medicamentos Aviados (US, Pacientes & Medicamentos)";
 		Rectangle bounds = new Rectangle(70, 50, 700, 680);
 		buildShell(shellTxt, bounds);
 		createMyGroups();
@@ -129,7 +129,7 @@ public class DrugsDispensed extends GenericReportGui {
 	 */
 	@Override
 	protected void createCompHeader() {
-		String headerTxt = "Drugs Dispensed Report (Clinics, Patients & Drugs)";
+		String headerTxt = "Medicamentos Aviados (US, Pacientes & Medicamentos)";
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERDRUG;
 		buildCompdHeader(headerTxt, icoImage);
 	}
@@ -137,7 +137,7 @@ public class DrugsDispensed extends GenericReportGui {
 	private void createGrpPharmacySelection() {
 
 		grpPharmacySelection = new Group(getShell(), SWT.NONE);
-		grpPharmacySelection.setText("Pharmacy");
+		grpPharmacySelection.setText("Unidade Sanitária");
 		grpPharmacySelection.setFont(ResourceUtils
 				.getFont(iDartFont.VERASANS_8));
 		grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
@@ -145,7 +145,7 @@ public class DrugsDispensed extends GenericReportGui {
 
 		Label lblClinic = new Label(grpPharmacySelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(6, 25, 100, 20));
-		lblClinic.setText("Select pharmacy");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbPharmacy = new CCombo(grpPharmacySelection, SWT.BORDER);
@@ -167,8 +167,8 @@ public class DrugsDispensed extends GenericReportGui {
 		lnkSelectAllColumns = new Link(getShell(), SWT.NONE);
 		lnkSelectAllColumns.setBounds(new Rectangle(115, 325, 220, 30));
 		lnkSelectAllColumns
-		.setText("Please select the columns you want included " +
-				"in the report or <A>select all</A> columns");
+		.setText("Por favor, seleccione as colunas que pretende incluir " +
+				"no relatório ou <A>Seleccionar todas</A> colunas");
 		lnkSelectAllColumns
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		lnkSelectAllColumns.addListener(SWT.Selection, new Listener() {
@@ -181,8 +181,8 @@ public class DrugsDispensed extends GenericReportGui {
 		lnkSelectAllDrugs = new Link(getShell(), SWT.NONE);
 		lnkSelectAllDrugs.setBounds(new Rectangle(375, 325, 220, 30));
 		lnkSelectAllDrugs
-		.setText("Please select the drugs you want included in the " +
-				" report or <A>select all</A> drugs");
+		.setText("Por favor, seleccione os medicamentos que pretende incluir " +
+				" no relatório ou <A>Seleccionar todos</A> Medicamentos");
 		lnkSelectAllDrugs
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
 		lnkSelectAllDrugs.addListener(SWT.Selection, new Listener() {
@@ -199,7 +199,7 @@ public class DrugsDispensed extends GenericReportGui {
 		
 		lblColumnTableHeader = new Label(getShell(), SWT.BORDER);
 		lblColumnTableHeader.setBounds(new Rectangle(120, 360, 200, 20));
-		lblColumnTableHeader.setText("Column Name");
+		lblColumnTableHeader.setText("Nome da Coluna");
 		lblColumnTableHeader.setAlignment(SWT.CENTER);
 		lblColumnTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -222,7 +222,7 @@ public class DrugsDispensed extends GenericReportGui {
 
 		lblDrugTableHeader = new Label(getShell(), SWT.BORDER);
 		lblDrugTableHeader.setBounds(new Rectangle(370, 360, 200, 20));
-		lblDrugTableHeader.setText("Drug Name");
+		lblDrugTableHeader.setText("Nome do Medicamento");
 		lblDrugTableHeader.setAlignment(SWT.CENTER);
 		lblDrugTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		
@@ -247,7 +247,7 @@ public class DrugsDispensed extends GenericReportGui {
 		chkBatchInformation.setBounds(new Rectangle(250, 585, 200, 20));
 		chkBatchInformation
 		.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		chkBatchInformation.setText("Include Batch Information in Report?");
+		chkBatchInformation.setText("Incluir a informação do Lote no relatório?");
 		chkBatchInformation.setSelection(true);
 
 	}
@@ -262,7 +262,7 @@ public class DrugsDispensed extends GenericReportGui {
 	 */
 	private void createGrpDateRange() {
 		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Date Range:");
+		grpDateRange.setText("Periodos:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpDateRange.setBounds(new Rectangle(79, 120, 520, 201));
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -270,13 +270,13 @@ public class DrugsDispensed extends GenericReportGui {
 		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
 				180, 20));
-		lblStartDate.setText("Select a START date:");
+		lblStartDate.setText("Seleccione a Data Inicio:");
 		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
 		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
 				180, 20));
-		lblEndDate.setText("Select an END date:");
+		lblEndDate.setText("Seleccione a Data Fim:");
 		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		calendarStart = new SWTCalendar(grpDateRange);
@@ -367,7 +367,7 @@ public class DrugsDispensed extends GenericReportGui {
 
 		// Extra button added for clearing values from parameters
 		Button btnClear = new Button(getCompButtons(), SWT.NONE);
-		btnClear.setText("Clear");
+		btnClear.setText("Limpar");
 		btnClear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		btnClear
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -383,8 +383,8 @@ public class DrugsDispensed extends GenericReportGui {
 	protected void cmdViewReportWidgetSelected() {
 
 		if (cmbPharmacy.getText().equals("")) {
-			showMessage(MessageDialog.ERROR,"No Pharmacy Was Selected",
-					"No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			showMessage(MessageDialog.ERROR,"A US não foi seleccionada",
+					"Por favor, seleccione uma US apresentada na lista.");
 			return;
 		}
 		
@@ -392,16 +392,16 @@ public class DrugsDispensed extends GenericReportGui {
 				cmbPharmacy.getText());
 		
 		if (pharm == null) {
-			showMessage(MessageDialog.ERROR,"Pharmacy not found",
-					"There is no pharmacy called '"
+			showMessage(MessageDialog.ERROR,"A US seleccionada não foi localizada",
+					"TNão existe nenhuma US: '"
 					+ cmbPharmacy.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+					+ "' na base de dados.");
 			return;
 		}
 		
 		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			showMessage(MessageDialog.ERROR, "Data Fim menor que a data Inicio",
+					"A data fim não deve ser menor que a data inicio.");
 			return;
 		}
 		
@@ -413,8 +413,8 @@ public class DrugsDispensed extends GenericReportGui {
 		if (path != null) {
 			ExcelReportObject reportObject = getColumnsFromTables(path);
 			viewReport(new ExcelReportJob(reportObject, new RowPerPackageExcelExporter()));
-			showMessage(MessageDialog.INFORMATION, "Report complete",
-					"Report generation complete.\n\n" + reportObject.getPath());
+			showMessage(MessageDialog.INFORMATION, "Relatório concluído",
+					"Relatório gerado com sucesso.\n\n" + reportObject.getPath());
 		}
 	}
 

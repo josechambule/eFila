@@ -782,7 +782,7 @@ public class AddPrescription extends GenericFormGui implements
             Date dteEpisodeStart = latestEpi.getStartDate();
             IRule<Date> afterEpisodeStart = DateRuleFactory.afterInclusive(
                     dteEpisodeStart, false);
-            afterEpisodeStart.setDescription("Este paciente paciente foi marcado com "
+            afterEpisodeStart.setDescription("Este paciente foi marcado como "
                     + latestEpi.getStartReason()
                     + " em <date>. A data da Prescrição deve estar em,"
                     + " ou depois da data deste episódio.");
@@ -4013,17 +4013,17 @@ public class AddPrescription extends GenericFormGui implements
                                         chkBtnCE.setEnabled(false);
                                     } else {
                                         if (chkBtnFR.getSelection()) {
-                                            //    chkBtnTB.setEnabled(false);
-                                            //    chkBtnCCR.setEnabled(false);
-                                            //    chkBtnPPE.setEnabled(false);
-                                            //    chkBtnSAAJ.setEnabled(false);
-                                            chkBtnGAAC.setEnabled(false);
-                                            chkBtnAF.setEnabled(false);
-                                            chkBtnPrEP.setEnabled(false);
-                                            //    chkBtnCA.setEnabled(false);
-                                            chkBtnDC.setEnabled(false);
-                                            //    chkBtnCPN.setEnabled(false);
-                                            //    chkBtnCE.setEnabled(false);
+                                                chkBtnTB.setEnabled(false);
+                                                chkBtnCCR.setEnabled(true);
+                                                chkBtnPPE.setEnabled(false);
+                                                chkBtnSAAJ.setEnabled(false);
+                                            chkBtnGAAC.setEnabled(true);
+                                            chkBtnAF.setEnabled(true);
+                                            chkBtnPrEP.setEnabled(true);
+                                               chkBtnCA.setEnabled(false);
+                                            chkBtnDC.setEnabled(true);
+                                               chkBtnCPN.setEnabled(false);
+                                               chkBtnCE.setEnabled(false);
                                         } else {
                                             if (chkBtnCPN.getSelection()) {
                                                 chkBtnTB.setEnabled(false);

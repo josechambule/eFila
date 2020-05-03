@@ -128,7 +128,7 @@ public class PackagesAwaiting extends GenericReportGui {
 
 		lblClinic = new Label(grpClinicSelection, SWT.NONE);
 		lblClinic.setBounds(new Rectangle(60, 25, 100, 20));
-		lblClinic.setText("Select Clinic:");
+		lblClinic.setText("Seleccione a US:");
 		lblClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		final CCombo cmbClinic = new CCombo(grpClinicSelection, SWT.BORDER);
@@ -161,7 +161,7 @@ public class PackagesAwaiting extends GenericReportGui {
 				.getFont(iDartFont.VERASANS_8_ITALIC));
 		lblInstructions.setBounds(new Rectangle(0, 2, 700, 15));
 		lblInstructions
-				.setText("Click a Column Header to Order by That Column. Click Again to Reverse the Ordering");
+				.setText("Clique no cabeçalho para ordenar a coluna.");
 
 	}
 
@@ -181,31 +181,31 @@ public class PackagesAwaiting extends GenericReportGui {
 				SWT.NONE);
 		tblColPackagesID.setWidth(120);
 
-		tblColPackagesID.setText("Package ID");
+		tblColPackagesID.setText("ID Pacote");
 
 		final TableColumn tblColPatName = new TableColumn(tblPackages, SWT.NONE);
 		tblColPatName.setWidth(140);
-		tblColPatName.setText("Patient Name");
+		tblColPatName.setText("Nome do Paciente");
 
 		final TableColumn tblColDatePacked = new TableColumn(tblPackages,
 				SWT.NONE);
 		tblColDatePacked.setWidth(105);
-		tblColDatePacked.setText("Date Packaged");
+		tblColDatePacked.setText("Data de Criação");
 
 		final TableColumn tblColDateReceived = new TableColumn(tblPackages,
 				SWT.NONE);
 		tblColDateReceived.setWidth(105);
-		tblColDateReceived.setText("Date Received");
+		tblColDateReceived.setText("Data de Levantamento");
 
 		final TableColumn tblColDateExpected = new TableColumn(tblPackages,
 				SWT.NONE);
 		tblColDateExpected.setWidth(130);
-		tblColDateExpected.setText("Patient Expected On");
+		tblColDateExpected.setText("Data do Proximo Lev. ");
 
 		final TableColumn tblColDaysSinceLastPickup = new TableColumn(
 				tblPackages, SWT.NONE);
 		tblColDaysSinceLastPickup.setWidth(100);
-		tblColDaysSinceLastPickup.setText("Days Patient Is Late");
+		tblColDaysSinceLastPickup.setText("Dias de atraso");
 		addColumnHeaderListeners();
 
 	}
@@ -246,7 +246,7 @@ public class PackagesAwaiting extends GenericReportGui {
 						.toString();
 
 			} else {
-				tiString[4] = "Initial Pickup";
+				tiString[4] = "Primeiro Levantameto";
 				tiString[5] = "0";
 			}
 
@@ -275,10 +275,10 @@ public class PackagesAwaiting extends GenericReportGui {
 				reorderByColumn(tblPackages.indexOf(tc),
 						currentOrderingIsAscending);
 				getLog().debug(
-						"The table is sorted by column '"
+						"A tabela está ordenada por '"
 								+ tc.getText()
-								+ (currentOrderingIsAscending ? "' ascending"
-										: "' descending"));
+								+ (currentOrderingIsAscending ? "' crescente"
+										: "' descrescente"));
 			}
 		};
 
@@ -388,9 +388,9 @@ public class PackagesAwaiting extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Clinic Was Selected");
+			missing.setText("A US não foi seleccionada");
 			missing
-					.setMessage("No clinic was selected. Please select a clinic by looking through the list of available clinics.");
+					.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 			viewReport = false;
 
