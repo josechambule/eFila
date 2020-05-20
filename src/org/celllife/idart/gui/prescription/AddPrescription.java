@@ -1426,8 +1426,11 @@ public class AddPrescription extends GenericFormGui implements
         String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
         
         String facility = new ArrayList<Clinic>(LocalObjects.getUser(getHSession()).getClinics()).get(0).getClinicName().trim();
+
+        Episode episode = PatientManager.getLastEpisode(getHSession(), patient.getPatientId());
         
-        if (StringUtils.isEmpty(patient.getUuidopenmrs())) {
+        if (StringUtils.isEmpty(patient.getUuidopenmrs()) && !episode.getStartReason().contains("nsito")
+                && !episode.getStartReason().contains("aternidade") && !episode.getStartReason().contains("PrEP")) {
             MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
             m.setText("Informação sobre estado do programa");
             m.setMessage("O uuid do paciente " + patient.getPatientId().trim() + " está vazio na base de dados do iDART. Preencha o uuid deste paciente apartir da base de dados do OpenMRS.");
