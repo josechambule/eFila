@@ -47,6 +47,7 @@ import org.celllife.idart.print.label.DrugLabel;
 import org.celllife.idart.print.label.PackageCoverLabel;
 import org.celllife.idart.print.label.PrintThread;
 import org.celllife.idart.print.label.ScriptSummaryLabel;
+import org.celllife.idart.rest.utils.RestUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -64,7 +65,7 @@ public class PackageManager {
 	 *            Session
 	 * @param d
 	 *            Drug
-	 * @param c
+	 * @param stockCenter
 	 *            Clinic
 	 * @return boolean
 	 * @throws HibernateException
@@ -197,8 +198,7 @@ public class PackageManager {
 		presc = session.createQuery(
 				"select prescription from Prescription as prescription "
 						+ "where prescription.date = '"
-						+ datePickup + "' AND patient = " + patient.getId()
-		).list();
+						+ RestUtils.castDateToString(datePickup) + "' AND patient = " + patient.getId()).list();
 
 		Iterator<Prescription> iter = presc.iterator();
 		if (iter.hasNext()) {
@@ -954,7 +954,7 @@ public class PackageManager {
 	 * @param pdisForLabels
 	 *            List<PackageDrugInfo>
 	 * @param qtysForLabels
-	 * @param pInfo
+	 * @param sess
 	 *            PackageInfo
 	 * @return boolean
 	 * @throws HibernateException
@@ -1212,12 +1212,12 @@ public class PackageManager {
 	}
 
 	/**
-	 * @param pInfo
-	 * @param printPackageCover
+	 * @param leaveQuantitiesBlank
+	 * @param pdi
 	 * @param leaveQuantitiesBlank
 	 * @param pdi
 	 * @param theForm
-	 * @param patientName
+	 * @param nextAppointmentDate
 	 * @return
 	 */
 	private static Object createLabel(boolean leaveQuantitiesBlank,

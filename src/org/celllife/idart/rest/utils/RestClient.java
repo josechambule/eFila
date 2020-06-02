@@ -25,7 +25,6 @@ import model.nonPersistent.Autenticacao;
 public class RestClient {
 	
 	Properties prop = new Properties();
-	//InputStream input = null;
 
 	 File input = new File("jdbc.properties");
 	 File myFile = new File("jdbc_auto_generated.properties");

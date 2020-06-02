@@ -5,71 +5,22 @@
  */
 package org.celllife.idart.database.hibernate;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
+import javax.persistence.*;
 
 /**
  *
- * @author colaco
+ * @author Colaco
  */
 @Entity
 @Table(name = "sync_temp_dispense")
-@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SyncTempDispense.findAll", query = "SELECT s FROM SyncTempDispense s")
-    , @NamedQuery(name = "SyncTempDispense.findById", query = "SELECT s FROM SyncTempDispense s WHERE s.id = :id")
-    , @NamedQuery(name = "SyncTempDispense.findByClinicalstage", query = "SELECT s FROM SyncTempDispense s WHERE s.clinicalstage = :clinicalstage")
-    , @NamedQuery(name = "SyncTempDispense.findByCurrent", query = "SELECT s FROM SyncTempDispense s WHERE s.current = :current")
-    , @NamedQuery(name = "SyncTempDispense.findByDate", query = "SELECT s FROM SyncTempDispense s WHERE s.date = :date")
-    , @NamedQuery(name = "SyncTempDispense.findByDoctor", query = "SELECT s FROM SyncTempDispense s WHERE s.doctor = :doctor")
-    , @NamedQuery(name = "SyncTempDispense.findByDuration", query = "SELECT s FROM SyncTempDispense s WHERE s.duration = :duration")
-    , @NamedQuery(name = "SyncTempDispense.findByModified", query = "SELECT s FROM SyncTempDispense s WHERE s.modified = :modified")
-    , @NamedQuery(name = "SyncTempDispense.findByPatient", query = "SELECT s FROM SyncTempDispense s WHERE s.patient = :patient")
-    , @NamedQuery(name = "SyncTempDispense.findBySyncTempDispenseid", query = "SELECT s FROM SyncTempDispense s WHERE s.syncTempDispenseid = :syncTempDispenseid")
-    , @NamedQuery(name = "SyncTempDispense.findByWeight", query = "SELECT s FROM SyncTempDispense s WHERE s.weight = :weight")
-    , @NamedQuery(name = "SyncTempDispense.findByReasonforupdate", query = "SELECT s FROM SyncTempDispense s WHERE s.reasonforupdate = :reasonforupdate")
-    , @NamedQuery(name = "SyncTempDispense.findByNotes", query = "SELECT s FROM SyncTempDispense s WHERE s.notes = :notes")
-    , @NamedQuery(name = "SyncTempDispense.findByEnddate", query = "SELECT s FROM SyncTempDispense s WHERE s.enddate = :enddate")
-    , @NamedQuery(name = "SyncTempDispense.findByDrugtypes", query = "SELECT s FROM SyncTempDispense s WHERE s.drugtypes = :drugtypes")
-    , @NamedQuery(name = "SyncTempDispense.findByRegimeid", query = "SELECT s FROM SyncTempDispense s WHERE s.regimeid = :regimeid")
-    , @NamedQuery(name = "SyncTempDispense.findByDatainicionoutroservico", query = "SELECT s FROM SyncTempDispense s WHERE s.datainicionoutroservico = :datainicionoutroservico")
-    , @NamedQuery(name = "SyncTempDispense.findByMotivomudanca", query = "SELECT s FROM SyncTempDispense s WHERE s.motivomudanca = :motivomudanca")
-    , @NamedQuery(name = "SyncTempDispense.findByLinhaid", query = "SELECT s FROM SyncTempDispense s WHERE s.linhaid = :linhaid")
-    , @NamedQuery(name = "SyncTempDispense.findByPpe", query = "SELECT s FROM SyncTempDispense s WHERE s.ppe = :ppe")
-    , @NamedQuery(name = "SyncTempDispense.findByPtv", query = "SELECT s FROM SyncTempDispense s WHERE s.ptv = :ptv")
-    , @NamedQuery(name = "SyncTempDispense.findByTb", query = "SELECT s FROM SyncTempDispense s WHERE s.tb = :tb")
-    , @NamedQuery(name = "SyncTempDispense.findByTpi", query = "SELECT s FROM SyncTempDispense s WHERE s.tpi = :tpi")
-    , @NamedQuery(name = "SyncTempDispense.findByTpc", query = "SELECT s FROM SyncTempDispense s WHERE s.tpc = :tpc")
-    , @NamedQuery(name = "SyncTempDispense.findByDispensatrimestral", query = "SELECT s FROM SyncTempDispense s WHERE s.dispensatrimestral = :dispensatrimestral")
-    , @NamedQuery(name = "SyncTempDispense.findByTipodt", query = "SELECT s FROM SyncTempDispense s WHERE s.tipodt = :tipodt")
-    , @NamedQuery(name = "SyncTempDispense.findByGaac", query = "SELECT s FROM SyncTempDispense s WHERE s.gaac = :gaac")
-    , @NamedQuery(name = "SyncTempDispense.findByAf", query = "SELECT s FROM SyncTempDispense s WHERE s.af = :af")
-    , @NamedQuery(name = "SyncTempDispense.findByCa", query = "SELECT s FROM SyncTempDispense s WHERE s.ca = :ca")
-    , @NamedQuery(name = "SyncTempDispense.findByCcr", query = "SELECT s FROM SyncTempDispense s WHERE s.ccr = :ccr")
-    , @NamedQuery(name = "SyncTempDispense.findBySaaj", query = "SELECT s FROM SyncTempDispense s WHERE s.saaj = :saaj")
-    , @NamedQuery(name = "SyncTempDispense.findByFr", query = "SELECT s FROM SyncTempDispense s WHERE s.fr = :fr")
-    , @NamedQuery(name = "SyncTempDispense.findByAmountpertime", query = "SELECT s FROM SyncTempDispense s WHERE s.amountpertime = :amountpertime")
-    , @NamedQuery(name = "SyncTempDispense.findByDispensedate", query = "SELECT s FROM SyncTempDispense s WHERE s.dispensedate = :dispensedate")
-    , @NamedQuery(name = "SyncTempDispense.findByDrugname", query = "SELECT s FROM SyncTempDispense s WHERE s.drugname = :drugname")
-    , @NamedQuery(name = "SyncTempDispense.findByExpirydate", query = "SELECT s FROM SyncTempDispense s WHERE s.expirydate = :expirydate")
-    , @NamedQuery(name = "SyncTempDispense.findByPatientid", query = "SELECT s FROM SyncTempDispense s WHERE s.patientid = :patientid")
-    , @NamedQuery(name = "SyncTempDispense.findByPatientfirstname", query = "SELECT s FROM SyncTempDispense s WHERE s.patientfirstname = :patientfirstname")
-    , @NamedQuery(name = "SyncTempDispense.findByPatientlastname", query = "SELECT s FROM SyncTempDispense s WHERE s.patientlastname = :patientlastname")
-    , @NamedQuery(name = "SyncTempDispense.findByDateexpectedstring", query = "SELECT s FROM SyncTempDispense s WHERE s.dateexpectedstring = :dateexpectedstring")
-    , @NamedQuery(name = "SyncTempDispense.findByPickupdate", query = "SELECT s FROM SyncTempDispense s WHERE s.pickupdate = :pickupdate")
-    , @NamedQuery(name = "SyncTempDispense.findByTimesperday", query = "SELECT s FROM SyncTempDispense s WHERE s.timesperday = :timesperday")
-    , @NamedQuery(name = "SyncTempDispense.findByWeekssupply", query = "SELECT s FROM SyncTempDispense s WHERE s.weekssupply = :weekssupply")
-    , @NamedQuery(name = "SyncTempDispense.findByQtyinhand", query = "SELECT s FROM SyncTempDispense s WHERE s.qtyinhand = :qtyinhand")
-    , @NamedQuery(name = "SyncTempDispense.findBySummaryqtyinhand", query = "SELECT s FROM SyncTempDispense s WHERE s.summaryqtyinhand = :summaryqtyinhand")
-    , @NamedQuery(name = "SyncTempDispense.findByQtyinlastbatch", query = "SELECT s FROM SyncTempDispense s WHERE s.qtyinlastbatch = :qtyinlastbatch")})
+    @NamedQuery(name = "SyncTempDispense.findAll", query = "SELECT s FROM SyncTempDispense s")})
 public class SyncTempDispense implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue
-    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
     @Column(name = "clinicalstage")
@@ -88,8 +39,6 @@ public class SyncTempDispense implements Serializable {
     @Basic(optional = false)
     @Column(name = "patient")
     private int patient;
-    @Column(name = "sync_temp_dispenseid")
-    private String syncTempDispenseid;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "weight")
     private Double weight;
@@ -102,15 +51,15 @@ public class SyncTempDispense implements Serializable {
     private Date enddate;
     @Column(name = "drugtypes")
     private String drugtypes;
-    @Column(name = "regimeid")
-    private String regimeid;
+    @Column(name = "regimenome")
+    private String regimenome;
     @Column(name = "datainicionoutroservico")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datainicionoutroservico;
     @Column(name = "motivomudanca")
     private String motivomudanca;
-    @Column(name = "linhaid")
-    private String linhaid;
+    @Column(name = "linhanome")
+    private String linhanome;
     @Column(name = "ppe")
     private Character ppe;
     @Column(name = "ptv")
@@ -169,6 +118,37 @@ public class SyncTempDispense implements Serializable {
     private String summaryqtyinhand;
     @Column(name = "qtyinlastbatch")
     private String qtyinlastbatch;
+    @Column(name = "syncstatus")
+    private Character syncstatus;
+    @Basic(optional = false)
+    @Column(name = "mainclinic")
+    private int mainclinic;
+    @Basic(optional = false)
+    @Column(name = "mainclinicname")
+    private String mainclinicname;
+    @Column(name = "prescriptionid")
+    private String prescriptionid;
+    @Column(name = "tipods")
+    private String tipods;
+    @Basic(optional = false)
+    @Column(name = "dispensasemestral")
+    private int dispensasemestral;
+    @Column(name = "durationsentence")
+    private String durationsentence;
+    @Column(name = "dc")
+    private Character dc;
+    @Column(name = "prep")
+    private Character prep;
+    @Column(name = "ce")
+    private Character ce;
+    @Column(name = "cpn")
+    private Character cpn;
+    @Column(name = "prescricaoespecial")
+    private Character prescricaoespecial;
+    @Column(name = "motivocriacaoespecial")
+    private String motivocriacaoespecial;
+    @Column(name = "syncuuid", length = 255)
+    private String syncuuid ;
 
     public SyncTempDispense() {
     }
@@ -177,10 +157,14 @@ public class SyncTempDispense implements Serializable {
         this.id = id;
     }
 
-    public SyncTempDispense(Integer id, int patient, int dispensatrimestral) {
+    public SyncTempDispense(Integer id, int patient, int dispensatrimestral, int mainclinic, String mainclinicname, int dispensasemestral) {
         this.id = id;
         this.patient = patient;
         this.dispensatrimestral = dispensatrimestral;
+        this.mainclinic = mainclinic;
+        this.mainclinicname = mainclinicname;
+        this.dispensasemestral = dispensasemestral;
+        this.syncuuid = UUID.randomUUID().toString();
     }
 
     public Integer getId() {
@@ -247,14 +231,6 @@ public class SyncTempDispense implements Serializable {
         this.patient = patient;
     }
 
-    public String getSyncTempDispenseid() {
-        return syncTempDispenseid;
-    }
-
-    public void setSyncTempDispenseid(String syncTempDispenseid) {
-        this.syncTempDispenseid = syncTempDispenseid;
-    }
-
     public Double getWeight() {
         return weight;
     }
@@ -295,12 +271,12 @@ public class SyncTempDispense implements Serializable {
         this.drugtypes = drugtypes;
     }
 
-    public String getRegimeid() {
-        return regimeid;
+    public String getRegimenome() {
+        return regimenome;
     }
 
-    public void setRegimeid(String regimeid) {
-        this.regimeid = regimeid;
+    public void setRegimenome(String regimenome) {
+        this.regimenome = regimenome;
     }
 
     public Date getDatainicionoutroservico() {
@@ -319,12 +295,12 @@ public class SyncTempDispense implements Serializable {
         this.motivomudanca = motivomudanca;
     }
 
-    public String getLinhaid() {
-        return linhaid;
+    public String getLinhanome() {
+        return linhanome;
     }
 
-    public void setLinhaid(String linhaid) {
-        this.linhaid = linhaid;
+    public void setLinhanome(String linhanome) {
+        this.linhanome = linhanome;
     }
 
     public Character getPpe() {
@@ -543,6 +519,118 @@ public class SyncTempDispense implements Serializable {
         this.qtyinlastbatch = qtyinlastbatch;
     }
 
+    public Character getSyncstatus() {
+        return syncstatus;
+    }
+
+    public void setSyncstatus(Character syncstatus) {
+        this.syncstatus = syncstatus;
+    }
+
+    public int getMainclinic() {
+        return mainclinic;
+    }
+
+    public void setMainclinic(int mainclinic) {
+        this.mainclinic = mainclinic;
+    }
+
+    public String getMainclinicname() {
+        return mainclinicname;
+    }
+
+    public void setMainclinicname(String mainclinicname) {
+        this.mainclinicname = mainclinicname;
+    }
+
+    public String getPrescriptionid() {
+        return prescriptionid;
+    }
+
+    public void setPrescriptionid(String prescriptionid) {
+        this.prescriptionid = prescriptionid;
+    }
+
+    public String getTipods() {
+        return tipods;
+    }
+
+    public void setTipods(String tipods) {
+        this.tipods = tipods;
+    }
+
+    public int getDispensasemestral() {
+        return dispensasemestral;
+    }
+
+    public void setDispensasemestral(int dispensasemestral) {
+        this.dispensasemestral = dispensasemestral;
+    }
+
+    public String getDurationsentence() {
+        return durationsentence;
+    }
+
+    public void setDurationsentence(String durationsentence) {
+        this.durationsentence = durationsentence;
+    }
+
+    public Character getDc() {
+        return dc;
+    }
+
+    public void setDc(Character dc) {
+        this.dc = dc;
+    }
+
+    public Character getPrep() {
+        return prep;
+    }
+
+    public void setPrep(Character prep) {
+        this.prep = prep;
+    }
+
+    public Character getCe() {
+        return ce;
+    }
+
+    public void setCe(Character ce) {
+        this.ce = ce;
+    }
+
+    public Character getCpn() {
+        return cpn;
+    }
+
+    public void setCpn(Character cpn) {
+        this.cpn = cpn;
+    }
+
+    public Character getPrescricaoespecial() {
+        return prescricaoespecial;
+    }
+
+    public void setPrescricaoespecial(Character prescricaoespecial) {
+        this.prescricaoespecial = prescricaoespecial;
+    }
+
+    public String getMotivocriacaoespecial() {
+        return motivocriacaoespecial;
+    }
+
+    public void setMotivocriacaoespecial(String motivocriacaoespecial) {
+        this.motivocriacaoespecial = motivocriacaoespecial;
+    }
+
+    public String getSyncuuid() {
+        return syncuuid;
+    }
+
+    public void setSyncuuid(String syncuuid) {
+        this.syncuuid = syncuuid;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -567,5 +655,5 @@ public class SyncTempDispense implements Serializable {
     public String toString() {
         return "org.celllife.idart.database.hibernate.SyncTempDispense[ id=" + id + " ]";
     }
-
+    
 }

@@ -20,6 +20,7 @@
 package org.celllife.idart.gui.patientAdmin;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.gui.patient.AddPatient;
 import org.celllife.idart.gui.patient.AddPatientIdart;
@@ -48,381 +49,444 @@ import org.eclipse.swt.widgets.Shell;
 import migracao.swingreverse.SyncPacientesFarmac;
 
 /**
+ *
  */
 
 public class PatientAdmin extends GenericAdminGui {
 
-	private Button btnPatientAdd;
-	
-	private Button btnPatientAddOpenMRS;
+    private Button btnPatientAdd;
 
-	private Button btnPatientUpdate;
+    private Button btnPatientAddOpenMRS;
 
-	private Button btnPrescriptionUpdate;
+    private Button btnPatientUpdate;
 
-	private Button btnPatientHistoryReport;
+    private Button btnPrescriptionUpdate;
 
-	private Button btnMergePatients;
+    private Button btnPatientHistoryReport;
 
-	private Label lblPicPatientAdd;
-	
-	private Label lblPicPatientAddOpenMRS;
+    private Button btnMergePatients;
 
-	private Label lblPicPatientUpdate;
+    private Label lblPicPatientAdd;
 
-	private Label lblPicPrescriptionUpdate;
+    private Label lblPicPatientAddOpenMRS;
 
-	private Label lblPicPatientHistoryReport;
+    private Label lblPicPatientUpdate;
 
-	private Label lblPicMergePatients;
+    private Label lblPicPrescriptionUpdate;
 
-	//private Label lblPicPatientVisitsandStats;
+    private Label lblPicPatientHistoryReport;
 
-	//private Button btnPatientVisitsandStats;
+    private Label lblPicMergePatients;
 
-	/**
-	 * Constructor for PatientAdmin.
-	 * 
-	 * @param parent
-	 *            Shell
-	 */
-	public PatientAdmin(Shell parent) {
-		super(parent);
-	}
+    //private Label lblPicPatientVisitsandStats;
 
-	/**
-	 * This method initializes newPatientAdmin
-	 */
-	@Override
-	protected void createShell() {
-		String shellText = Messages.getString("PatientAdmin.shell.title"); //$NON-NLS-1$
-		buildShell(shellText);
-	}
+    //private Button btnPatientVisitsandStats;
 
-	/**
-	 * This method initializes compHeader
-	 * 
-	 */
-	@Override
-	protected void createCompHeader() {
-		String headerText = Messages.getString("PatientAdmin.shell.title"); //$NON-NLS-1$
-		iDartImage icoImage = iDartImage.PATIENTADMIN;
-		// Building the component from the GenericAdminGui
-		buildCompHeader(headerText, icoImage);
-	}
+    /**
+     * Constructor for PatientAdmin.
+     *
+     * @param parent Shell
+     */
+    public PatientAdmin(Shell parent) {
+        super(parent);
+    }
 
-	/**
-	 * This method initializes compOptions
-	 * 
-	 */
-	@Override
-	protected void createCompOptions() {
-		RowLayout rowLayout = new RowLayout();
-		rowLayout.wrap = false;
-		rowLayout.pack = true;
-		rowLayout.justify = true;
-		compOptions.setLayout(rowLayout);
+    /**
+     * This method initializes newPatientAdmin
+     */
+    @Override
+    protected void createShell() {
+        String shellText = Messages.getString("PatientAdmin.shell.title"); //$NON-NLS-1$
+        buildShell(shellText);
+    }
 
-		GridLayout gl = new GridLayout(2, false);
-		gl.verticalSpacing = 24;
-		Composite compOptionsInner = new Composite(compOptions, SWT.NONE);
-		compOptionsInner.setLayout(gl);
+    /**
+     * This method initializes compHeader
+     */
+    @Override
+    protected void createCompHeader() {
+        String headerText = Messages.getString("PatientAdmin.shell.title"); //$NON-NLS-1$
+        iDartImage icoImage = iDartImage.PATIENTADMIN;
+        // Building the component from the GenericAdminGui
+        buildCompHeader(headerText, icoImage);
+    }
 
-		GridData gdPic = new GridData();
-		gdPic.heightHint = 46;
-		gdPic.widthHint = 53;
+    /**
+     * This method initializes compOptions
+     */
+    @Override
+    protected void createCompOptions() {
+        RowLayout rowLayout = new RowLayout();
+        rowLayout.wrap = false;
+        rowLayout.pack = true;
+        rowLayout.justify = true;
+        compOptions.setLayout(rowLayout);
 
-		GridData gdBtn = new GridData();
-		gdBtn.heightHint = 43;
-		gdBtn.widthHint = 363;
-		
-		// lblPicPrescriptionUpdate
-		lblPicPrescriptionUpdate = new Label(compOptionsInner, SWT.NONE);
-		lblPicPrescriptionUpdate.setLayoutData(gdPic);
-		lblPicPrescriptionUpdate.setImage(ResourceUtils
-				.getImage(iDartImage.PRESCRIPTIONNEW));
-		lblPicPrescriptionUpdate.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdUpdatePrescriptionWidgetSelected();
-			}
-		});
+        GridLayout gl = new GridLayout(2, false);
+        gl.verticalSpacing = 24;
+        Composite compOptionsInner = new Composite(compOptions, SWT.NONE);
+        compOptionsInner.setLayout(gl);
 
-		// btnPrescriptionUpdate
-		btnPrescriptionUpdate = new Button(compOptionsInner, SWT.NONE);
-		btnPrescriptionUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PRESCRIPTION.getAccessButtonId());
-		btnPrescriptionUpdate.setLayoutData(gdBtn);
-		btnPrescriptionUpdate
-		.setText(Messages.getString("PatientAdmin.button.updatePrescription")); //$NON-NLS-1$
-		btnPrescriptionUpdate
-		.setToolTipText(Messages.getString("PatientAdmin.button.updatePrescription.tooltip")); //$NON-NLS-1$
-		btnPrescriptionUpdate.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_10));
-		btnPrescriptionUpdate
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdUpdatePrescriptionWidgetSelected();
-			}
-		});
-		
-		// lblPicPatientAddOpenMRS
-		lblPicPatientAddOpenMRS = new Label(compOptionsInner, SWT.NONE);
-		lblPicPatientAddOpenMRS.setLayoutData(gdPic);
-		lblPicPatientAddOpenMRS
-		.setImage(ResourceUtils.getImage(iDartImage.PATIENTNEW));
-		lblPicPatientAddOpenMRS.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdAddPatientOpenMRSWidgetSelected();
-			}
-		});
-		
-		// btnPatientAddOpenMRS
-		btnPatientAddOpenMRS = new Button(compOptionsInner, SWT.NONE);
-		btnPatientAddOpenMRS.setData(iDartProperties.SWTBOT_KEY, Screens.ADD_PATIENT.getAccessButtonId());
-		btnPatientAddOpenMRS.setText(Messages.getString("PatientAdmin.button.addNewPatient.openMRS")); //$NON-NLS-1$
-		btnPatientAddOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-		btnPatientAddOpenMRS
-		.setToolTipText(Messages.getString("PatientAdmin.button.addNewPatient.tooltip")); //$NON-NLS-1$
-		btnPatientAddOpenMRS.setLayoutData(gdBtn);
-		btnPatientAddOpenMRS
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdAddPatientOpenMRSWidgetSelected();
-			}
-		});
+        GridData gdPic = new GridData();
+        gdPic.heightHint = 46;
+        gdPic.widthHint = 53;
 
-		// lblPicPatientAdd
-		lblPicPatientAdd = new Label(compOptionsInner, SWT.NONE);
-		lblPicPatientAdd.setLayoutData(gdPic);
-		lblPicPatientAdd
-		.setImage(ResourceUtils.getImage(iDartImage.PATIENTNEW));
-		lblPicPatientAdd.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdAddPatientWidgetSelected();
-			}
-		});
+        GridData gdBtn = new GridData();
+        gdBtn.heightHint = 43;
+        gdBtn.widthHint = 363;
 
-		// btnPatientAdd
-		btnPatientAdd = new Button(compOptionsInner, SWT.NONE);
-		btnPatientAdd.setData(iDartProperties.SWTBOT_KEY, Screens.ADD_PATIENT.getAccessButtonId());
-		btnPatientAdd.setText(Messages.getString("PatientAdmin.button.addNewPatient")); //$NON-NLS-1$
-		btnPatientAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-		btnPatientAdd
-		.setToolTipText(Messages.getString("PatientAdmin.button.addNewPatient.tooltip")); //$NON-NLS-1$
-		btnPatientAdd.setLayoutData(gdBtn);
-		btnPatientAdd
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdAddPatientWidgetSelected();
-			}
-		});
+        boolean checkOpenmrs = true;
 
-		// lblPicPatientUpdate
-		lblPicPatientUpdate = new Label(compOptionsInner, SWT.NONE);
-		lblPicPatientUpdate.setLayoutData(gdPic);
-		lblPicPatientUpdate.setImage(ResourceUtils
-				.getImage(iDartImage.PATIENTUPDATE));
-		lblPicPatientUpdate.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdUpdatePatientWidgetSelected();
-			}
-		});
+        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
+            checkOpenmrs = true;
+        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
+                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            checkOpenmrs = false;
 
-		// btnPatientUpdate
-		btnPatientUpdate = new Button(compOptionsInner, SWT.NONE);
-		btnPatientUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PATIENT.getAccessButtonId());
-		btnPatientUpdate.setLayoutData(gdBtn);
-		btnPatientUpdate.setText(Messages.getString("PatientAdmin.button.updateExistingPatient")); //$NON-NLS-1$
-		btnPatientUpdate
-		.setToolTipText(Messages.getString("PatientAdmin.button.updateExistingPatient.tooltip")); //$NON-NLS-1$
-		btnPatientUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-		btnPatientUpdate
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdUpdatePatientWidgetSelected();
-			}
-		});
+        if (checkOpenmrs) {
+            // lblPicPrescriptionUpdate
+            lblPicPrescriptionUpdate = new Label(compOptionsInner, SWT.NONE);
+            lblPicPrescriptionUpdate.setLayoutData(gdPic);
+            lblPicPrescriptionUpdate.setImage(ResourceUtils
+                    .getImage(iDartImage.PRESCRIPTIONNEW));
+            lblPicPrescriptionUpdate.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdUpdatePrescriptionWidgetSelected();
+                }
+            });
 
-		// lblPicPatientHistoryReport
-		lblPicPatientHistoryReport = new Label(compOptionsInner, SWT.NONE);
-		lblPicPatientHistoryReport.setLayoutData(gdPic);
-		lblPicPatientHistoryReport.setImage(ResourceUtils
-				.getImage(iDartImage.REPORT_PATIENTHISTORY));
-		lblPicPatientHistoryReport.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdViewPatientHistoryWidgetSelected();
-			}
-		});
+            // btnPrescriptionUpdate
+            btnPrescriptionUpdate = new Button(compOptionsInner, SWT.NONE);
+            btnPrescriptionUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PRESCRIPTION.getAccessButtonId());
+            btnPrescriptionUpdate.setLayoutData(gdBtn);
+            btnPrescriptionUpdate
+                    .setText(Messages.getString("PatientAdmin.button.updatePrescription")); //$NON-NLS-1$
+            btnPrescriptionUpdate
+                    .setToolTipText(Messages.getString("PatientAdmin.button.updatePrescription.tooltip")); //$NON-NLS-1$
+            btnPrescriptionUpdate.setFont(ResourceUtils
+                    .getFont(iDartFont.VERASANS_10));
+            btnPrescriptionUpdate
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdUpdatePrescriptionWidgetSelected();
+                        }
+                    });
 
-		// btnPatientHistoryReport
-		btnPatientHistoryReport = new Button(compOptionsInner, SWT.NONE);
-		btnPatientHistoryReport.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_HISTORY_REPORT.getAccessButtonId());
-		btnPatientHistoryReport.setLayoutData(gdBtn);
-		btnPatientHistoryReport.setText(Messages.getString("PatientAdmin.button.viewPatientHistory")); //$NON-NLS-1$
-		btnPatientHistoryReport
-		.setToolTipText(Messages.getString("PatientAdmin.button.viewPatientHistory.tooltip")); //$NON-NLS-1$
-		btnPatientHistoryReport.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_10));
-		btnPatientHistoryReport
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdViewPatientHistoryWidgetSelected();
-			}
-		});
+            // lblPicPatientAddOpenMRS
+            lblPicPatientAddOpenMRS = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientAddOpenMRS.setLayoutData(gdPic);
+            lblPicPatientAddOpenMRS
+                    .setImage(ResourceUtils.getImage(iDartImage.PATIENTNEW));
+            lblPicPatientAddOpenMRS.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdAddPatientOpenMRSWidgetSelected();
+                }
+            });
 
-		// lblPicPatientInfoLabel
-		lblPicMergePatients = new Label(compOptionsInner, SWT.NONE);
-		lblPicMergePatients.setLayoutData(gdPic);
-		lblPicMergePatients.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent mu) {
-				cmdMergePatientsWidgetSelected();
-			}
-		});
+            // btnPatientAddOpenMRS
+            btnPatientAddOpenMRS = new Button(compOptionsInner, SWT.NONE);
+            btnPatientAddOpenMRS.setData(iDartProperties.SWTBOT_KEY, Screens.ADD_PATIENT.getAccessButtonId());
+            btnPatientAddOpenMRS.setText(Messages.getString("PatientAdmin.button.addNewPatient.openMRS")); //$NON-NLS-1$
+            btnPatientAddOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnPatientAddOpenMRS
+                    .setToolTipText(Messages.getString("PatientAdmin.button.addNewPatient.tooltip")); //$NON-NLS-1$
+            btnPatientAddOpenMRS.setLayoutData(gdBtn);
+            btnPatientAddOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdAddPatientOpenMRSWidgetSelected();
+                        }
+                    });
 
-		// btnPatientInfoLabel
-		lblPicMergePatients.setImage(ResourceUtils
-				.getImage(iDartImage.PATIENTDUPLICATES));
-		btnMergePatients = new Button(compOptionsInner, SWT.NONE);
-		btnMergePatients.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_MERGE.getAccessButtonId());
-		btnMergePatients.setLayoutData(gdBtn);
-		btnMergePatients.setText(Messages.getString("PatientAdmin.button.mergePatient")); //$NON-NLS-1$
-		btnMergePatients
-		.setToolTipText(Messages.getString("PatientAdmin.button.mergePatient.tooltip")); //$NON-NLS-1$
-		btnMergePatients.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-		btnMergePatients
-		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-			@Override
-			public void widgetSelected(
-					org.eclipse.swt.events.SelectionEvent e) {
-				cmdMergePatientsWidgetSelected();
-			}
-		});
+            // lblPicPatientAdd
+            lblPicPatientAdd = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientAdd.setLayoutData(gdPic);
+            lblPicPatientAdd
+                    .setImage(ResourceUtils.getImage(iDartImage.PATIENTNEW));
+            lblPicPatientAdd.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdAddPatientWidgetSelected();
+                }
+            });
 
-		// lblPicPatientVisitsandStats
-//		lblPicPatientVisitsandStats = new Label(compOptionsInner, SWT.NONE);
-//		lblPicPatientVisitsandStats.setLayoutData(gdPic);
-//		lblPicPatientVisitsandStats.setImage(ResourceUtils.getImage(iDartImage.PAVAS));
-//		lblPicPatientVisitsandStats.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseUp(MouseEvent mu) {
-//				cmdViewPAVASWidgetSelected2();
-//			}
-//		});
+            // btnPatientAdd
+            btnPatientAdd = new Button(compOptionsInner, SWT.NONE);
+            btnPatientAdd.setData(iDartProperties.SWTBOT_KEY, Screens.ADD_PATIENT.getAccessButtonId());
+            btnPatientAdd.setText(Messages.getString("PatientAdmin.button.addNewPatient")); //$NON-NLS-1$
+            btnPatientAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnPatientAdd
+                    .setToolTipText(Messages.getString("PatientAdmin.button.addNewPatient.tooltip")); //$NON-NLS-1$
+            btnPatientAdd.setLayoutData(gdBtn);
+            btnPatientAdd
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdAddPatientWidgetSelected();
+                        }
+                    });
 
-		// btnPatientVisitsandStats
-//		btnPatientVisitsandStats = new Button(compOptionsInner, SWT.NONE);
-//		btnPatientVisitsandStats.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
-//		btnPatientVisitsandStats.setLayoutData(gdBtn);
-//		btnPatientVisitsandStats.setText(Messages.getString("PatientAdmin.button.patientVisits")); //$NON-NLS-1$
-//		btnPatientVisitsandStats.setToolTipText(Messages.getString("PatientAdmin.button.patientVisits.tooltip")); //$NON-NLS-1$
-//		btnPatientVisitsandStats.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-//		btnPatientVisitsandStats
-//		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(
-//					org.eclipse.swt.events.SelectionEvent e) {
-//				cmdViewPAVASWidgetSelected2();
-//			}
-//		});
+            // lblPicPatientUpdate
+            lblPicPatientUpdate = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientUpdate.setLayoutData(gdPic);
+            lblPicPatientUpdate.setImage(ResourceUtils
+                    .getImage(iDartImage.PATIENTUPDATE));
+            lblPicPatientUpdate.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdUpdatePatientWidgetSelected();
+                }
+            });
 
-		// Intro FARMAC
-		if (iDartProperties.downReferralMode.equalsIgnoreCase(iDartProperties.ONLINE_DOWNREFERRAL_MODE) && !iDartProperties.FARMAC) {
+            // btnPatientUpdate
+            btnPatientUpdate = new Button(compOptionsInner, SWT.NONE);
+            btnPatientUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PATIENT.getAccessButtonId());
+            btnPatientUpdate.setLayoutData(gdBtn);
+            btnPatientUpdate.setText(Messages.getString("PatientAdmin.button.updateExistingPatient")); //$NON-NLS-1$
+            btnPatientUpdate
+                    .setToolTipText(Messages.getString("PatientAdmin.button.updateExistingPatient.tooltip")); //$NON-NLS-1$
+            btnPatientUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnPatientUpdate
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdUpdatePatientWidgetSelected();
+                        }
+                    });
 
-			// lblDistributePackages
-			Label lblExportFarmac = new Label(compOptionsInner, SWT.NONE);
-			lblExportFarmac.setLayoutData(gdPic);
-			lblExportFarmac.setImage(ResourceUtils.getImage(iDartImage.PHARMACYUSER));
-			lblExportFarmac.addMouseListener(new MouseAdapter() {
-				@SuppressWarnings("static-access")
-				@Override
-				public void mouseUp(MouseEvent mu) {
-					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
-					syncPacientesFarmac.createAndShowGUI();
-				}
-			});
+            // lblPicPatientHistoryReport
+            lblPicPatientHistoryReport = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientHistoryReport.setLayoutData(gdPic);
+            lblPicPatientHistoryReport.setImage(ResourceUtils
+                    .getImage(iDartImage.REPORT_PATIENTHISTORY));
+            lblPicPatientHistoryReport.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdViewPatientHistoryWidgetSelected();
+                }
+            });
 
-			// btnDistributePackages
-			Button btnExportFarmac = new Button(compOptionsInner, SWT.NONE);
-			btnExportFarmac.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_VISITS.getAccessButtonId());
-			btnExportFarmac.setLayoutData(gdBtn);
-			btnExportFarmac.setText("Exportar Pacientes Referidos para FARMAC");
-			btnExportFarmac.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
-			btnExportFarmac.setToolTipText(Messages.getString("Exportar Pacientes Referidos para FARMAC")); //$NON-NLS-1$
+            // btnPatientHistoryReport
+            btnPatientHistoryReport = new Button(compOptionsInner, SWT.NONE);
+            btnPatientHistoryReport.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_HISTORY_REPORT.getAccessButtonId());
+            btnPatientHistoryReport.setLayoutData(gdBtn);
+            btnPatientHistoryReport.setText(Messages.getString("PatientAdmin.button.viewPatientHistory")); //$NON-NLS-1$
+            btnPatientHistoryReport
+                    .setToolTipText(Messages.getString("PatientAdmin.button.viewPatientHistory.tooltip")); //$NON-NLS-1$
+            btnPatientHistoryReport.setFont(ResourceUtils
+                    .getFont(iDartFont.VERASANS_10));
+            btnPatientHistoryReport
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdViewPatientHistoryWidgetSelected();
+                        }
+                    });
 
-			btnExportFarmac.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-				@SuppressWarnings("static-access")
-				@Override
-				public void widgetSelected(
-						org.eclipse.swt.events.SelectionEvent e) {
-					SyncPacientesFarmac syncPacientesFarmac = new SyncPacientesFarmac();
-					syncPacientesFarmac.createAndShowGUI();
-				}
-			});
+            // lblPicPatientInfoLabel
+            lblPicMergePatients = new Label(compOptionsInner, SWT.NONE);
+            lblPicMergePatients.setLayoutData(gdPic);
+            lblPicMergePatients.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdMergePatientsWidgetSelected();
+                }
+            });
 
-		}
+            // btnPatientInfoLabel
+            lblPicMergePatients.setImage(ResourceUtils
+                    .getImage(iDartImage.PATIENTDUPLICATES));
+            btnMergePatients = new Button(compOptionsInner, SWT.NONE);
+            btnMergePatients.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_MERGE.getAccessButtonId());
+            btnMergePatients.setLayoutData(gdBtn);
+            btnMergePatients.setText(Messages.getString("PatientAdmin.button.mergePatient")); //$NON-NLS-1$
+            btnMergePatients
+                    .setToolTipText(Messages.getString("PatientAdmin.button.mergePatient.tooltip")); //$NON-NLS-1$
+            btnMergePatients.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnMergePatients
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdMergePatientsWidgetSelected();
+                        }
+                    });
+        } else {
+            // lblPicPrescriptionUpdate
+            lblPicPrescriptionUpdate = new Label(compOptionsInner, SWT.NONE);
+            lblPicPrescriptionUpdate.setLayoutData(gdPic);
+            lblPicPrescriptionUpdate.setImage(ResourceUtils
+                    .getImage(iDartImage.PRESCRIPTIONNEW));
+            lblPicPrescriptionUpdate.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdUpdatePrescriptionWidgetSelected();
+                }
+            });
 
-		compOptions.layout();
-		compOptionsInner.layout();
+            // btnPrescriptionUpdate
+            btnPrescriptionUpdate = new Button(compOptionsInner, SWT.NONE);
+            btnPrescriptionUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PRESCRIPTION.getAccessButtonId());
+            btnPrescriptionUpdate.setLayoutData(gdBtn);
+            btnPrescriptionUpdate
+                    .setText(Messages.getString("PatientAdmin.button.updatePrescription")); //$NON-NLS-1$
+            btnPrescriptionUpdate
+                    .setToolTipText(Messages.getString("PatientAdmin.button.updatePrescription.tooltip")); //$NON-NLS-1$
+            btnPrescriptionUpdate.setFont(ResourceUtils
+                    .getFont(iDartFont.VERASANS_10));
+            btnPrescriptionUpdate
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdUpdatePrescriptionWidgetSelected();
+                        }
+                    });
 
-	}
-	
-	private void cmdAddPatientOpenMRSWidgetSelected() {
-		System.out.println("cmdAddPatientOpenMRSWidgetSelected selected ...");
-		
-		// AddPatient(true) to ADD new patient to OpenMRS
-		AddPatientOpenMrs.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate, true);
-		new AddPatientOpenMrs(getShell(), true);
-	}
+            // lblPicPatientUpdate
+            lblPicPatientUpdate = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientUpdate.setLayoutData(gdPic);
+            lblPicPatientUpdate.setImage(ResourceUtils
+                    .getImage(iDartImage.PATIENTUPDATE));
+            lblPicPatientUpdate.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdUpdatePatientWidgetSelected();
+                }
+            });
 
-	private void cmdAddPatientWidgetSelected() {
-		// AddPatient(true) to ADD new patient
-		AddPatient.addInitialisationOption(
-				GenericFormGui.OPTION_isAddNotUpdate, true);
-		new AddPatientIdart(getShell(), true);
-	}
+            // btnPatientUpdate
+            btnPatientUpdate = new Button(compOptionsInner, SWT.NONE);
+            btnPatientUpdate.setData(iDartProperties.SWTBOT_KEY, Screens.UPDATE_PATIENT.getAccessButtonId());
+            btnPatientUpdate.setLayoutData(gdBtn);
+            btnPatientUpdate.setText(Messages.getString("PatientAdmin.button.updateExistingPatient")); //$NON-NLS-1$
+            btnPatientUpdate
+                    .setToolTipText(Messages.getString("PatientAdmin.button.updateExistingPatient.tooltip")); //$NON-NLS-1$
+            btnPatientUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnPatientUpdate
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdUpdatePatientWidgetSelected();
+                        }
+                    });
 
-	private void cmdUpdatePatientWidgetSelected() {
-		// AddPatient(false) to UPDATE patient's details
-		AddPatient.addInitialisationOption(
-				GenericFormGui.OPTION_isAddNotUpdate, false);
-		new AddPatient(getShell(), false);
-	}
+            // lblPicPatientHistoryReport
+            lblPicPatientHistoryReport = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientHistoryReport.setLayoutData(gdPic);
+            lblPicPatientHistoryReport.setImage(ResourceUtils
+                    .getImage(iDartImage.REPORT_PATIENTHISTORY));
+            lblPicPatientHistoryReport.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdViewPatientHistoryWidgetSelected();
+                }
+            });
 
-	private void cmdUpdatePrescriptionWidgetSelected() {
-		new AddPrescription(null, getShell(), false);
-	}
+            // btnPatientHistoryReport
+            btnPatientHistoryReport = new Button(compOptionsInner, SWT.NONE);
+            btnPatientHistoryReport.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_HISTORY_REPORT.getAccessButtonId());
+            btnPatientHistoryReport.setLayoutData(gdBtn);
+            btnPatientHistoryReport.setText(Messages.getString("PatientAdmin.button.viewPatientHistory")); //$NON-NLS-1$
+            btnPatientHistoryReport
+                    .setToolTipText(Messages.getString("PatientAdmin.button.viewPatientHistory.tooltip")); //$NON-NLS-1$
+            btnPatientHistoryReport.setFont(ResourceUtils
+                    .getFont(iDartFont.VERASANS_10));
+            btnPatientHistoryReport
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdViewPatientHistoryWidgetSelected();
+                        }
+                    });
 
-	private void cmdViewPatientHistoryWidgetSelected() {
-		new PatientHistory(getShell(), true);
-	}
+            // lblPicPatientInfoLabel
+            lblPicMergePatients = new Label(compOptionsInner, SWT.NONE);
+            lblPicMergePatients.setLayoutData(gdPic);
+            lblPicMergePatients.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdMergePatientsWidgetSelected();
+                }
+            });
 
-	private void cmdMergePatientsWidgetSelected() {
-		new MergePatients(getShell());
-	}
+            // btnPatientInfoLabel
+            lblPicMergePatients.setImage(ResourceUtils
+                    .getImage(iDartImage.PATIENTDUPLICATES));
+            btnMergePatients = new Button(compOptionsInner, SWT.NONE);
+            btnMergePatients.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_MERGE.getAccessButtonId());
+            btnMergePatients.setLayoutData(gdBtn);
+            btnMergePatients.setText(Messages.getString("PatientAdmin.button.mergePatient")); //$NON-NLS-1$
+            btnMergePatients
+                    .setToolTipText(Messages.getString("PatientAdmin.button.mergePatient.tooltip")); //$NON-NLS-1$
+            btnMergePatients.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnMergePatients
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdMergePatientsWidgetSelected();
+                        }
+                    });
+        }
+        compOptions.layout();
+        compOptionsInner.layout();
 
-	@Override
-	protected void setLogger() {
-		setLog(Logger.getLogger(this.getClass()));
-	}
+    }
 
-	@Override
-	protected void cmdCloseSelectedWidget() {
-		cmdCloseSelected();
-	}
+    private void cmdAddPatientOpenMRSWidgetSelected() {
+        System.out.println("cmdAddPatientOpenMRSWidgetSelected selected ...");
+
+        // AddPatient(true) to ADD new patient to OpenMRS
+        AddPatientOpenMrs.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate, true);
+        new AddPatientOpenMrs(getShell(), true);
+    }
+
+    private void cmdAddPatientWidgetSelected() {
+        // AddPatient(true) to ADD new patient
+        AddPatient.addInitialisationOption(
+                GenericFormGui.OPTION_isAddNotUpdate, true);
+        new AddPatientIdart(getShell(), true);
+    }
+
+    private void cmdUpdatePatientWidgetSelected() {
+        // AddPatient(false) to UPDATE patient's details
+        AddPatient.addInitialisationOption(
+                GenericFormGui.OPTION_isAddNotUpdate, false);
+        new AddPatient(getShell(), false);
+    }
+
+    private void cmdUpdatePrescriptionWidgetSelected() {
+        new AddPrescription(null, getShell(), false);
+    }
+
+    private void cmdViewPatientHistoryWidgetSelected() {
+        new PatientHistory(getShell(), true);
+    }
+
+    private void cmdMergePatientsWidgetSelected() {
+        new MergePatients(getShell());
+    }
+
+    @Override
+    protected void setLogger() {
+        setLog(Logger.getLogger(this.getClass()));
+    }
+
+    @Override
+    protected void cmdCloseSelectedWidget() {
+        cmdCloseSelected();
+    }
 
 }

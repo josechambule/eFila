@@ -20,9 +20,15 @@
 
 package org.celllife.idart.start;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import migracao.swingreverse.SyncPacientesFarmac;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.*;
@@ -32,6 +38,7 @@ import org.celllife.idart.database.DatabaseException;
 import org.celllife.idart.database.DatabaseTools;
 import org.celllife.idart.database.DatabaseWizard;
 import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
@@ -55,10 +62,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.celllife.idart.rest.utils.RestFarmac;
 
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 /**
  *
@@ -80,7 +90,7 @@ public class PharmacyApplication {
         DOMConfigurator.configure("log4j.xml");
 
         // used for gui testing
-        System.setProperty("org.eclipse.swtbot.search.defaultKey",iDartProperties.SWTBOT_KEY);
+        System.setProperty("org.eclipse.swtbot.search.defaultKey", iDartProperties.SWTBOT_KEY);
 
         log.info("");
         log.info("*********************");
@@ -103,7 +113,7 @@ public class PharmacyApplication {
         }
     }
 
-    private static void updateDatabase(){
+    private static void updateDatabase() {
         try {
             ConexaoJDBC conn = new ConexaoJDBC();
             conn.UpdateDatabase();
@@ -182,6 +192,7 @@ public class PharmacyApplication {
         boolean userExited;
         GenericWelcome welcome = null;
         JobScheduler scheduler = new JobScheduler();
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         EventManager events = new EventManager();
         events.register();
         do {
@@ -190,6 +201,8 @@ public class PharmacyApplication {
             if (loginScreen.isSuccessfulLogin()) {
                 startEkapaJob(scheduler);
                 startSmsJobs(scheduler);
+                if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
+                    startRestFarmacThread(executorService);
 
                 try {
                     String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
@@ -228,6 +241,7 @@ public class PharmacyApplication {
         } while (!userExited && welcome != null && welcome.isTimedOut());
 
         scheduler.shutdown();
+        executorService.shutdown();
         events.deRegister();
         log.info("");
         log.info("*********************");
@@ -254,6 +268,50 @@ public class PharmacyApplication {
                 scheduler.schedule(EkapaSubmitJob.JOB_NAME, EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.class, 2);
             }
         }
+    }
+
+    public static void startRestFarmacThread(ScheduledExecutorService executorService) {
+
+        final String url = CentralizationProperties.centralized_server_url;
+
+
+        executorService.scheduleWithFixedDelay(new Runnable() {
+            public void run() {
+
+                try {
+                    if (getServerStatus(url).contains("Red"))
+                        System.out.println("Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                    else {
+                        Session sess = HibernateUtil.getNewSession();
+                        Transaction tx = sess.beginTransaction();
+                        Clinic mainClinic = AdministrationManager.getMainClinic(sess);
+                        try {
+                            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
+                                RestFarmac.restPostPatients(sess,url);
+                                RestFarmac.restGeAllDispenses(url, mainClinic);
+                                RestFarmac.setDispensesFromRest(sess);
+                            } else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")) {
+                                RestFarmac.restGeAllPatients(url, mainClinic);
+                                RestFarmac.setPatientsFromRest(sess);
+                                RestFarmac.restPostDispenses(sess, url);
+                            }
+                            assert tx != null;
+                            tx.commit();
+                            sess.flush();
+                            sess.close();
+                        }catch (Exception e){
+                            assert tx != null;
+                                tx.rollback();
+                            sess.close();
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 30, TimeUnit.SECONDS);
+
     }
 
     private static void closeAllShells() {
@@ -340,6 +398,24 @@ public class PharmacyApplication {
         } catch (Exception e) {
             log.error("Unable to load printer.properties file.", e);
             showStartupErrorDialog("Unable to load properties from printer.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
+
+        try {
+            CentralizationProperties.setCentralizationProperties();
+
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current Centralization iDART properties: \n"
+                            + CentralizationProperties.centralizationProperties());
+                } catch (Exception e1) {
+                    log.error("Error printing Centralization properties", e1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to load centralization.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from centralization.properties file." +
                     " Please ensure it exists.");
             System.exit(1);
         }

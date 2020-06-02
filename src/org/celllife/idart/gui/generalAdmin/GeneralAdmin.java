@@ -20,8 +20,11 @@ package org.celllife.idart.gui.generalAdmin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
@@ -38,6 +41,7 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
+import org.celllife.idart.misc.DateFieldComparator;
 import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.SafeSaveDialog;
 import org.celllife.idart.misc.SafeSaveDialog.FileType;
@@ -65,6 +69,7 @@ import migracao.swingreverse.RestorePatientFarmac;
 import model.manager.excel.reports.in.PatientSheet;
 
 /**
+ *
  */
 public class GeneralAdmin extends GenericAdminGui {
 
@@ -75,6 +80,7 @@ public class GeneralAdmin extends GenericAdminGui {
      */
     public GeneralAdmin(Shell parent) {
         super(parent);
+
     }
 
     @Override
@@ -101,11 +107,21 @@ public class GeneralAdmin extends GenericAdminGui {
     }
 
     private void createMyGroups() {
+
+        boolean checkOpenmrs = true;
+
+        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
+            checkOpenmrs = true;
+        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
+                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            checkOpenmrs = false;
+
         // create the 4 groups
         createGrpPharmacy();
-        createGrpImport();
-        createGrpClinic();
+        if (checkOpenmrs)
+            createGrpImport();
         createGrpDrug();
+        createGrpClinic();
         createGrpDoctor();
         createGrpDrugGroup();
     }
@@ -128,38 +144,38 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // lblPicClinics
         Label lblPicClinics = new Label(grpClinics, SWT.NONE);
-        lblPicClinics.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0,50, 43));
+        lblPicClinics.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
         lblPicClinics.setText(EMPTY);
         lblPicClinics.setImage(ResourceUtils.getImage(iDartImage.CLINIC));
 
         // btnClinicsAdd
         Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
-        btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55,235, 30));
+        btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnClinicsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.tooltip")); //$NON-NLS-1$
         btnClinicsAdd.setText(Messages.getString("GeneralAdmin.button.title")); //$NON-NLS-1$
         btnClinicsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnClinicsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_clinicsAdd();
-                            }
-                });
-        
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_clinicsAdd();
+            }
+        });
+
         // btnClinicsUpdate
         Button btnClinicsUpdate = new Button(grpClinics, SWT.NONE);
-        btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35,100, 235, 30));
+        btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
         btnClinicsUpdate.setToolTipText(Messages.getString("GeneralAdmin.clinic.button.tooltip")); //$NON-NLS-1$
 
         btnClinicsUpdate.setText(Messages.getString("GeneralAdmin.clinic.button.title")); //$NON-NLS-1$
         btnClinicsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnClinicsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_clinicsUpdate();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_clinicsUpdate();
+            }
+        });
     }
 
     /**
@@ -175,7 +191,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // lblPicDoctors
         Label lblPicDoctors = new Label(grpDoctors, SWT.NONE);
-        lblPicDoctors.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0,50, 43));
+        lblPicDoctors.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
         lblPicDoctors.setText(EMPTY);
         lblPicDoctors.setImage(ResourceUtils.getImage(iDartImage.DOCTOR));
 
@@ -183,15 +199,15 @@ public class GeneralAdmin extends GenericAdminGui {
         Button btnDoctorsAdd = new Button(grpDoctors, SWT.NONE);
         btnDoctorsAdd.setText(Messages.getString("GeneralAdmin.doctors.button.title")); //$NON-NLS-1$
         btnDoctorsAdd.setToolTipText(Messages.getString("GeneralAdmin.doctors.button.tooltip")); //$NON-NLS-1$
-        btnDoctorsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55,235, 30));
+        btnDoctorsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnDoctorsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnDoctorsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_doctorAdd();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_doctorAdd();
+            }
+        });
 
         //Desactivar add clinico para user normal
         if (getUserPermission() != 'A') {
@@ -202,15 +218,15 @@ public class GeneralAdmin extends GenericAdminGui {
         Button btnDoctorsUpdate = new Button(grpDoctors, SWT.NONE);
         btnDoctorsUpdate.setText(Messages.getString("GeneralAdmin.button.docupdate.title")); //$NON-NLS-1$
         btnDoctorsUpdate.setToolTipText(Messages.getString("GeneralAdmin.button.docupdate.tooltip")); //$NON-NLS-1$
-        btnDoctorsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35,100, 235, 30));
+        btnDoctorsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
         btnDoctorsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnDoctorsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_doctorUpdate();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_doctorUpdate();
+            }
+        });
         //Desactivar UPDATE clinico para user normal
         if (getUserPermission() != 'A') {
             btnDoctorsUpdate.setEnabled(false);
@@ -222,9 +238,20 @@ public class GeneralAdmin extends GenericAdminGui {
      */
     private void createGrpDrug() {
 
+        boolean checkOpenmrs = true;
+
+        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
+            checkOpenmrs = true;
+        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
+                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            checkOpenmrs = false;
+
         // grpDrugs
         Group grpDrugs = new Group(getCompOptions(), SWT.NONE);
-        grpDrugs.setBounds(new Rectangle(50, 329, 305, 150));
+        if (checkOpenmrs)
+            grpDrugs.setBounds(new Rectangle(50, 329, 305, 150));
+        else
+            grpDrugs.setBounds(new Rectangle(50, 171, 305, 150));
         grpDrugs.setText(Messages.getString("GeneralAdmin.group.drug.title")); //$NON-NLS-1$
         grpDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -238,41 +265,41 @@ public class GeneralAdmin extends GenericAdminGui {
         Button btnDrugsAdd = new Button(grpDrugs, SWT.NONE);
         btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.drug.title")); //$NON-NLS-1$
         btnDrugsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.drug.tooltip")); //$NON-NLS-1$
-        btnDrugsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55,235, 30));
+        btnDrugsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnDrugsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnDrugsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_drugsAdd();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_drugsAdd();
+            }
+        });
 
         //Desactivar a adicao de DRUG
         btnDrugsAdd.setEnabled(true);
-        
-             //Desactivar add Medicamento para user normal
+
+        //Desactivar add Medicamento para user normal
         if (getUserPermission() != 'A' && getUserPermission() != 'C') {
             btnDrugsAdd.setEnabled(false);
         }
-        
+
         // btnDrugsUpdate
         Button btnDrugsUpdate = new Button(grpDrugs, SWT.NONE);
         btnDrugsUpdate.setText(Messages.getString("GeneralAdmin.button.drugupdate.title")); //$NON-NLS-1$
         btnDrugsUpdate.setToolTipText(Messages.getString("GeneralAdmin.button.drugupdate.tooltip")); //$NON-NLS-1$
-        btnDrugsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35,100, 235, 30));
+        btnDrugsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
         btnDrugsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnDrugsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_drugsUpdate();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_drugsUpdate();
+            }
+        });
 
         //Desactivar a actualizar DRUG
         btnDrugsUpdate.setEnabled(true);
-        
+
         //Desactivar add Medicamento para user normal
         if (getUserPermission() != 'A' && getUserPermission() != 'C') {
             btnDrugsUpdate.setEnabled(false);
@@ -292,7 +319,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // lblPicDoctors
         Label lblPicDrugGroups = new Label(grpDrugGroups, SWT.NONE);
-        lblPicDrugGroups.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0,50, 43));
+        lblPicDrugGroups.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
         lblPicDrugGroups.setText(EMPTY);
         lblPicDrugGroups.setImage(ResourceUtils.getImage(iDartImage.DRUGGROUP));
 
@@ -300,17 +327,17 @@ public class GeneralAdmin extends GenericAdminGui {
         Button btnRegimenAdd = new Button(grpDrugGroups, SWT.NONE);
         btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.regimen.title")); //$NON-NLS-1$
         btnRegimenAdd.setToolTipText(Messages.getString("GeneralAdmin.button.regimen.tooltip")); //$NON-NLS-1$
-        btnRegimenAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55,235, 30));
+        btnRegimenAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnRegimenAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnRegimenAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_regimenAdd();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_regimenAdd();
+            }
+        });
         btnRegimenAdd.setEnabled(true);
-          //Desactivar add Regime Terapeutico para user normal
+        //Desactivar add Regime Terapeutico para user normal
         if (getUserPermission() != 'A' && getUserPermission() != 'C') {
             btnRegimenAdd.setEnabled(false);
         }
@@ -319,19 +346,19 @@ public class GeneralAdmin extends GenericAdminGui {
         Button btnRegimenUpdate = new Button(grpDrugGroups, SWT.NONE);
         btnRegimenUpdate.setText(Messages.getString("GeneralAdmin.button.regimenupdate.title")); //$NON-NLS-1$
         btnRegimenUpdate.setToolTipText(Messages.getString("GeneralAdmin.button.regimenupdate.tooltip")); //$NON-NLS-1$
-        btnRegimenUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35,100, 235, 30));
+        btnRegimenUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
         btnRegimenUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnRegimenUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_regimenUpdate();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_regimenUpdate();
+            }
+        });
 
         btnRegimenUpdate.setEnabled(true);
 
-           //Desactivar add Regime Terapeutico para user normal
+        //Desactivar add Regime Terapeutico para user normal
         if (getUserPermission() != 'A' && getUserPermission() != 'C') {
             btnRegimenAdd.setEnabled(false);
         }
@@ -348,7 +375,7 @@ public class GeneralAdmin extends GenericAdminGui {
         grpImport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
         Label lblPicImport = new Label(grpImport, SWT.NONE);
-        lblPicImport.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0,50, 43));
+        lblPicImport.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
         lblPicImport.setText(EMPTY);
         lblPicImport.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
 
@@ -380,47 +407,6 @@ public class GeneralAdmin extends GenericAdminGui {
 
         btnImportPatients.setEnabled(false);*/
 
-        // Importar Pacientes : Alterado Colaco 14-08-2018
-        if (iDartProperties.FARMAC) {
-            // Importar Pacientes do ficheiro  : Alterado Colaco 14-08-2018
-            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
-            btnImportPatientsOpenMRS.setText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
-            btnImportPatientsOpenMRS
-                    .setToolTipText("Importar Pacientes da Unidade Sanitaria"); //$NON-NLS-1$
-            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                    55, 235, 27));
-            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-            btnImportPatientsOpenMRS
-                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                        @Override
-                        public void widgetSelected(
-                                org.eclipse.swt.events.SelectionEvent e) {
-                            RestorePatientFarmac restorePatientFarmac = new RestorePatientFarmac();
-                            restorePatientFarmac.createAndShowGUI();
-                        }
-                    });
-            btnImportPatientsOpenMRS.setEnabled(true);
-        } else {
-            // Importar Pacientes do OpenMRS  : Alterado Colaco 06-07-2016
-            Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
-            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
-            btnImportPatientsOpenMRS
-                    .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
-            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                    55, 235, 27));
-            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-            btnImportPatientsOpenMRS
-                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                        @Override
-                        public void widgetSelected(
-                                org.eclipse.swt.events.SelectionEvent e) {
-                            MainPanel importPatients = new MainPanel();
-                            importPatients.createAndShowGUI();
-                        }
-                    });
-            btnImportPatientsOpenMRS.setEnabled(true);
-        }
-        
     }
 
     /**
@@ -436,7 +422,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // lblPicPharmacy
         Label lblPicPharmacy = new Label(grpPharmacy, SWT.NONE);
-        lblPicPharmacy.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0,50, 43));
+        lblPicPharmacy.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
         lblPicPharmacy.setText(EMPTY);
         lblPicPharmacy.setImage(ResourceUtils.getImage(iDartImage.PHARMACYUSER));
 
@@ -447,12 +433,12 @@ public class GeneralAdmin extends GenericAdminGui {
         btnManagePharmUsers.setText(Messages.getString("GeneralAdmin.button.pharmacy.title")); //$NON-NLS-1$
         btnManagePharmUsers.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnManagePharmUsers.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_managePharmUsers();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_managePharmUsers();
+            }
+        });
 
         // btnPharmDetailsUpdate
         Button btnPharmDetailsUpdate = new Button(grpPharmacy, SWT.NONE);
@@ -461,12 +447,12 @@ public class GeneralAdmin extends GenericAdminGui {
         btnPharmDetailsUpdate.setText(Messages.getString("GeneralAdmin.button.pharmdetails.title")); //$NON-NLS-1$
         btnPharmDetailsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnPharmDetailsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_pharmUsersUpdate();
-                            }
-                });
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_pharmUsersUpdate();
+            }
+        });
     }
 
     public void cmd_clinicsAdd() {
@@ -520,37 +506,22 @@ public class GeneralAdmin extends GenericAdminGui {
     public void cmd_pharmUsersUpdate() {
         new StockCenterInfo(getShell());
     }
-    /*Adicionado por colaco 14.01.2020: Comentar a adicao do Regimen*/
-//	public void cmd_regimenAdd() {
-//		// AddDrgGroup(true) to ADD new regimen
-//		AddDrugGroup.addInitialisationOption(
-//				GenericFormGui.OPTION_isAddNotUpdate, true);
-//		new AddDrugGroup(getShell());
-//	}
 
-    /*Adicionado por colaco 14.01.2020: Adicionar regime terapeutico*/
+
     public void cmd_regimenAdd() {
-        // AddRegimeTerapeutico(true) Adiciona novo regime Terapeutico
+
         AddRegimeTerapeutico.addInitialisationOption(
                 GenericFormGui.OPTION_isAddNotUpdate, true);
         new AddRegimeTerapeutico(getShell());
     }
- /*Adicionado por colaco 14.01.2020: Actualiza regime terapeutico*/
+
     public void cmd_regimenUpdate() {
         AddRegimeTerapeutico.addInitialisationOption(
                 GenericFormGui.OPTION_isAddNotUpdate, false);
-        // AddRegimeTerapeutico(false) actualiza um regime terepeutico existente
+
         new AddRegimeTerapeutico(getShell());
     }
 
-    /*Adicionado por colaco 14.01.2020: Comentar a actualizacao do Regimen*/
-//     public void cmd_regimenUpdate() {
-//        AddDrugGroup.addInitialisationOption(
-//                GenericFormGui.OPTION_isAddNotUpdate, false);
-//        // UpdateRegimen(false) to UPDATE existing regimen
-//        new AddDrugGroup(getShell());
-//    }
-//     
     protected void cmd_importPatients() {
         FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
         dlg.setFilterExtensions(FileType.EXCEL.getFilterExtensions());
@@ -590,7 +561,7 @@ public class GeneralAdmin extends GenericAdminGui {
             if (errorCount > 0) {
                 boolean open = MessageDialog.openQuestion(null, "Completado com erros",
                         "A importação foi completado com sucesso mas houve "
-                        + +errorCount + " erros. Quer abrir o ficheiro log de erros?");
+                                + +errorCount + " erros. Quer abrir o ficheiro log de erros?");
                 if (open) {
                     Program.launch(task.getErrorFile().getAbsolutePath());
                 }
@@ -646,19 +617,19 @@ public class GeneralAdmin extends GenericAdminGui {
         jdbc.insere_sync_temp_patients();
         try {
 
-		 //c=odbc.getConnection();
+            //c=odbc.getConnection();
         } catch (Exception e) {
 
             e.printStackTrace();
         }
         ConexaoJDBC conn = new ConexaoJDBC();
         //se não houver conexao
-		MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_ERROR
-		        | SWT.OK);
-		conexaoACCESS.setText("Conexão com Base de Dados SESP");
-		conexaoACCESS
-		        .setMessage("O iDART não está a se conectar com o SESP.\n Por favor verifique se os cabos da rede estão ligados no seu \ncomputador ou se o computador com SESP esta ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, não será possivel importar os pacientes do SESP");
-		conexaoACCESS.open();
+        MessageBox conexaoACCESS = new MessageBox(new Shell(), SWT.ICON_ERROR
+                | SWT.OK);
+        conexaoACCESS.setText("Conexão com Base de Dados SESP");
+        conexaoACCESS
+                .setMessage("O iDART não está a se conectar com o SESP.\n Por favor verifique se os cabos da rede estão ligados no seu \ncomputador ou se o computador com SESP esta ligado!\n Saia do iDART e verifique estes apectos depois volte a entrar,\n se o problema persistir, não será possivel importar os pacientes do SESP");
+        conexaoACCESS.open();
 
     }
 }

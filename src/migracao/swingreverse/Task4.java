@@ -98,15 +98,12 @@ public class Task4 extends SwingWorker<String, Void> {
                             for (SyncTempPatient patientSync : patientList) {
                                 ++current;
                                 
-                                if (clinic.getClinicName().equalsIgnoreCase(patientSync.getClinicName())){
+                                if (clinic.getClinicName().equalsIgnoreCase(patientSync.getClinicname())){
                                     ++npacientesDaFarmac;
                                 }
                                 
-                                Patient paciente = DadosPacienteFarmac.InserePaciente(patientSync, clinic);
-                                if (paciente != null) {
-                                    DadosPacienteFarmac.InserePatientIdentifier(paciente, identifierType);
-                                    DadosPacienteFarmac.InserePatientAttribute(paciente, patientSync.getDataInicioTarv(), attributeType);
-                                }
+                                Patient paciente = null ; //DadosPacienteFarmac.InserePaciente(patientSync, clinic);
+
                             }
 
                         } catch (IOException ex) {

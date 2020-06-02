@@ -233,6 +233,14 @@ public class DrugManager {
         return theDrug;
     }
 
+    public static Drug getDrugFromString(Session sess, String drugName)
+            throws HibernateException {
+        Drug theDrug = null;
+        theDrug = (Drug) sess.createQuery(
+                "from Drug as d where d.name like '%"+drugName+"%'").setMaxResults(1).uniqueResult();
+        return theDrug;
+    }
+
     public static String getDrugNameForPackagedDrug(Session session,
                                                     int packageDrugId) {
         return (String) session.createQuery(

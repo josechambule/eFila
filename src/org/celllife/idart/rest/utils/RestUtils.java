@@ -22,7 +22,21 @@ public abstract class RestUtils {
 		
 		return strDate;	
 	}
-	
+
+	public static Date castStringToDate (String date ) {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+		Date strDate = null;
+		try {
+			strDate = dateFormat.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return strDate;
+	}
+
 	public static List<String> splitName(String name){
 		
 		String fullName = name;

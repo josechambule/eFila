@@ -18,47 +18,33 @@
  */
 package model.manager;
 
-import java.sql.ResultSet;
+import model.nonPersistent.PharmacyDetails;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.rest.utils.RestUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import model.nonPersistent.PharmacyDetails;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.hibernate.AtcCode;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Doctor;
-import org.celllife.idart.database.hibernate.Form;
-import org.celllife.idart.database.hibernate.IdentifierType;
-import org.celllife.idart.database.hibernate.LinhaT;
-import org.celllife.idart.database.hibernate.Logging;
-import org.celllife.idart.database.hibernate.Motivomudanca;
-import org.celllife.idart.database.hibernate.NationalClinics;
-import org.celllife.idart.database.hibernate.RegimeTerapeutico;
-import org.celllife.idart.database.hibernate.Regimen;
-import org.celllife.idart.database.hibernate.SimpleDomain;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.Study;
-import org.celllife.idart.database.hibernate.StudyParticipant;
-import org.celllife.idart.database.hibernate.User;
-import org.celllife.idart.database.hibernate.util.HibernateUtil;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-
 /**
+ *
  */
 public class AdministrationManager {
 
     private static Log log = LogFactory.getLog(AdministrationManager.class);
 
-	// ------- METHODS FOR DOCTOR MANAGER --------------------------------
+    // ------- METHODS FOR DOCTOR MANAGER --------------------------------
+
     /**
      * Method getAllDoctors.
      *
@@ -76,10 +62,8 @@ public class AdministrationManager {
     }
 
     /**
-     *
      * Devolve lista de regimes para alimentar o combobox no formulario de
      * prescricao
-     *
      */
     @SuppressWarnings("unchecked")
     public static List<RegimeTerapeutico> getAllRegimes(Session sess)
@@ -92,10 +76,8 @@ public class AdministrationManager {
     }
 
     /**
-     *
      * Devolve lista de linhas terapeuticas para alimentar o combobox no
      * formulario de prescricao
-     *
      */
     @SuppressWarnings("unchecked")
     public static List<LinhaT> getAllLinhas(Session sess)
@@ -128,7 +110,7 @@ public class AdministrationManager {
     /**
      * Saves the current doctor
      *
-     * @param s Session
+     * @param s         Session
      * @param theDoctor Doctor
      * @throws HibernateException
      */
@@ -141,7 +123,7 @@ public class AdministrationManager {
     /**
      * Method getDoctor.
      *
-     * @param sess Session
+     * @param sess            Session
      * @param doctorsFullName String
      * @return Doctor
      */
@@ -160,7 +142,7 @@ public class AdministrationManager {
     }
 
     /*
-     * 
+     *
      * Devolve um regime terapeutico
      */
     public static RegimeTerapeutico getRegimeTerapeutico(Session sess, String regimeesquema) {
@@ -170,6 +152,20 @@ public class AdministrationManager {
             for (int i = 0; i < regimeList.size(); i++) {
                 regime = regimeList.get(i);
                 if (regime.getRegimeesquema().equals(regimeesquema)) {
+                    break;
+                }
+            }
+        }
+        return regime;
+    }
+
+    public static RegimeTerapeutico getRegimeTerapeuticoRest(Session sess, String regimeesquema) {
+        RegimeTerapeutico regime = null;
+        List<RegimeTerapeutico> regimeList = AdministrationManager.getAllRegimes(sess);
+        if (regimeList != null) {
+            for (int i = 0; i < regimeList.size(); i++) {
+                regime = regimeList.get(i);
+                if (regime.getRegimeesquema().contains(regimeesquema)) {
                     break;
                 }
             }
@@ -238,7 +234,7 @@ public class AdministrationManager {
 
     }
 
-	//Previous Linha
+    //Previous Linha
     public static String loadLinha(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -246,7 +242,7 @@ public class AdministrationManager {
 
     }
 
-//Previous PPE
+    //Previous PPE
     public static String loadPpe(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -254,7 +250,7 @@ public class AdministrationManager {
 
     }
 
-//Previous PrEP
+    //Previous PrEP
     public static String loadPrEP(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -270,7 +266,7 @@ public class AdministrationManager {
 
     }
 
-//Previous CCR
+    //Previous CCR
     public static String loadCcr(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -278,7 +274,7 @@ public class AdministrationManager {
 
     }
 
-//Previous CPN
+    //Previous CPN
     public static String loadCpn(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -286,7 +282,7 @@ public class AdministrationManager {
 
     }
 
-//Previous AF
+    //Previous AF
     public static String loadAf(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -294,7 +290,7 @@ public class AdministrationManager {
 
     }
 
-//Previous CA
+    //Previous CA
     public static String loadCa(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -302,7 +298,7 @@ public class AdministrationManager {
 
     }
 
-//Previous FR
+    //Previous FR
     public static String loadFr(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -310,7 +306,7 @@ public class AdministrationManager {
 
     }
 
-//Previous FR
+    //Previous FR
     public static String loadGaac(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -318,7 +314,7 @@ public class AdministrationManager {
 
     }
 
-//Previous DC
+    //Previous DC
     public static String loadDc(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -326,7 +322,7 @@ public class AdministrationManager {
 
     }
 
-//Previous TB
+    //Previous TB
     public static String loadTb(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -334,7 +330,7 @@ public class AdministrationManager {
 
     }
 
-//Previous TB
+    //Previous TB
     public static String loadSAAJ(int idPatient) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -358,7 +354,7 @@ public class AdministrationManager {
 
     }
 
-//Previous Pediatric or Adult ARV
+    //Previous Pediatric or Adult ARV
     public static String loadPediatric(int iddrug) throws ClassNotFoundException, SQLException {
         ConexaoJDBC conn = new ConexaoJDBC();
 
@@ -366,7 +362,8 @@ public class AdministrationManager {
 
     }
 
-	// ------- METHODS FOR CLINIC MANAGER --------------------------------
+    // ------- METHODS FOR CLINIC MANAGER --------------------------------
+
     /**
      * Return the Default Clinic's name
      *
@@ -487,7 +484,7 @@ public class AdministrationManager {
     /**
      * Method getClinic.
      *
-     * @param session Session
+     * @param session    Session
      * @param clinicName String
      * @return Clinic
      * @throws HibernateException
@@ -517,7 +514,7 @@ public class AdministrationManager {
     /**
      * This method saves the clinic objects passed to it
      *
-     * @param s Session
+     * @param s         Session
      * @param theClinic
      * @throws HibernateException
      */
@@ -531,7 +528,7 @@ public class AdministrationManager {
     /**
      * Checks if the clinic exists
      *
-     * @param session Session
+     * @param session    Session
      * @param clinicName the clinic name to check
      * @return true if the clinic exists else false
      * @throws HibernateException
@@ -548,18 +545,19 @@ public class AdministrationManager {
         return result;
     }
 
-	// ------- METHODS FOR USER MANAGER --------------------------------
+    // ------- METHODS FOR USER MANAGER --------------------------------
+
     /**
      * Method saveUser.
      *
-     * @param session Session
+     * @param session  Session
      * @param userName String
      * @param password String
-     * @param clinics Set<Clinics>
+     * @param clinics  Set<Clinics>
      * @return boolean
      */
     public static boolean saveUser(Session session, String userName,
-            String password, String role, Set<Clinic> clinics, char tipo_user) {
+                                   String password, String role, Set<Clinic> clinics, char tipo_user) {
         if (!userExists(session, userName)) {
             User user = new User(userName, password, role, 'T',
                     clinics, tipo_user);
@@ -605,14 +603,14 @@ public class AdministrationManager {
      * Method userExists.
      *
      * @param session Session
-     * @param name String
+     * @param name    String
      * @return boolean
      */
     @SuppressWarnings("unchecked")
     public static boolean userExists(Session session, String name) {
         List<User> userList = session.createQuery(
                 "from User u where upper(u.username) = :name").setString(
-                        "name", name.toUpperCase()).list();
+                "name", name.toUpperCase()).list();
         if (userList.size() > 0) {
             return true;
         }
@@ -651,7 +649,7 @@ public class AdministrationManager {
     /**
      * Method getUserByName.
      *
-     * @param sess Session
+     * @param sess     Session
      * @param username String
      * @return User
      * @throws HibernateException
@@ -670,7 +668,7 @@ public class AdministrationManager {
     /**
      * Method getUserById.
      *
-     * @param sess Session
+     * @param sess  Session
      * @param theId int
      * @return User
      * @throws HibernateException
@@ -722,7 +720,7 @@ public class AdministrationManager {
      * @throws HibernateException
      */
     public static void updateUserClinics(Session s, User u,
-            Set<Clinic> clinicsSet) throws HibernateException {
+                                         Set<Clinic> clinicsSet) throws HibernateException {
 
         log.info("Updating clinic access for user " + u.getUsername());
         String oldClinicAccessStr = getClinicAccessString(u);
@@ -760,7 +758,8 @@ public class AdministrationManager {
 
     }
 
-	// ------- METHODS FOR StockCenter MANAGER --------------------------------
+    // ------- METHODS FOR StockCenter MANAGER --------------------------------
+
     /**
      * Returns a StockCenter by name
      *
@@ -805,11 +804,11 @@ public class AdministrationManager {
     /**
      * Method saveStockCenter.
      *
-     * @param session Session
+     * @param session        Session
      * @param theStockCenter StockCenter
      */
     public static void saveStockCenter(Session session,
-            StockCenter theStockCenter) {
+                                       StockCenter theStockCenter) {
 
         if (theStockCenter.isPreferred()) {
             session.createQuery("Update StockCenter set preferred = false")
@@ -818,25 +817,26 @@ public class AdministrationManager {
         session.saveOrUpdate(theStockCenter);
     }
 
-	// ------- METHODS FOR SIMPLE DOMAIN MANAGER
+    // ------- METHODS FOR SIMPLE DOMAIN MANAGER
     // --------------------------------
+
     /**
      * Method simpleDomainExists.
      *
-     * @param session Session
-     * @param name String
+     * @param session     Session
+     * @param name        String
      * @param description String
-     * @param value String
+     * @param value       String
      * @return boolean
      * @throws HibernateException
      */
     @SuppressWarnings("unchecked")
     public static boolean simpleDomainExists(Session session, String name,
-            String description, String value) throws HibernateException {
+                                             String description, String value) throws HibernateException {
         List<SimpleDomain> domainList = session
                 .createQuery(
                         "from SimpleDomain sd where upper(sd.name) =:name"
-                        + " and upper(sd.description) =:description and upper(sd.value) =:value")
+                                + " and upper(sd.description) =:description and upper(sd.value) =:value")
                 .setString("name", name.toUpperCase()).setString("description",
                         description.toUpperCase()).setString("value",
                         value.toUpperCase()).list();
@@ -1086,7 +1086,7 @@ public class AdministrationManager {
         return result;
     }
 
-    
+
     public static List<RegimeTerapeutico> getRegimeTerapeuticoActivo(Session sess)
             throws HibernateException {
 
@@ -1096,7 +1096,7 @@ public class AdministrationManager {
 
         return result;
     }
-    
+
     /**
      * @param sess Session
      * @return all the user-defined drug groups eg 1A-30, 1A-40 etc
@@ -1132,7 +1132,7 @@ public class AdministrationManager {
     /**
      * This method saves the simpleDomain objects passed to it
      *
-     * @param sess Session
+     * @param sess         Session
      * @param simpleDomain
      * @throws HibernateException
      */
@@ -1142,8 +1142,9 @@ public class AdministrationManager {
         sess.save(simpleDomain);
     }
 
-	// ------- METHODS FOR LOGGIN MANAGER --------------------------------
-	// ------- METHODS FOR FORM MANAGER --------------------------------
+    // ------- METHODS FOR LOGGIN MANAGER --------------------------------
+    // ------- METHODS FOR FORM MANAGER --------------------------------
+
     /**
      * Used to populate combo boxes with drug forms
      *
@@ -1172,33 +1173,33 @@ public class AdministrationManager {
     /**
      * This method gets a form from the database.
      *
-     * @param session the current hibernate session
+     * @param session  the current hibernate session
      * @param formName the name of the form to get
      * @return the form
      */
     public static Form getForm(Session session, String formName) {
         return (Form) (session.createQuery(
                 "from Form as f where upper(f.form) = :form").setString("form",
-                        formName.toUpperCase()).uniqueResult());
+                formName.toUpperCase()).uniqueResult());
     }
 
     public static AtcCode getAtccodeFromName(Session session, String name) {
         return (AtcCode) (session.createQuery(
                 "from AtcCode as a where upper(a.name) = :name").setString("name",
-                        name.toUpperCase()).uniqueResult());
+                name.toUpperCase()).uniqueResult());
     }
 
     public static AtcCode getAtccodeFromCode(Session session, String code) {
         return (AtcCode) (session.createQuery(
                 "from AtcCode as a where upper(a.code) = :code").setString("code",
-                        code.toUpperCase()).uniqueResult());
+                code.toUpperCase()).uniqueResult());
     }
 
     /**
      * Method to save only unique form
      *
      * @param session the current hibernate session
-     * @param form the form to save
+     * @param form    the form to save
      * @throws HibernateException
      */
     public static void saveForm(Session session, Form form)
@@ -1211,7 +1212,7 @@ public class AdministrationManager {
     /**
      * Method to check if form already exists
      *
-     * @param session the current hibernate session
+     * @param session  the current hibernate session
      * @param formName the name of the form
      * @return boolean
      */
@@ -1219,7 +1220,7 @@ public class AdministrationManager {
     public static boolean formExists(Session session, String formName) {
         List<Form> result = session.createQuery(
                 "from Form as f where upper(f.form) = :form").setString("form",
-                        formName.toUpperCase()).list();
+                formName.toUpperCase()).list();
         if (result.size() > 0) {
             return true;
         }
@@ -1239,7 +1240,7 @@ public class AdministrationManager {
         }
 
         PharmacyDetails phd = new PharmacyDetails();
-		// pharmacist
+        // pharmacist
         // assistant_pharmacist
         // pharmacy_name
         // pharmacy_street
@@ -1269,7 +1270,7 @@ public class AdministrationManager {
     }
 
     public static void savePharmacyDetails(Session session,
-            PharmacyDetails pharmDet) {
+                                           PharmacyDetails pharmDet) {
 
         String qString = "UPDATE SimpleDomain SET value = '$value' WHERE name = '$name' and "
                 + "description = 'pharmacy_detail'";
@@ -1329,7 +1330,7 @@ public class AdministrationManager {
         s.save(regimeTerapeutico);
     }
 
-//devolve todos motivos de mudanca de arv
+    //devolve todos motivos de mudanca de arv
     @SuppressWarnings("unchecked")
     public static List<Motivomudanca> getAllMotivosS(Session sess)
             throws HibernateException {
@@ -1356,5 +1357,98 @@ public class AdministrationManager {
         return result;
     }
 
-//
+    public static void saveSyncTempPatient(Session s, SyncTempPatient syncTempPatient)
+            throws HibernateException {
+
+        s.saveOrUpdate(syncTempPatient);
+    }
+
+    public static void saveSyncTempDispense(Session s, SyncTempDispense syncTempDispense)
+            throws HibernateException {
+
+        s.save(syncTempDispense);
+    }
+
+    // Devolve a lista de todos pacientes referidos
+    public static List<SyncTempPatient> getAllSyncTempPatient(Session sess) throws HibernateException {
+        List result;
+        result = sess.createQuery(
+                "select sync from sync_temp_patients as sync)").list();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado)
+    public static List<SyncTempPatient> getAllSyncTempPatientReadyToSend(Session sess) throws HibernateException {
+        List result;
+        result = sess.createQuery(
+                "from SyncTempPatient sync where sync.syncstatus = 'P' or sync.syncstatus is null)").list();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado, I-Importado)
+    public static List<SyncTempDispense> getAllSyncTempDispenseReadyToSend(Session sess) throws HibernateException {
+        List result;
+        result = sess.createQuery(
+                "from SyncTempDispense sync where sync.syncstatus = 'P' or sync.syncstatus is null").list();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado, I-Importado)
+    public static SyncTempDispense getSyncTempDispense(Session sess, SyncTempDispense syncTempDispense) throws HibernateException {
+        SyncTempDispense result;
+        result = (SyncTempDispense) sess.createQuery(
+                "select sync from SyncTempDispense sync where sync.patientid ='"+syncTempDispense.getPatientid()+"' " +
+                        " and sync.prescriptionid ='"+syncTempDispense.getPrescriptionid()+"' " +
+                        " and pg_catalog.date(sync.pickupdate) = '"+ RestUtils.castDateToString(syncTempDispense.getPickupdate()) +"'").setMaxResults(1).uniqueResult();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos pelo nid e clinic
+    public static SyncTempPatient getSyncTempPatienByNIDandClinicName(Session sess, String nid, String clinicName) throws HibernateException {
+        SyncTempPatient result;
+
+        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.mainclinicname = '" + clinicName + "' and sync.patientid = '" + nid+"'").list();
+
+        if (patientIdentifiers.isEmpty())
+            result = null;
+        else
+            result = (SyncTempPatient) patientIdentifiers.get(0);
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos pelo nid e clinic
+    public static SyncTempPatient getSyncTempPatienByNID(Session sess, String nid) throws HibernateException {
+        SyncTempPatient result;
+
+        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.patientid = '" + nid+"'").list();
+
+        if (patientIdentifiers.isEmpty())
+            result = null;
+        else
+            result = (SyncTempPatient) patientIdentifiers.get(0);
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos por uuid
+    public static SyncTempPatient getSyncTempPatienByUuid(Session sess, String uuid) throws HibernateException {
+
+        SyncTempPatient result;
+
+        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.uuidopenmrs = '" + uuid + "'").list();
+
+        if (patientIdentifiers.isEmpty())
+            result = null;
+        else
+            result = (SyncTempPatient) patientIdentifiers.get(0);
+
+        return result;
+
+    }
+
 }
