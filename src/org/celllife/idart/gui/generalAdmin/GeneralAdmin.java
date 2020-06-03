@@ -279,7 +279,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnDrugsAdd.setEnabled(true);
 
         //Desactivar add Medicamento para user normal
-        if (getUserPermission() != 'A' && getUserPermission() != 'C') {
+        if (getUserPermission() != 'A') {
             btnDrugsAdd.setEnabled(false);
         }
 
@@ -301,7 +301,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnDrugsUpdate.setEnabled(true);
 
         //Desactivar add Medicamento para user normal
-        if (getUserPermission() != 'A' && getUserPermission() != 'C') {
+        if (getUserPermission() != 'A') {
             btnDrugsUpdate.setEnabled(false);
         }
     }
@@ -338,7 +338,7 @@ public class GeneralAdmin extends GenericAdminGui {
         });
         btnRegimenAdd.setEnabled(true);
         //Desactivar add Regime Terapeutico para user normal
-        if (getUserPermission() != 'A' && getUserPermission() != 'C') {
+        if (getUserPermission() != 'A') {
             btnRegimenAdd.setEnabled(false);
         }
 
@@ -359,7 +359,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnRegimenUpdate.setEnabled(true);
 
         //Desactivar add Regime Terapeutico para user normal
-        if (getUserPermission() != 'A' && getUserPermission() != 'C') {
+        if (getUserPermission() != 'A') {
             btnRegimenAdd.setEnabled(false);
         }
     }
@@ -379,33 +379,23 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicImport.setText(EMPTY);
         lblPicImport.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
 
-        /*Button btnGenerateTemplate = new Button(grpImport, SWT.NONE);
-        btnGenerateTemplate.setText(Messages.getString("GeneralAdmin.button.generateTemplate.title")); //$NON-NLS-1$
-        btnGenerateTemplate.setToolTipText(Messages.getString("GeneralAdmin.button.generateTemplate.tooltip")); //$NON-NLS-1$
-        btnGenerateTemplate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 35,235, 30));
-        btnGenerateTemplate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnGenerateTemplate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+        Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
+        btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+        btnImportPatientsOpenMRS
+                .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+        btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
+                55, 235, 27));
+        btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnImportPatientsOpenMRS
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
                     @Override
                     public void widgetSelected(
                             org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_generateTemplate();
-                            }
+                        MainPanel importPatients = new MainPanel();
+                        MainPanel.createAndShowGUI();
+                    }
                 });
-
-        Button btnImportPatients = new Button(grpImport, SWT.NONE);
-        btnImportPatients.setText(Messages.getString("GeneralAdmin.button.importPatients.title")); //$NON-NLS-1$
-        btnImportPatients.setToolTipText(Messages.getString("GeneralAdmin.button.importPatients.tooltip")); //$NON-NLS-1$
-        btnImportPatients.setBounds(new org.eclipse.swt.graphics.Rectangle(35,70, 235, 30));
-        btnImportPatients.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnImportPatients.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                                cmd_importPatients();
-                            }
-                });
-
-        btnImportPatients.setEnabled(false);*/
+        btnImportPatientsOpenMRS.setEnabled(true);
 
     }
 

@@ -117,7 +117,10 @@ public class DadosPacienteFarmac {
                 SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
                 Doctor doctorProvider = PrescriptionManager.getProvider(sess);
                 LinhaT linhat = AdministrationManager.getLinha(sess, syncTempDispense.getLinhanome());
-                RegimeTerapeutico regimeTerapeutico = AdministrationManager.getRegimeTerapeuticoRest(sess, syncTempDispense.getRegimenome());
+                RegimeTerapeutico regimeTerapeutico = AdministrationManager.getRegimeTerapeutico(sess, syncTempDispense.getRegimenome());
+
+                if (!regimeTerapeutico.getRegimeesquema().equalsIgnoreCase(syncTempDispense.getRegimenome()))
+                    regimeTerapeutico = AdministrationManager.getRegimeTerapeuticoRest(sess, syncTempDispense.getRegimenome());
 
                 prescription.setClinicalStage(0);
                 prescription.setCurrent('T');
@@ -165,10 +168,10 @@ public class DadosPacienteFarmac {
                 Drug drug = DrugManager.getDrug(sess, syncTempDispense.getDrugname());
 
                 if (drug == null)
-                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[","").substring(0, 10));
+                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10));
 
                 if (drug == null)
-                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[","").substring(0, 10).replace("/", "+"));
+                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10).replace("/", "+"));
 
                 if (drug != null) {
                     PrescribedDrugs newPD = new PrescribedDrugs();
@@ -221,10 +224,10 @@ public class DadosPacienteFarmac {
             Stock stock = null;
 
             if (drug == null)
-                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[","").substring(0, 10));
+                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10));
 
             if (drug == null)
-                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[","").substring(0, 10).replace("/", "+"));
+                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10).replace("/", "+"));
 
             if (drug != null) {
                 stockList = StockManager.getAllStockForDrug(sess, drug);
