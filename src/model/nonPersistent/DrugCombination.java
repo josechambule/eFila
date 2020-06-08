@@ -18,15 +18,10 @@
  */
 package model.nonPersistent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.DrugManager;
-
 import org.celllife.idart.database.hibernate.Drug;
+
+import java.util.*;
 
 /**
  */

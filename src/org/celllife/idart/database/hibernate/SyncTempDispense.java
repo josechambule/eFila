@@ -5,10 +5,10 @@
  */
 package org.celllife.idart.database.hibernate;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.*;
 
 /**
  *
@@ -149,6 +149,8 @@ public class SyncTempDispense implements Serializable {
     private String motivocriacaoespecial;
     @Column(name = "syncuuid", length = 255)
     private String syncuuid ;
+    @Column(name = "uuidopenmrs", length = 255)
+    private String uuidopenmrs ;
 
     public SyncTempDispense() {
     }
@@ -655,5 +657,12 @@ public class SyncTempDispense implements Serializable {
     public String toString() {
         return "org.celllife.idart.database.hibernate.SyncTempDispense[ id=" + id + " ]";
     }
-    
+
+    public String getUuidopenmrs() {
+        return uuidopenmrs;
+    }
+
+    public void setUuidopenmrs(String uuidopenmrs) {
+        this.uuidopenmrs = uuidopenmrs;
+    }
 }

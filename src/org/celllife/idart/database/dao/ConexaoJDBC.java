@@ -1,22 +1,7 @@
 
 package org.celllife.idart.database.dao;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
+import model.manager.reports.*;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -26,14 +11,13 @@ import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
 
-import model.manager.reports.AbsenteeForSupportCall;
-import model.manager.reports.DispensaTrimestralSemestral;
-import model.manager.reports.FollowupFaulty;
-import model.manager.reports.HistoricoLevantamentoXLS;
-import model.manager.reports.LivroRegistoDiarioXLS;
-import model.manager.reports.PrescricaoSemFilaXLS;
-import model.manager.reports.RegistoChamadaTelefonicaXLS;
-import model.manager.reports.SecondLinePatients;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.*;
 
 /**
  * Esta classe efectua conexao com a BD postgres e tem metodo para a manipulacao

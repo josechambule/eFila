@@ -5,6 +5,7 @@ import migracao.swingreverse.DadosPacienteFarmac;
 import model.manager.AdministrationManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.StringEntity;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Prescription;
 import org.celllife.idart.database.hibernate.SyncTempDispense;
@@ -277,7 +278,13 @@ public class RestFarmac {
             Gson gson = null;
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
-                objectString = line.replace("[", "").replace("]", "");
+
+                if(line.startsWith("[{"))
+                    line = line.replace("[{","{");
+                if(line.endsWith("}]"))
+                    line = line.replace("}]","}");
+
+                objectString = line;
                 if (objectString.contains("{")) {
                     jsonObj = new JSONObject(objectString);
                     gson = new Gson();
@@ -408,8 +415,10 @@ public class RestFarmac {
             for (SyncTempPatient patient : syncTempPatients) {
                 try {
                     DadosPacienteFarmac.InserePaciente(sess, patient);
-                    patient.setSyncstatus('I');
-                    AdministrationManager.saveSyncTempPatient(sess, patient);
+                    if(!CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+                        patient.setSyncstatus('I');
+                        AdministrationManager.saveSyncTempPatient(sess, patient);
+                    }
                     break;
                 } catch (Exception e) {
                     System.out.println("Erro ao gravar informacao do Paciente [" + patient.getFirstnames() + " " + patient.getLastname() + " com NID: " + patient.getPatientid() + "]");
@@ -433,10 +442,11 @@ public class RestFarmac {
                     Prescription prescription = DadosPacienteFarmac.getPatientPrescritionFarmac(dispense);
 
                     DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
-
-                    if (DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense)) {
-                        dispense.setSyncstatus('I');
-                        AdministrationManager.saveSyncTempDispense(sess, dispense);
+                    if(!CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+                        if (DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense)) {
+                            dispense.setSyncstatus('I');
+                            AdministrationManager.saveSyncTempDispense(sess, dispense);
+                        }
                     }
                     break;
                 } catch (Exception e) {

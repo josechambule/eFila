@@ -1,12 +1,11 @@
 package model.manager.excel.reports.in;
 
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.excel.interfaces.SessionBasedImportValidator;
-
 import org.celllife.idart.database.hibernate.SimpleDomain;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class EpisodeStartReasonValidator implements SessionBasedImportValidator<String> {
 

@@ -18,34 +18,11 @@
  */
 package model.manager;
 
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import model.nonPersistent.PatientIdAndName;
-
 import org.apache.commons.lang.StringUtils;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.AtcCode;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Doctor;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.IdentifierType;
-import org.celllife.idart.database.hibernate.NationalClinics;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.RegimeTerapeutico;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.StockTake;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.search.SearchEntry;
 import org.celllife.idart.gui.search.TableComparator;
@@ -63,6 +40,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *

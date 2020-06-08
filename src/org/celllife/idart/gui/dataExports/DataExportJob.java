@@ -3,7 +3,6 @@ package org.celllife.idart.gui.dataExports;
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.exports.DataExporter;
 import model.manager.exports.ReportObject;
-
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.misc.AbstractCancellableJob;
 import org.eclipse.core.runtime.IProgressMonitor;

@@ -1,11 +1,10 @@
 package org.celllife.idart.database.hibernate.tmp;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  */

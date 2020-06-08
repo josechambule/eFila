@@ -1,11 +1,11 @@
 package org.celllife.idart.gui.patient.tabs;
 
-import java.util.Map;
-
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.gui.misc.IGenericTab;
 import org.celllife.idart.gui.patient.AddPatient;
 import org.eclipse.swt.graphics.Color;
+
+import java.util.Map;
 
 /**
  * Interface for adding tabs in {@link AddPatient}

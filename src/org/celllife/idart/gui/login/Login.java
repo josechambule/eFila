@@ -20,20 +20,8 @@
 // PHARMACY //
 package org.celllife.idart.gui.login;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
+import model.manager.AdministrationManager;
+import model.nonPersistent.Autenticacao;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.LocalObjects;
@@ -43,37 +31,25 @@ import org.celllife.idart.database.hibernate.User;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.GUIException;
 import org.celllife.idart.gui.platform.GenericGuiInterface;
-import org.celllife.idart.gui.utils.LayoutUtils;
-import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
-import org.celllife.idart.gui.utils.iDartFont;
-import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.gui.utils.*;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.rest.ApiAuthRest;
 import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.json.JSONObject;
 
-import model.manager.AdministrationManager;
-import model.nonPersistent.Autenticacao;
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.*;
 
 
 /**

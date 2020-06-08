@@ -1,9 +1,6 @@
 package org.celllife.idart.sms;
 
-import java.util.List;
-
 import model.manager.SmsManager;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
@@ -15,6 +12,8 @@ import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import java.util.List;
 
 public class SmsRetrySchedulerJob extends CampaignSchedulingJob implements Job {
 

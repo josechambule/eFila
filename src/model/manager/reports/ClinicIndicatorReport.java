@@ -1,20 +1,8 @@
 package model.manager.reports;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import model.manager.AdministrationManager;
 import model.manager.PrescriptionManager;
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.database.hibernate.Prescription;
@@ -22,6 +10,10 @@ import org.celllife.idart.database.hibernate.Regimen;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ClinicIndicatorReport extends AbstractJasperReport {
 

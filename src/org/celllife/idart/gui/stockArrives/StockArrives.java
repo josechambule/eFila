@@ -19,13 +19,8 @@
 
 package org.celllife.idart.gui.stockArrives;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.StockManager;
 import model.manager.reports.StockReceiptReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Stock;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -38,10 +33,13 @@ import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  */

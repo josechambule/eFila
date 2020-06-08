@@ -1,19 +1,18 @@
 package model.manager.excel.reports.in;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.excel.conversion.exceptions.DrugException;
 import model.manager.excel.conversion.exceptions.FormException;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.ChemicalCompound;
 import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Form;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  */

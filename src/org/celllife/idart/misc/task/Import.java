@@ -19,12 +19,11 @@
 
 package org.celllife.idart.misc.task;
 
-import java.io.File;
-
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.importData.ImportPatients;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+
+import java.io.File;
 
 public class Import implements IdartTask {
 

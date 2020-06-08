@@ -1,7 +1,5 @@
 package org.celllife.idart.database.wizard;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.DatabaseTools;
@@ -18,6 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import java.util.Map;
 
 public class ConnectionPage extends WizardPage implements PropertiesPage {
 	private static Logger log = Logger.getLogger(ConnectionPage.class);

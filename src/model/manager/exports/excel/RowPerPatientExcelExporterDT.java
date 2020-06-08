@@ -1,24 +1,20 @@
 package model.manager.exports.excel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import model.manager.excel.interfaces.GenerateExcelReportInterface;
-import model.manager.excel.reports.out.CohortDrugCollectionsReport;
 import model.manager.excel.reports.out.CohortDrugCollectionsReportDT;
 import model.manager.exports.DataExportFunctions;
 import model.nonPersistent.EntitySet;
-
-import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class RowPerPatientExcelExporterDT extends ExcelExporterDT {
 	

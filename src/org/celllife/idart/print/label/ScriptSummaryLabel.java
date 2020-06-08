@@ -19,21 +19,17 @@
 
 package org.celllife.idart.print.label;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
+
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 
 public class ScriptSummaryLabel implements Printable, DefaultLabel {
 	

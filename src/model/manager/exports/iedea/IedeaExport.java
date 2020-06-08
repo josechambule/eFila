@@ -1,27 +1,9 @@
 package model.manager.exports.iedea;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.AdministrationManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
-
-import org.celllife.idart.database.hibernate.AtcCode;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientAttributeInterface;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
 import org.iedea.ARKEKapaExport;
@@ -29,6 +11,8 @@ import org.iedea.ARKEKapaExport.ART;
 import org.iedea.ARKEKapaExport.DEM;
 import org.iedea.ARKEKapaExport.PAT;
 import org.iedea.ARKEKapaExport.VIS;
+
+import java.util.*;
 
 public class IedeaExport {
 

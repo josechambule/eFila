@@ -18,14 +18,13 @@
  */
 package org.celllife.idart.gui.utils.tableViewerUtils;
 
-import java.util.Date;
-
 import model.manager.PatientManager;
 import model.nonPersistent.PackagesWithSelection;
-
 import org.celllife.idart.database.hibernate.Appointment;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+
+import java.util.Date;
 
 /**
  * Utility Class to sort our TableViewer

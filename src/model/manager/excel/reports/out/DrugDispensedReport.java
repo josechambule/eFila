@@ -1,18 +1,17 @@
 package model.manager.excel.reports.out;
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import model.manager.excel.download.XLWriteManager;
 import model.manager.excel.interfaces.GenerateExcelReportInterface;
 import model.manager.exports.DataExportFunctions;
 import model.manager.exports.DrugDispensedObject;
 import model.manager.exports.PackageExportObject;
 import model.manager.exports.excel.ExcelReportObject;
-
 import org.celllife.idart.commonobjects.LocalObjects;
+
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  */

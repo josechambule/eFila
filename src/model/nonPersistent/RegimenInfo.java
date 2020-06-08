@@ -1,9 +1,9 @@
 package model.nonPersistent;
 
+import org.celllife.idart.misc.iDARTUtil;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.celllife.idart.misc.iDARTUtil;
 
 public class RegimenInfo {
 

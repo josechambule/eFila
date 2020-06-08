@@ -6,7 +6,6 @@
 package migracao.entidadesHibernate.dao;
 
 import migracao.connection.hibernateConectionRemote;
-import migracao.entidades.PatientIdentifier;
 import migracao.entidades.PatientProgram;
 import migracao.entidadesHibernate.Interfaces.PatientProgramDaoInterface;
 import org.hibernate.SQLQuery;

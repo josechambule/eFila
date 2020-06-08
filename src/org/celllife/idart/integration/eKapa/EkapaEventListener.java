@@ -1,13 +1,7 @@
 package org.celllife.idart.integration.eKapa;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.AdherenceManager;
 import model.manager.TemporaryRecordsManager;
-
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.PillCount;
 import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
@@ -18,6 +12,11 @@ import org.celllife.idart.events.AdherenceEvent;
 import org.celllife.idart.events.PackageEvent;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 

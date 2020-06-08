@@ -1,16 +1,16 @@
 package org.celllife.idart.commonobjects;
 
+import org.apache.log4j.Logger;
+import org.celllife.idart.misc.PatientBarcodeParser;
+import org.celllife.idart.misc.PropertiesEncrypter;
+import org.celllife.idart.misc.iDARTRuntimeException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.misc.PatientBarcodeParser;
-import org.celllife.idart.misc.PropertiesEncrypter;
-import org.celllife.idart.misc.iDARTRuntimeException;
 
 /**
  */

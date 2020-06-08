@@ -1,11 +1,10 @@
 package model.manager.exports;
 
-import java.io.Serializable;
-
 import model.manager.exports.columns.ColumnModifier;
 import model.manager.exports.columns.IColumnEnum;
-
 import org.celllife.idart.database.hibernate.APIException;
+
+import java.io.Serializable;
 
 public class EpisodeColumnsGroup extends AbstractColumnsGroup implements
 		ExportColumnGroup, Serializable {

@@ -1,13 +1,7 @@
 package model.manager.exports;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.List;
-
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.nonPersistent.EntitySet;
-
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -16,6 +10,11 @@ import org.apache.velocity.app.event.MethodExceptionEventHandler;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.Session;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.List;
 
 public final class DataExporter {
 

@@ -1,11 +1,11 @@
 package org.celllife.idart.misc;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+
+import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractCancellableJob implements IRunnableWithProgress {
 

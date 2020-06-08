@@ -19,17 +19,12 @@
 
 package org.celllife.idart.database.hibernate;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
+
+import javax.persistence.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  */

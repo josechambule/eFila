@@ -18,28 +18,15 @@
  */
 package org.celllife.idart.gui.patient.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
 import model.manager.AdherenceManager;
 import model.manager.DrugManager;
 import model.manager.PackageManager;
-
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.Stock;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
+
+import java.util.*;
 
 /**
  *

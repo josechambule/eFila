@@ -5,6 +5,7 @@
  */
 package migracao.swingreverse;
 
+import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.farmac.JBackupController;
 import migracao.farmac.JRestoreController;
 import migracao.farmac.PasswordProtectedZip;
@@ -12,7 +13,6 @@ import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.gui.platform.GenericGui;

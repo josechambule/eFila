@@ -1,15 +1,15 @@
 package org.celllife.idart.update;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.gnu.amSpacks.ILogger;
 import org.gnu.amSpacks.app.update.AbstractUpdateJob;
 import org.gnu.amSpacks.app.update.UpdateFacade;
+
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 
 public class AutoUpdate {
 

@@ -21,7 +21,6 @@ package org.celllife.idart.commonobjects;
 
 import model.manager.AdministrationManager;
 import model.nonPersistent.PharmacyDetails;
-
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.User;

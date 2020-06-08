@@ -1,16 +1,8 @@
 package org.celllife.idart.gui.dataQuality;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
-import org.celllife.idart.gui.dataQualityexports.DataQualityInterface;
-import org.celllife.idart.gui.dataQualityexports.InaccurateEpisodes;
-import org.celllife.idart.gui.dataQualityexports.LTFU;
-import org.celllife.idart.gui.dataQualityexports.PatientDataQuality;
-import org.celllife.idart.gui.dataQualityexports.RegimenBreakdowns;
-import org.celllife.idart.gui.dataQualityexports.UnusedPrescriptions;
+import org.celllife.idart.gui.dataQualityexports.*;
 import org.celllife.idart.gui.platform.GenericOthersGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -34,6 +26,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Vector;
 /**
  */
 public class DataQuality extends GenericOthersGui {

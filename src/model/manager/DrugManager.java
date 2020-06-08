@@ -3,18 +3,15 @@
  */
 package model.manager;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.TableItem;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+
+import java.util.*;
 
 /**
  */

@@ -19,25 +19,9 @@
 
 package org.celllife.idart.gui.packaging;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
+import model.manager.*;
+import model.manager.reports.PatientHistoryReport;
+import model.nonPersistent.PatientIdAndName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.function.DateRuleFactory;
@@ -46,24 +30,7 @@ import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.Form;
-import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.PrescriptionToPatient;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.StockLevel;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.facade.PillCountFacade;
@@ -90,61 +57,31 @@ import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import model.manager.AdministrationManager;
-import model.manager.DrugManager;
-import model.manager.OpenmrsErrorLogManager;
-import model.manager.PackageManager;
-import model.manager.PatientManager;
-import model.manager.SearchManager;
-import model.manager.StockManager;
-import model.manager.TemporaryRecordsManager;
-import model.manager.reports.PatientHistoryReport;
-import model.nonPersistent.PatientIdAndName;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -2057,17 +1994,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             newPack = new Packages();
             newPack.setPrescription(pre);
             newPack.setClinic(localPatient.getCurrentClinic());
-            // String theWeeks = cmbSupply.getText();
-            //
-            // int numPeriods =
-            // Integer.parseInt(theWeeks.split(" ")[0]);
-            //
-            // if (theWeeks.endsWith("months") ||
-            // theWeeks.endsWith("month")) {
-            // numPeriods = numPeriods * 4;
-            // }
 
-            // weeks supply = script duration
             int numPeriods = Math.min(pre.getDuration(), 4);
 
             if (pre.getDispensaTrimestral() == 1) {
@@ -3267,16 +3194,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                                     // accumulated amount>)
 
                                     // before printing the labels, save pdi List
-                                    if(checkOpenmrs) {
-                                        if (postOpenMrsEncounterStatus) {
-                                            TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                                            getHSession().flush();
-                                        }
-                                    }else {
-                                        TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                                        getHSession().flush();
-                                    }
-
+//                                  if(checkOpenmrs) {
+//                                      if (postOpenMrsEncounterStatus) {
+                                    TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+                                    getHSession().flush();
+                                    //                                      }
+                                    //                                   }else {
+//                                        TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+//                                        getHSession().flush();
+//                                    }
                                 }
                             }
 
@@ -3416,16 +3342,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                             // accumulated amount>)
 
                             // before printing the labels, save pdi List
-                            if(checkOpenmrs) {
-                                if (postOpenMrsEncounterStatus) {
-                                    TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                                    getHSession().flush();
-                                }
-                            }else{
-                                TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                                getHSession().flush();
-                            }
-
+//                           if(checkOpenmrs) {
+//                               if (postOpenMrsEncounterStatus) {
+                            TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+                            getHSession().flush();
+//                        }
+//                            }else{
+//                                TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
+//                                getHSession().flush();
+//                            }
                         }
                     }
                     tx.commit();

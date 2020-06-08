@@ -1,16 +1,10 @@
 package model.manager.excel.reports.in;
 
-import java.util.List;
-
 import model.manager.excel.conversion.exceptions.PatientException;
-import model.manager.excel.interfaces.BaseImportColumn;
-import model.manager.excel.interfaces.ImportColumn;
-import model.manager.excel.interfaces.ImportConverter;
-import model.manager.excel.interfaces.ImportValidator;
-import model.manager.excel.interfaces.SessionBasedImportConverter;
-import model.manager.excel.interfaces.SessionBasedImportValidator;
-
+import model.manager.excel.interfaces.*;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class SingleImportColumn<T> extends BaseImportColumn<T> implements ImportColumn<T> {
 

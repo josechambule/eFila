@@ -19,18 +19,14 @@
 
 package org.celllife.idart.print.label;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.commonobjects.iDartProperties.LabelType;
+
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.util.Vector;
-
-import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.commonobjects.iDartProperties.LabelType;
 
 /**
  */

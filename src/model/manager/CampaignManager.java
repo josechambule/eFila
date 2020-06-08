@@ -1,13 +1,13 @@
 package model.manager;
 
-import java.util.List;
-
 import org.celllife.idart.database.hibernate.Campaign;
 import org.celllife.idart.database.hibernate.CampaignParticipant;
 import org.celllife.mobilisr.constants.CampaignStatus;
 import org.celllife.mobilisr.constants.CampaignType;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class CampaignManager {
 

@@ -3,7 +3,6 @@ package org.celllife.idart.gui.reportParameters;
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.reports.BalanceteDiarioReport;
-import model.manager.reports.FichaStockReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.Drug;

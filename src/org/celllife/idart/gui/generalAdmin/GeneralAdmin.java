@@ -18,15 +18,11 @@
  */
 package org.celllife.idart.gui.generalAdmin;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.util.Calendar;
-import java.util.Date;
-
+import migracao.swingreverse.MainPanel;
+import model.manager.excel.reports.in.PatientSheet;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
@@ -41,7 +37,6 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
-import org.celllife.idart.misc.DateFieldComparator;
 import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.SafeSaveDialog;
 import org.celllife.idart.misc.SafeSaveDialog.FileType;
@@ -56,17 +51,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
 
-import migracao.swingreverse.MainPanel;
-import migracao.swingreverse.RestorePatientFarmac;
-import model.manager.excel.reports.in.PatientSheet;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 
 /**
  *
@@ -440,7 +429,7 @@ public class GeneralAdmin extends GenericAdminGui {
             @Override
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
-                cmd_pharmUsersUpdate();
+                cmd_pharmStockCenter();
             }
         });
     }
@@ -493,7 +482,7 @@ public class GeneralAdmin extends GenericAdminGui {
         new ManagePharmUsers(getShell());
     }
 
-    public void cmd_pharmUsersUpdate() {
+    public void cmd_pharmStockCenter() {
         new StockCenterInfo(getShell());
     }
 

@@ -19,18 +19,13 @@
 
 package org.celllife.idart.database.hibernate.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.celllife.idart.commonobjects.iDartProperties;
+
+import java.sql.*;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Created on 2007/02/26

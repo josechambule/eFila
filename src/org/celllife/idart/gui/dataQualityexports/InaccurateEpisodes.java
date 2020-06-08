@@ -1,12 +1,11 @@
 package org.celllife.idart.gui.dataQualityexports;
 
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 public class InaccurateEpisodes extends DataQualityBase{
 
 	int num ;

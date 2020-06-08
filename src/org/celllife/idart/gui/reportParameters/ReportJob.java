@@ -2,7 +2,6 @@ package org.celllife.idart.gui.reportParameters;
 
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.reports.iDARTReport;
-
 import org.celllife.idart.misc.AbstractCancellableJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 

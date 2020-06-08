@@ -1,24 +1,15 @@
 package model.manager.reports;
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.User;
 import org.eclipse.swt.widgets.Shell;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class MiaReportMISAU extends AbstractJasperReport {
 

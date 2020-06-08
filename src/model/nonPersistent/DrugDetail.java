@@ -3,10 +3,10 @@
  */
 package model.nonPersistent;
 
+import org.celllife.idart.database.hibernate.Drug;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.celllife.idart.database.hibernate.Drug;
 
 /**
  * @author Rashid

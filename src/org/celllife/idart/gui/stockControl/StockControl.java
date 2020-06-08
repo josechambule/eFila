@@ -19,12 +19,6 @@
 
 package org.celllife.idart.gui.stockControl;
 
-import java.sql.Connection;
-
-import migracao.swingreverse.ExportDispenses;
-import migracao.swingreverse.ImportarDispensasFarmac;
-import migracao.swingreverse.SyncDispensasFarmac;
-import migracao.swingreverse.SyncPacientesFarmac;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
@@ -53,6 +47,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+
+import java.sql.Connection;
 
 /**
  */

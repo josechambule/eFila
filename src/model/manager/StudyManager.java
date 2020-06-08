@@ -1,9 +1,9 @@
 package model.manager;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import com.nomsic.randb.Randb;
+import com.nomsic.randb.RandbXml;
+import com.nomsic.randb.exception.RandbException;
+import com.nomsic.randb.model.Cell;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -11,10 +11,9 @@ import org.celllife.idart.database.hibernate.StudyParticipant;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import com.nomsic.randb.Randb;
-import com.nomsic.randb.RandbXml;
-import com.nomsic.randb.exception.RandbException;
-import com.nomsic.randb.model.Cell;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class StudyManager {
 

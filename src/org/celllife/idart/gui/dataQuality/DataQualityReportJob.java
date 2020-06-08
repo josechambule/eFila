@@ -4,7 +4,6 @@ import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.exports.PatientExportObject;
 import model.manager.exports.columns.SimpleColumnsEnum;
 import model.nonPersistent.EntitySet;
-
 import org.celllife.idart.gui.dataExports.DataExportJob;
 import org.celllife.idart.gui.dataQualityexports.DataQualityBase;
 import org.celllife.idart.misc.AbstractCancellableJob;

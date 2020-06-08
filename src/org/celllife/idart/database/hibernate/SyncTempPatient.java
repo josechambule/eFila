@@ -6,19 +6,10 @@
 package org.celllife.idart.database.hibernate;
 
 import org.celllife.idart.misc.iDARTUtil;
-import org.hibernate.id.UUIDHexGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *

@@ -5,7 +5,6 @@
  */
 
 package org.celllife.idart.gui.sync.patients;
-import java.util.Vector;
 
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -19,13 +18,10 @@ import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
+
+import java.util.Vector;
 
 public class Sync extends GenericFormGui  {
 

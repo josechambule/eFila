@@ -19,21 +19,12 @@
 
 package org.celllife.idart.database.hibernate;
 
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-import org.hibernate.annotations.Cascade;
+import java.util.UUID;
 
 /**
  */
@@ -48,6 +39,9 @@ public class Clinic {
 
 	// Such as for CIPRA, Primary Investigator R.Wood
 	private String notes;
+
+	@Column(nullable = false)
+	private String codigo;
 
 	@OneToMany(mappedBy = "clinic")
 	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
@@ -65,6 +59,18 @@ public class Clinic {
 	
 	@Column(unique = true, nullable = false)
 	private String clinicName;
+
+	@Column(nullable = false)
+	private String province;
+
+	@Column(nullable = false)
+	private String district;
+
+	@Column(nullable = false)
+	private String subDistrict;
+
+	@Column(nullable = false)
+	private String uuid;
 
 	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE},
 			mappedBy="clinics")
@@ -91,14 +97,19 @@ public class Clinic {
 	 * Constructor
 	 * @param name
 	 *            String
-	 * @param postalCode
+	 * @param codigo
 	 * @param telephone
 	 * @param notes
 	 */
-	public Clinic(String name, String postalCode, String telephone, String notes) {
+	public Clinic(String name, String codigo, String telephone, String notes, String province, String district, String subDistrict) {
+		this.codigo = codigo;
 		this.telephone = telephone;
 		this.notes = notes;
 		this.clinicName = name;
+		this.province = province;
+		this.district = district;
+		this.subDistrict = subDistrict;
+		this.uuid = UUID.randomUUID().toString();
 		this.users = new HashSet<User>();
 	}
 
@@ -245,4 +256,39 @@ public class Clinic {
 	}
 
 
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getSubDistrict() {
+		return subDistrict;
+	}
+
+	public void setSubDistrict(String subDistrict) {
+		this.subDistrict = subDistrict;
+	}
+
+	public String getUuid(){
+		return uuid;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
 }

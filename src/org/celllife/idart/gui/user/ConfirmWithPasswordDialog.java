@@ -19,6 +19,7 @@
 
 package org.celllife.idart.gui.user;
 
+import model.nonPersistent.Autenticacao;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.gui.utils.LayoutUtils;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -28,17 +29,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
-
-import model.nonPersistent.Autenticacao;
 
 /**
  * Dialog to prompt current user for password

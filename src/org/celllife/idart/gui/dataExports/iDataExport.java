@@ -1,7 +1,6 @@
 package org.celllife.idart.gui.dataExports;
 
 import model.manager.exports.ExportColumn;
-
 import org.eclipse.swt.widgets.Composite;
 
 public interface iDataExport {

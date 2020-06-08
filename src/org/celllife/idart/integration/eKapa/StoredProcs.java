@@ -1,17 +1,6 @@
 package org.celllife.idart.integration.eKapa;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-
 import model.manager.DrugManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
@@ -21,6 +10,12 @@ import org.celllife.idart.database.hibernate.tmp.DeletedItem;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.hibernate.Session;
+
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This class contains the methods to call the relevant stored procedures from

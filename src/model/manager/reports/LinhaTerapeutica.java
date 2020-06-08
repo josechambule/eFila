@@ -5,13 +5,14 @@
  */
 package model.manager.reports;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 import model.manager.excel.conversion.exceptions.ReportException;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.eclipse.swt.widgets.Shell;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

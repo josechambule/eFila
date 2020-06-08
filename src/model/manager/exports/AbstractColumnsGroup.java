@@ -1,11 +1,10 @@
 package model.manager.exports;
 
-import java.util.Arrays;
-
 import model.manager.exports.columns.ColumnModifier;
 import model.manager.exports.columns.IColumnEnum;
-
 import org.celllife.idart.database.hibernate.APIException;
+
+import java.util.Arrays;
 
 public abstract class AbstractColumnsGroup implements ExportColumnGroup {
 

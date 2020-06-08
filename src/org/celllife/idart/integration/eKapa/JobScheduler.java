@@ -1,15 +1,10 @@
 package org.celllife.idart.integration.eKapa;
 
-import java.util.Date;
-
 import org.apache.log4j.Logger;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.util.Date;
 
 public class JobScheduler {
 

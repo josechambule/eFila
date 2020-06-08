@@ -1,33 +1,18 @@
 package model.manager.exports;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
 import model.manager.PatientSetManager;
-import model.manager.exports.columns.AppointmentDetailsEnum;
-import model.manager.exports.columns.DrugDetailsEnum;
-import model.manager.exports.columns.EpisodeDetailsEnum;
-import model.manager.exports.columns.PackageDetailsEnum;
-import model.manager.exports.columns.PrescriptionDetailsEnum;
+import model.manager.exports.columns.*;
 import model.nonPersistent.EntitySet;
 import model.nonPersistent.ExportDrugInfo;
 import model.nonPersistent.ExportPackageInfo;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DataExportFunctions {
 

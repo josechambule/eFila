@@ -1,40 +1,18 @@
 package org.celllife.idart.misc.task;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
-
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.AlternatePatientIdentifier;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
-import org.celllife.idart.database.hibernate.Doctor;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.Pregnancy;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockCenter;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+
+import java.util.*;
 
 public class MergeDbs implements IdartTask {
 

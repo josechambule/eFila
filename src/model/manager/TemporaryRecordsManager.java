@@ -1,12 +1,8 @@
 package model.manager;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.celllife.idart.commonobjects.CentralizationProperties;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.tmp.DeletedItem;
@@ -14,8 +10,7 @@ import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
+import java.util.List;
 
 /**
  *
@@ -118,6 +113,7 @@ public class TemporaryRecordsManager {
         dispenseFarmac.setCpn(pdi.getPackagedDrug().getParentPackage().getPrescription().getCpn());
         dispenseFarmac.setPrescricaoespecial(pdi.getPackagedDrug().getParentPackage().getPrescription().getPrescricaoespecial());
         dispenseFarmac.setMotivocriacaoespecial(pdi.getPackagedDrug().getParentPackage().getPrescription().getMotivocriacaoespecial());
+        dispenseFarmac.setUuidopenmrs(patient.getUuid());
 
         try {
             sess.save(dispenseFarmac);

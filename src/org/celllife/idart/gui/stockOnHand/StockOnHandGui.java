@@ -29,19 +29,12 @@
 
 package org.celllife.idart.gui.stockOnHand;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.StockManager;
 import model.nonPersistent.BatchDetail;
 import model.nonPersistent.DrugDetail;
 import model.nonPersistent.StockLevelInfo;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.Drug;
@@ -72,6 +65,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  */

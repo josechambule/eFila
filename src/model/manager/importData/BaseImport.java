@@ -1,13 +1,12 @@
 package model.manager.importData;
 
-import java.io.File;
-
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.excel.interfaces.ReadExcelReportInterface;
-
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.Session;
+
+import java.io.File;
 
 public abstract class BaseImport {
 

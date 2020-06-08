@@ -1,13 +1,6 @@
 package org.celllife.idart.gui.platform;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
-
 import model.manager.reports.iDARTReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.reportParameters.ReportJob;
 import org.celllife.idart.gui.utils.LayoutUtils;
@@ -18,14 +11,14 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  */

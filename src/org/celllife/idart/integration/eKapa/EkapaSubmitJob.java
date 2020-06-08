@@ -1,11 +1,6 @@
 package org.celllife.idart.integration.eKapa;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import model.manager.TemporaryRecordsManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.tmp.DeletedItem;
@@ -16,6 +11,10 @@ import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EkapaSubmitJob implements Job {
 

@@ -5,11 +5,7 @@
  */
 package migracao.swingreverse;
 
-import migracao.entidadesHibernate.importPatient.PatientAttributeImportService;
-import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
 import model.manager.*;
-import oracle.sql.DATE;
 import org.apache.commons.lang.StringUtils;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
@@ -28,8 +24,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static sun.rmi.runtime.Log.getLog;
-
 /**
  * @author colaco
  */
@@ -46,7 +40,10 @@ public class DadosPacienteFarmac {
         IdentifierType identifierType = AdministrationManager.getNationalIdentifierType(sess);
         AttributeType attributeType = PatientManager.getAttributeTypeObject(sess, "ARV Start Date");
 
-        patient = PatientManager.getPatient(sess, patientSync.getPatientid());
+        if (patientSync.getUuid() != null)
+            patient = PatientManager.getPatientfromUuid(sess, patientSync.getUuid());
+        else
+            patient = PatientManager.getPatient(sess, patientSync.getPatientid());
 
         if (patient == null) {
             patient = new Patient();
@@ -105,9 +102,13 @@ public class DadosPacienteFarmac {
         Transaction tx = sess.beginTransaction();
 
         Prescription prescription = null;
+        Patient patient = null;
         try {
 
-            Patient patient = PatientManager.getPatient(sess, syncTempDispense.getPatientid());
+            if (syncTempDispense.getUuidopenmrs() != null)
+                patient = PatientManager.getPatientfromUuid(sess, syncTempDispense.getUuidopenmrs());
+            else
+                patient = PatientManager.getPatient(sess, syncTempDispense.getPatientid());
 
             prescription = PackageManager.getPrescriptionFromPatient(sess, patient, syncTempDispense.getDate());
 
@@ -175,6 +176,7 @@ public class DadosPacienteFarmac {
 
                 if (drug != null) {
                     PrescribedDrugs newPD = new PrescribedDrugs();
+
                     if (drug.getPackSize() > 30) {
                         newPD.setAmtPerTime(2);
                     } else {

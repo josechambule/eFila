@@ -19,12 +19,6 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.exports.DataExportFunctions;
 import model.manager.exports.DrugDispensedObject;
 import model.manager.exports.EpisodeObject;
@@ -34,7 +28,6 @@ import model.manager.exports.columns.EpisodeDetailsEnum;
 import model.manager.exports.excel.ExcelReportObject;
 import model.manager.exports.excel.RowPerPatientExcelExporter;
 import model.nonPersistent.EntitySet;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.gui.platform.GenericReportGui;
@@ -43,8 +36,8 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.SafeSaveDialog;
-import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.misc.SafeSaveDialog.FileType;
+import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -52,17 +45,14 @@ import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Query;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.util.List;
+import java.util.*;
 
 /**
  */

@@ -1,7 +1,6 @@
 package org.celllife.idart.commonobjects;
 
 import org.apache.log4j.Logger;
-import org.celllife.idart.misc.PatientBarcodeParser;
 import org.celllife.idart.misc.PropertiesEncrypter;
 import org.celllife.idart.misc.iDARTRuntimeException;
 

@@ -3,13 +3,12 @@
  */
 package org.celllife.idart.gui.stockOnHand.treeViewerDetails;
 
-import java.util.List;
-
 import model.nonPersistent.BatchDetail;
 import model.nonPersistent.DrugDetail;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import java.util.List;
 
 /**
  * @author Rashid

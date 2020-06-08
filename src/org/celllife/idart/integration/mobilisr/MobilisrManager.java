@@ -1,10 +1,5 @@
 package org.celllife.idart.integration.mobilisr;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.celllife.idart.commonobjects.PropertiesManager;
 import org.celllife.idart.commonobjects.SmsProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -22,6 +17,11 @@ import org.celllife.mobilisr.client.MobilisrClient;
 import org.celllife.mobilisr.client.exception.RestCommandException;
 import org.celllife.mobilisr.client.impl.MobilisrClientImpl;
 import org.celllife.mobilisr.constants.CampaignType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class MobilisrManager {
 	

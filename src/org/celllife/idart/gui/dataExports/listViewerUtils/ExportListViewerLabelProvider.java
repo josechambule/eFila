@@ -4,7 +4,6 @@
 package org.celllife.idart.gui.dataExports.listViewerUtils;
 
 import model.manager.exports.columns.IColumnEnum;
-
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;

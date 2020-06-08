@@ -1,12 +1,7 @@
 package org.celllife.idart.sms;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
 import model.manager.AlertManager;
 import model.manager.SmsManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.PropertiesManager;
 import org.celllife.idart.database.hibernate.MessageSchedule;
@@ -17,6 +12,10 @@ import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class SmsSchedulerJob extends CampaignSchedulingJob implements Job {
 

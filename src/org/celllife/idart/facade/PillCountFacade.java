@@ -1,13 +1,12 @@
 package org.celllife.idart.facade;
 
-import java.util.Set;
-
 import model.manager.AdherenceManager;
-
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.PillCount;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.Set;
 
 /**
  */

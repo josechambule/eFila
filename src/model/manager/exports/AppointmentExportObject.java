@@ -1,8 +1,8 @@
 package model.manager.exports;
 
-import java.io.Serializable;
-
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
 
 /**
  * A DataExport contains a list of {@link ExportColumn}'s along with a set of

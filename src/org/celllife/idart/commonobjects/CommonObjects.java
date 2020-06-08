@@ -19,23 +19,8 @@
 
 package org.celllife.idart.commonobjects;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import model.manager.AdministrationManager;
-
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Doctor;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.Form;
-import org.celllife.idart.database.hibernate.LinhaT;
-import org.celllife.idart.database.hibernate.Motivomudanca;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.RegimeTerapeutico;
-import org.celllife.idart.database.hibernate.Regimen;
-import org.celllife.idart.database.hibernate.SimpleDomain;
-import org.celllife.idart.database.hibernate.StockCenter;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
@@ -48,6 +33,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.hibernate.Session;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  */

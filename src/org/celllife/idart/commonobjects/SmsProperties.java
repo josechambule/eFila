@@ -1,10 +1,10 @@
 package org.celllife.idart.commonobjects;
 
-import java.util.List;
-
 import com.pholser.util.properties.BoundProperty;
 import com.pholser.util.properties.DefaultsTo;
 import com.pholser.util.properties.ValuesSeparatedBy;
+
+import java.util.List;
 
 /**
  * 

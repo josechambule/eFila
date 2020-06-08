@@ -1,9 +1,9 @@
 package model.manager.exports.excel;
 
+import model.manager.exports.PackageExportObject;
+
 import java.util.Date;
 import java.util.List;
-
-import model.manager.exports.PackageExportObject;
 
 public class ExcelReportObject {
 	private Date startDate;

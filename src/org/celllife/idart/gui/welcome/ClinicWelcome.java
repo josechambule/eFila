@@ -1,7 +1,5 @@
 package org.celllife.idart.gui.welcome;
 
-import java.text.MessageFormat;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.gui.packaging.PackagesToOrFromClinic;
 import org.celllife.idart.gui.packaging.PackagesToPatients;
@@ -21,6 +19,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
+import java.text.MessageFormat;
 
 /**
  */

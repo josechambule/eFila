@@ -3,27 +3,22 @@
  */
 package org.celllife.idart.gui.patient.tabs;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.gui.misc.GenericTab;
 import org.celllife.idart.gui.patient.util.PatientTreatmentHistory;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
+import org.celllife.idart.messages.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
-import org.celllife.idart.messages.Messages;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Treatment history tab. Shows a table of all the packages a patient has

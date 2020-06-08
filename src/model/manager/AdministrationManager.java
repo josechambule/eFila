@@ -28,7 +28,6 @@ import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.rest.utils.RestUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 import java.sql.SQLException;

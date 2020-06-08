@@ -1,18 +1,7 @@
 package org.celllife.idart.sms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import model.manager.AdministrationManager;
 import model.manager.SmsManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.PropertiesManager;
@@ -20,13 +9,12 @@ import org.celllife.idart.database.hibernate.MessageSchedule;
 import org.celllife.idart.database.hibernate.StudyParticipant;
 import org.celllife.idart.integration.mobilisr.MobilisrManager;
 import org.celllife.idart.misc.iDARTUtil;
-import org.celllife.mobilisr.api.rest.CampaignDto;
-import org.celllife.mobilisr.api.rest.ContactDto;
-import org.celllife.mobilisr.api.rest.ErrorDto;
-import org.celllife.mobilisr.api.rest.MessageDto;
-import org.celllife.mobilisr.api.rest.PagedListDto;
+import org.celllife.mobilisr.api.rest.*;
 import org.celllife.mobilisr.client.exception.RestCommandException;
 import org.hibernate.Session;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class CampaignSchedulingJob {
 	

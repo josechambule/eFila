@@ -5,12 +5,12 @@
  */
 package org.celllife.idart.misc.task;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.util.JDBCUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author ilda

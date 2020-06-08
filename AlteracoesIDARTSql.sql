@@ -1,8 +1,14 @@
-ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS syncstatus character(1) COLLATE pg_catalog."default";
+ALTER TABLE clinic ADD COLUMN IF NOT EXISTS province character varying(255) COLLATE pg_catalog."default" DEFAULT  '';
+ALTER TABLE clinic ADD COLUMN IF NOT EXISTS district character varying(255) COLLATE pg_catalog."default" DEFAULT '';
+ALTER TABLE clinic ADD COLUMN IF NOT EXISTS subDistrict character varying(255) COLLATE pg_catalog."default" DEFAULT '';
+ALTER TABLE clinic ADD COLUMN IF NOT EXISTS codigo character varying(255) COLLATE pg_catalog."default" DEFAULT '';
+ALTER TABLE clinic ADD COLUMN IF NOT EXISTS uuid character varying(255) COLLATE pg_catalog."default" DEFAULT '';
+ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS syncstatus character(1) COLLATE pg_catalog."default" DEFAULT 'P'::bpchar;
 ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS syncuuid character varying(255) COLLATE pg_catalog."default";
 ALTER TABLE sync_temp_patients RENAME COLUMN uuid TO uuidopenmrs;
-ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS syncstatus character(1) COLLATE pg_catalog."default";
+ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS syncstatus character(1) COLLATE pg_catalog."default" DEFAULT 'P'::bpchar;
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS syncuuid character varying(255) COLLATE pg_catalog."default";
+ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS uuidopenmrs character varying(255) COLLATE pg_catalog."default";
 ALTER TABLE sync_temp_dispense DROP CONSTRAINT sync_temp_dispense_pkey;
 ALTER TABLE sync_temp_dispense ADD CONSTRAINT sync_temp_dispense_pkey PRIMARY KEY (id, mainclinicname);
 ALTER TABLE sync_temp_dispense RENAME COLUMN linhaid TO linhanome;
@@ -22,3 +28,7 @@ ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS prescricaoespecial chara
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS motivocriacaoespecial character varying(255) COLLATE pg_catalog."default" DEFAULT ''::character varying;
 update simpledomain set value = 'Voltou da Referencia' where name = 'activation_reason' and value = 'Desconhecido';
 
+-- update clinic set clinicname = 'CS Chabeco' where mainclinic = true;
+-- update nationalclinics set facilityname = 'CS Chabeco' where facilityname = 'Unidade Sanitária';
+-- update stockcenter set stockcentername = 'CS Chabeco' where stockcentername = 'Unidade Sanitária';
+-- update simpledomain set "value" = 'CS Chabeco' where "value" = 'Unidade Sanitária';

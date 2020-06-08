@@ -1,22 +1,17 @@
 package org.celllife.idart.misc.task;
 
-import java.util.Date;
-import java.util.List;
-
 import model.manager.DrugManager;
 import model.manager.StockManager;
-
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockAdjustment;
-import org.celllife.idart.database.hibernate.StockLevel;
-import org.celllife.idart.database.hibernate.StockTake;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.database.hibernate.util.TransactionalCommand;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.hibernate.Session;
+
+import java.util.Date;
+import java.util.List;
 
 public class RecalculateSockTask implements IdartTask {
 	

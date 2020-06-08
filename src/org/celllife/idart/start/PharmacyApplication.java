@@ -20,39 +20,25 @@
 
 package org.celllife.idart.start;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import migracao.swingreverse.SyncPacientesFarmac;
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import model.manager.StockManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.*;
-import org.celllife.idart.database.ConnectException;
-import org.celllife.idart.database.DatabaseEmptyException;
-import org.celllife.idart.database.DatabaseException;
-import org.celllife.idart.database.DatabaseTools;
-import org.celllife.idart.database.DatabaseWizard;
+import org.celllife.idart.database.*;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
 import org.celllife.idart.gui.login.LoginErr;
-import org.celllife.idart.gui.welcome.ClinicWelcome;
-import org.celllife.idart.gui.welcome.GenericWelcome;
-import org.celllife.idart.gui.welcome.Load;
-import org.celllife.idart.gui.welcome.PharmacyWelcome;
-import org.celllife.idart.gui.welcome.ReportWorkerWelcome;
-import org.celllife.idart.gui.welcome.StudyWorkerWelcome;
+import org.celllife.idart.gui.welcome.*;
 import org.celllife.idart.integration.eKapa.EkapaSubmitJob;
 import org.celllife.idart.integration.eKapa.JobScheduler;
 import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.task.TaskManager;
+import org.celllife.idart.rest.utils.RestFarmac;
 import org.celllife.idart.sms.SmsRetrySchedulerJob;
 import org.celllife.idart.sms.SmsSchedulerJob;
 import org.eclipse.jface.window.Window;
@@ -62,11 +48,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.celllife.idart.rest.utils.RestFarmac;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
-import model.manager.StockManager;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
@@ -294,6 +282,9 @@ public class PharmacyApplication {
                                 RestFarmac.restGeAllPatients(url, mainClinic);
                                 RestFarmac.setPatientsFromRest(sess);
                                 RestFarmac.restPostDispenses(sess, url);
+                            }else if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")){
+                                RestFarmac.setPatientsFromRest(sess);
+                                RestFarmac.setDispensesFromRest(sess);
                             }
                             assert tx != null;
                             tx.commit();

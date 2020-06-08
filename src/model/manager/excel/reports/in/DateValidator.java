@@ -1,11 +1,10 @@
 package model.manager.excel.reports.in;
 
+import model.manager.excel.interfaces.ImportValidator;
+import org.celllife.idart.misc.iDARTUtil;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import model.manager.excel.interfaces.ImportValidator;
-
-import org.celllife.idart.misc.iDARTUtil;
 
 public class DateValidator implements ImportValidator<Date> {
 

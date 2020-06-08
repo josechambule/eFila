@@ -1,9 +1,9 @@
 package org.celllife.idart.events;
 
+import org.celllife.idart.integration.eKapa.EkapaEventListener;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.celllife.idart.integration.eKapa.EkapaEventListener;
 
 
 

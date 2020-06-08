@@ -1,10 +1,10 @@
 package org.celllife.idart.gui.utils;
 
+import org.eclipse.swt.widgets.Combo;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.eclipse.swt.widgets.Combo;
 
 /**
  */

@@ -19,27 +19,11 @@
 
 package org.celllife.idart.gui.patient;
 
-import java.sql.SQLException;
-import java.text.DateFormatSymbols;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import model.manager.AdministrationManager;
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.StudyManager;
 import model.manager.reports.PatientHistoryReport;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.function.DateRuleFactory;
@@ -48,30 +32,15 @@ import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.misc.iDARTChangeListener;
-import org.celllife.idart.gui.patient.tabs.AddressTab;
-import org.celllife.idart.gui.patient.tabs.ClinicInfoTab;
-import org.celllife.idart.gui.patient.tabs.IPatientTab;
-import org.celllife.idart.gui.patient.tabs.TreatmentHistoryTab;
-import org.celllife.idart.gui.patient.tabs.TreatmentManagementTab;
+import org.celllife.idart.gui.patient.tabs.*;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.prescription.AddPrescription;
 import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.search.PatientSearch;
-import org.celllife.idart.gui.utils.ComboUtils;
-import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
-import org.celllife.idart.gui.utils.iDartFont;
-import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.gui.utils.*;
 import org.celllife.idart.gui.widget.DateButton;
 import org.celllife.idart.gui.widget.DateInputValidator;
 import org.celllife.idart.integration.eKapa.gui.SearchPatientGui;
@@ -88,33 +57,24 @@ import org.celllife.mobilisr.client.exception.RestCommandException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.sql.SQLException;
+import java.text.DateFormatSymbols;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
 
 public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
@@ -1251,59 +1211,71 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         PatientIdentifierDialog dialog = new PatientIdentifierDialog(getShell(), getHSession(), localPatient);
         dialog.openAndWait();
         identifierChangesMade = dialog.isChangesMade();
-        if (localPatient.getPatientId() == null || localPatient.getPatientId().isEmpty()) {
+
+        boolean checkOpenmrs = true;
+
+        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
+            checkOpenmrs = true;
+        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
+                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            checkOpenmrs = false;
+
+
+        if ((localPatient.getPatientId() == null || localPatient.getPatientId().isEmpty())) {
             cmdClearWidgetSelected();
         } else {
 
             txtPatientId.setText(localPatient.getPatientId());
 
-            //Preparar Prim.Nomes, Apelido e Data de Nascimento apartir do NID usando REST WEB SERVICES
-            String nid = txtPatientId.getText().toUpperCase().trim();
+            if(checkOpenmrs) {
+                //Preparar Prim.Nomes, Apelido e Data de Nascimento apartir do NID usando REST WEB SERVICES
+                String nid = txtPatientId.getText().toUpperCase().trim();
 
-            String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+                String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
 
-            String personUuid = resource.substring(21, 57);
+                String personUuid = resource.substring(21, 57);
 
-            String personDemografics = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + personUuid);
+                String personDemografics = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + personUuid);
 
-            JSONObject jsonObject = new org.json.JSONObject(personDemografics);
+                JSONObject jsonObject = new org.json.JSONObject(personDemografics);
 
-            String fullName = jsonObject.getJSONObject("preferredName").getString("display");
+                String fullName = jsonObject.getJSONObject("preferredName").getString("display");
 
-            String[] names = fullName.trim().split(" ");
+                String[] names = fullName.trim().split(" ");
 
-            System.out.println(names[0]);
-            System.out.println(names[names.length - 1]);
+                System.out.println(names[0]);
+                System.out.println(names[names.length - 1]);
 
-            txtFirstNames.setText(names[0]);//Primeiros nomes
-            localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
+                txtFirstNames.setText(names[0]);//Primeiros nomes
+                localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
 
-            txtSurname.setText(names[names.length - 1]);//Apelido
-            localPatient.setLastname(txtSurname.getText());//Apelido
+                txtSurname.setText(names[names.length - 1]);//Apelido
+                localPatient.setLastname(txtSurname.getText());//Apelido
 
-            String gender = jsonObject.getString("gender").trim();
+                String gender = jsonObject.getString("gender").trim();
 
-            cmbSex.setText(gender);
-            localPatient.setSex(cmbSex.getText().charAt(0));
+                cmbSex.setText(gender);
+                localPatient.setSex(cmbSex.getText().charAt(0));
 
-            String birthDate = jsonObject.getString("birthdate").trim();
+                String birthDate = jsonObject.getString("birthdate").trim();
 
-            String year = birthDate.substring(0, 4);
-            String month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(birthDate.substring(5, 7)) - 1];
-            Integer day = Integer.valueOf(birthDate.substring(8, 10));
+                String year = birthDate.substring(0, 4);
+                String month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(birthDate.substring(5, 7)) - 1];
+                Integer day = Integer.valueOf(birthDate.substring(8, 10));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH);
-            theDate = null;//Data de Nascimento
-            try {
-                theDate = sdf.parse(day.toString() + "-" + month + "-" + year);
-            } catch (ParseException e1) {
-                getLog().error("Error parsing date: ", e1);
+                SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH);
+                theDate = null;//Data de Nascimento
+                try {
+                    theDate = sdf.parse(day.toString() + "-" + month + "-" + year);
+                } catch (ParseException e1) {
+                    getLog().error("Error parsing date: ", e1);
+                }
+
+                cmbDOBDay.setText(day.toString());
+                cmbDOBMonth.setText(month);
+                cmbDOBYear.setText(year);
+                localPatient.setDateOfBirth(theDate);
             }
-
-            cmbDOBDay.setText(day.toString());
-            cmbDOBMonth.setText(month);
-            cmbDOBYear.setText(year);
-            localPatient.setDateOfBirth(theDate);
         }
     }
 

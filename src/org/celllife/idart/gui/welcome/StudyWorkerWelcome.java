@@ -1,7 +1,5 @@
 package org.celllife.idart.gui.welcome;
 
-import java.util.List;
-
 import org.celllife.idart.database.hibernate.SimpleDomain;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.patient.AddPatient;
@@ -22,6 +20,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class StudyWorkerWelcome extends GenericWelcome {
 

@@ -5,13 +5,6 @@
  */
 package org.celllife.idart.gui.regimeTerapeutico;
 
-import java.math.BigDecimal;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import model.manager.AdministrationManager;
 import model.manager.DeletionsManager;
 import model.manager.DrugManager;
 import org.apache.log4j.Logger;
@@ -22,11 +15,6 @@ import org.celllife.idart.database.hibernate.RegimeTerapeutico;
 import org.celllife.idart.database.hibernate.RegimenDrugs;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
-
-import static org.celllife.idart.gui.platform.GenericFormGuiInterface.OPTION_isAddNotUpdate;
-import static org.celllife.idart.gui.platform.GenericGui.getInitialisationOption;
-import static org.celllife.idart.gui.platform.GenericGuiInterface.EMPTY;
-
 import org.celllife.idart.gui.prescription.PrescriptionObject;
 import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -36,22 +24,18 @@ import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author colaco.nhango

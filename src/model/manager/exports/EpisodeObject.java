@@ -1,12 +1,11 @@
 package model.manager.exports;
 
+import model.manager.exports.columns.EpisodeDetailsEnum;
+import org.celllife.idart.misc.iDARTUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.celllife.idart.misc.iDARTUtil;
-
-import model.manager.exports.columns.EpisodeDetailsEnum;
 
 public class EpisodeObject extends AbstractExportObject implements Cloneable {
 
