@@ -32,11 +32,15 @@ public class SyncTempPatient {
     private int clinic;
     @Column(name = "clinicname", length = 255)
     private String clinicname;
+    @Column(name = "clinicuuid", length = 255)
+    private String clinicuuid;
     @Basic(optional = false)
     @Column(name = "mainclinic", nullable = false)
     private int mainclinic;
     @Column(name = "mainclinicname", length = 255)
     private String mainclinicname;
+    @Column(name = "mainclinicuuid", length = 255)
+    private String mainclinicuuid;
     @Column(name = "firstnames", length = 255)
     private String firstnames;
     @Column(name = "homephone", length = 255)
@@ -340,5 +344,21 @@ public class SyncTempPatient {
 
     public void setMainclinicname(String mainclinicname) {
         this.mainclinicname = mainclinicname;
+    }
+
+    public String getClinicuuid() {
+        return clinicuuid;
+    }
+
+    public void setClinicuuid(String clinicuuid) {
+        this.clinicuuid = clinicuuid;
+    }
+
+    public String getMainclinicuuid() {
+        return mainclinicuuid;
+    }
+
+    public void setMainclinicuuid(String mainclinicuuid) {
+        this.mainclinicuuid = mainclinicuuid;
     }
 }

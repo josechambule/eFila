@@ -41,7 +41,7 @@ public class Clinic {
 	private String notes;
 
 	@Column(nullable = false)
-	private String codigo;
+	private String code;
 
 	@OneToMany(mappedBy = "clinic")
 	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
@@ -72,6 +72,9 @@ public class Clinic {
 	@Column(nullable = false)
 	private String uuid;
 
+	@Column(nullable = false)
+	private String facilityType;
+
 	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE},
 			mappedBy="clinics")
 			@JoinTable(name = "SiteUser", joinColumns = { @JoinColumn(name = "clinicId") }, inverseJoinColumns = { @JoinColumn(name = "userId") })
@@ -97,12 +100,12 @@ public class Clinic {
 	 * Constructor
 	 * @param name
 	 *            String
-	 * @param codigo
+	 * @param code
 	 * @param telephone
 	 * @param notes
 	 */
-	public Clinic(String name, String codigo, String telephone, String notes, String province, String district, String subDistrict) {
-		this.codigo = codigo;
+	public Clinic(String name, String code, String telephone, String notes, String province, String district, String subDistrict) {
+		this.code = code;
 		this.telephone = telephone;
 		this.notes = notes;
 		this.clinicName = name;
@@ -255,7 +258,6 @@ public class Clinic {
 		this.clinicDetails = clinicDetails;
 	}
 
-
 	public String getProvince() {
 		return province;
 	}
@@ -284,11 +286,28 @@ public class Clinic {
 		return uuid;
 	}
 
-	public String getCodigo() {
-		return codigo;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	@Override
+	public String toString() {
+		return "[ "+code+" ] - "+clinicName;
+	}
+
+	public String getFacilityType() {
+		return facilityType;
+	}
+
+	public void setFacilityType(String facilityType) {
+		this.facilityType = facilityType;
 	}
 }

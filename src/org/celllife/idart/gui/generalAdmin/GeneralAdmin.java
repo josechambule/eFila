@@ -26,6 +26,7 @@ import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
+import org.celllife.idart.gui.clinic.LoadImportClinic;
 import org.celllife.idart.gui.doctor.AddDoctor;
 import org.celllife.idart.gui.drug.AddDrug;
 import org.celllife.idart.gui.platform.GenericAdminGui;
@@ -54,8 +55,11 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 /**
  *
@@ -110,7 +114,8 @@ public class GeneralAdmin extends GenericAdminGui {
         if (checkOpenmrs)
             createGrpImport();
         createGrpDrug();
-        createGrpClinic();
+        if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
+            createGrpClinic();
         createGrpDoctor();
         createGrpDrugGroup();
     }
@@ -137,34 +142,53 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicClinics.setText(EMPTY);
         lblPicClinics.setImage(ResourceUtils.getImage(iDartImage.CLINIC));
 
-        // btnClinicsAdd
-        Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
-        btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
-        btnClinicsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.tooltip")); //$NON-NLS-1$
-        btnClinicsAdd.setText(Messages.getString("GeneralAdmin.button.title")); //$NON-NLS-1$
-        btnClinicsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnClinicsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-            @Override
-            public void widgetSelected(
-                    org.eclipse.swt.events.SelectionEvent e) {
-                cmd_clinicsAdd();
-            }
-        });
+        if(CentralizationProperties.centralization.equalsIgnoreCase("on")
+                && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
 
-        // btnClinicsUpdate
-        Button btnClinicsUpdate = new Button(grpClinics, SWT.NONE);
-        btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
-        btnClinicsUpdate.setToolTipText(Messages.getString("GeneralAdmin.clinic.button.tooltip")); //$NON-NLS-1$
+            // btnClinicsAdd
+            Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
+            btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+            btnClinicsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.tooltip")); //$NON-NLS-1$
+            btnClinicsAdd.setText(Messages.getString("GeneralAdmin.button.title")); //$NON-NLS-1$
+            btnClinicsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnClinicsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                @Override
+                public void widgetSelected(
+                        org.eclipse.swt.events.SelectionEvent e) {
+                    cmd_clinicsAdd();
+                }
+            });
 
-        btnClinicsUpdate.setText(Messages.getString("GeneralAdmin.clinic.button.title")); //$NON-NLS-1$
-        btnClinicsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnClinicsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-            @Override
-            public void widgetSelected(
-                    org.eclipse.swt.events.SelectionEvent e) {
-                cmd_clinicsUpdate();
-            }
-        });
+            // btnClinicsUpdate
+            Button btnClinicsUpdate = new Button(grpClinics, SWT.NONE);
+            btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
+            btnClinicsUpdate.setToolTipText(Messages.getString("GeneralAdmin.clinic.button.tooltip")); //$NON-NLS-1$
+
+            btnClinicsUpdate.setText(Messages.getString("GeneralAdmin.clinic.button.title")); //$NON-NLS-1$
+            btnClinicsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnClinicsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                @Override
+                public void widgetSelected(
+                        org.eclipse.swt.events.SelectionEvent e) {
+                    cmd_clinicsUpdate();
+                }
+            });
+        }else{
+            // btnClinicsUpdate
+            Button btnClinicsDownload = new Button(grpClinics, SWT.NONE);
+            btnClinicsDownload.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 65, 235, 30));
+            btnClinicsDownload.setToolTipText(Messages.getString("GeneralAdmin.download.clinic.button.tooltip")); //$NON-NLS-1$
+
+            btnClinicsDownload.setText(Messages.getString("GeneralAdmin.download.clinic.button.title")); //$NON-NLS-1$
+            btnClinicsDownload.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnClinicsDownload.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                @Override
+                public void widgetSelected(
+                        org.eclipse.swt.events.SelectionEvent e) {
+                    cmd_clinicsImport();
+                }
+            });
+        }
     }
 
     /**
@@ -446,6 +470,26 @@ public class GeneralAdmin extends GenericAdminGui {
         AddClinic.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate,
                 false);
         new AddClinic(getShell());
+    }
+
+    public void cmd_clinicsImport() {
+        // AddClinic(false) to UPDATE existing clinic
+        AddClinic.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate,
+                false);
+        String url = CentralizationProperties.centralized_server_url;
+
+        try {
+            if (getServerStatus(url).contains("Red")) {
+                MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+                b.setText("Servidor Rest offline.");
+                b.setMessage(" Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                b.open();
+            }else
+                new LoadImportClinic(getShell());
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     public void cmd_doctorAdd() {

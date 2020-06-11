@@ -70,11 +70,7 @@ public class HibernateUtil {
 		ac.setProperty("hibernate.connection.username", hibernateUsername);
 		ac.setProperty("hibernate.connection.driver_class", hibernateDriver);
 		ac.setProperty("hibernate.dialect", hibernateDialect);
-		// ac.setProperty("hibernate.hbm2ddl.auto", "validate");
-		// deprecated integer return types
-		// ac.addSqlFunction("count", new ClassicCountFunction());
-		// ac.addSqlFunction("avg", new ClassicAvgFunction());
-		// ac.addSqlFunction("sum", new ClassicSumFunction());
+
 		ac.addAnnotatedClass(AccumulatedDrugs.class);
 		ac.addAnnotatedClass(AlternatePatientIdentifier.class);
 		ac.addAnnotatedClass(Appointment.class);
@@ -129,6 +125,10 @@ public class HibernateUtil {
 		ac.addAnnotatedClass(OpenmrsErrorLog.class);
 		ac.addAnnotatedClass(SyncTempPatient.class);
 		ac.addAnnotatedClass(SyncTempDispense.class);
+		ac.addAnnotatedClass(Country.class);
+		ac.addAnnotatedClass(Province.class);
+		ac.addAnnotatedClass(District.class);
+		ac.addAnnotatedClass(SubDistrict.class);
 		sessionFactory = ac.buildSessionFactory();
 	}
 

@@ -493,8 +493,8 @@ public class AdministrationManager {
         Clinic myClinic = null;
         myClinic = (Clinic) session
                 .createQuery(
-                        "select c from Clinic as c where upper(c.clinicName) = :clinic_Name")
-                .setString("clinic_Name", clinicName.toUpperCase())
+                        "select c from Clinic as c where c.clinicName = :clinic_Name")
+                .setString("clinic_Name", clinicName)
                 .uniqueResult();
         return myClinic;
     }
@@ -521,6 +521,20 @@ public class AdministrationManager {
             throws HibernateException {
 
         s.save(theClinic);
+
+    }
+
+    /**
+     * This method saves the Nationalclinic objects passed to it
+     *
+     * @param sess         Session
+     * @param theClinic
+     * @throws HibernateException
+     */
+    public static void saveNacionalClinic(Session sess, NationalClinics theClinic)
+            throws HibernateException {
+
+        sess.save(theClinic);
 
     }
 
@@ -923,8 +937,8 @@ public class AdministrationManager {
     @SuppressWarnings("unchecked")
     public static List<String> getProvinces(Session sess)
             throws HibernateException {
-        String qString = "select distinct(province) from NationalClinics"
-                + " order by province";
+        String qString = "select distinct(name) from Province"
+                + " order by name";
         Query q = sess.createQuery(qString);
         List<String> result = q.list();
         return result;
@@ -933,8 +947,8 @@ public class AdministrationManager {
     @SuppressWarnings("unchecked")
     public static List<String> getDistrict(Session sess, String prov)
             throws HibernateException {
-        String qString = "select distinct(district) from NationalClinics as s where s.province=:province"
-                + " order by district";
+        String qString = "select distinct(d.name) from District as d, Province as p " +
+                " where d.province = p.id and p.name=:province order by d.name";
         Query q = sess.createQuery(qString).setString("province", prov);
         List<String> result = q.list();
         return result;
@@ -969,28 +983,30 @@ public class AdministrationManager {
         return result;
     }
 
+
+    public static List<String> getAllFacilityType(Session sess)
+            throws HibernateException {
+        String qString = "select distinct(value) from SimpleDomain where description  = 'pharmacy_type' order by 1 desc";
+        Query q = sess.createQuery(qString);
+        List<String> result = q.list();
+        return result;
+    }
     /**
      * Method to get a NationalClinic based on given fields
      *
      * @param sess
-     * @param prov
-     * @param district
-     * @param sdistrict
      * @param facility
      * @param
      * @return
      * @throws HibernateException
      */
-    public static NationalClinics getNationalClinic(Session sess, String prov, String district, String sdistrict, String facility)
+    public static NationalClinics getNationalClinic(Session sess, String facilityType, String facility)
             throws HibernateException {
         String qString = "from NationalClinics "
-                + "where province = :province "
-                + "and district = :district "
-                + "and subdistrict = :sdistrict "
-                + "and facilityname = :facility ";
-        Query q = sess.createQuery(qString).setString("province", prov)
-                .setString("district", district)
-                .setString("sdistrict", sdistrict)
+                + " where facilityname = :facility " +
+                "   and facilityType = :facilityType ";
+
+        Query q = sess.createQuery(qString).setString("facilityType", facilityType)
                 .setString("facility", facility);
         NationalClinics result = (NationalClinics) q.uniqueResult();
         return result;
@@ -1406,11 +1422,11 @@ public class AdministrationManager {
         return result;
     }
 
-    // Devolve a lista de todos pacientes referidos pelo nid e clinic
-    public static SyncTempPatient getSyncTempPatienByNIDandClinicName(Session sess, String nid, String clinicName) throws HibernateException {
+    // Devolve a lista de todos pacientes referidos pelo nid e clinicID
+    public static SyncTempPatient getSyncTempPatienByNIDandClinicNameUuid(Session sess, String nid, String clinicUuid) throws HibernateException {
         SyncTempPatient result;
 
-        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.mainclinicname = '" + clinicName + "' and sync.patientid = '" + nid+"'").list();
+        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.mainclinicuuid = '" + clinicUuid + "' and sync.patientid = '" + nid+"'").list();
 
         if (patientIdentifiers.isEmpty())
             result = null;
@@ -1420,7 +1436,21 @@ public class AdministrationManager {
         return result;
     }
 
-    // Devolve a lista de todos pacientes referidos pelo nid e clinic
+    // Devolve a lista de todos pacientes referidos pelo nid e clinicname
+    public static SyncTempPatient getSyncTempPatienByNIDandClinicName(Session sess, String nid, String clinicname) throws HibernateException {
+        SyncTempPatient result;
+
+        List patientIdentifiers = sess.createQuery("from SyncTempPatient sync where sync.mainclinicname = '" + clinicname + "' and sync.patientid = '" + nid+"'").list();
+
+        if (patientIdentifiers.isEmpty())
+            result = null;
+        else
+            result = (SyncTempPatient) patientIdentifiers.get(0);
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos pelo nid
     public static SyncTempPatient getSyncTempPatienByNID(Session sess, String nid) throws HibernateException {
         SyncTempPatient result;
 

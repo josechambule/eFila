@@ -102,6 +102,7 @@ public class TemporaryRecordsManager {
         dispenseFarmac.setDispensedate(pdi.getDispenseDate());
         dispenseFarmac.setMainclinic(patient.getMainclinic());
         dispenseFarmac.setMainclinicname(patient.getMainclinicname());
+        dispenseFarmac.setMainclinicuuid(patient.getMainclinicuuid());
         dispenseFarmac.setSyncstatus('P');
         dispenseFarmac.setPrescriptionid(pdi.getPackagedDrug().getParentPackage().getPrescription().getPrescriptionId());
         dispenseFarmac.setTipods(pdi.getPackagedDrug().getParentPackage().getPrescription().getTipoDS());

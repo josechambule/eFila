@@ -81,14 +81,14 @@ public class SearchManager {
         List<Clinic> clinics = null;
 
         String itemText[];
-        search.getTableColumn1().setText("Centro de Saude");
+        search.getTableColumn1().setText("Nome da Farmacia");
         search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
                 cmdColOneSelected();
             }
         });
-        search.getTableColumn2().setText("Cidade");
+        search.getTableColumn2().setText("Provincia");
         search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
@@ -96,7 +96,7 @@ public class SearchManager {
             }
         });
 
-        search.getShell().setText("Seleccione CS...");
+        search.getShell().setText("Seleccione a Farmacia...");
 
         clinics = AdministrationManager.getClinics(sess);
 
@@ -108,7 +108,7 @@ public class SearchManager {
             t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
             itemText = new String[2];
             itemText[0] = c.getClinicName();
-            itemText[1] = c.getNotes();
+            itemText[1] = c.getProvince();
             t[i].setText(itemText);
             listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
         }
@@ -125,7 +125,7 @@ public class SearchManager {
         List<NationalClinics> clinics = null;
 
         String itemText[];
-        search.getTableColumn1().setText("Nome US");
+        search.getTableColumn1().setText("Nome Farmacia");
         search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
@@ -140,7 +140,7 @@ public class SearchManager {
             }
         });
 
-        search.getShell().setText("Seleccione Detalhes da US...");
+        search.getShell().setText("Seleccione a Farmacia...");
 
         clinics = AdministrationManager.getClinicsDetails(sess);
 

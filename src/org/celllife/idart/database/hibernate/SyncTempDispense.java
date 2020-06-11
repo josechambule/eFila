@@ -126,6 +126,8 @@ public class SyncTempDispense implements Serializable {
     @Basic(optional = false)
     @Column(name = "mainclinicname")
     private String mainclinicname;
+    @Column(name = "mainclinicuuid")
+    private String mainclinicuuid;
     @Column(name = "prescriptionid")
     private String prescriptionid;
     @Column(name = "tipods")
@@ -664,5 +666,13 @@ public class SyncTempDispense implements Serializable {
 
     public void setUuidopenmrs(String uuidopenmrs) {
         this.uuidopenmrs = uuidopenmrs;
+    }
+
+    public String getMainclinicuuid() {
+        return mainclinicuuid;
+    }
+
+    public void setMainclinicuuid(String mainclinicuuid) {
+        this.mainclinicuuid = mainclinicuuid;
     }
 }

@@ -267,39 +267,44 @@ public class PharmacyApplication {
             public void run() {
 
                 try {
-                    if (getServerStatus(url).contains("Red"))
-                        System.out.println("Servidor Rest offline, verifique a sua internet ou contacte o administrador");
-                    else {
-                        Session sess = HibernateUtil.getNewSession();
-                        Transaction tx = sess.beginTransaction();
-                        Clinic mainClinic = AdministrationManager.getMainClinic(sess);
-                        try {
-                            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
-                                RestFarmac.restPostPatients(sess,url);
-                                RestFarmac.restGeAllDispenses(url, mainClinic);
-                                RestFarmac.setDispensesFromRest(sess);
-                            } else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")) {
-                                RestFarmac.restGeAllPatients(url, mainClinic);
-                                RestFarmac.setPatientsFromRest(sess);
-                                RestFarmac.restPostDispenses(sess, url);
-                            }else if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")){
-                                RestFarmac.setPatientsFromRest(sess);
-                                RestFarmac.setDispensesFromRest(sess);
-                            }
-                            assert tx != null;
-                            tx.commit();
-                            sess.flush();
-                            sess.close();
-                        }catch (Exception e){
-                            assert tx != null;
+                    if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+                        System.out.println("rever os uploads os estados dos registos -- ver ");
+                        //   RestFarmac.setPatientsFromRest(sess);
+                        //   RestFarmac.setDispensesFromRest(sess);
+                    } else {
+
+                        if (getServerStatus(url).contains("Red"))
+                            System.out.println("Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                        else {
+                            Session sess = HibernateUtil.getNewSession();
+                            Transaction tx = sess.beginTransaction();
+                            Clinic mainClinic = AdministrationManager.getMainClinic(sess);
+                            try {
+                                if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
+                                    RestFarmac.restPostPatients(sess, url);
+                                    RestFarmac.restGeAllDispenses(url, mainClinic);
+                                    RestFarmac.setDispensesFromRest(sess);
+                                } else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")) {
+                                    RestFarmac.restGeAllPatients(url, mainClinic);
+                                    RestFarmac.setPatientsFromRest(sess);
+                                    RestFarmac.restPostDispenses(sess, url);
+                                }
+                                assert tx != null;
+                                tx.commit();
+                                sess.flush();
+                                sess.close();
+                            } catch (Exception e) {
+                                assert tx != null;
                                 tx.rollback();
-                            sess.close();
-                            e.printStackTrace();
+                                sess.close();
+                                e.printStackTrace();
+                            }
                         }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
         }, 0, 30, TimeUnit.SECONDS);
 

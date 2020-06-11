@@ -17,6 +17,7 @@ import org.hibernate.Transaction;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -50,7 +51,7 @@ public class RestFarmac {
         Session sess = HibernateUtil.getNewSession();
         Transaction tx = sess.beginTransaction();
 
-        String path = url + "/sync_temp_patients?syncstatus=eq.P&clinicname=eq." + refClinic.getClinicName().replace(" ", "%20");
+        String path = url + "/sync_temp_patients?syncstatus=eq.P&clinicuuid=eq." + refClinic.getUuid();
         try {
             response = ApiAuthRest.postgrestRequestGetAll(path);
             InputStream in = response.getEntity().getContent();
@@ -63,7 +64,13 @@ public class RestFarmac {
             Gson gson = null;
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
-                objectString = line.replace("[", "").replace("]", "");
+
+                if(line.startsWith("[{"))
+                    line = line.replace("[{","{");
+                if(line.endsWith("}]"))
+                    line = line.replace("}]","}");
+
+                objectString = line;
                 if (objectString.contains("{")) {
                     jsonObj = new JSONObject(objectString);
                     gson = new Gson();
@@ -265,7 +272,7 @@ public class RestFarmac {
         HttpResponse response = null;
         Session sess = HibernateUtil.getNewSession();
         Transaction tx = sess.beginTransaction();
-        String path = url + "/sync_temp_dispense?syncstatus=eq.P&mainclinicname=eq." + mainClinic.getClinicName().replace(" ", "%20");
+        String path = url + "/sync_temp_dispense?syncstatus=eq.P&mainclinicuuid=eq." + mainClinic.getUuid();
         try {
             response = ApiAuthRest.postgrestRequestGetAll(path);
             InputStream in = response.getEntity().getContent();
@@ -458,6 +465,69 @@ public class RestFarmac {
         } else {
             System.out.println(new Date() + ": [US] INFO - Nenhumm levantamento enviado para esta US foi encontrado");
         }
+    }
+
+    public static List<Clinic> restGeAllClinicByProvinceAndDistrictAndFacilityType(String url,String province,String district,String facilitytype, Session session) {
+        HttpResponse response = null;
+        List<Clinic> clinicList = new ArrayList<>();
+        List<Clinic> localClinics = AdministrationManager.getClinics(session);
+        String path = url + "/clinic?province=eq."+province+"&district=eq."+district+"&facilitytype=eq."+facilitytype;
+        try {
+            response = ApiAuthRest.postgrestRequestGetAll(path);
+            InputStream in = response.getEntity().getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder str = new StringBuilder();
+
+            Clinic clinic = null;
+            String line = null;
+            String objectString = null;
+            JSONObject jsonObj = null;
+            Gson gson = null;
+
+
+            while ((line = reader.readLine()) != null) {
+                str.append(line + "\n");
+                if(line.startsWith("[{"))
+                    line = line.replace("[{","{");
+                if(line.endsWith("}]"))
+                    line = line.replace("}]","}");
+
+                objectString = line;
+
+                if (objectString.contains("{")) {
+                    jsonObj = new JSONObject(objectString);
+                    gson = new Gson();
+                    try {
+                        clinic = gson.fromJson(jsonObj.toString(),Clinic.class);
+                        clinic.setFacilityType(jsonObj.getString("facilitytype"));
+                        clinic.setClinicName(jsonObj.getString("clinicname"));
+                        clinic.setSubDistrict(jsonObj.getString("subdistrict"));
+                        boolean existClinic = false;
+                        for(Clinic localClinic : localClinics){
+                            if(localClinic.getUuid().equals(clinic.getUuid())){
+                               existClinic = true;
+                               break;
+                            }
+                        }
+
+                        if(!existClinic)
+                            clinicList.add(clinic);
+
+                        break;
+                    } catch (Exception e) {
+                        System.out.println(" Ocorreu um erro ao adicionar a clinic [" + clinic.getClinicName() + "]");
+                    } finally {
+
+                        continue;
+                    }
+                }
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return clinicList;
     }
 
 
