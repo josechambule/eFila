@@ -230,6 +230,15 @@ public class DrugManager {
         return theDrug;
     }
 
+    public static Drug getDrugyAtccode(Session sess, String drugAtccode)
+            throws HibernateException {
+        Drug theDrug = null;
+        theDrug = (Drug) sess.createQuery(
+                "from Drug as d where d.atccode_id = :drugAtccode").setString(
+                "drugAtccode", drugAtccode).setMaxResults(1).uniqueResult();
+        return theDrug;
+    }
+
     public static Drug getDrugFromString(Session sess, String drugName)
             throws HibernateException {
         Drug theDrug = null;
@@ -292,6 +301,11 @@ public class DrugManager {
             throws HibernateException {
         s.save(theDrug);
 
+    }
+
+    public static void updateDrug(Session s, Drug theDrug)
+            throws HibernateException {
+        s.update(theDrug);
     }
 
     // ---------- METHODS FOR CHEMICAL DRUG STRENGTH MANAGER ---------------
@@ -636,7 +650,7 @@ public class DrugManager {
 
     public static void saveRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
             throws HibernateException {
-        sess.save(theRegToSave);
+        sess.saveOrUpdate(theRegToSave);
 
     }
 

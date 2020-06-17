@@ -9,10 +9,16 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.celllife.idart.database.hibernate.RegimeTerapeutico;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -126,6 +132,8 @@ public class ApiAuthRest {
         String URL = URLPath;
         HttpResponse response =  null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
+      //  httpclient.getParams().setParameter("http.socket.timeout", new Integer(1000));
+      //  httpclient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
         try {
             HttpGet httpGet = new HttpGet(URL);
 
@@ -143,6 +151,41 @@ public class ApiAuthRest {
         }
         return response;
     }
+
+    public static StringBuilder postgrestRequestGetBuffer(String URLPath) throws Exception {
+//        String URL = URLBase + URLPath;
+        String URL = URLPath;
+        HttpResponse response =  null;
+        BufferedReader reader = null;
+        String line = null;
+        StringBuilder str = null;
+
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        try {
+            HttpGet httpGet = new HttpGet(URL);
+
+//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
+//            BasicScheme scheme = new BasicScheme();
+//            Header authorizationHeader = scheme.authenticate(credentials, httpGet);
+//            httpGet.setHeader(authorizationHeader);
+//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+
+            System.out.println("GET Executing request: " + httpGet.getRequestLine());
+            response = httpclient.execute(httpGet);
+
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8));
+
+             str = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                str.append(line + "\n");
+            }
+        } finally {
+            httpclient.getConnectionManager().shutdown();
+        }
+        return str;
+    }
+
 
     /**
      * POSTGREST HTTP GET

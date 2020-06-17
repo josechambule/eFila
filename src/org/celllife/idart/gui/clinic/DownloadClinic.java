@@ -26,7 +26,7 @@ import org.hibernate.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadImportClinic extends GenericFormGui {
+public class DownloadClinic extends GenericFormGui {
 
 
     private Group grpClinicSearch;
@@ -57,7 +57,7 @@ public class LoadImportClinic extends GenericFormGui {
      *
      * @param parent Shell
      */
-    public LoadImportClinic(Shell parent) {
+    public DownloadClinic(Shell parent) {
         super(parent, HibernateUtil.getNewSession());
     }
 
@@ -174,7 +174,7 @@ public class LoadImportClinic extends GenericFormGui {
                 populateRestClinics();
             }
         });
-        btnSearch.setToolTipText("Pressione para procurar uma Farmácia existente .");
+        btnSearch.setToolTipText("Pressione para procurar uma Farmácia.");
     }
 
     @Override
@@ -364,8 +364,8 @@ public class LoadImportClinic extends GenericFormGui {
         if(restClinics.isEmpty()){
             btnSave.setEnabled(false);
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-            b.setMessage(" Nenhuma resultado foi encontrado ");
-            b.setText("Nenhuma resultado foi encontrado");
+            b.setMessage(" Nenhum resultado foi encontrado ");
+            b.setText("Nenhum resultado foi encontrado");
             b.open();
         }else
             btnSave.setEnabled(true);

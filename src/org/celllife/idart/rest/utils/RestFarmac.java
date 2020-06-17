@@ -5,11 +5,7 @@ import migracao.swingreverse.DadosPacienteFarmac;
 import model.manager.AdministrationManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.StringEntity;
-import org.celllife.idart.commonobjects.CentralizationProperties;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.SyncTempDispense;
-import org.celllife.idart.database.hibernate.SyncTempPatient;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.rest.ApiAuthRest;
 import org.hibernate.Session;
@@ -65,10 +61,10 @@ public class RestFarmac {
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
 
-                if(line.startsWith("[{"))
-                    line = line.replace("[{","{");
-                if(line.endsWith("}]"))
-                    line = line.replace("}]","}");
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
 
                 objectString = line;
                 if (objectString.contains("{")) {
@@ -79,7 +75,7 @@ public class RestFarmac {
                         String updateStatus = "{\"syncstatus\":\"I\"}";
                         AdministrationManager.saveSyncTempPatient(sess, syncTempPatient);
 
-                        restPatchPatient(url, syncTempPatient,updateStatus);
+                        restPatchPatient(url, syncTempPatient, updateStatus);
                         System.out.println(" Paciente [" + syncTempPatient + "] Refrido de " + syncTempPatient.getMainclinicname() + " carregado com sucesso");
                         break;
                     } catch (Exception e) {
@@ -138,7 +134,7 @@ public class RestFarmac {
 
         Gson g = new Gson();
         String restObject = g.toJson(syncTempPatient);
-        StringEntity inputAddPatient = new StringEntity(restObject,"UTF-8");
+        StringEntity inputAddPatient = new StringEntity(restObject, "UTF-8");
         inputAddPatient.setContentType("application/json");
         try {
             httpResponse = ApiAuthRest.postgrestRequestPost(path, inputAddPatient);
@@ -164,7 +160,7 @@ public class RestFarmac {
 
         Gson g = new Gson();
         String restObject = g.toJson(syncTempPatient);
-        StringEntity inputAddPatient = new StringEntity(restObject,"UTF-8");
+        StringEntity inputAddPatient = new StringEntity(restObject, "UTF-8");
         inputAddPatient.setContentType("application/json");
 
         try {
@@ -184,13 +180,13 @@ public class RestFarmac {
 
     }
 
-    public static String restPatchPatient(String url, SyncTempPatient syncTempPatient,String restObject) throws UnsupportedEncodingException {
+    public static String restPatchPatient(String url, SyncTempPatient syncTempPatient, String restObject) throws UnsupportedEncodingException {
 
         String path = url + "/sync_temp_patients?id=eq." + syncTempPatient.getId() + "&mainclinic=eq." + syncTempPatient.getMainclinic();
         HttpResponse httpResponse = null;
         String response = null;
 
-        StringEntity inputAddPatient = new StringEntity(restObject,"UTF-8");
+        StringEntity inputAddPatient = new StringEntity(restObject, "UTF-8");
         inputAddPatient.setContentType("application/json");
 
         try {
@@ -220,7 +216,7 @@ public class RestFarmac {
 
         //  Gson g = new Gson();
         //  String restObject = g.toJson(syncTempDispense);
-        StringEntity inputAddDispense = new StringEntity(restObject,"UTF-8");
+        StringEntity inputAddDispense = new StringEntity(restObject, "UTF-8");
         inputAddDispense.setContentType("application/json");
 
         try {
@@ -286,10 +282,10 @@ public class RestFarmac {
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
 
-                if(line.startsWith("[{"))
-                    line = line.replace("[{","{");
-                if(line.endsWith("}]"))
-                    line = line.replace("}]","}");
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
 
                 objectString = line;
                 if (objectString.contains("{")) {
@@ -336,7 +332,7 @@ public class RestFarmac {
         Gson g = new Gson();
         String restObject = g.toJson(syncTempDispense);
 
-        StringEntity inputAddDispense = new StringEntity(restObject,"UTF-8");
+        StringEntity inputAddDispense = new StringEntity(restObject, "UTF-8");
         inputAddDispense.setContentType("application/json");
 
         try {
@@ -422,10 +418,8 @@ public class RestFarmac {
             for (SyncTempPatient patient : syncTempPatients) {
                 try {
                     DadosPacienteFarmac.InserePaciente(sess, patient);
-                    if(!CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
-                        patient.setSyncstatus('I');
-                        AdministrationManager.saveSyncTempPatient(sess, patient);
-                    }
+                    patient.setSyncstatus('I');
+                    AdministrationManager.saveSyncTempPatient(sess, patient);
                     break;
                 } catch (Exception e) {
                     System.out.println("Erro ao gravar informacao do Paciente [" + patient.getFirstnames() + " " + patient.getLastname() + " com NID: " + patient.getPatientid() + "]");
@@ -449,11 +443,9 @@ public class RestFarmac {
                     Prescription prescription = DadosPacienteFarmac.getPatientPrescritionFarmac(dispense);
 
                     DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
-                    if(!CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
-                        if (DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense)) {
-                            dispense.setSyncstatus('I');
-                            AdministrationManager.saveSyncTempDispense(sess, dispense);
-                        }
+                    if (DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense)) {
+                        dispense.setSyncstatus('I');
+                        AdministrationManager.saveSyncTempDispense(sess, dispense);
                     }
                     break;
                 } catch (Exception e) {
@@ -467,11 +459,11 @@ public class RestFarmac {
         }
     }
 
-    public static List<Clinic> restGeAllClinicByProvinceAndDistrictAndFacilityType(String url,String province,String district,String facilitytype, Session session) {
+    public static List<Clinic> restGeAllClinicByProvinceAndDistrictAndFacilityType(String url, String province, String district, String facilitytype, Session session) {
         HttpResponse response = null;
         List<Clinic> clinicList = new ArrayList<>();
         List<Clinic> localClinics = AdministrationManager.getClinics(session);
-        String path = url + "/clinic?province=eq."+province+"&district=eq."+district+"&facilitytype=eq."+facilitytype;
+        String path = url + "/clinic?province=eq." + province + "&district=eq." + district + "&facilitytype=eq." + facilitytype;
         try {
             response = ApiAuthRest.postgrestRequestGetAll(path);
             InputStream in = response.getEntity().getContent();
@@ -487,10 +479,10 @@ public class RestFarmac {
 
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
-                if(line.startsWith("[{"))
-                    line = line.replace("[{","{");
-                if(line.endsWith("}]"))
-                    line = line.replace("}]","}");
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
 
                 objectString = line;
 
@@ -498,27 +490,26 @@ public class RestFarmac {
                     jsonObj = new JSONObject(objectString);
                     gson = new Gson();
                     try {
-                        clinic = gson.fromJson(jsonObj.toString(),Clinic.class);
+                        clinic = gson.fromJson(jsonObj.toString(), Clinic.class);
                         clinic.setFacilityType(jsonObj.getString("facilitytype"));
                         clinic.setClinicName(jsonObj.getString("clinicname"));
                         clinic.setSubDistrict(jsonObj.getString("subdistrict"));
                         boolean existClinic = false;
-                        for(Clinic localClinic : localClinics){
-                            if(localClinic.getUuid().equals(clinic.getUuid())){
-                               existClinic = true;
-                               break;
+                        for (Clinic localClinic : localClinics) {
+                            if (localClinic.getUuid().equals(clinic.getUuid())) {
+                                existClinic = true;
+                                break;
                             }
                         }
 
-                        if(!existClinic)
+                        if (!existClinic)
                             clinicList.add(clinic);
-
                         break;
                     } catch (Exception e) {
                         System.out.println(" Ocorreu um erro ao adicionar a clinic [" + clinic.getClinicName() + "]");
                     } finally {
-
-                        continue;
+                        if (reader != null)
+                            reader.close();
                     }
                 }
             }
@@ -528,6 +519,220 @@ public class RestFarmac {
         }
 
         return clinicList;
+    }
+
+    public static List<Drug> restGeAllDrugsByDeseaseTypeAndStatus(String url, String deseaseType, boolean status, Session session) {
+        HttpResponse response = null;
+        List<Drug> drugList = new ArrayList<>();
+        List<Drug> localDrugs = AdministrationManager.getDrugs(session);
+        String path = url + "/drug?select=*,form(*)&tipodoenca=eq." + deseaseType + "&active=eq." + status;
+        try {
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path);
+            Drug drug = new Drug();
+            String objectString = null;
+            JSONObject jsonObj = null;
+            Gson gson = null;
+
+            String[] lines = str.toString().split("\\n");
+
+            for (String line : lines) {
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
+
+                objectString = line.replaceFirst("form", "formid");
+
+                if (objectString.contains("{")) {
+                    jsonObj = new JSONObject(objectString);
+                    gson = new Gson();
+                    try {
+                        drug = gson.fromJson(jsonObj.toString(), Drug.class);
+                        drug.setDispensingInstructions1(jsonObj.getString("dispensinginstructions1"));
+                        drug.setDispensingInstructions2(jsonObj.getString("dispensinginstructions2"));
+                        drug.setPackSize(jsonObj.getInt("packsize"));
+                        drug.setSideTreatment(jsonObj.getString("sidetreatment").charAt(0));
+                        drug.setDefaultAmnt(jsonObj.getInt("defaultamnt"));
+                        drug.setTipoDoenca(jsonObj.getString("tipodoenca"));
+                        drug.setDefaultTimes(jsonObj.getInt("defaulttimes"));
+
+                        boolean existDrug = false;
+                        for (Drug localDrug : localDrugs) {
+                            if (localDrug.getAtccode().equals(drug.getAtccode())) {
+                                existDrug = true;
+                                break;
+                            }
+                        }
+                        if (!existDrug)
+                            drugList.add(drug);
+                    } catch (Exception e) {
+                        System.out.println(" Ocorreu um erro ao adicionar o Medicamento [" + drug.getName() + "] " + e.getMessage());
+                    } finally {
+                        continue;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        return drugList;
+    }
+
+    public static List<RegimeTerapeutico> restGeAllRegimenByStatus(String url, boolean status, Session session) {
+        HttpResponse response = null;
+        List<RegimeTerapeutico> regimeTerapeuticoList = new ArrayList<>();
+        List<RegimeTerapeutico> localRegimeTerapeutico = AdministrationManager.getRegimeTerapeutico(session);
+        String path = url + "/regimeterapeutico?active=eq." + status;
+        try {
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path);
+            RegimeTerapeutico regimeTerapeutico = new RegimeTerapeutico();
+            String objectString = null;
+            JSONObject jsonObj = null;
+            Gson gson = null;
+
+            String[] lines = str.toString().split("\\n");
+
+            for (String line : lines) {
+                str.append(line + "\n");
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
+
+                objectString = line;
+
+                if (objectString.contains("{")) {
+                    jsonObj = new JSONObject(objectString);
+                    gson = new Gson();
+                    try {
+                        regimeTerapeutico = gson.fromJson(jsonObj.toString(), RegimeTerapeutico.class);
+
+                        boolean existRegimen = false;
+                        for (RegimeTerapeutico localRegimen : localRegimeTerapeutico) {
+                            if (localRegimen.getCodigoregime().equalsIgnoreCase(regimeTerapeutico.getCodigoregime())) {
+                                existRegimen = true;
+                                break;
+                            }
+                        }
+
+                        if (!existRegimen)
+                            regimeTerapeuticoList.add(regimeTerapeutico);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println(" Ocorreu um erro ao adicionar o Medicamento [" + regimeTerapeutico.getRegimeesquema() + "] " + e.getMessage());
+                    } finally {
+                        continue;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        return regimeTerapeuticoList;
+    }
+
+    public static List<RegimenDrugs> restGeAllRegimenDrugsByRegimen(String url, RegimeTerapeutico regimeTerapeutico, Session session) {
+        HttpResponse response = null;
+        List<RegimenDrugs> regimenDrugsList = new ArrayList<>();
+        String path = url + "/regimendrugs?select=*,drug(*,form(*))&regimen=eq."+regimeTerapeutico.getRegimeid();
+        try {
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path);
+            RegimenDrugs regimenDrugs = new RegimenDrugs();
+            String objectString = null;
+            JSONObject jsonObj = null;
+            Gson gson = null;
+
+            String[] lines = str.toString().split("\\n");
+
+            for (String line : lines) {
+                if (line.startsWith("[{"))
+                    line = line.replace("[{", "{");
+                if (line.endsWith("}]"))
+                    line = line.replace("}]", "}");
+
+                objectString = line.replaceFirst("drug", "drugid");
+                objectString = objectString.replaceFirst("regimen", "regimenid");
+                objectString = objectString.replaceFirst("form", "formid");
+
+                if (objectString.contains("{")) {
+                    jsonObj = new JSONObject(objectString);
+                    gson = new Gson();
+                    try {
+                        regimenDrugs = gson.fromJson(jsonObj.toString(), RegimenDrugs.class);
+                        regimenDrugs.getDrug().setDispensingInstructions1(jsonObj.getJSONObject("drug").getString("dispensinginstructions1"));
+                        regimenDrugs.getDrug().setDispensingInstructions2(jsonObj.getJSONObject("drug").getString("dispensinginstructions2"));
+                        regimenDrugs.getDrug().setPackSize(jsonObj.getJSONObject("drug").getInt("packsize"));
+                        regimenDrugs.getDrug().setSideTreatment(jsonObj.getJSONObject("drug").getString("sidetreatment").charAt(0));
+                        regimenDrugs.getDrug().setDefaultAmnt(jsonObj.getJSONObject("drug").getInt("defaultamnt"));
+                        regimenDrugs.getDrug().setTipoDoenca(jsonObj.getJSONObject("drug").getString("tipodoenca"));
+                        regimenDrugs.getDrug().setDefaultTimes(jsonObj.getJSONObject("drug").getInt("defaulttimes"));
+                        regimenDrugsList.add(regimenDrugs);
+                    } catch (Exception e) {
+//                        System.out.println(" Ocorreu um erro ao adicionar o Medicamento [" + regimenDrugs.getDrug().getName() + "] do Regime Terapeutico [" +regimeTerapeutico.getRegimeesquema()+" ]"+ e.getMessage());
+                       System.out.println(e.getMessage());
+                    } finally {
+                        continue;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
+        return regimenDrugsList;
+    }
+
+
+    public static void setCentralPatients(Session sess) {
+
+        List<SyncTempPatient> syncTempPatients = AdministrationManager.getAllSyncTempPatientReadyToSave(sess);
+
+        if (!syncTempPatients.isEmpty()) {
+
+            for (SyncTempPatient patient : syncTempPatients) {
+                try {
+                    DadosPacienteFarmac.InserePaciente(sess, patient);
+                    patient.setSyncstatus('E');
+                    AdministrationManager.saveSyncTempPatient(sess, patient);
+                    break;
+                } catch (Exception e) {
+                    System.out.println(new Date() + ": [Central] INFO - Erro ao gravar informacao do Paciente [" + patient.getFirstnames() + " " + patient.getLastname() + " com NID: " + patient.getPatientid() + "] provrniente de " + patient.getMainclinicname());
+                } finally {
+                    continue;
+                }
+            }
+        } else {
+            System.out.println(new Date() + ": [Central] INFO - Nenhumm paciente referido para FARMAC foi encontrado");
+        }
+    }
+
+    public static void setCentralDispenses(Session sess) {
+
+        List<SyncTempDispense> syncTempDispenses = AdministrationManager.getAllSyncTempDispenseReadyToSave(sess);
+
+        if (!syncTempDispenses.isEmpty()) {
+
+            for (SyncTempDispense dispense : syncTempDispenses) {
+                try {
+                    Prescription prescription = DadosPacienteFarmac.getPatientPrescritionFarmac(dispense);
+                    DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
+                    dispense.setSyncstatus('E');
+                    AdministrationManager.saveSyncTempDispense(sess, dispense);
+                    break;
+                } catch (Exception e) {
+                    System.out.println(new Date() + ": [Central] INFO - Erro ao gravar levantamento do Paciente com NID: [" + dispense.getPatientid() + "] proveniente de " + dispense.getMainclinicname());
+                } finally {
+                    continue;
+                }
+            }
+        } else {
+            System.out.println(new Date() + ": [Central] INFO - Nenhumm levantamento enviado para US foi encontrado");
+        }
     }
 
 

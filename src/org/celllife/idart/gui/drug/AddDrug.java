@@ -22,6 +22,7 @@ package org.celllife.idart.gui.drug;
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.AtcCode;
 import org.celllife.idart.database.hibernate.ChemicalCompound;
@@ -582,7 +583,13 @@ public class AddDrug extends GenericFormGui {
             loadDrugDetails();
             btnSearch.setEnabled(false);
 
-            enableFields(true);
+            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+                enableFields(true);
+            else {
+                enableFields(false);
+                rdBtnActive.setEnabled(true);
+                rdBtnInactive.setEnabled(true);
+            }
             txtName.setFocus();
 
         } else {

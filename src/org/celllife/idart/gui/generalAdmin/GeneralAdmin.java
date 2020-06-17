@@ -26,12 +26,14 @@ import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.clinic.AddClinic;
-import org.celllife.idart.gui.clinic.LoadImportClinic;
+import org.celllife.idart.gui.clinic.DownloadClinic;
 import org.celllife.idart.gui.doctor.AddDoctor;
 import org.celllife.idart.gui.drug.AddDrug;
+import org.celllife.idart.gui.drug.DownloadDrugs;
 import org.celllife.idart.gui.platform.GenericAdminGui;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.regimeTerapeutico.AddRegimeTerapeutico;
+import org.celllife.idart.gui.regimeTerapeutico.DownLoadRegimeTerapeutico;
 import org.celllife.idart.gui.stockCenter.StockCenterInfo;
 import org.celllife.idart.gui.user.ManagePharmUsers;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -55,6 +57,7 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
 
+import javax.help.HelpSet;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -142,7 +145,7 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicClinics.setText(EMPTY);
         lblPicClinics.setImage(ResourceUtils.getImage(iDartImage.CLINIC));
 
-        if(CentralizationProperties.centralization.equalsIgnoreCase("on")
+        if (CentralizationProperties.centralization.equalsIgnoreCase("on")
                 && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
 
             // btnClinicsAdd
@@ -173,7 +176,7 @@ public class GeneralAdmin extends GenericAdminGui {
                     cmd_clinicsUpdate();
                 }
             });
-        }else{
+        } else {
             // btnClinicsUpdate
             Button btnClinicsDownload = new Button(grpClinics, SWT.NONE);
             btnClinicsDownload.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 65, 235, 30));
@@ -276,15 +279,24 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // btnDrugsAdd
         Button btnDrugsAdd = new Button(grpDrugs, SWT.NONE);
-        btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.drug.title")); //$NON-NLS-1$
+        if (!checkOpenmrs && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+            btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.drug.title")); //$NON-NLS-1$
+        } else {
+            btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.import.drug.title")); //$NON-NLS-1$
+        }
         btnDrugsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.drug.tooltip")); //$NON-NLS-1$
+
         btnDrugsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnDrugsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        final boolean finalCheckOpenmrs = checkOpenmrs;
         btnDrugsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
             @Override
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
-                cmd_drugsAdd();
+                if (!finalCheckOpenmrs && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+                    cmd_drugsAdd();
+                else
+                    cmd_drugImport();
             }
         });
 
@@ -338,7 +350,10 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // btnRegimenAdd
         Button btnRegimenAdd = new Button(grpDrugGroups, SWT.NONE);
-        btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.regimen.title")); //$NON-NLS-1$
+        if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.regimen.title")); //$NON-NLS-1$
+        else
+            btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.import.regimen.title")); //$NON-NLS-1$
         btnRegimenAdd.setToolTipText(Messages.getString("GeneralAdmin.button.regimen.tooltip")); //$NON-NLS-1$
         btnRegimenAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
         btnRegimenAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -346,7 +361,10 @@ public class GeneralAdmin extends GenericAdminGui {
             @Override
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
-                cmd_regimenAdd();
+                if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+                    cmd_regimenAdd();
+                else
+                    cmd_regimenImport();
             }
         });
         btnRegimenAdd.setEnabled(true);
@@ -484,12 +502,32 @@ public class GeneralAdmin extends GenericAdminGui {
                 b.setText("Servidor Rest offline.");
                 b.setMessage(" Servidor Rest offline, verifique a sua internet ou contacte o administrador");
                 b.open();
-            }else
-                new LoadImportClinic(getShell());
+            } else
+                new DownloadClinic(getShell());
 
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cmd_drugImport() {
+        // AddClinic(false) to UPDATE existing clinic
+        AddClinic.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate,
+                false);
+        String url = CentralizationProperties.centralized_server_url;
+
+        try {
+            if (getServerStatus(url).contains("Red")) {
+                MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+                b.setText("Servidor Rest offline.");
+                b.setMessage(" Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                b.open();
+            } else
+                new DownloadDrugs(getShell());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void cmd_doctorAdd() {
@@ -536,6 +574,26 @@ public class GeneralAdmin extends GenericAdminGui {
         AddRegimeTerapeutico.addInitialisationOption(
                 GenericFormGui.OPTION_isAddNotUpdate, true);
         new AddRegimeTerapeutico(getShell());
+    }
+
+    public void cmd_regimenImport() {
+
+        AddRegimeTerapeutico.addInitialisationOption(
+                GenericFormGui.OPTION_isAddNotUpdate, true);
+        String url = CentralizationProperties.centralized_server_url;
+
+        try {
+            if (getServerStatus(url).contains("Red")) {
+                MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+                b.setText("Servidor Rest offline.");
+                b.setMessage(" Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                b.open();
+            } else
+                new DownLoadRegimeTerapeutico(getShell());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void cmd_regimenUpdate() {

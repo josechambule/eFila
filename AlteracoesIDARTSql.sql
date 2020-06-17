@@ -1,3 +1,5 @@
+ALTER TABLE drug DROP CONSTRAINT fk20a3c0633ef5cb;
+ALTER TABLE regimendrugs DROP CONSTRAINT fk281dee12633d3b83;
 ALTER TABLE clinic DROP CONSTRAINT fk78780108c18d4d76;
 ALTER TABLE clinic ADD COLUMN IF NOT EXISTS province character varying(255) COLLATE pg_catalog."default" DEFAULT  '';
 ALTER TABLE clinic ADD COLUMN IF NOT EXISTS district character varying(255) COLLATE pg_catalog."default" DEFAULT '';
@@ -33,7 +35,8 @@ ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS prescricaoespecial chara
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS motivocriacaoespecial character varying(255) COLLATE pg_catalog."default" DEFAULT ''::character varying;
 UPDATE simpledomain set value = 'Voltou da Referencia' where name = 'activation_reason' and value = 'Desconhecido';
 UPDATE clinic set uuid = uuid_generate_v1() where mainclinic = true and (uuid is null or uuid = '');
-UPDATE regimeterapeutico set regimeesquema = regimeesquema || '_' where active = false ;
+UPDATE regimeterapeutico set regimeesquema = regimeesquema || '_' where active = false;
+-- UPDATE drug set active = false, name = name || ' (Inactivo)', atccode_id = '[inactivo]' where atccode_id is null or atccode_id = '';
 DELETE FROM simpledomain WHERE description  = 'pharmacy_type';
 INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Unidade Sanitária');
 INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Comunitária');

@@ -240,7 +240,26 @@ public class CommonObjects {
 
 	}
 
+	public static void populateDeseases(Session sess, CCombo combo) {
 
+		List<String> sdList = AdministrationManager.getDeseases(sess);
+
+		if (sdList != null) {
+			for (String s : sdList) {
+				if(s != null){
+					combo.add(s);
+				}
+
+			}
+		}
+
+		combo.add("");
+		if (combo.getItemCount() > 0) {
+			// Set the default to the property
+			combo.setText("Seleccione a Doença");
+		}
+
+	}
 
 	public static String getReportParameter(Session sess, String name) {
 

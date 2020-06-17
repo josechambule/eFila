@@ -415,5 +415,9 @@ public class Drug implements Comparable<Drug> {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "[" + atccode_id + "] "+ name;
+	}
 }

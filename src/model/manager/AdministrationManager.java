@@ -1013,6 +1013,14 @@ public class AdministrationManager {
     }
 
     @SuppressWarnings("unchecked")
+    public static List<String> getDeseases(Session sess)
+            throws HibernateException {
+        String qString = "select distinct(value) from SimpleDomain as s where s.description= :disease order by s.value";
+        Query q = sess.createQuery(qString).setString("disease", "Disease");
+        List<String> result = q.list();
+        return result;
+    }
+
     public static List<SimpleDomain> getRegimens(Session sess)
             throws HibernateException {
         String qString = "select s from SimpleDomain as s where s.name= :regimen order by s.value";
@@ -1089,6 +1097,16 @@ public class AdministrationManager {
         List<Object[]> result = q.list();
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Drug> getDrugs(Session sess)
+            throws HibernateException {
+        List<Drug> drugList = sess.createQuery(
+                "select d from Drug as d order by d.tipoDoenca desc")
+                .list();
+
+        return drugList;
     }
 
     public static List<RegimeTerapeutico> getRegimeTerapeutico(Session sess)
@@ -1398,6 +1416,24 @@ public class AdministrationManager {
         List result;
         result = sess.createQuery(
                 "from SyncTempPatient sync where sync.syncstatus = 'P' or sync.syncstatus is null)").list();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado)
+    public static List<SyncTempPatient> getAllSyncTempPatientReadyToSave(Session sess) throws HibernateException {
+        List result;
+        result = sess.createQuery(
+                "from SyncTempPatient sync where sync.syncstatus = 'I')").list();
+
+        return result;
+    }
+
+    // Devolve a lista de todos pacientes referidos prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado, I-Importado)
+    public static List<SyncTempDispense> getAllSyncTempDispenseReadyToSave(Session sess) throws HibernateException {
+        List result;
+        result = sess.createQuery(
+                "from SyncTempDispense sync where sync.syncstatus = 'I'").list();
 
         return result;
     }
