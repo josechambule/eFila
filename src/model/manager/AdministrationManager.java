@@ -465,6 +465,24 @@ public class AdministrationManager {
     }
 
     /**
+     * Get the clinic with this name
+     *
+     * @param sess
+     * @param uuid
+     * @return Clinic
+     * @throws HibernateException
+     */
+    public static Clinic getClinicbyUuid(Session sess, String uuid)
+            throws HibernateException {
+
+        Clinic clinic = (Clinic) sess.createQuery(
+                "select c from Clinic as c where c.uuid like :uuid")
+                .setString("uuid", uuid).setMaxResults(1).uniqueResult();
+
+        return clinic;
+    }
+
+    /**
      * Method getRemoteClinics.
      *
      * @param sess Session

@@ -37,6 +37,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
@@ -50,12 +51,14 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
 /**
+ *
  */
 public class DispensaTrimestralReport extends GenericReportGui {
 
@@ -68,19 +71,19 @@ public class DispensaTrimestralReport extends GenericReportGui {
     private Group grpPharmacySelection;
 
     private CCombo cmbStockCenter;
-    
+
     private StockCenter pharm;
-    
+
     private final Shell parent;
-    
-	private List<DispensaTrimestralSemestral> dispensaTrimestralXLS;
-	
-	private FileOutputStream out = null;
+
+    private List<DispensaTrimestralSemestral> dispensaTrimestralXLS;
+
+    private FileOutputStream out = null;
 
     /**
      * Constructor
      *
-     * @param parent Shell
+     * @param parent   Shell
      * @param activate boolean
      */
     public DispensaTrimestralReport(Shell parent, boolean activate) {
@@ -106,7 +109,6 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
     /**
      * This method initializes compHeader
-     *
      */
     @Override
     protected void createCompHeader() {
@@ -116,7 +118,6 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
     /**
      * This method initializes grpClinicSelection
-     *
      */
     private void createGrpClinicSelection() {
 
@@ -142,7 +143,6 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
     /**
      * This method initializes grpDateInfo
-     *
      */
     private void createGrpDateInfo() {
         createGrpDateRange();
@@ -150,7 +150,6 @@ public class DispensaTrimestralReport extends GenericReportGui {
 
     /**
      * This method initializes compButtons
-     *
      */
     @Override
     protected void createCompButtons() {
@@ -160,7 +159,7 @@ public class DispensaTrimestralReport extends GenericReportGui {
     @Override
     protected void cmdViewReportWidgetSelected() {
 
-        pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+        pharm = AdministrationManager.getStockCenter(getHSession(), cmbStockCenter.getText());
 
         if (cmbStockCenter.getText().equals("")) {
 
@@ -175,12 +174,12 @@ public class DispensaTrimestralReport extends GenericReportGui {
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             missing.setText("Farmácia não encontrada");
             missing.setMessage("There is no pharmacy called '"
-                            + cmbStockCenter.getText()
-                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+                    + cmbStockCenter.getText()
+                    + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
             missing.open();
 
         } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
-            showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+            showMessage(MessageDialog.ERROR, "End date before start date", "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
             return;
         } else {
             try {
@@ -195,7 +194,7 @@ public class DispensaTrimestralReport extends GenericReportGui {
                 c.setLenient(true);
                 c.setTime(theStartDate);
 
-                if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+                if (Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)) {
                     c.add(Calendar.DAY_OF_WEEK, -2);
                     theStartDate = c.getTime();
                 }
@@ -203,15 +202,14 @@ public class DispensaTrimestralReport extends GenericReportGui {
                 DispensaTrimestral report = new DispensaTrimestral(getShell(), theStartDate, theEndDate);
                 viewReport(report);
             } catch (Exception e) {
-                getLog().error("Exception while running Monthly Receipts and Issues report",e);
-           
+                getLog().error("Exception while running Monthly Receipts and Issues report", e);
+
             }
         }
     }
 
     /**
      * This method is called when the user presses "Close" button
-     *
      */
     @Override
     protected void cmdCloseWidgetSelected() {
@@ -316,10 +314,10 @@ public class DispensaTrimestralReport extends GenericReportGui {
         calendarStart.addSWTCalendarListener(listener);
     }
 
-	@Override
-	protected void cmdViewReportXlsWidgetSelected() {
+    @Override
+    protected void cmdViewReportXlsWidgetSelected() {
 
-        pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+        pharm = AdministrationManager.getStockCenter(getHSession(), cmbStockCenter.getText());
 
         if (cmbStockCenter.getText().equals("")) {
 
@@ -335,160 +333,32 @@ public class DispensaTrimestralReport extends GenericReportGui {
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             missing.setText("Pharmacy not found");
             missing.setMessage("There is no pharmacy called '"
-                            + cmbStockCenter.getText()
-                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+                    + cmbStockCenter.getText()
+                    + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
             missing.open();
 
         } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
-            showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+            showMessage(MessageDialog.ERROR, "End date before start date", "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
             return;
-        } 
-        
-        dispensaTrimestralXLS = new ArrayList<DispensaTrimestralSemestral>();
-		
-		try {
-			ConexaoJDBC con = new ConexaoJDBC();
-			
-			Map<String, Object> map = new HashMap<>();
-			
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			
-			 Map mapaDispensaTrimestral = con.DispensaTrimestral(dateFormat.format(calendarStart.getCalendar().getTime()),dateFormat.format(calendarEnd.getCalendar().getTime()));
-			
-            int totalpacientesManter = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesmanter").toString());
-            int totalpacientesNovos = Integer.parseInt(mapaDispensaTrimestral.get("totalpacientesnovos").toString());
-            int totalpacienteManuntencaoTransporte = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteManuntencaoTransporte").toString());
-            int totalpacienteCumulativo = Integer.parseInt(mapaDispensaTrimestral.get("totalpacienteCumulativo").toString());
-			
-			dispensaTrimestralXLS = con.dispensaTrimestral(dateFormat.format(calendarStart.getCalendar().getTime()), dateFormat.format(calendarEnd.getCalendar().getTime()));
-			
-			if(dispensaTrimestralXLS.size() > 0) {
-				
-				FileInputStream currentXls = new FileInputStream("Reports/DispensaTrimestral.xls");
-				
-				HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
-				
-				HSSFSheet sheet = workbook.getSheetAt(0);
-				
-				HSSFCellStyle cellStyle = workbook.createCellStyle();
-				cellStyle.setBorderBottom(BorderStyle.THIN);
-				cellStyle.setBorderTop(BorderStyle.THIN);
-				cellStyle.setBorderLeft(BorderStyle.THIN);
-				cellStyle.setBorderRight(BorderStyle.THIN);
-				cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        }
 
-										
-				HSSFRow healthFacility = sheet.getRow(9); 
-				HSSFCell healthFacilityCell = healthFacility.createCell(2); 
-				healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
-				healthFacilityCell.setCellStyle(cellStyle); 
-				
-				HSSFRow reportPeriod = sheet.getRow(10);
-				HSSFCell reportPeriodCell = reportPeriod.createCell(2);
-				reportPeriodCell.setCellValue(dateFormat.format(calendarStart.getCalendar().getTime()) +" à "+ dateFormat.format(calendarEnd.getCalendar().getTime()));
-				reportPeriodCell.setCellStyle(cellStyle);
-				
-				HSSFRow _totalpacientesNovos = sheet.getRow(14); 
-				HSSFCell totalpacientesNovosCell = _totalpacientesNovos.createCell(2); 
-				totalpacientesNovosCell.setCellValue(totalpacientesNovos);
-				totalpacientesNovosCell.setCellStyle(cellStyle);
-				
-				HSSFRow _totalpacientesManter = sheet.getRow(15); 
-				HSSFCell totalpacientesManterCell = _totalpacientesManter.createCell(2); 
-				totalpacientesManterCell.setCellValue(totalpacientesManter);
-				totalpacientesManterCell.setCellStyle(cellStyle);
-				
-				HSSFRow _totalpacienteManuntencaoTransporte = sheet.getRow(16); 
-				HSSFCell totalpacienteManuntencaoTransporteCell = _totalpacienteManuntencaoTransporte.createCell(2); 
-				totalpacienteManuntencaoTransporteCell.setCellValue(totalpacienteManuntencaoTransporte);
-				totalpacienteManuntencaoTransporteCell.setCellStyle(cellStyle); 
-				
-				HSSFRow _totalpacienteCumulativo = sheet.getRow(17); 
-				HSSFCell totalpacienteCumulativoCell = _totalpacienteCumulativo.createCell(2); 
-				totalpacienteCumulativoCell.setCellValue(totalpacienteCumulativo);
-				totalpacienteCumulativoCell.setCellStyle(cellStyle);
+        String reportNameFile = "Reports/DispensaTrimestral.xls";
+        try {
+            DispensaTrimestralExcel op = new DispensaTrimestralExcel(calendarStart, calendarEnd, parent, reportNameFile);
+            new ProgressMonitorDialog(parent).run(true, true, op);
 
-				  for(int i=21; i<= sheet.getLastRowNum(); i++) 
-				  { 
-					HSSFRow row = sheet.getRow(i);
-				  	deleteRow(sheet,row);  
-				  }
-				 
-				  out = new FileOutputStream(new File("Reports/DispensaTrimestral.xls"));
-				  workbook.write(out); 
-				
-				int rowNum = 21;
-				
-				for (DispensaTrimestralSemestral xls : dispensaTrimestralXLS) { 
-					
-					HSSFRow row = sheet.createRow(rowNum++);
-					
-					HSSFCell createCellNid = row.createCell(1);
-					createCellNid.setCellValue(xls.getPatientIdentifier());
-					createCellNid.setCellStyle(cellStyle); 
-					
-					HSSFCell createCellNome = row.createCell(2);
-					createCellNome.setCellValue(xls.getNome());
-					createCellNome.setCellStyle(cellStyle);
-					
-					HSSFCell createCellRegimeTerapeutico = row.createCell(3); 
-					createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
-					createCellRegimeTerapeutico.setCellStyle(cellStyle);
+            if (op.getList() == null ||
+                    op.getList().size() <= 0) {
+                MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+                mNoPages.setText("O relatório não possui páginas");
+                mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \n \n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                mNoPages.open();
+            }
 
-					HSSFCell createCellTipoTarv = row.createCell(4);
-					createCellTipoTarv.setCellValue(xls.getTipoPaciente());
-					createCellTipoTarv.setCellStyle(cellStyle);
-
-
-					HSSFCell createCellDataPrescricao = row.createCell(5); 
-					createCellDataPrescricao.setCellValue(xls.getDataPrescricao());
-					createCellDataPrescricao.setCellStyle(cellStyle);
-
-					HSSFCell createCellDataLevantamento = row.createCell(6); 
-					createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
-					createCellDataLevantamento.setCellStyle(cellStyle);
-
-					HSSFCell createCellDataProximoLevantamento = row.createCell(7);
-					createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
-					createCellDataProximoLevantamento.setCellStyle(cellStyle);
-				}
-				
-				for(int i = 1; i < DispensaTrimestralSemestral.class.getClass().getDeclaredFields().length; i++) { 
-		            sheet.autoSizeColumn(i);
-		        }
-				
-				currentXls.close();
-				
-				FileOutputStream outputStream = new FileOutputStream(new File("Reports/DispensaTrimestral.xls")); 
-				workbook.write(outputStream);
-				workbook.close();
-				
-				Desktop.getDesktop().open(new File("Reports/DispensaTrimestral.xls"));
-				
-			} else {
-				MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
-				mNoPages.setText("O relatório não possui páginas");
-				mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
-				mNoPages.open();
-			}
-								
-		} catch (SQLException | ClassNotFoundException e) { 
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void deleteRow(HSSFSheet sheet, Row row) {
-		int lastRowNum = sheet.getLastRowNum();
-		if (lastRowNum > 0) {
-			int rowIndex = row.getRowNum();
-			HSSFRow removingRow = sheet.getRow(rowIndex);
-			if (removingRow != null) {
-				sheet.removeRow(removingRow);
-			}
-		}
-	}
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

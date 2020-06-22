@@ -23,6 +23,8 @@ public class CentralizationProperties {
 
     public static String rest_access_password = "postgres";
 
+    public static String location = "660e84da-e72c-4080-b921-5131b77484cc";
+
     public static final String FILE = "centralization.properties";
 
     private static Logger log = null;
@@ -53,6 +55,7 @@ public class CentralizationProperties {
         tipo_farmacia = setStringProperty("tipo_farmacia");
         rest_access_username = setStringProperty("rest_access_username");
         rest_access_password = setStringProperty("rest_access_password");
+        location = setStringProperty("location");
     }
 
     public static String getPropertiesString() {
@@ -68,6 +71,8 @@ public class CentralizationProperties {
         sb.append("rest_access_username=" + rest_access_username);
         sb.append("\n");
         sb.append("rest_access_password=" + rest_access_password);
+        sb.append("\n");
+        sb.append("location=" + location);
         sb.append("\n");
 
         return sb.toString();

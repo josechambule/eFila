@@ -270,7 +270,6 @@ public class PharmacyApplication {
 
                 try {
                     if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
-                        System.out.println("rever os uploads os estados dos registos -- ver ");
                         RestFarmac.setCentralPatients(sess);
                         RestFarmac.setCentralDispenses(sess);
                     } else {
@@ -470,6 +469,18 @@ public class PharmacyApplication {
             // set default clinic
             LocalObjects.mainClinic = AdministrationManager
                     .getMainClinic(hSession);
+
+            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
+                if (LocalObjects.mainClinic.getUuid() != JdbcProperties.location) {
+                    LocalObjects.mainClinic.setUuid(JdbcProperties.location);
+                    AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
+                }
+            }else {
+                if (LocalObjects.mainClinic.getUuid() != CentralizationProperties.location) {
+                    LocalObjects.mainClinic.setUuid(CentralizationProperties.location);
+                    AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
+                }
+            }
             LocalObjects.nationalIdentifierType = AdministrationManager
                     .getNationalIdentifierType(hSession);
 

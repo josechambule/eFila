@@ -7,6 +7,7 @@ package migracao.swingreverse;
 
 import model.manager.*;
 import org.apache.commons.lang.StringUtils;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
@@ -36,7 +37,14 @@ public class DadosPacienteFarmac {
         PatientAttribute patientAttribute = null;
         Set<PatientIdentifier> oldIdentifiers = new HashSet<>();
 
-        Clinic clinic = AdministrationManager.getMainClinic(sess);
+        Clinic clinic = null;
+
+        if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            clinic = AdministrationManager.getClinicbyUuid(sess,patientSync.getMainclinicuuid());
+
+        if(clinic == null)
+            clinic = AdministrationManager.getMainClinic(sess);
+
         IdentifierType identifierType = AdministrationManager.getNationalIdentifierType(sess);
         AttributeType attributeType = PatientManager.getAttributeTypeObject(sess, "ARV Start Date");
 
@@ -213,7 +221,14 @@ public class DadosPacienteFarmac {
         Session sess = HibernateUtil.getNewSession();
         Transaction tx = sess.beginTransaction();
 
-        Clinic clinic = AdministrationManager.getMainClinic(sess);
+        Clinic clinic = null;
+
+        if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            clinic = AdministrationManager.getClinicbyUuid(sess,syncTempDispense.getMainclinicuuid());
+
+        if(clinic == null)
+            clinic = AdministrationManager.getMainClinic(sess);
+
         User user = AdministrationManager.getUserByName(sess, "admin");
 
         try {

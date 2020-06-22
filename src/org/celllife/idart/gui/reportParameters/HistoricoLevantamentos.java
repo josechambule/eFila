@@ -35,6 +35,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +50,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -189,143 +191,35 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
-		} else {
-			
-			try {
+		} else
+			{
+				Date theStartDate = calendarStart.getCalendar().getTime();
 
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
-				
-				SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+				Date theEndDate = calendarEnd.getCalendar().getTime();
 
-				 
-				Date theStartDate = calendarStart.getCalendar().getTime(); 
-			
-				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-				
-				//theStartDate = sdf.parse(strTheDate);
-				
-				historicoLevantamentoXLS = new ArrayList<HistoricoLevantamentoXLS>();
-				
+				String reportNameFile = "Reports/HistoricoLevantamento.xls";
 				try {
-					ConexaoJDBC con=new ConexaoJDBC();
-					
-					historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(), 
-							chkBtnAlteraccao.getSelection(), sdf.format(theStartDate), sdf.format(theEndDate));
-					
-					if(historicoLevantamentoXLS.size() > 0) {
-						
-						FileInputStream currentXls = new FileInputStream("Reports/HistoricoLevantamento.xls");
-						
-						HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
-						
-						HSSFSheet sheet = workbook.getSheetAt(0);
-						
-						HSSFCellStyle cellStyle = workbook.createCellStyle();
-						cellStyle.setBorderBottom(BorderStyle.THIN);
-						cellStyle.setBorderTop(BorderStyle.THIN);
-						cellStyle.setBorderLeft(BorderStyle.THIN);
-						cellStyle.setBorderRight(BorderStyle.THIN);
-						cellStyle.setAlignment(HorizontalAlignment.CENTER);
+					HistoricoLevantamentosExcel op = new HistoricoLevantamentosExcel(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(),
+							chkBtnAlteraccao.getSelection(), parent, reportNameFile, theStartDate, theEndDate);
+					new ProgressMonitorDialog(parent).run(true, true, op);
 
-												
-						HSSFRow healthFacility = sheet.getRow(10); 
-						HSSFCell healthFacilityCell = healthFacility.createCell(2); 
-						healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
-						healthFacilityCell.setCellStyle(cellStyle); 
-						
-						HSSFRow reportPeriod = sheet.getRow(10);
-						HSSFCell reportPeriodCell = reportPeriod.createCell(6);
-						reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
-						reportPeriodCell.setCellStyle(cellStyle); 
-
-						HSSFRow reportYear = sheet.getRow(11);
-						HSSFCell reportYearCell = reportYear.createCell(6);
-						reportYearCell.setCellValue(sdfYear.format(theStartDate));
-						reportYearCell.setCellStyle(cellStyle); 
-
-						  for(int i=14; i<= sheet.getLastRowNum(); i++) 
-						  { 
-							HSSFRow row = sheet.getRow(i);
-						  	deleteRow(sheet,row);  
-						  }
-						 
-						  out = new FileOutputStream(new File("Reports/HistoricoLevantamento.xls"));
-						  workbook.write(out); 
-						
-						int rowNum = 14;
-						
-						for (HistoricoLevantamentoXLS xls : historicoLevantamentoXLS) { 
-							
-							HSSFRow row = sheet.createRow(rowNum++);
-							
-							HSSFCell createCellNid = row.createCell(1);
-							createCellNid.setCellValue(xls.getPatientIdentifier());
-							createCellNid.setCellStyle(cellStyle); 
-							
-							HSSFCell createCellNome = row.createCell(2);
-							createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
-							createCellNome.setCellStyle(cellStyle);
-	
-							HSSFCell createCellTipoTarv = row.createCell(3);
-							createCellTipoTarv.setCellValue(xls.getTipoTarv());
-							createCellTipoTarv.setCellStyle(cellStyle);
-	
-							HSSFCell createCellRegimeTerapeutico = row.createCell(4); 
-							createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
-							createCellRegimeTerapeutico.setCellStyle(cellStyle);
-	
-							HSSFCell createCellTipoDispensa = row.createCell(5); 
-							createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
-							createCellTipoDispensa.setCellStyle(cellStyle);
-	
-							HSSFCell createCellDataLevantamento = row.createCell(6); 
-							createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
-							createCellDataLevantamento.setCellStyle(cellStyle);
-	
-							HSSFCell createCellDataProximoLevantamento = row.createCell(7);
-							createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
-							createCellDataProximoLevantamento.setCellStyle(cellStyle);
-						}
-						
-						for(int i = 1; i < HistoricoLevantamentoXLS.class.getClass().getDeclaredFields().length; i++) { 
-				            sheet.autoSizeColumn(i);
-				        }
-						
-						currentXls.close();
-						
-						FileOutputStream outputStream = new FileOutputStream(new File("Reports/HistoricoLevantamento.xls")); 
-						workbook.write(outputStream);
-						workbook.close();
-						
-						Desktop.getDesktop().open(new File("Reports/HistoricoLevantamento.xls"));
-						
-					} else {
-						MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+					if (op.getList() == null ||
+							op.getList().size() <= 0) {
+						MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
 						mNoPages.setText("O relatório não possui páginas");
 						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 						mNoPages.open();
 					}
-										
-				} catch (SQLException | ClassNotFoundException e) { 
-					e.printStackTrace();
-				}
-				
-			} catch (Exception e) {
-				getLog().error("Exception while running Historico levantamento report",e);
-			}
-		}
-	}
 
-	private void deleteRow(HSSFSheet sheet, Row row) {
-		int lastRowNum = sheet.getLastRowNum();
-		if (lastRowNum > 0) {
-			int rowIndex = row.getRowNum();
-			HSSFRow removingRow = sheet.getRow(rowIndex);
-			if (removingRow != null) {
-				sheet.removeRow(removingRow);
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+
 			}
+
 		}
-	}
 
 	/**
 	 * This method is called when the user presses "Close" button

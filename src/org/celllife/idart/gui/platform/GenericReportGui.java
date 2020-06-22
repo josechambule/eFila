@@ -30,8 +30,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.hibernate.Session;
 
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 
 /**
@@ -114,7 +120,7 @@ public abstract class GenericReportGui extends GenericGui implements GenericRepo
 	/**
 	 * Method buildShell.
 	 * 
-	 * @param shellTxt
+	 * @param shellTitle
 	 *            String
 	 * @param bounds
 	 *            Rectangle
