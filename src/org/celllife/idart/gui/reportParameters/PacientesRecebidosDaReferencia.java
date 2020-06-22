@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.celllife.idart.gui.reportParameters;
 
 import model.manager.AdministrationManager;
+import model.manager.reports.PacientesRecebidosDaReferenciaReport;
 import model.manager.reports.PacientesReferidosReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
@@ -33,10 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * @author colaco
- */
-public class PacientesReferidos extends GenericReportGui {
+public class PacientesRecebidosDaReferencia extends GenericReportGui {
 
 
     private Group grpDateRange;
@@ -55,7 +48,7 @@ public class PacientesReferidos extends GenericReportGui {
      * @param parent   Shell
      * @param activate boolean
      */
-    public PacientesReferidos(Shell parent, boolean activate) {
+    public PacientesRecebidosDaReferencia(Shell parent, boolean activate) {
         super(parent, REPORTTYPE_PATIENT, activate);
     }
 
@@ -66,7 +59,7 @@ public class PacientesReferidos extends GenericReportGui {
     @Override
     protected void createShell() {
         Rectangle bounds = new Rectangle(100, 50, 600, 510);
-        buildShell(REPORT_PACIENTES_REFERIDOS, bounds);
+        buildShell(REPORT_PACIENTES_RECEBIDOS, bounds);
         // create the composites
         createMyGroups();
     }
@@ -82,7 +75,7 @@ public class PacientesReferidos extends GenericReportGui {
     @Override
     protected void createCompHeader() {
         iDartImage icoImage = iDartImage.REPORT_PATIENTHISTORY;
-        buildCompdHeader(REPORT_PACIENTES_REFERIDOS, icoImage);
+        buildCompdHeader(REPORT_PACIENTES_RECEBIDOS, icoImage);
     }
 
     /**
@@ -168,7 +161,7 @@ public class PacientesReferidos extends GenericReportGui {
 
                 Date theEndDate = calendarEnd.getCalendar().getTime();
 
-                PacientesReferidosReport report = new PacientesReferidosReport(getShell(), pharm, theStartDate, theEndDate);
+                PacientesRecebidosDaReferenciaReport report = new PacientesRecebidosDaReferenciaReport(getShell(), pharm, theStartDate, theEndDate);
                 viewReport(report);
             } catch (Exception e) {
                 getLog().error("Exception while running Monthly Receipts and Issues report", e);

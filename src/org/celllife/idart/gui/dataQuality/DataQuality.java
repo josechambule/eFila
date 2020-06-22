@@ -101,7 +101,9 @@ public class DataQuality extends GenericOthersGui {
 		reportnames.add(new InaccurateEpisodes(4));
 		reportnames.add(new InaccurateEpisodes(5));
 		reportnames.add(new RegimenBreakdowns());
-		
+		reportnames.add(new PacientesPendentesRest());
+		reportnames.add(new LevantamentosPendentesRest());
+
 		list1 = new ListViewer(grpScrInfo, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		list1.getList().setLayoutData(gridData);

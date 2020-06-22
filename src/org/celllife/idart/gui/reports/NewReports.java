@@ -19,6 +19,7 @@
 package org.celllife.idart.gui.reports;
 
 import model.manager.exports.iedea.IedeaExporter;
+import model.manager.reports.HistoricoLevantamentoReferidosDEouPARA;
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.dataExports.DataExport;
 import org.celllife.idart.gui.dataQuality.DataQuality;
@@ -412,6 +413,9 @@ public class NewReports extends GenericAdminGui {
         reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_DISPENSA_TRIMESTRAL,
                 new CohortDispensaTrimestral(getShell(), false));
 
+        reportGUIs.put(GenericReportGuiInterface.REPORT_REFERIDOS_LEVANTAMENTOS_ARV,
+                new HistoricoLevantamentoReferidosDEouPARAReport(getShell(), false));
+
         // Patient Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,
                 new PatientHistory(getShell(), false));
@@ -423,6 +427,9 @@ public class NewReports extends GenericAdminGui {
 
         reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
                 new PacientesReferidos(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_RECEBIDOS,
+                new PacientesRecebidosDaReferencia(getShell(), false));
 
         // Stock Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,

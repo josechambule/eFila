@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PacientesReferidosPara" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PacientesReferidosDe" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.6963904734899635"/>
-	<property name="ireport.x" value="78"/>
-	<property name="ireport.y" value="30"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="78"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -37,31 +37,29 @@
 	</parameter>
 	<parameter name="dateEnd" class="java.util.Date"/>
 	<parameter name="path" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C://Users//colaco.nhango//Documents//GitHub//IdartHarmonized//Reports"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["/Users/colaco/Documents/Projectos/Applications/eFila/Reports/"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select distinct
 p.patientid as nid,
 p.firstnames ||' '||p.lastname as nome,
 extract(year FROM age(current_date, p.dateofbirth))::integer as idade,
-c.clinicname as facilityName,
-nc.facilityName as mainfacilityName,
-rt.regimeesquema,
-lt.linhanome,
-Max(e.startdate) as dataReferencia,
-Max(pr.date) as ultimaPrescricao
+CASE
+	WHEN (stp.province IS null OR stp.province like '%Selec%')
+		THEN stp.mainclinicname
+	ELSE stp.mainclinicname ||' - '||stp.province
+END as facilityName,
+c.clinicname as mainfacilityName,
+Min(e.startdate) as dataReferencia
 from Patient as p
 inner join clinic c on c.id = p.clinic
-inner join prescription pr on pr.patient = p.id
-inner join regimeterapeutico rt on rt.regimeid = pr.regimeid
-inner join linhat lt on lt.linhaid = pr.linhaid
+inner join sync_temp_patients stp on stp.uuidopenmrs = p.uuidopenmrs
 inner join episode e on e.patient = p.id
-inner join nationalclinics nc on nc.id = c.clinicdetails_id
-where  e.startdate >= $P{date}::date
+where e.startdate >= $P{date}::date
 AND e.startdate < ($P{dateEnd}::date + INTERVAL '1 day')
-AND startreason like '%eferido%'
-AND c.mainclinic <> true
-group by 1,2,3,4,5,6,7
+AND e.startreason like '%Novo%'
+AND c.mainclinic = true
+group by 1,2,3,4,5
 order by p.patientid asc]]>
 	</queryString>
 	<field name="nid" class="java.lang.String"/>
@@ -69,10 +67,7 @@ order by p.patientid asc]]>
 	<field name="idade" class="java.lang.Integer"/>
 	<field name="facilityname" class="java.lang.String"/>
 	<field name="mainfacilityname" class="java.lang.String"/>
-	<field name="regimeesquema" class="java.lang.String"/>
-	<field name="linhanome" class="java.lang.String"/>
 	<field name="datareferencia" class="java.sql.Timestamp"/>
-	<field name="ultimaprescricao" class="java.sql.Timestamp"/>
 	<variable name="test" class="java.lang.String" resetType="None">
 		<variableExpression><![CDATA["test"]]></variableExpression>
 		<initialValueExpression><![CDATA["test"]]></initialValueExpression>
@@ -188,28 +183,21 @@ order by p.patientid asc]]>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="5" y="180" width="63" height="30"/>
+				<reportElement x="7" y="180" width="112" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="180" width="107" height="30"/>
+				<reportElement x="127" y="182" width="146" height="27"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nome]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="316" y="181" width="55" height="30"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Regime Terapeutico]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="380" y="181" width="61" height="30"/>
+				<reportElement x="337" y="181" width="71" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -252,46 +240,33 @@ order by p.patientid asc]]>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Times-Bold" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Lista de Pacientes Referidos para outra Farmácia]]></text>
+				<text><![CDATA[Lista de Pacientes Referidos de outra Farmácia]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="451" y="181" width="74" height="28"/>
+				<reportElement x="414" y="181" width="113" height="28"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Farmacia de Referência]]></text>
 			</staticText>
 			<line>
-				<reportElement x="72" y="179" width="1" height="32"/>
+				<reportElement x="123" y="179" width="1" height="32"/>
 			</line>
 			<line>
-				<reportElement x="182" y="179" width="1" height="32"/>
+				<reportElement x="273" y="179" width="1" height="32"/>
 			</line>
 			<line>
-				<reportElement x="243" y="179" width="1" height="32"/>
+				<reportElement x="334" y="179" width="1" height="32"/>
 			</line>
 			<line>
-				<reportElement x="312" y="179" width="1" height="32"/>
-			</line>
-			<line>
-				<reportElement x="374" y="179" width="1" height="32"/>
-			</line>
-			<line>
-				<reportElement x="446" y="179" width="1" height="32"/>
+				<reportElement x="411" y="179" width="1" height="32"/>
 			</line>
 			<staticText>
-				<reportElement x="187" y="182" width="53" height="27"/>
+				<reportElement x="278" y="182" width="53" height="27"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Idade]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="248" y="181" width="61" height="30"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[  Data da Ultima Prescrição]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="99" y="125" width="214" height="15"/>
@@ -309,25 +284,18 @@ order by p.patientid asc]]>
 	<detail>
 		<band height="24">
 			<textField>
-				<reportElement x="3" y="1" width="69" height="20"/>
+				<reportElement x="7" y="2" width="114" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{nid}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="74" y="1" width="108" height="20"/>
+				<reportElement x="127" y="0" width="141" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{nome}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="316" y="0" width="55" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{regimeesquema}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="23" width="533" height="1"/>
@@ -345,50 +313,37 @@ order by p.patientid asc]]>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="312" y="0" width="1" height="23"/>
+				<reportElement x="123" y="0" width="1" height="23"/>
 			</line>
 			<line>
-				<reportElement x="72" y="0" width="1" height="23"/>
+				<reportElement x="273" y="0" width="1" height="23"/>
 			</line>
 			<line>
-				<reportElement x="182" y="0" width="1" height="23"/>
+				<reportElement x="334" y="0" width="1" height="23"/>
 			</line>
 			<line>
-				<reportElement x="243" y="0" width="1" height="23"/>
-			</line>
-			<line>
-				<reportElement x="374" y="0" width="1" height="23"/>
-			</line>
-			<line>
-				<reportElement x="446" y="0" width="1" height="23"/>
+				<reportElement x="411" y="0" width="1" height="23"/>
 			</line>
 			<textField>
-				<reportElement x="381" y="2" width="61" height="18"/>
+				<reportElement x="337" y="3" width="71" height="18"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format($F{datareferencia})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="187" y="1" width="52" height="20"/>
+				<reportElement x="279" y="1" width="52" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{idade}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="451" y="1" width="80" height="20"/>
+				<reportElement x="414" y="1" width="117" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{facilityname}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="247" y="3" width="61" height="18"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd-MM-yyyy").format($F{ultimaprescricao})]]></textFieldExpression>
 			</textField>
 		</band>
 		<band/>

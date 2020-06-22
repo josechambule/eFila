@@ -1,64 +1,58 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.celllife.idart.gui.reportParameters;
 
-import model.manager.AdministrationManager;
-import model.manager.reports.PacientesReferidosReport;
+import model.manager.reports.HHistoricoLevantamentos;
+import model.manager.reports.HistoricoLevantamentoReferidosDEouPARA;
+import model.manager.reports.HistoricoLevantamentoXLS;
 import org.apache.log4j.Logger;
-import org.celllife.idart.commonobjects.CommonObjects;
-import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.*;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import java.text.ParseException;
+import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
-/**
- * @author colaco
- */
-public class PacientesReferidos extends GenericReportGui {
-
+public class HistoricoLevantamentoReferidosDEouPARAReport extends GenericReportGui {
 
     private Group grpDateRange;
+
+    private Group grpTipoTarv;
 
     private SWTCalendar calendarStart;
 
     private SWTCalendar calendarEnd;
 
-    private Group grpPharmacySelection;
+    private final Shell parent;
 
-    private CCombo cmbStockCenter;
+    private FileOutputStream out = null;
 
     /**
      * Constructor
      *
-     * @param parent   Shell
-     * @param activate boolean
+     * @param parent
+     *            Shell
+     * @param activate
+     *            boolean
      */
-    public PacientesReferidos(Shell parent, boolean activate) {
-        super(parent, REPORTTYPE_PATIENT, activate);
+    public HistoricoLevantamentoReferidosDEouPARAReport(Shell parent, boolean activate) {
+        super(parent, REPORTTYPE_MIA, activate);
+        this.parent = parent;
     }
-
 
     /**
      * This method initializes newMonthlyStockOverview
@@ -66,63 +60,38 @@ public class PacientesReferidos extends GenericReportGui {
     @Override
     protected void createShell() {
         Rectangle bounds = new Rectangle(100, 50, 600, 510);
-        buildShell(REPORT_PACIENTES_REFERIDOS, bounds);
+        buildShell(REPORT_REFERIDOS_LEVANTAMENTOS_ARV, bounds);
         // create the composites
         createMyGroups();
     }
 
     private void createMyGroups() {
-        createGrpClinicSelection();
+
+
         createGrpDateInfo();
     }
 
     /**
      * This method initializes compHeader
+     *
      */
     @Override
     protected void createCompHeader() {
-        iDartImage icoImage = iDartImage.REPORT_PATIENTHISTORY;
-        buildCompdHeader(REPORT_PACIENTES_REFERIDOS, icoImage);
-    }
-
-    /**
-     * This method initializes grpClinicSelection
-     */
-    private void createGrpClinicSelection() {
-
-        grpPharmacySelection = new Group(getShell(), SWT.NONE);
-        grpPharmacySelection.setText("Farmácia");
-        grpPharmacySelection.setFont(ResourceUtils
-                .getFont(iDartFont.VERASANS_8));
-        grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
-                140, 90, 320, 65));
-
-        Label lblPharmacy = new Label(grpPharmacySelection, SWT.NONE);
-        lblPharmacy.setBounds(new Rectangle(10, 25, 140, 20));
-        lblPharmacy.setText("Seleccione a farmácia");
-        lblPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-        cmbStockCenter = new CCombo(grpPharmacySelection, SWT.BORDER);
-        cmbStockCenter.setBounds(new Rectangle(156, 24, 160, 20));
-        cmbStockCenter.setEditable(false);
-        cmbStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        cmbStockCenter.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-
-        CommonObjects.populateStockCenters(getHSession(), cmbStockCenter);
-
+        iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
+        buildCompdHeader(REPORT_REFERIDOS_LEVANTAMENTOS_ARV, icoImage);
     }
 
     /**
      * This method initializes grpDateInfo
+     *
      */
     private void createGrpDateInfo() {
-
         createGrpDateRange();
-
     }
 
     /**
      * This method initializes compButtons
+     *
      */
     @Override
     protected void createCompButtons() {
@@ -132,58 +101,48 @@ public class PacientesReferidos extends GenericReportGui {
     @Override
     protected void cmdViewReportWidgetSelected() {
 
-        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
-                cmbStockCenter.getText());
-
-        if (cmbStockCenter.getText().equals("")) {
-
-            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
-                    | SWT.OK);
-            missing.setText("No Pharmacy Was Selected");
-            missing
-                    .setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
-            missing.open();
-
-        } else if (pharm == null) {
-
-            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
-                    | SWT.OK);
-            missing.setText("Pharmacy not found");
-            missing
-                    .setMessage("There is no pharmacy called '"
-                            + cmbStockCenter.getText()
-                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
-            missing.open();
-
-        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
-            showMessage(MessageDialog.ERROR, "End date before start date",
-                    "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+            showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
             return;
-        } else {
+        }
+
             try {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 
                 Date theStartDate = calendarStart.getCalendar().getTime();
 
-                Date theEndDate = calendarEnd.getCalendar().getTime();
+                Date theEndDate=  calendarEnd.getCalendar().getTime();
 
-                PacientesReferidosReport report = new PacientesReferidosReport(getShell(), pharm, theStartDate, theEndDate);
+                Calendar c = Calendar.getInstance(Locale.US);
+                c.setLenient(true);
+                c.setTime(theStartDate);
+
+                if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+                    c.add(Calendar.DAY_OF_WEEK, -2);
+                    theStartDate = c.getTime();
+                }
+
+                HistoricoLevantamentoReferidosDEouPARA report = new HistoricoLevantamentoReferidosDEouPARA(getShell(), theStartDate, theEndDate);
                 viewReport(report);
             } catch (Exception e) {
-                getLog().error("Exception while running Monthly Receipts and Issues report", e);
+                getLog().error("Exception while running Historico levantamento report",e);
             }
         }
 
-    }
-
     @Override
     protected void cmdViewReportXlsWidgetSelected() {
+
+        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+            showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
+            return;
+        }
 
     }
 
     /**
      * This method is called when the user presses "Close" button
+     *
      */
     @Override
     protected void cmdCloseWidgetSelected() {
@@ -193,26 +152,11 @@ public class PacientesReferidos extends GenericReportGui {
     /**
      * Method getMonthName.
      *
-     * @param intMonth int
+     *            int
      * @return String
      */
-    private String getMonthName(int intMonth) {
 
-        String strMonth = "unknown";
 
-        SimpleDateFormat sdf1 = new SimpleDateFormat("MMMM");
-        SimpleDateFormat sdf2 = new SimpleDateFormat("MM");
-
-        try {
-            Date theDate = sdf2.parse(intMonth + "");
-            strMonth = sdf1.format(theDate);
-        } catch (ParseException pe) {
-            pe.printStackTrace();
-        }
-
-        return strMonth;
-
-    }
 
     @Override
     protected void setLogger() {
@@ -221,10 +165,11 @@ public class PacientesReferidos extends GenericReportGui {
 
 
     private void createGrpDateRange() {
+
         grpDateRange = new Group(getShell(), SWT.NONE);
         grpDateRange.setText("Período:");
         grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
+        grpDateRange.setBounds(new Rectangle(55, 100, 520, 201));
         grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
@@ -266,7 +211,8 @@ public class PacientesReferidos extends GenericReportGui {
     /**
      * Method setEndDate.
      *
-     * @param date Date
+     * @param date
+     *            Date
      */
     public void setEndtDate(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -277,7 +223,8 @@ public class PacientesReferidos extends GenericReportGui {
     /**
      * Method addEndDateChangedListener.
      *
-     * @param listener SWTCalendarListener
+     * @param listener
+     *            SWTCalendarListener
      */
     public void addEndDateChangedListener(SWTCalendarListener listener) {
 
@@ -296,7 +243,8 @@ public class PacientesReferidos extends GenericReportGui {
     /**
      * Method setStartDate.
      *
-     * @param date Date
+     * @param date
+     *            Date
      */
     public void setStartDate(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -307,11 +255,11 @@ public class PacientesReferidos extends GenericReportGui {
     /**
      * Method addStartDateChangedListener.
      *
-     * @param listener SWTCalendarListener
+     * @param listener
+     *            SWTCalendarListener
      */
     public void addStartDateChangedListener(SWTCalendarListener listener) {
 
         calendarStart.addSWTCalendarListener(listener);
     }
-
 }

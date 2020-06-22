@@ -65,9 +65,7 @@ public class PacientesReferidosReport extends AbstractJasperReport {
 
 	private String mesPortugues(Date data )
 	{
-		
-		
-		
+
 		String mes="";
 		
 		Calendar calendar = new GregorianCalendar();
