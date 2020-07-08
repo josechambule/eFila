@@ -47,6 +47,8 @@ public class PrescriptionsWithNoEncounterExcel implements IRunnableWithProgress 
 
             ConexaoJDBC con=new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             prescricaoSemFilaXLSs = con.getQueryPrescricoeSemDispensasXLS(sdf.format(calendarStart.getCalendar().getTime()), sdf.format(calendarEnd.getCalendar().getTime()));
 
             if(prescricaoSemFilaXLSs.size() > 0) {

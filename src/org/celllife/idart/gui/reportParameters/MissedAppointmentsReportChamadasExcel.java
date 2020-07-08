@@ -50,6 +50,8 @@ public class MissedAppointmentsReportChamadasExcel implements IRunnableWithProgr
         try {
             ConexaoJDBC con = new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             if(dt) {
                 absenteeForSupportCallsList = con.getAbsenteeForSupportCallQuartelyDispensation(txtMinimumDaysLate,
                         txtMaximumDaysLate, sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));

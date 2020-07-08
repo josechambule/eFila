@@ -53,6 +53,8 @@ public class MissedAppointmentsDTExcel  implements IRunnableWithProgress {
         try {
             ConexaoJDBC con = new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             faultyQuartelyLayOffs = con.lostToFollowupFaultyQuartelyLayOff(txtMinimumDaysLate, txtMaximumDaysLate,
                     sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
 

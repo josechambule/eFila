@@ -55,6 +55,8 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
             ConexaoJDBC con=new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             livroRegistoDiarios = con.getLivroRegistoDiarioXLS(inicio, manter,alterar, sdf.format(theStartDate), sdf.format(theEndDate));
 
             if(livroRegistoDiarios.size() > 0) {

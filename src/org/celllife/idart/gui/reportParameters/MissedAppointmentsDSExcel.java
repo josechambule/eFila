@@ -48,6 +48,8 @@ public class MissedAppointmentsDSExcel  implements IRunnableWithProgress {
         try {
             ConexaoJDBC con = new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             lostToFollowupFaultySemiAnnual = con.lostToFollowupFaultySemiAnnual(txtMinimumDaysLate, txtMaximumDaysLate,
                     sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
 

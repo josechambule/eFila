@@ -22,12 +22,14 @@ package org.celllife.idart.gui.reportParameters;
 import model.manager.reports.MissedAppointmentsReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
@@ -35,6 +37,8 @@ import org.eclipse.swt.widgets.*;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,6 +64,8 @@ public class MissedAppointments extends GenericReportGui {
 
 	private SWTCalendar swtCal;
 
+	private final Shell parent;
+
 	/**
 	 * Constructor
 	 * 
@@ -71,6 +77,7 @@ public class MissedAppointments extends GenericReportGui {
 	public MissedAppointments(Shell parent, boolean activate) {
 		super(parent, GenericReportGuiInterface.REPORTTYPE_CLINICMANAGEMENT,
 				activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -289,6 +296,97 @@ public class MissedAppointments extends GenericReportGui {
 
 	}
 
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+
+		boolean viewReport = true;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+
+		ConexaoJDBC con = new ConexaoJDBC();
+
+		int max = 0;
+		int min = 0;
+
+		if (cmbClinic.getText().equals("")) {
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			missing.setText("Nenhuma US selecionada");
+			missing.setMessage("Nenhuma US selecionada. Por favor selecione a Unidade Sanitaria.");
+			missing.open();
+			viewReport = false;
+		}
+
+
+		if (txtMinimumDaysLate.getText().equals("") || txtMaximumDaysLate.getText().equals("")) {
+			MessageBox incorrectData = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			incorrectData.setText("Informacao Invalida");
+			incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+			incorrectData.open();
+			txtMinimumDaysLate.setText("");
+			txtMinimumDaysLate.setFocus();
+			viewReport = false;
+		} else if (!txtMinimumDaysLate.getText().equals("") && !txtMaximumDaysLate.getText().equals("")) {
+
+			try {
+
+				min = Integer.parseInt(txtMinimumDaysLate.getText());
+				max = Integer.parseInt(txtMaximumDaysLate.getText());
+
+				if ((min < 0) || (max < 0)) {
+					MessageBox incorrectData = new MessageBox(getShell(),
+							SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Informacao Invalida");
+					incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+					incorrectData.open();
+					txtMinimumDaysLate.setText("");
+					txtMinimumDaysLate.setFocus();
+					viewReport = false;
+				}
+
+				if (min >= max) {
+					MessageBox incorrectData = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+					incorrectData.setText("Informacao Invalida");
+					incorrectData.setMessage("O Minimo dia deve ser menor que o maximo dia.");
+					incorrectData.open();
+					txtMinimumDaysLate.setFocus();
+					viewReport = false;
+				}
+
+			} catch (NumberFormatException nfe) {
+				MessageBox incorrectData = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+				incorrectData.setText("Informacao Invalida");
+				incorrectData.setMessage("Os dias Maximo e Minimo devem ser numeros.");
+				incorrectData.open();
+				txtMinimumDaysLate.setText("");
+				txtMinimumDaysLate.setFocus();
+				viewReport = false;
+			}
+		}
+
+		if (viewReport) {
+			String	reportNameFile = "Reports/FaltosoAbandonoLevantamentoARVCompleto.xls";
+			try {
+				MissedAppointmentsExcel op = new MissedAppointmentsExcel(swtCal, parent, reportNameFile, txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText());
+				new ProgressMonitorDialog(parent).run(true, true, op);
+
+				if (op.getList() == null ||
+						op.getList().size() <= 0) {
+					MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * This method is called when the user presses "Close" button
 	 * 
@@ -303,8 +401,5 @@ public class MissedAppointments extends GenericReportGui {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
-	@Override
-	protected void cmdViewReportXlsWidgetSelected() {
-		
-	}
+
 }

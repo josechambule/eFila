@@ -45,6 +45,8 @@ public class DispensaSemestralExcel implements IRunnableWithProgress {
         try {
             ConexaoJDBC con = new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             Map<String, Object> map = new HashMap<>();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
