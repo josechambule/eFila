@@ -987,8 +987,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
         if (!isAddnotUpdate) {
@@ -1216,8 +1216,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
 
@@ -1500,8 +1500,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
         // Bug iDART-86
@@ -2392,8 +2392,8 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
         if (!isSaveRequired())

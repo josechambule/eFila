@@ -17,7 +17,7 @@ public class CentralizationProperties {
 
     public static String centralized_server_url = "http://localhost:3000";
 
-    public static String tipo_farmacia = "U";
+    public static String pharmacy_type = "U";
 
     public static String rest_access_username = "postgres";
 
@@ -52,7 +52,7 @@ public class CentralizationProperties {
 
         centralization = setStringProperty("centralization");
         centralized_server_url = setStringProperty("centralized_server_url");
-        tipo_farmacia = setStringProperty("tipo_farmacia");
+        pharmacy_type = setStringProperty("pharmacy_type");
         rest_access_username = setStringProperty("rest_access_username");
         rest_access_password = setStringProperty("rest_access_password");
         location = setStringProperty("location");
@@ -66,7 +66,7 @@ public class CentralizationProperties {
         sb.append("\n");
         sb.append("centralized_server_url=" + centralized_server_url);
         sb.append("\n");
-        sb.append("tipo_farmacia=" + tipo_farmacia);
+        sb.append("pharmacy_type=" + pharmacy_type);
         sb.append("\n");
         sb.append("rest_access_username=" + rest_access_username);
         sb.append("\n");

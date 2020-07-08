@@ -127,21 +127,14 @@ public class ApiAuthRest {
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestGetAll(String URLPath) throws Exception {
-//        String URL = URLBase + URLPath;
+    public static HttpResponse postgrestRequestGetAll(String URLPath, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse response =  null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
-      //  httpclient.getParams().setParameter("http.socket.timeout", new Integer(1000));
-      //  httpclient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
         try {
             HttpGet httpGet = new HttpGet(URL);
 
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpGet);
-//            httpGet.setHeader(authorizationHeader);
-//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            httpGet.setHeader("Authorization"," Bearer "+jwtoken);
 
             System.out.println("GET Executing request: " + httpGet.getRequestLine());
             response = httpclient.execute(httpGet);
@@ -152,8 +145,7 @@ public class ApiAuthRest {
         return response;
     }
 
-    public static StringBuilder postgrestRequestGetBuffer(String URLPath) throws Exception {
-//        String URL = URLBase + URLPath;
+    public static StringBuilder postgrestRequestGetBuffer(String URLPath, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse response =  null;
         BufferedReader reader = null;
@@ -164,18 +156,14 @@ public class ApiAuthRest {
         try {
             HttpGet httpGet = new HttpGet(URL);
 
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpGet);
-//            httpGet.setHeader(authorizationHeader);
-//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            httpGet.setHeader("Authorization"," Bearer "+jwtoken);
 
             System.out.println("GET Executing request: " + httpGet.getRequestLine());
             response = httpclient.execute(httpGet);
 
             reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8));
 
-             str = new StringBuilder();
+            str = new StringBuilder();
 
             while ((line = reader.readLine()) != null) {
                 str.append(line + "\n");
@@ -187,22 +175,46 @@ public class ApiAuthRest {
     }
 
 
+    public static StringBuilder postgrestRequestPostBuffer(String URLPath, StringEntity input) throws Exception {
+        String URL = URLPath;
+        HttpResponse response =  null;
+        BufferedReader reader = null;
+        String line = null;
+        StringBuilder str = null;
+
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        try {
+            HttpPost httpPost = new HttpPost(URL);
+            httpPost.setEntity(input);
+            System.out.println("GET Executing request: " + httpPost.getRequestLine());
+            response = httpclient.execute(httpPost);
+
+            reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8));
+
+            str = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                str.append(line + "\n");
+            }
+        } finally {
+            httpclient.getConnectionManager().shutdown();
+        }
+        return str;
+    }
+
     /**
      * POSTGREST HTTP GET
      * @param URLPath
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestGet(String URLPath) throws Exception {
-        String URL = URLBase + URLPath;
+    public static HttpResponse postgrestRequestGet(String URLPath,String jwtoken) throws Exception {
+        String URL = URLPath;
         HttpResponse response = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
             HttpGet httpGet = new HttpGet(URL);
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpGet);
-//            httpGet.setHeader(authorizationHeader);
+            httpGet.setHeader("Authorization"," Bearer "+jwtoken);
             response = httpclient.execute(httpGet);
 
             System.out.println("GET Executing request: " + httpGet.getRequestLine());
@@ -221,16 +233,13 @@ public class ApiAuthRest {
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestPost(String URLPath, StringEntity input) throws Exception {
+    public static HttpResponse postgrestRequestPost(String URLPath, StringEntity input, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse responseRequest = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPost httpPost = new HttpPost(URL);
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpPost);
-//            httpPost.setHeader(authorizationHeader);
+            httpPost.setHeader("Authorization"," Bearer "+jwtoken);
             httpPost.setEntity(input);
             responseRequest = httpclient.execute(httpPost);
 
@@ -251,16 +260,13 @@ public class ApiAuthRest {
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestPatch(String URLPath, StringEntity input) throws Exception {
+    public static HttpResponse postgrestRequestPatch(String URLPath, StringEntity input, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse responseRequest = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPatch httpPatch = new HttpPatch(URL);
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpPatch);
-//            httpPatch.setHeader(authorizationHeader);
+            httpPatch.setHeader("Authorization"," Bearer "+jwtoken);
             httpPatch.setEntity(input);
             responseRequest = httpclient.execute(httpPatch);
 
@@ -281,16 +287,13 @@ public class ApiAuthRest {
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestPut(String URLPath, StringEntity input) throws Exception {
+    public static HttpResponse postgrestRequestPut(String URLPath, StringEntity input, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse responseRequest = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
             HttpPut httpPut = new HttpPut(URL);
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpPut);
-//            httpPut.setHeader(authorizationHeader);
+            httpPut.setHeader("Authorization"," Bearer "+jwtoken);
             httpPut.setEntity(input);
             responseRequest = httpclient.execute(httpPut);
 
@@ -310,17 +313,13 @@ public class ApiAuthRest {
      * @return
      * @throws Exception
      */
-    public static HttpResponse postgrestRequestDelete(String URLPath) throws Exception {
+    public static HttpResponse postgrestRequestDelete(String URLPath, String jwtoken) throws Exception {
         String URL = URLPath;
         HttpResponse responseRequest = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
             HttpDelete httpDelete = new HttpDelete(URL);
-
-//            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-//            BasicScheme scheme = new BasicScheme();
-//            Header authorizationHeader = scheme.authenticate(credentials, httpDelete);
-//            httpDelete.setHeader(authorizationHeader);
+            httpDelete.setHeader("Authorization"," Bearer "+jwtoken);
             responseRequest = httpclient.execute(httpDelete);
 
             System.out.println("DELETE Executing request: " + httpDelete.getRequestLine());

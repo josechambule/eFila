@@ -108,8 +108,8 @@ public class GeneralAdmin extends GenericAdminGui {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
         // create the 4 groups
@@ -146,7 +146,7 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicClinics.setImage(ResourceUtils.getImage(iDartImage.CLINIC));
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("on")
-                && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+                && CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
 
             // btnClinicsAdd
             Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
@@ -258,8 +258,8 @@ public class GeneralAdmin extends GenericAdminGui {
 
         if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
             checkOpenmrs = true;
-        else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             checkOpenmrs = false;
 
         // grpDrugs
@@ -279,7 +279,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // btnDrugsAdd
         Button btnDrugsAdd = new Button(grpDrugs, SWT.NONE);
-        if (!checkOpenmrs && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+        if (!checkOpenmrs && CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
             btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.drug.title")); //$NON-NLS-1$
         } else {
             btnDrugsAdd.setText(Messages.getString("GeneralAdmin.button.import.drug.title")); //$NON-NLS-1$
@@ -293,7 +293,7 @@ public class GeneralAdmin extends GenericAdminGui {
             @Override
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
-                if (!finalCheckOpenmrs && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+                if (!finalCheckOpenmrs && CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
                     cmd_drugsAdd();
                 else
                     cmd_drugImport();
@@ -350,7 +350,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // btnRegimenAdd
         Button btnRegimenAdd = new Button(grpDrugGroups, SWT.NONE);
-        if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.regimen.title")); //$NON-NLS-1$
         else
             btnRegimenAdd.setText(Messages.getString("GeneralAdmin.button.import.regimen.title")); //$NON-NLS-1$
@@ -361,7 +361,7 @@ public class GeneralAdmin extends GenericAdminGui {
             @Override
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
-                if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+                if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
                     cmd_regimenAdd();
                 else
                     cmd_regimenImport();

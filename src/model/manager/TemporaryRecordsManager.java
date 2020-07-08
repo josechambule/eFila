@@ -37,7 +37,7 @@ public class TemporaryRecordsManager {
                     System.out.println("Erro 1: " + e.getMessage());
                 }
                 //Para farmac Insere dispensas para US
-                if (CentralizationProperties.centralization.equalsIgnoreCase("on") && CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")) {
+                if (CentralizationProperties.centralization.equalsIgnoreCase("on") && CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
                     savePackageDrugInfosFarmac(s, pdi);
                 }
             }

@@ -269,7 +269,7 @@ public class PharmacyApplication {
                 Transaction tx = sess.beginTransaction();
 
                 try {
-                    if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P")) {
+                    if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
                         RestFarmac.setCentralPatients(sess);
                         RestFarmac.setCentralDispenses(sess);
                     } else {
@@ -277,11 +277,11 @@ public class PharmacyApplication {
                             System.out.println("Servidor Rest offline, verifique a sua internet ou contacte o administrador");
                         else {
                             Clinic mainClinic = AdministrationManager.getMainClinic(sess);
-                            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
+                            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
                                 RestFarmac.restPostPatients(sess, url);
                                 RestFarmac.restGeAllDispenses(url, mainClinic);
                                 RestFarmac.setDispensesFromRest(sess);
-                            } else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")) {
+                            } else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
                                 RestFarmac.restGeAllPatients(url, mainClinic);
                                 RestFarmac.setPatientsFromRest(sess);
                                 RestFarmac.restPostDispenses(sess, url);
@@ -470,7 +470,7 @@ public class PharmacyApplication {
             LocalObjects.mainClinic = AdministrationManager
                     .getMainClinic(hSession);
 
-            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("U")) {
+            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
                 if (LocalObjects.mainClinic.getUuid() != JdbcProperties.location) {
                     LocalObjects.mainClinic.setUuid(JdbcProperties.location);
                     AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);

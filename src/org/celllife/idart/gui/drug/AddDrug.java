@@ -583,7 +583,7 @@ public class AddDrug extends GenericFormGui {
             loadDrugDetails();
             btnSearch.setEnabled(false);
 
-            if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
                 enableFields(true);
             else {
                 enableFields(false);

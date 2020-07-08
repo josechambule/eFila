@@ -444,8 +444,8 @@ public class Login implements GenericGuiInterface {
 
             if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
                 checkOpenmrs = true;
-            else if (CentralizationProperties.tipo_farmacia.equalsIgnoreCase("F")
-                    || CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+            else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                    || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
                 checkOpenmrs = false;
 
             Clinic theClinic = AdministrationManager.getClinicbyName(hSession,

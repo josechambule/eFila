@@ -39,7 +39,7 @@ public class DadosPacienteFarmac {
 
         Clinic clinic = null;
 
-        if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        if(CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             clinic = AdministrationManager.getClinicbyUuid(sess,patientSync.getMainclinicuuid());
 
         if(clinic == null)
@@ -223,7 +223,7 @@ public class DadosPacienteFarmac {
 
         Clinic clinic = null;
 
-        if(CentralizationProperties.tipo_farmacia.equalsIgnoreCase("P"))
+        if(CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
             clinic = AdministrationManager.getClinicbyUuid(sess,syncTempDispense.getMainclinicuuid());
 
         if(clinic == null)
