@@ -19,14 +19,10 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.util.List;
-import java.util.Vector;
-
 import model.manager.PatientManager;
 import model.manager.SearchManager;
 import model.manager.reports.PackageTrackingReport;
 import model.nonPersistent.PatientIdAndName;
-
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -37,13 +33,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
+
+import java.util.List;
+import java.util.Vector;
 
 /**
  */

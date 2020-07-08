@@ -19,12 +19,8 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import model.manager.AdministrationManager;
 import model.manager.reports.LostToFollowUpReturnedReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -44,6 +40,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  */

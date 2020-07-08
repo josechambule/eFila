@@ -19,11 +19,6 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import model.manager.AdministrationManager;
 import model.manager.reports.MiaReportMISAU;
 import org.apache.log4j.Logger;
@@ -46,6 +41,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  */

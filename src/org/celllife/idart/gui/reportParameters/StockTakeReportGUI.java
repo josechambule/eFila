@@ -22,7 +22,6 @@ package org.celllife.idart.gui.reportParameters;
 import model.manager.AdministrationManager;
 import model.manager.StockManager;
 import model.manager.reports.StockTakeReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
@@ -35,12 +34,7 @@ import org.celllife.idart.gui.utils.iDartImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 /**
  */

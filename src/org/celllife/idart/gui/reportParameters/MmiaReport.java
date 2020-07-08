@@ -19,16 +19,8 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import model.manager.AdministrationManager;
-import model.manager.exports.columns.DrugsDispensedEnum;
 import model.manager.reports.MiaReport;
-import model.manager.reports.MonthlyStockOverviewReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
@@ -49,6 +41,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  */

@@ -19,30 +19,10 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.FollowupFaulty;
-import model.manager.reports.MissedAppointmentsReport;
 import model.manager.reports.MissedAppointmentsReportDT;
-
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
@@ -51,21 +31,27 @@ import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.platform.GenericReportGuiInterface;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_MISSED_APPOINTMENTS_DT;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.awt.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  */
@@ -415,127 +401,24 @@ public class MissedAppointmentsDT extends GenericReportGui {
 		}
 		
 		if (viewReport) {
-			
-			faultyQuartelyLayOffs = new ArrayList<FollowupFaulty>();
-			
+
+			String reportNameFile = "Reports/FaltososAbandonosDT.xls";
 			try {
-				faultyQuartelyLayOffs = con.lostToFollowupFaultyQuartelyLayOff(txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText(), 
-						sdf.format(swtCal.getCalendar().getTime()), String.valueOf(LocalObjects.mainClinic.getId()));
-				
-				if(faultyQuartelyLayOffs.size() > 0) {
-					
-					FileInputStream currentXls = new FileInputStream("Reports/FaltososAbandonosDT.xls");
-					
-					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
-					
-					HSSFSheet sheet = workbook.getSheetAt(0);
-					
-					HSSFCellStyle cellStyle = workbook.createCellStyle();
-					cellStyle.setBorderBottom(BorderStyle.THIN);
-					cellStyle.setBorderTop(BorderStyle.THIN);
-					cellStyle.setBorderLeft(BorderStyle.THIN);
-					cellStyle.setBorderRight(BorderStyle.THIN);
-					cellStyle.setAlignment(HorizontalAlignment.CENTER);
-					
-					HSSFCellStyle cellFontStyle = workbook.createCellStyle();
-					HSSFFont font = workbook.createFont();
-					font.setFontHeightInPoints((short) 14); 
-					cellFontStyle.setFont(font );
-											
-					HSSFRow healthFacility = sheet.getRow(10); 
-					HSSFCell healthFacilityCell = healthFacility.createCell(2); 
-					healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
-					healthFacilityCell.setCellStyle(cellStyle); 
-					
-					HSSFRow reportPeriod = sheet.getRow(10);
-					HSSFCell reportPeriodCell = reportPeriod.createCell(7);
-					reportPeriodCell.setCellValue(sdf.format(swtCal.getCalendar().getTime()));
-					reportPeriodCell.setCellStyle(cellStyle); 
+				MissedAppointmentsDTExcel op = new MissedAppointmentsDTExcel(swtCal, parent, reportNameFile, txtMinimumDaysLate.getText(), txtMaximumDaysLate.getText());
+				new ProgressMonitorDialog(parent).run(true, true, op);
 
-					HSSFRow reportYear = sheet.getRow(11);
-					HSSFCell reportYearCell = reportYear.createCell(7);
-					reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
-					reportYearCell.setCellStyle(cellStyle);
-					
-					HSSFRow minMax = sheet.getRow(8);
-					HSSFCell minMaxCell = minMax.createCell(4);
-					minMaxCell.setCellValue("Este relatório mostra os pacientes \nque faltaram entre " + txtMinimumDaysLate.getText() + " e " + txtMaximumDaysLate.getText() + " dias");
-					minMaxCell.setCellStyle(cellFontStyle); 
-
-					  for(int i=14; i<= sheet.getLastRowNum(); i++) 
-					  { 
-						HSSFRow row = sheet.getRow(i);
-					  	deleteRow(sheet,row);  
-					  }
-					 
-					  out = new FileOutputStream(new File("Reports/FaltososAbandonosDT.xls"));
-					  workbook.write(out); 
-					
-					int rowNum = 14;
-					
-					for (FollowupFaulty xls : faultyQuartelyLayOffs) { 
-						
-						HSSFRow row = sheet.createRow(rowNum++);
-						
-						HSSFCell createCellNid = row.createCell(1);
-						createCellNid.setCellValue(xls.getPatientIdentifier());
-						createCellNid.setCellStyle(cellStyle); 
-						
-						HSSFCell createCellNome = row.createCell(2);
-						createCellNome.setCellValue(xls.getNome());
-						createCellNome.setCellStyle(cellStyle);
-
-						HSSFCell createCellDataQueFaltouLevantamento = row.createCell(3);
-						createCellDataQueFaltouLevantamento.setCellValue(xls.getDataQueFaltouLevantamento());
-						createCellDataQueFaltouLevantamento.setCellStyle(cellStyle);
-
-						HSSFCell createCellDataIdentificouAbandonoTarv = row.createCell(4); 
-						createCellDataIdentificouAbandonoTarv.setCellValue(xls.getDataIdentificouAbandonoTarv());
-						createCellDataIdentificouAbandonoTarv.setCellStyle(cellStyle);
-						
-						HSSFCell emptyCell_1 = row.createCell(5); 
-						emptyCell_1.setCellValue("");
-						emptyCell_1.setCellStyle(cellStyle);
-						
-						HSSFCell createCellEfectuouLigacao = row.createCell(6); 
-						createCellEfectuouLigacao.setCellValue(xls.getDataRegressouUnidadeSanitaria());
-						createCellEfectuouLigacao.setCellStyle(cellStyle);
-						
-						HSSFCell emptyCell_2 = row.createCell(7); 
-						emptyCell_2.setCellValue("");
-						emptyCell_2.setCellStyle(cellStyle);
-					}
-					
-					currentXls.close();
-					
-					FileOutputStream outputStream = new FileOutputStream(new File("Reports/FaltososAbandonosDT.xls")); 
-					workbook.write(outputStream);
-					workbook.close();
-					
-					Desktop.getDesktop().open(new File("Reports/FaltososAbandonosDT.xls"));
-					
-				} else {
-					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
+				if (op.getList() == null ||
+						op.getList().size() <= 0) {
+					MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
 					mNoPages.setText("O relatório não possui páginas");
-					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.\n \n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 					mNoPages.open();
 				}
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void deleteRow(HSSFSheet sheet, Row row) {
-		int lastRowNum = sheet.getLastRowNum();
-		if (lastRowNum > 0) {
-			int rowIndex = row.getRowNum();
-			HSSFRow removingRow = sheet.getRow(rowIndex);
-			if (removingRow != null) {
-				sheet.removeRow(removingRow);
+
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
 			}
 		}
 	}

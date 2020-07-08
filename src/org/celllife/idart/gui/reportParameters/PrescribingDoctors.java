@@ -19,11 +19,7 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import model.manager.reports.PrescribingDoctorsReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -37,6 +33,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  */
