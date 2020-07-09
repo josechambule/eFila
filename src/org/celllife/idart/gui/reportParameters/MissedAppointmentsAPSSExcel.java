@@ -54,6 +54,8 @@ public class MissedAppointmentsAPSSExcel implements IRunnableWithProgress {
 
             ConexaoJDBC con=new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             if (chkBtnALL) {
 
                 chamadaTelefonicaXLSs = con.getMissedAppointmentsReport(txtMinimumDaysLate,txtMaximumDaysLate,

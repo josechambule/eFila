@@ -55,6 +55,8 @@ public class HistoricoLevantamentosExcel implements IRunnableWithProgress {
 
             ConexaoJDBC con=new ConexaoJDBC();
 
+            monitor.beginTask("Por Favor, aguarde ... ", 1);
+
             historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(inicio, manter,alterar, sdf.format(theStartDate), sdf.format(theEndDate));
 
             if(historicoLevantamentoXLS.size() > 0) {

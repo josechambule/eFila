@@ -106,8 +106,8 @@ public class LivroRegistoDiario extends GenericReportGui {
     private void createMyGroups() {
 
 
-        createGrpDateInfo();
-    }
+		createGrpDateInfo();
+	}
 
     /**
      * This method initializes compHeader

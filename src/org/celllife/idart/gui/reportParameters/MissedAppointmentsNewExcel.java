@@ -1,8 +1,6 @@
 package org.celllife.idart.gui.reportParameters;
 
-import model.manager.reports.LivroRegistoDiarioXLS;
-import model.manager.reports.SecondLine;
-import model.manager.reports.SecondLinePatients;
+import model.manager.reports.AbsenteeForSupportCall;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -17,50 +15,48 @@ import org.vafada.swtcalendar.SWTCalendar;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-public class SecondLineExcel implements IRunnableWithProgress {
+public class MissedAppointmentsNewExcel implements IRunnableWithProgress {
 
-    private List<SecondLinePatients> secondLinePatients;
+    public List<AbsenteeForSupportCall> absenteeList;
     private final Shell parent;
     private FileOutputStream out = null;
     private SWTCalendar swtCal;
     private String reportFileName;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    private Date theStartDate;
-    private Date theEndDate;
+    String txtMinimumDaysLate;
+    String txtMaximumDaysLate;
+
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public SecondLineExcel( Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
+    public MissedAppointmentsNewExcel(SWTCalendar swtCal,
+                                                 Shell parent, String reportFileName, String min, String max) {
         this.parent = parent;
         this.swtCal = swtCal;
         this.reportFileName = reportFileName;
-        this.theStartDate = theStartDate;
-        this.theEndDate = theEndDate;
+        this.txtMinimumDaysLate = min;
+        this.txtMaximumDaysLate = max;
     }
 
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
-
-            ConexaoJDBC con=new ConexaoJDBC();
+            ConexaoJDBC con = new ConexaoJDBC();
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            secondLinePatients = con.getSecondLinePatients(sdf.format(theStartDate), sdf.format(theEndDate));
+            absenteeList = con.getAbsentee(txtMinimumDaysLate,
+                        txtMaximumDaysLate, swtCal.getCalendar().getTime(), String.valueOf(LocalObjects.mainClinic.getId()));
 
-            if(secondLinePatients.size() > 0) {
-                // Tell the user what you are doing
-                monitor.beginTask("Carregando a lista... ", secondLinePatients.size());
+            if (absenteeList.size() > 0) {
 
-                FileInputStream currentXls = new FileInputStream("Reports/SegundaLinha.xls");
+                monitor.beginTask("Gerando a Lista ... ", absenteeList.size());
 
+                FileInputStream currentXls = new FileInputStream(reportFileName);
                 HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
-
                 HSSFSheet sheet = workbook.getSheetAt(0);
 
                 HSSFCellStyle cellStyle = workbook.createCellStyle();
@@ -70,6 +66,10 @@ public class SecondLineExcel implements IRunnableWithProgress {
                 cellStyle.setBorderRight(BorderStyle.THIN);
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
 
+                HSSFCellStyle cellFontStyle = workbook.createCellStyle();
+                HSSFFont font = workbook.createFont();
+                font.setFontHeightInPoints((short) 14);
+                cellFontStyle.setFont(font);
 
                 HSSFRow healthFacility = sheet.getRow(10);
                 HSSFCell healthFacilityCell = healthFacility.createCell(2);
@@ -77,19 +77,23 @@ public class SecondLineExcel implements IRunnableWithProgress {
                 healthFacilityCell.setCellStyle(cellStyle);
 
                 HSSFRow reportPeriod = sheet.getRow(10);
-                HSSFCell reportPeriodCell = reportPeriod.createCell(6);
-                reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
+                HSSFCell reportPeriodCell = reportPeriod.createCell(9);
+                reportPeriodCell.setCellValue(sdf.format(swtCal.getCalendar().getTime()));
                 reportPeriodCell.setCellStyle(cellStyle);
 
                 HSSFRow reportYear = sheet.getRow(11);
-                HSSFCell reportYearCell = reportYear.createCell(6);
-                reportYearCell.setCellValue(sdfYear.format(theStartDate));
+                HSSFCell reportYearCell = reportYear.createCell(9);
+                reportYearCell.setCellValue(sdfYear.format(swtCal.getCalendar().getTime()));
                 reportYearCell.setCellStyle(cellStyle);
 
-                for(int i=14; i<= sheet.getLastRowNum(); i++)
-                {
-                    Row row = sheet.getRow(i);
-                    deleteRow(sheet,row);
+                HSSFRow minMax = sheet.getRow(8);
+                HSSFCell minMaxCell = minMax.createCell(4);
+                minMaxCell.setCellValue("Este relatório mostra os pacientes que faltaram entre " + txtMinimumDaysLate + " e " + txtMaximumDaysLate + " dias");
+                minMaxCell.setCellStyle(cellFontStyle);
+
+                for (int i = 14; i <= sheet.getLastRowNum(); i++) {
+                    HSSFRow row = sheet.getRow(i);
+                    deleteRow(sheet, row);
                 }
 
                 out = new FileOutputStream(new File(reportFileName));
@@ -97,7 +101,7 @@ public class SecondLineExcel implements IRunnableWithProgress {
 
                 int rowNum = 14;
                 int i = 0;
-                for (SecondLinePatients xls : secondLinePatients) {
+                for (AbsenteeForSupportCall xls : absenteeList) {
                     i++;
                     HSSFRow row = sheet.createRow(rowNum++);
 
@@ -105,45 +109,48 @@ public class SecondLineExcel implements IRunnableWithProgress {
                     createCellNid.setCellValue(xls.getPatientIdentifier());
                     createCellNid.setCellStyle(cellStyle);
 
-
                     HSSFCell createCellNome = row.createCell(2);
                     createCellNome.setCellValue(xls.getNome());
                     createCellNome.setCellStyle(cellStyle);
 
-                    HSSFCell createCellAge = row.createCell(3);
-                    createCellAge.setCellValue(xls.getIdade());
-                    createCellAge.setCellStyle(cellStyle);
+                    HSSFCell createCellDataQueFaltouLevantamento = row.createCell(3);
+                    createCellDataQueFaltouLevantamento.setCellValue(xls.getDataQueFaltouLevantamento());
+                    createCellDataQueFaltouLevantamento.setCellStyle(cellStyle);
 
-                    HSSFCell createCellTherapeuticScheme = row.createCell(4);
-                    createCellTherapeuticScheme.setCellValue(xls.getTherapeuticScheme());
-                    createCellTherapeuticScheme.setCellStyle(cellStyle);
+                    HSSFCell createCellDataIdentificouAbandonoTarv = row.createCell(4);
+                    createCellDataIdentificouAbandonoTarv.setCellValue(xls.getDataIdentificouAbandonoTarv());
+                    createCellDataIdentificouAbandonoTarv.setCellStyle(cellStyle);
 
-                    HSSFCell createCellLine = row.createCell(5);
-                    createCellLine.setCellValue(xls.getLine());
-                    createCellLine.setCellStyle(cellStyle);
+                    HSSFCell createCellEfectuouLigacao = row.createCell(5);
+                    createCellEfectuouLigacao.setCellValue("");
+                    createCellEfectuouLigacao.setCellStyle(cellStyle);
 
-                    HSSFCell createCellArtType = row.createCell(6);
-                    createCellArtType.setCellValue(xls.getArtType());
-                    createCellArtType.setCellStyle(cellStyle);
+                    HSSFCell createCellDataRegressoUnidadeSanitaria = row.createCell(6);
+                    createCellDataRegressoUnidadeSanitaria.setCellValue(xls.getDataRegressoUnidadeSanitaria());
+                    createCellDataRegressoUnidadeSanitaria.setCellStyle(cellStyle);
 
-                    // Optionally add subtasks
-                    monitor.subTask("Carregando : " + i + " de " + secondLinePatients.size() + "...");
+                    HSSFCell createCellChamadaEfectuada = row.createCell(7);
+                    createCellChamadaEfectuada.setCellValue("");
+                    createCellChamadaEfectuada.setCellStyle(cellStyle);
+
+                    HSSFCell createCellContacto = row.createCell(8);
+                    createCellContacto.setCellValue(xls.getContacto());
+                    createCellContacto.setCellStyle(cellStyle);
+
+                    HSSFCell createCellFaltososSemana = row.createCell(9);
+                    createCellFaltososSemana.setCellValue("");
+                    createCellFaltososSemana.setCellStyle(cellStyle);
+
+                    monitor.subTask("Carregando : " + i + " de " + absenteeList.size() + "...");
 
                     Thread.sleep(5);
 
-                    // Tell the monitor that you successfully finished one item of "workload"-many
                     monitor.worked(1);
-                    // Check if the user pressed "cancel"
                     if (monitor.isCanceled()) {
                         monitor.done();
                         return;
                     }
                 }
-
-                for (int i0 = 1; i0 < SecondLine.class.getClass().getDeclaredFields().length; i0++) {
-                    sheet.autoSizeColumn(i0);
-                }
-
                 monitor.done();
                 currentXls.close();
 
@@ -161,8 +168,8 @@ public class SecondLineExcel implements IRunnableWithProgress {
 
     }
 
-    public List<SecondLinePatients> getList(){
-        return this.secondLinePatients;
+    public List<AbsenteeForSupportCall> getList() {
+        return this.absenteeList;
     }
 
     private void deleteRow(HSSFSheet sheet, Row row) {
@@ -175,5 +182,4 @@ public class SecondLineExcel implements IRunnableWithProgress {
             }
         }
     }
-
 }
