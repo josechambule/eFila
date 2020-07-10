@@ -3949,6 +3949,57 @@ public class ConexaoJDBC {
 
     }
 
+    public List<HistoricoLevantamentoXLS> getReferralHistoricoLevantamentosXLS(String startDate, String endDate) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select distinct patientid as nid, " +
+                "patientfirstname ||' '|| patientlastname as nome, " +
+                "reasonforupdate as tipoPaciente, " +
+                "regimenome as regimeTerapeutico, " +
+                "CASE " +
+                "WHEN dispensatrimestral = 1 THEN 'DT' " +
+                "WHEN dispensasemestral = 1 THEN 'DS' " +
+                "ELSE 'DM' " +
+                "        END AS tipodispensa, " +
+                "pg_catalog.date(pickupdate) as dataLevantamento, " +
+                "to_date(dateexpectedstring, 'DD-Mon-YYYY') as dataProximoLev, " +
+                "mainclinicname as referencia " +
+                "from sync_temp_dispense " +
+                "where pg_catalog.date(pickupdate) >= '" + startDate + "'::date " +
+                "AND pg_catalog.date(pickupdate) < ('" + endDate + "'::date + INTERVAL '1 day') " +
+                "GROUP BY 1,2,3,4,5,6,7,8 " +
+                "order by 6";
+
+        List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+                HistoricoLevantamentoXLS levantamentoXLS = new HistoricoLevantamentoXLS();
+                levantamentoXLS.setPatientIdentifier(rs.getString("nid"));
+                levantamentoXLS.setNome(rs.getString("nome"));
+                levantamentoXLS.setApelido(rs.getString("apelido"));
+                levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
+                levantamentoXLS.setRegimeTerapeutico(rs.getString("regime"));
+                levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
+                levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
+                levantamentoXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+                levantamentoXLS.setClinic(rs.getString("referencia"));
+
+                levantamentoXLSs.add(levantamentoXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return levantamentoXLSs;
+
+    }
 
     /**
      * @param i

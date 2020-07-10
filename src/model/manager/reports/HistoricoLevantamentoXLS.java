@@ -18,6 +18,8 @@ public class HistoricoLevantamentoXLS {
 	
 	private String dataProximoLevantamento;
 
+	private String clinic;
+
 	public String getPatientIdentifier() {
 		return patientIdentifier;
 	}
@@ -80,5 +82,12 @@ public class HistoricoLevantamentoXLS {
 
 	public void setDataProximoLevantamento(String dataProximoLevantamento) {
 		this.dataProximoLevantamento = dataProximoLevantamento;
+	}
+	public String getClinic() {
+		return clinic;
+	}
+
+	public void setClinic(String clinic) {
+		this.clinic = clinic;
 	}
 }
