@@ -11,4 +11,5 @@ public interface iDARTReport {
 
 	public abstract void viewReport();
 
+	void viewReportExcel();
 }
