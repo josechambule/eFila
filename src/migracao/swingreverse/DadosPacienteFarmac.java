@@ -38,23 +38,39 @@ public class DadosPacienteFarmac {
         Set<PatientIdentifier> oldIdentifiers = new HashSet<>();
 
         Clinic clinic = null;
+        Session session = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
 
-
-        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
             clinic = AdministrationManager.getClinicbyUuid(sess, patientSync.getMainclinicuuid());
 
-        if (clinic == null) {
-            clinic = new Clinic();
-            clinic.setUuid(patientSync.getMainclinicuuid());
-            clinic.setClinicName(patientSync.getMainclinicname());
-            clinic.setMainClinic(false);
-            clinic.setDistrict("");
-            clinic.setProvince("");
-            clinic.setFacilityType("Unidade Sanitária");
-            clinic.setCode(patientSync.getPatientid().substring(0, 9));
-            AdministrationManager.saveClinic(sess, clinic);
-        }
-//          clinic = AdministrationManager.getMainClinic(sess);
+            if (clinic == null) {
+                try {
+                    clinic = new Clinic();
+                    clinic.setUuid(patientSync.getMainclinicuuid());
+                    clinic.setClinicName(patientSync.getMainclinicname());
+                    clinic.setMainClinic(false);
+                    clinic.setDistrict("");
+                    clinic.setProvince("");
+                    clinic.setSubDistrict("");
+                    clinic.setNotes("");
+                    clinic.setTelephone("");
+                    clinic.setFacilityType("Unidade Sanitária");
+                    clinic.setCode(patientSync.getPatientid().substring(0, 9));
+                    AdministrationManager.saveClinic(sess, clinic);
+                    tx.commit();
+                    session.flush();
+                    session.close();
+                } catch (Exception e) {
+                    if (tx != null) {
+                        tx.rollback();
+                        session.close();
+                    }
+                    System.out.println("Error :" + e);
+                }
+            }
+        } else
+            clinic = AdministrationManager.getMainClinic(sess);
 
         IdentifierType identifierType = AdministrationManager.getNationalIdentifierType(sess);
         AttributeType attributeType = PatientManager.getAttributeTypeObject(sess, "ARV Start Date");

@@ -476,6 +476,7 @@ public class PharmacyApplication {
                     AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
                 }
             }else {
+                if(CentralizationProperties.location != null && !CentralizationProperties.location.isEmpty() )
                 if (LocalObjects.mainClinic.getUuid() != CentralizationProperties.location) {
                     LocalObjects.mainClinic.setUuid(CentralizationProperties.location);
                     AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);

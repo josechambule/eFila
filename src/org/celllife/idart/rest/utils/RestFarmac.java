@@ -747,8 +747,11 @@ public class RestFarmac {
             for (SyncTempDispense dispense : syncTempDispenses) {
                 try {
                     Prescription prescription = DadosPacienteFarmac.getPatientPrescritionFarmac(dispense);
-                    DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
-                    dispense.setSyncstatus('E');
+                    if(prescription != null) {
+                        DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
+                        dispense.setSyncstatus('E');
+                    }else
+                        dispense.setSyncstatus('W');
                     AdministrationManager.saveSyncTempDispense(sess, dispense);
                     break;
                 } catch (Exception e) {
