@@ -39,11 +39,22 @@ public class DadosPacienteFarmac {
 
         Clinic clinic = null;
 
-        if(CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
-            clinic = AdministrationManager.getClinicbyUuid(sess,patientSync.getMainclinicuuid());
 
-        if(clinic == null)
-            clinic = AdministrationManager.getMainClinic(sess);
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+            clinic = AdministrationManager.getClinicbyUuid(sess, patientSync.getMainclinicuuid());
+
+        if (clinic == null) {
+            clinic = new Clinic();
+            clinic.setUuid(patientSync.getMainclinicuuid());
+            clinic.setClinicName(patientSync.getMainclinicname());
+            clinic.setMainClinic(false);
+            clinic.setDistrict("");
+            clinic.setProvince("");
+            clinic.setFacilityType("Unidade Sanitária");
+            clinic.setCode(patientSync.getPatientid().substring(0, 9));
+            AdministrationManager.saveClinic(sess, clinic);
+        }
+//          clinic = AdministrationManager.getMainClinic(sess);
 
         IdentifierType identifierType = AdministrationManager.getNationalIdentifierType(sess);
         AttributeType attributeType = PatientManager.getAttributeTypeObject(sess, "ARV Start Date");
@@ -223,10 +234,10 @@ public class DadosPacienteFarmac {
 
         Clinic clinic = null;
 
-        if(CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
-            clinic = AdministrationManager.getClinicbyUuid(sess,syncTempDispense.getMainclinicuuid());
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+            clinic = AdministrationManager.getClinicbyUuid(sess, syncTempDispense.getMainclinicuuid());
 
-        if(clinic == null)
+        if (clinic == null)
             clinic = AdministrationManager.getMainClinic(sess);
 
         User user = AdministrationManager.getUserByName(sess, "admin");

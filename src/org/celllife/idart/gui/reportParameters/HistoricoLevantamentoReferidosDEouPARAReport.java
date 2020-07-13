@@ -8,16 +8,19 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
 import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -132,6 +135,31 @@ public class HistoricoLevantamentoReferidosDEouPARAReport extends GenericReportG
         if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
             showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
             return;
+        }else
+        {
+            Date theStartDate = calendarStart.getCalendar().getTime();
+
+            Date theEndDate = calendarEnd.getCalendar().getTime();
+
+            String reportNameFile = "Reports/HistoricoLevantamentoPacientesReferidos.xls";
+            try {
+                HistoricoLevantamentoReferidosExcel op = new HistoricoLevantamentoReferidosExcel(parent, reportNameFile, theStartDate, theEndDate);
+                new ProgressMonitorDialog(parent).run(true, true, op);
+
+                if (op.getList() == null ||
+                        op.getList().size() <= 0) {
+                    MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+                    mNoPages.setText("O relatório não possui páginas");
+                    mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                    mNoPages.open();
+                }
+
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+
         }
 
     }
