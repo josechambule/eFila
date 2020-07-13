@@ -404,13 +404,38 @@ public class BalanceteDiario extends GenericReportGui {
 
     @Override
     protected void cmdViewReportXlsWidgetSelected() {
-        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(), cmbStockCenter.getText());
+
+        if (cmbStockCenter.getText().equals("")) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("No Pharmacy Was Selected");
+            missing.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        } else if (pharm == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("Pharmacy not found");
+            missing.setMessage("There is no pharmacy called '"
+                    + cmbStockCenter.getText()
+                    + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        } else if (localDrug == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("O medicamento nao foi seleccionado");
+            missing.setMessage("Nao existe nehum medicamento seleccionado '");
+            missing.open();
+
+        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
             showMessage(MessageDialog.ERROR, "End date before start date", "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
             return;
-        } else {
+        }else {
             String reportNameFile = "Reports/Balancete.xls";
             try {
-                BalanceteDiarioExcel op = new BalanceteDiarioExcel(parent, reportNameFile, LocalObjects.mainClinic, calendarStart.getCalendar().getTime(), calendarEnd.getCalendar().getTime(), localDrug);
+                BalanceteDiarioExcel op = new BalanceteDiarioExcel(parent, reportNameFile, pharm, calendarStart.getCalendar().getTime(), calendarEnd.getCalendar().getTime(), localDrug);
                 new ProgressMonitorDialog(parent).run(true, true, op);
 
                 if (op.getList() == null ||

@@ -106,7 +106,7 @@ drug.id
 
 from
 (select generate_series($P{monthStart}::date, $P{monthStart}::date, '1 day'::interval) searchdate, id
-from drug where id = 41287
+from drug where id = $P{id}
 ) as drug
 left join
 

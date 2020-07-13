@@ -3,6 +3,7 @@ package org.celllife.idart.gui.reportParameters;
 import model.manager.AdministrationManager;
 import model.manager.StockManager;
 import model.manager.reports.BalanceteDiarioXLS;
+import model.manager.reports.FichaStockXLS;
 import model.manager.reports.HistoricoLevantamentoXLS;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -29,9 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class BalanceteDiarioExcel implements IRunnableWithProgress {
+public class FichaStockExcel implements IRunnableWithProgress {
 
-    private List<BalanceteDiarioXLS> listBalanceteDiarioXLS;
+    private List<FichaStockXLS> fichaStockXLSList;
     private final Shell parent;
     private FileOutputStream out = null;
     private SWTCalendar swtCal;
@@ -44,8 +45,8 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public BalanceteDiarioExcel(Shell parent, String reportFileName, StockCenter clinic, Date theStartDate, Date theEndDate, Drug drug) {
-        this.listBalanceteDiarioXLS = listBalanceteDiarioXLS;
+    public FichaStockExcel(Shell parent, String reportFileName, StockCenter clinic, Date theStartDate, Date theEndDate, Drug drug) {
+        this.fichaStockXLSList = fichaStockXLSList;
         this.parent = parent;
         this.swtCal = swtCal;
         this.reportFileName = reportFileName;
@@ -61,16 +62,15 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
             Session session = HibernateUtil.getNewSession();
             ConexaoJDBC con=new ConexaoJDBC();
 
-
-           List<Stock> stocks = StockManager.getCurrentStockForDrug(session,drug,clinic);
+            List<Stock> stocks = StockManager.getCurrentStockForDrug(session,drug,clinic);
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            listBalanceteDiarioXLS = con.getBalanceteDiarioXLS(sdf.format(theStartDate), sdf.format(theEndDate),drug,clinic);
+            fichaStockXLSList = con.getFichaStockXLS(sdf.format(theStartDate), sdf.format(theEndDate),drug,clinic);
 
-            if(listBalanceteDiarioXLS.size() > 0) {
+            if(fichaStockXLSList.size() > 0) {
                 // Tell the user what you are doing
-                monitor.beginTask("Carregando a lista... ", listBalanceteDiarioXLS.size());
+                monitor.beginTask("Carregando a lista... ", fichaStockXLSList.size());
 
                 FileInputStream currentXls = new FileInputStream(reportFileName);
 
@@ -126,7 +126,7 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
 
                 int rowNum = 6;
                 int i = 0;
-                for (BalanceteDiarioXLS xls : listBalanceteDiarioXLS) {
+                for (FichaStockXLS xls : fichaStockXLSList) {
                     i++;
                     HSSFRow row = sheet.createRow(rowNum++);
 
@@ -134,17 +134,17 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
                     createCellDataMovimento.setCellValue(xls.getDataMovimento());
                     createCellDataMovimento.setCellStyle(cellStyle);
 
-                    HSSFCell createCellEntradas = row.createCell(2);
-                    createCellEntradas.setCellValue(xls.getEntrance());
-                    createCellEntradas.setCellStyle(cellStyle);
+                    HSSFCell createCellCliente = row.createCell(2);
+                    createCellCliente.setCellValue(xls.getCliente());
+                    createCellCliente.setCellStyle(cellStyle);
 
-                    HSSFCell createCellAjustesPerdas = row.createCell(3);
-                    createCellAjustesPerdas.setCellValue(xls.getLostAjust());
-                    createCellAjustesPerdas.setCellStyle(cellStyle);
+                    HSSFCell createCellTipoMovimento = row.createCell(3);
+                    createCellTipoMovimento.setCellValue(xls.getTipoMovimento());
+                    createCellTipoMovimento.setCellStyle(cellStyle);
 
-                    HSSFCell createCellDispensados = row.createCell(4);
-                    createCellDispensados.setCellValue(xls.getOutgoing());
-                    createCellDispensados.setCellStyle(cellStyle);
+                    HSSFCell createCellQuantidade = row.createCell(4);
+                    createCellQuantidade.setCellValue(xls.getQuantidade());
+                    createCellQuantidade.setCellStyle(cellStyle);
 
                     HSSFCell createCellStrock = row.createCell(5);
                     createCellStrock.setCellValue(xls.getStock());
@@ -155,7 +155,7 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
                     createCellNotas.setCellStyle(cellStyle);
 
                     // Optionally add subtasks
-                    monitor.subTask("Carregando : " + i + " de " + listBalanceteDiarioXLS.size() + "...");
+                    monitor.subTask("Carregando : " + i + " de " + fichaStockXLSList.size() + "...");
 
                     Thread.sleep(5);
 
@@ -168,7 +168,7 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
                     }
                 }
 
-                for (int i0 = 1; i0 < BalanceteDiarioXLS.class.getClass().getDeclaredFields().length; i0++) {
+                for (int i0 = 1; i0 < FichaStockXLS.class.getClass().getDeclaredFields().length; i0++) {
                     sheet.autoSizeColumn(i0);
                 }
 
@@ -194,8 +194,8 @@ public class BalanceteDiarioExcel implements IRunnableWithProgress {
 
     }
 
-    public List<BalanceteDiarioXLS> getList(){
-        return this.listBalanceteDiarioXLS;
+    public List<FichaStockXLS> getList(){
+        return this.fichaStockXLSList;
     }
 
     private void deleteRow(HSSFSheet sheet, Row row) {

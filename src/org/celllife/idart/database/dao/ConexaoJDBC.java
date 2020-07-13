@@ -5838,9 +5838,9 @@ public class ConexaoJDBC {
                     dispensed = rs.getInt("dispensed") + 1;
 
                 if (totalpills % drug.getPackSize() == 0)
-                    stock = totalpills/drug.getPackSize();
+                    stock = totalpills / drug.getPackSize();
                 else
-                    stock = totalpills/drug.getPackSize() + 1;
+                    stock = totalpills / drug.getPackSize() + 1;
 
 
                 BalanceteDiarioXLS balanceteDiarioXLS = new BalanceteDiarioXLS();
@@ -5860,6 +5860,210 @@ public class ConexaoJDBC {
         conn_db.close();
 
         return listBalanceteDiarioXLS;
+
+    }
+
+    public List<FichaStockXLS> getFichaStockXLS(String startDate, String endDate, Drug drug, StockCenter clinic) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select g.datamovimento,g.cliente,g.tipomovimento,COALESCE(g.quantidade,0) quantidade ,g.numeroguia, " +
+                "COALESCE(saldo.openingpills,0) as openingpills,COALESCE(saldo.destroyed,0) destroyed ,COALESCE(saldo.destroyedpills,0) destroyedpills , " +
+                "COALESCE(saldo.returned,0) returned ,COALESCE(saldo.returnedpills,0) returnedpills , " +
+                "drug.id " +
+                "from drug " +
+                "left join " +
+                "( " +
+                "select s.datereceived as datamovimento, " +
+                "'DPM' as cliente, " +
+                "'Requisição' as tipomovimento, " +
+                "COALESCE(s.unitsreceived, 0) as quantidade, " +
+                "s.numeroguia as numeroguia, " +
+                "d.id " +
+                "from drug d " +
+                "inner join stock s on s.drug = d.id " +
+                "where (pg_catalog.date(s.datereceived)) = '" + startDate + "'::date " +
+                "and s.drug = d.id " +
+                "UNION " +
+                "select pa.pickupdate as datamovimento, " +
+                "pat.patientid || ' - ' || pat.firstnames || ' ' || pat.lastname as  cliente , " +
+                "'Distribuição' as tipomovimento, " +
+                " CASE " +
+                "  WHEN MOD(pds.amount," + drug.getPackSize() + ") > 0 THEN " +
+                "   COALESCE(round(floor((pds.amount::real)/" + drug.getPackSize() + ")::numeric,0) + 1, 0) " +
+                "  ELSE " +
+                "   COALESCE(round(floor((pds.amount::real)/" + drug.getPackSize() + ")::numeric,0), 0) " +
+                " END " +
+                " as quanntidade, " +
+                "' - ' as numguia, " +
+                "d.id " +
+                "from package pa " +
+                "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                "inner join prescription pre on pre.id = pa.prescription " +
+                "inner join patient pat ON pre.patient=pat.id " +
+                "inner join stock st on st.id = pds.stock " +
+                "inner join drug d on d.id = st.drug " +
+                "where st.stockCenter =  '" + clinic.getId() + "' " +
+                "and (pg_catalog.date(pa.pickupdate)) = '" + startDate + "'::date " +
+                "UNION " +
+                "select sa.captureDate as datamovimento, " +
+                "' - ' as cliente, " +
+                "' Ajuste ' as tipomovimento, " +
+                "COALESCE(sa.adjustedValue, 0) as quantidade, " +
+                "' - ' as numeroguia, " +
+                "d.id " +
+                "from drug as d " +
+                "inner join stock s on s.drug = d.id " +
+                "inner join stockAdjustment sa on sa.stock = s.id " +
+                "where(pg_catalog.date(sa.captureDate)) = '" + startDate + "'::date " +
+                "order by 1 asc " +
+                ") as g on g.id = drug.id " +
+                " " +
+                "left join " +
+                "( select " +
+                "COALESCE((a.allreceived * " + drug.getPackSize() + " - COALESCE((b.allissued * " + drug.getPackSize() + ") + b.allpill, 0) - COALESCE(f.alladjusted, 0) + COALESCE((h.allreturned * " + drug.getPackSize() + ") + h.allpills, 0)), 0) " +
+                "as openingpills, " +
+                "COALESCE(sum(e.issued),0) as destroyed , COALESCE(sum(e.pill),0) as destroyedpills, " +
+                "COALESCE(sum(i.returned),0) as returned , COALESCE(sum(i.pills),0) as returnedpills, " +
+                "drug.id " +
+                "from " +
+                "(select generate_series('" + startDate + "'::date, '" + startDate + "'::date, '1 day'::interval) searchdate, id " +
+                "from drug where id = '" + drug.getId() + "' " +
+                ") as drug " +
+                "left join " +
+                "(select sum(s.unitsreceived) as allreceived, d.id " +
+                " from drug as d, stock as s " +
+                " where d.id = d.id and s.stockCenter =  '" + clinic.getId() + "' and s.drug = d.id " +
+                " and pg_catalog.date(s.datereceived) < '" + startDate + "'::date " +
+                " GROUP BY 2 " +
+                ") as a on a.id = drug.id " +
+                "left join " +
+                "(select round(floor(sum(pd.amount::real)/" + drug.getPackSize() + ")::numeric,0) as allissued, MOD(sum(pd.amount)," + drug.getPackSize() + ") as allpill,d.id " +
+                "from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre " +
+                "where d.id = d.id and s.stockCenter =  '" + clinic.getId() + "' " +
+                "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
+                "and p.prescription = pre.id " +
+                "and pg_catalog.date(p.packdate) < '" + startDate + "'::date " +
+                "  GROUP BY 3 " +
+                ") as b on b.id = drug.id " +
+                "left join " +
+                "(select sum(sa.adjustedValue) as alladjusted, d.id " +
+                "from drug as d, stock as s, stockAdjustment as sa " +
+                "where d.id = d.id " +
+                "and s.stockCenter =  '" + clinic.getId() + "' " +
+                "and s.drug = d.id " +
+                "and sa.stock = s.id " +
+                " and pg_catalog.date(sa.captureDate) < '" + startDate + "'::date " +
+                "group by 2 " +
+                ") as f on f.id = drug.id " +
+                "left join " +
+                "(select round(floor(sum(pd.amount::real)/" + drug.getPackSize() + ")::numeric,0) as allreturned, MOD(sum(pd.amount)," + drug.getPackSize() + ") as allpills,d.id " +
+                "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                "where d.id = d.id " +
+                "and s.stockCenter =  '" + clinic.getId() + "' " +
+                "and s.drug = d.id and pd.stock = s.id " +
+                "and pd.parentpackage = p.id " +
+                "and p.stockReturned = true " +
+                "and p.packageReturned = true " +
+                "and pg_catalog.date(p.dateReturned) < '" + startDate + "'::date " +
+                " GROUP BY 3 " +
+                ") as h on h.id = drug.id " +
+                "left join " +
+                "(select round(floor(sum(pd.amount::real)/" + drug.getPackSize() + ")::numeric,0) as issued, MOD(sum(pd.amount)," + drug.getPackSize() + ") as pill,p.packdate,d.id " +
+                "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                "where d.id = d.id and s.stockCenter =  '" + clinic.getId() + "' " +
+                "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
+                "and p.prescription is null " +
+                "  GROUP BY 3,4 " +
+                ") as e on e.id = drug.id and pg_catalog.date(e.packdate) = pg_catalog.date(drug.searchdate) " +
+                "left join " +
+                "(select round(floor(sum(pd.amount::real)/" + drug.getPackSize() + ")::numeric,0) as returned, MOD(sum(pd.amount)," + drug.getPackSize() + ") as pills,p.dateReturned,d.id " +
+                "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                "where d.id = d.id " +
+                "and s.stockCenter =  '" + clinic.getId() + "' " +
+                "and s.drug = d.id and pd.stock = s.id " +
+                "and pd.parentpackage = p.id " +
+                "and p.stockReturned = true " +
+                "and p.packageReturned = true " +
+                " GROUP BY 3,4 " +
+                ") as i on i.id = drug.id and pg_catalog.date(i.dateReturned) = pg_catalog.date(drug.searchdate) " +
+                "GROUP BY 1,6 " +
+                ") saldo on saldo.id = drug.id " +
+                "where drug.id = '" + drug.getId() + "' " +
+                "Order by 3 desc";
+
+        List<FichaStockXLS> listFichaStockXLS = new ArrayList<FichaStockXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        long somaUnidadesRecebidas = 0;
+        long somaUnidadesDevolvidas = 0;
+        long somaUnidadesDispensadas = 0;
+        long somaUnidadesDestruidas = 0;
+        long somaUnidadesAjustadas = 0;
+
+
+        if (rs != null) {
+
+            while (rs.next()) {
+                long recebidos = 0;
+                long dispensados = 0;
+                long ajustados = 0;
+                long stock = 0;
+                long totalpills = 0;
+
+                if (rs.getString("tipomovimento").startsWith("Requis")) {
+                    somaUnidadesRecebidas = somaUnidadesRecebidas + rs.getInt("quantidade");
+                    recebidos = rs.getInt("quantidade");
+                }
+
+                if (rs.getString("tipomovimento").startsWith("Dist")) {
+                    somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("quantidade");
+                    dispensados = rs.getInt("quantidade");
+                }
+
+                if (rs.getString("tipomovimento").startsWith("Ajuste")) {
+                    somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("quantidade");
+                    ajustados = rs.getInt("quantidade");
+                }
+
+
+                somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
+                somaUnidadesDestruidas = somaUnidadesDestruidas + rs.getInt("destroyed") * drug.getPackSize() + rs.getInt("destroyedpills");
+
+                totalpills = rs.getInt("openingpills")
+                                + rs.getInt("returned") * drug.getPackSize()
+                                + rs.getInt("returnedpills")
+                                - rs.getInt("destroyed") * drug.getPackSize()
+                                - rs.getInt("destroyedpills")
+                                + somaUnidadesRecebidas * drug.getPackSize() + recebidos * drug.getPackSize()
+                                - somaUnidadesDispensadas * drug.getPackSize() - dispensados * drug.getPackSize()
+                                - somaUnidadesAjustadas * drug.getPackSize() - ajustados * drug.getPackSize();
+
+                if (totalpills % drug.getPackSize() == 0)
+                    stock = totalpills / drug.getPackSize();
+                else
+                    stock = totalpills / drug.getPackSize() + 1;
+
+
+                FichaStockXLS fichaStockXLS = new FichaStockXLS();
+                fichaStockXLS.setDataMovimento(rs.getString("datamovimento"));
+                fichaStockXLS.setTipoMovimento(rs.getString("tipomovimento"));
+                fichaStockXLS.setQuantidade(rs.getString("quantidade"));
+                fichaStockXLS.setCliente(rs.getString("cliente"));
+                fichaStockXLS.setStock(String.valueOf(stock));
+                fichaStockXLS.setNotes(rs.getString("numeroguia"));
+
+                listFichaStockXLS.add(fichaStockXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return listFichaStockXLS;
 
     }
 
