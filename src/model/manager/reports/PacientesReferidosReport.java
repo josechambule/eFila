@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author colaco
  */
-public class PacientesReferidosReport extends AbstractJasperReport {
+public class  PacientesReferidosReport extends AbstractJasperReport {
 	
 	private final StockCenter stockCenter;
 	private final Date theEndDate;
