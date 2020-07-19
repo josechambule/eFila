@@ -112,13 +112,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -310,13 +310,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ) )  "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -516,13 +516,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -598,13 +598,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -675,13 +675,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ) )  "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -757,13 +757,13 @@ public class ConexaoJDBC {
                 + " 	inner join prescription pre on pre.id = pa.prescription  "
                 + " 	inner join patient pat ON pre.patient=pat.id  "
                 + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + " 				from episode WHERE stopdate is null "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + " 	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + " 	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + " 	GROUP BY 5 order by 5) pack  "
                 + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + " 	inner join patient pat on pat.id = pack.id  "
@@ -3724,13 +3724,13 @@ public class ConexaoJDBC {
                 + "	inner join prescription pre on pre.id = pa.prescription  "
                 + "	inner join patient pat ON pre.patient=pat.id  "
                 + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + "				from episode WHERE stopdate is null "
+                + "				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + "	GROUP BY 5 order by 5) pack  "
                 + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + "	inner join patient pat on pat.id = pack.id  "
@@ -3804,13 +3804,13 @@ public class ConexaoJDBC {
                 + "	inner join prescription pre on pre.id = pa.prescription  "
                 + "	inner join patient pat ON pre.patient=pat.id  "
                 + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + "				from episode WHERE stopdate is null "
+                + "				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + "	GROUP BY 5 order by 5) pack  "
                 + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + "	inner join patient pat on pat.id = pack.id  "
@@ -3897,13 +3897,13 @@ public class ConexaoJDBC {
                 + "	inner join prescription pre on pre.id = pa.prescription  "
                 + "	inner join patient pat ON pre.patient=pat.id  "
                 + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + "				from episode WHERE stopdate is null "
+                + "				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + "	GROUP BY 5 order by 5) pack  "
                 + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + "	inner join patient pat on pat.id = pack.id  "
@@ -4078,13 +4078,13 @@ public class ConexaoJDBC {
                 + "	inner join prescription pre on pre.id = pa.prescription  "
                 + "	inner join patient pat ON pre.patient=pat.id  "
                 + "	INNER JOIN (SELECT MAX (startdate), patient, id  "
-                + "				from episode WHERE stopdate is null "
+                + "				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
                 + "				GROUP BY 2,3) visit on visit.patient = pat.id  "
-                + "	where (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
+                + "	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "')  "
                 + "	OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + endDate + "'  "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' "
                 + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + endDate + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + endDate + "' "
-                + "	   )   "
+                + "	   ))   "
                 + "	GROUP BY 5 order by 5) pack  "
                 + "	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
                 + "	inner join patient pat on pat.id = pack.id  "
@@ -4674,13 +4674,13 @@ public class ConexaoJDBC {
                     + "	inner join prescription pre on pre.id = pa.prescription "
                     + "	inner join patient pat ON pre.patient=pat.id "
                     + "	INNER JOIN (SELECT MAX (startdate), patient, id "
-                    + "				from episode WHERE stopdate is null "
+                    + "				from episode WHERE stopdate is null and startdate <= '" + dataFim + "' "
                     + "				GROUP BY 2,3) visit on visit.patient = pat.id "
-                    + "	where (pg_catalog.date(pa.pickupdate) >= '" + dataInicio + "' and pg_catalog.date(pa.pickupdate) <= '" + dataFim + "') "
+                    + "	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + dataInicio + "' and pg_catalog.date(pa.pickupdate) <= '" + dataFim + "') "
                     + "	OR (pg_catalog.date(pa.pickupdate) < '" + dataInicio + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > '" + dataFim + "' "
                     + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + dataInicio + "' "
                     + "		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', '" + dataFim + "'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= '" + dataFim + "' "
-                    + "	   ) "
+                    + "	   )) "
                     + "	   GROUP BY 5 order by 5) pack "
                     + "	   inner join prescription p on p.date = pack.predate and p.patient=pack.id "
                     + "	   inner join patient pat on pat.id = pack.id "
@@ -6211,5 +6211,52 @@ public class ConexaoJDBC {
         return pacienteReferidoXLSList;
     }
 
+    public List<FarmaciasRegistadasXLS> getFarmaciasRegistadasXLS() throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select c.code, c.clinicname, " +
+                "c.facilitytype, " +
+                "c.province, " +
+                "c.district, " +
+                "c.telephone, " +
+                "CASE " +
+                " WHEN nc.facilityname = c.clinicname OR nc.facilityname IS NULL THEN '-' " +
+                " ELSE nc.facilityname " +
+                "END as facilityname, " +
+                "c.uuid " +
+                "FROM clinic c " +
+                "left join nationalclinics nc ON nc.id = c.clinicdetails_id " +
+                "WHERE c.mainclinic <> true " +
+                "order by nc.facilityname";
+
+        List<FarmaciasRegistadasXLS> farmaciaregistadaXLS = new ArrayList<FarmaciasRegistadasXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+                FarmaciasRegistadasXLS farmaciasRegistadasXLS = new FarmaciasRegistadasXLS();
+                farmaciasRegistadasXLS.setCode(rs.getString("code"));
+                farmaciasRegistadasXLS.setClinicName(rs.getString("clinicname"));
+                farmaciasRegistadasXLS.setFacilityType(rs.getString("facilitytype"));
+                farmaciasRegistadasXLS.setDistrict(rs.getString("district"));
+                farmaciasRegistadasXLS.setProvince(rs.getString("province"));
+                farmaciasRegistadasXLS.setContact(rs.getString("telephone"));
+                farmaciasRegistadasXLS.setDependence(rs.getString("facilityname"));
+                farmaciasRegistadasXLS.setUuid(rs.getString("uuid"));
+
+                farmaciaregistadaXLS.add(farmaciasRegistadasXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return farmaciaregistadaXLS;
+
+    }
 
 }

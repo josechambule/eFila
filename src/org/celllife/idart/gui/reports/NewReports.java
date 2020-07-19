@@ -19,6 +19,7 @@
 package org.celllife.idart.gui.reports;
 
 import model.manager.exports.iedea.IedeaExporter;
+import model.manager.reports.FarmaciasRegistadas;
 import model.manager.reports.HistoricoLevantamentoReferidosDEouPARA;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
@@ -436,6 +437,12 @@ public class NewReports extends GenericAdminGui {
             reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_RECEBIDOS,
                     new PacientesRecebidosDaReferencia(getShell(), false));
         }
+
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_FARMACIAS_REGISTADAS,
+                    new FarmaciasRegistadasReport(getShell(), false));
+        }
+
         // Stock Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,
                 new MonthlyStockReceipt(getShell(), false));

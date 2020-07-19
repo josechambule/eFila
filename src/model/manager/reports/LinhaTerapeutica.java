@@ -20,13 +20,8 @@ import java.util.Map;
  */
 public class LinhaTerapeutica extends AbstractJasperReport {
 
-   
-
-
     public LinhaTerapeutica(Shell parent) {
         super(parent);
-    
-
     }
 
     @Override
