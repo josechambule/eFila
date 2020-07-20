@@ -22,7 +22,6 @@ package org.celllife.idart.gui.clinic;
 import model.manager.AdministrationManager;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.NationalClinics;
 import org.celllife.idart.database.hibernate.User;
@@ -33,18 +32,15 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
-import org.celllife.idart.messages.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
-import sun.jvm.hotspot.runtime.StubRoutines;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -425,9 +421,9 @@ public class AddClinic extends GenericFormGui {
             try {
                 tx = getHSession().beginTransaction();
 
-                NationalClinics nclinic = AdministrationManager.getNationalClinic(getHSession(), txtFacilityType.getText(),cmbFacility.getText());
+                NationalClinics nclinic = AdministrationManager.getNationalClinic(getHSession(), txtFacilityType.getText(), cmbFacility.getText());
 
-                if(rdBtnno.getSelection() && isAddnotUpdate) {
+                if (rdBtnno.getSelection() && isAddnotUpdate) {
                     nclinic = new NationalClinics();
 
                     nclinic.setFacilityName(txtClinic.getText());
@@ -674,7 +670,7 @@ public class AddClinic extends GenericFormGui {
             txtClinic.setFocus();
             fieldsOkay = false;
 
-        }else  if (txtClinicCode.getText().trim().equals("")) {
+        } else if (txtClinicCode.getText().trim().equals("")) {
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             b.setMessage("O campo codigo da farmacia nao pode estar em branco.");
             b.setText("Campos em branco");
@@ -688,14 +684,14 @@ public class AddClinic extends GenericFormGui {
             b.open();
             cmbProvince.setFocus();
             fieldsOkay = false;
-        }else if (cmbDistrict.getText().trim().equals("") || cmbDistrict.getText().trim().equals("Seleccione o Distrito")) {
+        } else if (cmbDistrict.getText().trim().equals("") || cmbDistrict.getText().trim().equals("Seleccione o Distrito")) {
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             b.setMessage("O campo distrito da farmacia nao pode estar em branco.");
             b.setText("Campos em branco");
             b.open();
             cmbDistrict.setFocus();
             fieldsOkay = false;
-        }else if (rdBtnyes.getSelection() && cmbFacility.getText().trim().equals("")) {
+        } else if (rdBtnyes.getSelection() && cmbFacility.getText().trim().equals("")) {
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             b.setMessage("O campo Nome da farmacia de proveniencia nao pode estar em branco apos selecionar [Sim] no campo [Proveniente de uma Farmácia].");
             b.setText("Campos em branco");
