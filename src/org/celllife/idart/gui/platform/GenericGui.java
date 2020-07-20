@@ -400,6 +400,7 @@ public abstract class GenericGui extends Object implements GenericGuiInterface {
 	protected void viewReport(iDARTReport report) {
 		viewReport(new ReportJob(report));
 		report.viewReport();
+//		report.viewReportExcel();
 	}
 
 	protected void viewReport(IRunnableWithProgress job) {

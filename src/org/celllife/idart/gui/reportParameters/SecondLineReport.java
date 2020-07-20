@@ -20,22 +20,11 @@
 package org.celllife.idart.gui.reportParameters;
 
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
+import model.manager.reports.SecondLine;
+import model.manager.reports.SecondLinePatients;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.celllife.idart.commonobjects.LocalObjects;
@@ -46,9 +35,9 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
@@ -57,9 +46,14 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import model.manager.reports.HistoricoLevantamentoXLS;
-import model.manager.reports.SecondLine;
-import model.manager.reports.SecondLinePatients;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
 
 /**
  */
@@ -175,137 +169,26 @@ public class SecondLineReport extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
 			return;
 		}
-					
+
+		String reportNameFile = "Reports/SegundaLinha.xls";
 		try {
+			SecondLineExcel op = new SecondLineExcel( parent, reportNameFile, calendarStart.getCalendar().getTime(), calendarEnd.getCalendar().getTime());
+			new ProgressMonitorDialog(parent).run(true, true, op);
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
-			
-			SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
-
-			 
-			Date theStartDate = calendarStart.getCalendar().getTime(); 
-		
-			Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-			
-			//theStartDate = sdf.parse(strTheDate);
-			
-			secondLinePatients = new ArrayList<SecondLinePatients>();
-
-			try {
-				ConexaoJDBC con=new ConexaoJDBC();
-
-				secondLinePatients = con.getSecondLinePatients(sdf.format(theStartDate), sdf.format(theEndDate));
-
-				if(secondLinePatients.size() > 0) {
-
-					FileInputStream currentXls = new FileInputStream("Reports/SegundaLinha.xls");
-
-					HSSFWorkbook workbook = new HSSFWorkbook(currentXls);
-
-					HSSFSheet sheet = workbook.getSheetAt(0);
-
-					HSSFCellStyle cellStyle = workbook.createCellStyle();
-					cellStyle.setBorderBottom(BorderStyle.THIN);
-					cellStyle.setBorderTop(BorderStyle.THIN);
-					cellStyle.setBorderLeft(BorderStyle.THIN);
-					cellStyle.setBorderRight(BorderStyle.THIN);
-					cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
-
-					HSSFRow healthFacility = sheet.getRow(10);
-					HSSFCell healthFacilityCell = healthFacility.createCell(2);
-					healthFacilityCell.setCellValue(LocalObjects.currentClinic.getClinicName());
-					healthFacilityCell.setCellStyle(cellStyle);
-
-					HSSFRow reportPeriod = sheet.getRow(10);
-					HSSFCell reportPeriodCell = reportPeriod.createCell(6);
-					reportPeriodCell.setCellValue(sdf.format(theStartDate) +" à "+ sdf.format(theEndDate));
-					reportPeriodCell.setCellStyle(cellStyle);
-
-					HSSFRow reportYear = sheet.getRow(11);
-					HSSFCell reportYearCell = reportYear.createCell(6);
-					reportYearCell.setCellValue(sdfYear.format(theStartDate));
-					reportYearCell.setCellStyle(cellStyle);
-
-					  for(int i=14; i<= sheet.getLastRowNum(); i++)
-					  {
-						Row row = sheet.getRow(i);
-					  	deleteRow(sheet,row);
-					  }
-
-					  out = new FileOutputStream(new File("Reports/SegundaLinha.xls"));
-					  workbook.write(out);
-
-					int rowNum = 14;
-
-					for (SecondLinePatients xls : secondLinePatients) {
-
-						HSSFRow row = sheet.createRow(rowNum++);
-
-						HSSFCell createCellNid = row.createCell(1);
-						createCellNid.setCellValue(xls.getPatientIdentifier());
-						createCellNid.setCellStyle(cellStyle);
-
-
-						HSSFCell createCellNome = row.createCell(2);
-						createCellNome.setCellValue(xls.getNome());
-						createCellNome.setCellStyle(cellStyle);
-
-						HSSFCell createCellAge = row.createCell(3);
-						createCellAge.setCellValue(xls.getIdade());
-						createCellAge.setCellStyle(cellStyle);
-
-						HSSFCell createCellTherapeuticScheme = row.createCell(4);
-						createCellTherapeuticScheme.setCellValue(xls.getTherapeuticScheme());
-						createCellTherapeuticScheme.setCellStyle(cellStyle);
-
-						HSSFCell createCellLine = row.createCell(5);
-						createCellLine.setCellValue(xls.getLine());
-						createCellLine.setCellStyle(cellStyle);
-
-						HSSFCell createCellArtType = row.createCell(6);
-						createCellArtType.setCellValue(xls.getArtType());
-						createCellArtType.setCellStyle(cellStyle);
-					}
-
-					for(int i = 1; i < SecondLine.class.getClass().getDeclaredFields().length; i++) {
-			            sheet.autoSizeColumn(i);
-			        }
-
-					currentXls.close();
-
-					FileOutputStream outputStream = new FileOutputStream(new File("TemplateHistoricoLevantamento.xls"));
-					workbook.write(outputStream);
-					workbook.close();
-
-					Desktop.getDesktop().open(new File("TemplateHistoricoLevantamento.xls"));
-
-				} else {
-					MessageBox mNoPages = new MessageBox(parent,SWT.ICON_ERROR | SWT.OK);
-					mNoPages.setText("O relatório não possui páginas");
-					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \n\nVerifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
-					mNoPages.open();
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (op.getList() == null ||
+					op.getList().size() <= 0) {
+				MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+				mNoPages.setText("O relatório não possui páginas");
+				mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+				mNoPages.open();
 			}
 
-		} catch (Exception e) {
-			getLog().error("Exception while running Historico levantamento report",e);
+		} catch (InvocationTargetException ex) {
+			ex.printStackTrace();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
 		}
-	}
-	
-	private void deleteRow(HSSFSheet sheet, Row row) {
-		int lastRowNum = sheet.getLastRowNum();
-		if (lastRowNum > 0) {
-			int rowIndex = row.getRowNum();
-			Row removingRow = sheet.getRow(rowIndex);
-			if (removingRow != null) {
-				sheet.removeRow(removingRow);
-				System.out.println("Deleting.... ");
-			}
-		}
+
 	}
 
 	/**

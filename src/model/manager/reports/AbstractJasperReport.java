@@ -1,24 +1,19 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import model.manager.excel.conversion.exceptions.ReportException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.database.hibernate.util.JDBCUtil;
@@ -29,7 +24,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.Session;
-
 import com.jasperassistant.designer.viewer.ViewerApp;
 
 /**
@@ -194,6 +188,45 @@ public abstract class AbstractJasperReport implements iDARTReport {
 		};
 		Display.getCurrent().asyncExec(runner);
 	}
+
+	@Override
+	public void viewReportExcel(){
+
+		String path = "Reports" + java.io.File.separator;
+		String prefix = jp.getName();
+		File file = null;
+		try {
+			file = File.createTempFile(prefix, ".xls", new File(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		JRXlsExporter exporterXLS = new JRXlsExporter();
+		exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jp);
+		exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, fos);
+		exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_FILE, file.getAbsolutePath());
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE );
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE );
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_COLLAPSE_ROW_SPAN, Boolean.TRUE);
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.FALSE);
+		exporterXLS.setParameter(JRXlsExporterParameter.IS_IGNORE_CELL_BACKGROUND, Boolean.FALSE);
+		try {
+			exporterXLS.exportReport();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
 
 	/**
 	 * Returns the Fileinputstream for file.jasper From file.jrxml if

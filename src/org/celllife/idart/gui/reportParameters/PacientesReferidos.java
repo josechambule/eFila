@@ -5,19 +5,12 @@
  */
 package org.celllife.idart.gui.reportParameters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import model.manager.AdministrationManager;
 import model.manager.reports.PacientesReferidosReport;
-import model.manager.reports.PacientesSemDTReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.gui.platform.GenericReportGui;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORTTYPE_MIA;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_LISTA_PACIENTES_SEMDT;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -35,304 +28,290 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
- *
  * @author colaco
  */
 public class PacientesReferidos extends GenericReportGui {
-	
-	
-	private Group grpDateRange;
 
-	private SWTCalendar calendarStart;
 
-	private SWTCalendar calendarEnd;
+    private Group grpDateRange;
 
-	private Group grpPharmacySelection;
+    private SWTCalendar calendarStart;
 
-	private CCombo cmbStockCenter;
+    private SWTCalendar calendarEnd;
 
-	/**
-	 * Constructor
-	 *
-	 * @param parent
-	 *            Shell
-	 * @param activate
-	 *            boolean
-	 */
-	public PacientesReferidos(Shell parent, boolean activate) {
-		super(parent, REPORTTYPE_PATIENT, activate);
-	}
+    private Group grpPharmacySelection;
 
-        
-	/**
-	 * This method initializes newMonthlyStockOverview
-	 */
-	@Override
-	protected void createShell() {
-		Rectangle bounds = new Rectangle(100, 50, 600, 510);
-		buildShell(REPORT_PACIENTES_REFERIDOS, bounds);
-		// create the composites
-		createMyGroups();
-	}
+    private CCombo cmbStockCenter;
 
-	private void createMyGroups() {
-		createGrpClinicSelection();
-		createGrpDateInfo();
-	}
+    /**
+     * Constructor
+     *
+     * @param parent   Shell
+     * @param activate boolean
+     */
+    public PacientesReferidos(Shell parent, boolean activate) {
+        super(parent, REPORTTYPE_PATIENT, activate);
+    }
 
-	/**
-	 * This method initializes compHeader
-	 *
-	 */
-	@Override
-	protected void createCompHeader() {
-		iDartImage icoImage = iDartImage.REPORT_PATIENTHISTORY;
-		buildCompdHeader(REPORT_PACIENTES_REFERIDOS, icoImage);
-	}
 
-	/**
-	 * This method initializes grpClinicSelection
-	 *
-	 */
-	private void createGrpClinicSelection() {
+    /**
+     * This method initializes newMonthlyStockOverview
+     */
+    @Override
+    protected void createShell() {
+        Rectangle bounds = new Rectangle(100, 50, 600, 510);
+        buildShell(REPORT_PACIENTES_REFERIDOS, bounds);
+        // create the composites
+        createMyGroups();
+    }
 
-		grpPharmacySelection = new Group(getShell(), SWT.NONE);
-		grpPharmacySelection.setText("Farmácia");
-		grpPharmacySelection.setFont(ResourceUtils
-				.getFont(iDartFont.VERASANS_8));
-		grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
-				140, 90, 320, 65));
+    private void createMyGroups() {
+        createGrpClinicSelection();
+        createGrpDateInfo();
+    }
 
-		Label lblPharmacy = new Label(grpPharmacySelection, SWT.NONE);
-		lblPharmacy.setBounds(new Rectangle(10, 25, 140, 20));
-		lblPharmacy.setText("Seleccione a farmácia");
-		lblPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+    /**
+     * This method initializes compHeader
+     */
+    @Override
+    protected void createCompHeader() {
+        iDartImage icoImage = iDartImage.REPORT_PATIENTHISTORY;
+        buildCompdHeader(REPORT_PACIENTES_REFERIDOS, icoImage);
+    }
 
-		cmbStockCenter = new CCombo(grpPharmacySelection, SWT.BORDER);
-		cmbStockCenter.setBounds(new Rectangle(156, 24, 160, 20));
-		cmbStockCenter.setEditable(false);
-		cmbStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		cmbStockCenter.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+    /**
+     * This method initializes grpClinicSelection
+     */
+    private void createGrpClinicSelection() {
 
-		CommonObjects.populateStockCenters(getHSession(), cmbStockCenter);
+        grpPharmacySelection = new Group(getShell(), SWT.NONE);
+        grpPharmacySelection.setText("Farmácia");
+        grpPharmacySelection.setFont(ResourceUtils
+                .getFont(iDartFont.VERASANS_8));
+        grpPharmacySelection.setBounds(new org.eclipse.swt.graphics.Rectangle(
+                140, 90, 320, 65));
 
-	}
+        Label lblPharmacy = new Label(grpPharmacySelection, SWT.NONE);
+        lblPharmacy.setBounds(new Rectangle(10, 25, 140, 20));
+        lblPharmacy.setText("Seleccione a farmácia");
+        lblPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-	/**
-	 * This method initializes grpDateInfo
-	 *
-	 */
-	private void createGrpDateInfo() {
+        cmbStockCenter = new CCombo(grpPharmacySelection, SWT.BORDER);
+        cmbStockCenter.setBounds(new Rectangle(156, 24, 160, 20));
+        cmbStockCenter.setEditable(false);
+        cmbStockCenter.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        cmbStockCenter.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 
-		createGrpDateRange();
+        CommonObjects.populateStockCenters(getHSession(), cmbStockCenter);
 
-	}
+    }
 
-	/**
-	 * This method initializes compButtons
-	 *
-	 */
-	@Override
-	protected void createCompButtons() {
-	}
+    /**
+     * This method initializes grpDateInfo
+     */
+    private void createGrpDateInfo() {
 
-	@SuppressWarnings("unused")
-	@Override
-	protected void cmdViewReportWidgetSelected() {
+        createGrpDateRange();
 
-		StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
-				cmbStockCenter.getText());
+    }
 
-		if (cmbStockCenter.getText().equals("")) {
+    /**
+     * This method initializes compButtons
+     */
+    @Override
+    protected void createCompButtons() {
+    }
 
-			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
-					| SWT.OK);
-			missing.setText("No Pharmacy Was Selected");
-			missing
-			.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
-			missing.open();
+    @SuppressWarnings("unused")
+    @Override
+    protected void cmdViewReportWidgetSelected() {
 
-		} else if (pharm == null) {
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
+                cmbStockCenter.getText());
 
-			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
-					| SWT.OK);
-			missing.setText("Pharmacy not found");
-			missing
-			.setMessage("There is no pharmacy called '"
-					+ cmbStockCenter.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
-			missing.open();
+        if (cmbStockCenter.getText().equals("")) {
 
-		}
-		
-		else
-			
-		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
-			return;
-		}
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            missing.setText("No Pharmacy Was Selected");
+            missing
+                    .setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
 
-		else {
-			try {
-				
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
-				 
-				Date theStartDate = calendarStart.getCalendar().getTime(); 
-			
-				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-				
-				                        PacientesReferidosReport report = new PacientesReferidosReport(getShell(), pharm, theStartDate, theEndDate);
-				viewReport(report);
-			} catch (Exception e) {
-				getLog().error("Exception while running Monthly Receipts and Issues report",e);
-			}
-		}
+        } else if (pharm == null) {
 
-	}
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            missing.setText("Pharmacy not found");
+            missing
+                    .setMessage("There is no pharmacy called '"
+                            + cmbStockCenter.getText()
+                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
 
-	@Override
-	protected void cmdViewReportXlsWidgetSelected() {
+        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
+            showMessage(MessageDialog.ERROR, "End date before start date",
+                    "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+            return;
+        } else {
+            try {
 
-	}
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 
-	/**
-	 * This method is called when the user presses "Close" button
-	 *
-	 */
-	@Override
-	protected void cmdCloseWidgetSelected() {
-		cmdCloseSelected();
-	}
+                Date theStartDate = calendarStart.getCalendar().getTime();
 
-	/**
-	 * Method getMonthName.
-	 *
-	 * @param intMonth
-	 *            int
-	 * @return String
-	 */
-	private String getMonthName(int intMonth) {
+                Date theEndDate = calendarEnd.getCalendar().getTime();
 
-		String strMonth = "unknown";
+                PacientesReferidosReport report = new PacientesReferidosReport(getShell(), pharm, theStartDate, theEndDate);
+                viewReport(report);
+            } catch (Exception e) {
+                getLog().error("Exception while running Monthly Receipts and Issues report", e);
+            }
+        }
 
-		SimpleDateFormat sdf1 = new SimpleDateFormat("MMMM");
-		SimpleDateFormat sdf2 = new SimpleDateFormat("MM");
+    }
 
-		try {
-			Date theDate = sdf2.parse(intMonth + "");
-			strMonth = sdf1.format(theDate);
-		} catch (ParseException pe) {
-			pe.printStackTrace();
-		}
+    @Override
+    protected void cmdViewReportXlsWidgetSelected() {
 
-		return strMonth;
+    }
 
-	}
+    /**
+     * This method is called when the user presses "Close" button
+     */
+    @Override
+    protected void cmdCloseWidgetSelected() {
+        cmdCloseSelected();
+    }
 
-	@Override
-	protected void setLogger() {
-		setLog(Logger.getLogger(this.getClass()));
-	}
+    /**
+     * Method getMonthName.
+     *
+     * @param intMonth int
+     * @return String
+     */
+    private String getMonthName(int intMonth) {
 
-	
-	private void createGrpDateRange() {
-		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Período:");
-		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
-		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        String strMonth = "unknown";
 
-		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
-				180, 20));
-		lblStartDate.setText("Data Início:");
-		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        SimpleDateFormat sdf1 = new SimpleDateFormat("MMMM");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("MM");
 
-		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
-				180, 20));
-		lblEndDate.setText("Data Fim:");
-		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        try {
+            Date theDate = sdf2.parse(intMonth + "");
+            strMonth = sdf1.format(theDate);
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+        }
 
-		calendarStart = new SWTCalendar(grpDateRange);
-		calendarStart.setBounds(20, 55, 220, 140);
+        return strMonth;
 
-		calendarEnd = new SWTCalendar(grpDateRange);
-		calendarEnd.setBounds(280, 55, 220, 140);
-		calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
-			@Override
-			public void dateChanged(SWTCalendarEvent calendarEvent) {
-				Date date = calendarEvent.getCalendar().getTime();
-				
-				
-			}
-		});
-	}
-	
-	/**
-	 * Method getCalendarEnd.
-	 * 
-	 * @return Calendar
-	 */
-	public Calendar getCalendarEnd() {
-		return calendarEnd.getCalendar();
-	}
-	
-	/**
-	 * Method setEndDate.
-	 * 
-	 * @param date
-	 *            Date
-	 */
-	public void setEndtDate(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendarEnd.setCalendar(calendar);
-	}
-	
-	/**
-	 * Method addEndDateChangedListener.
-	 * 
-	 * @param listener
-	 *            SWTCalendarListener
-	 */
-	public void addEndDateChangedListener(SWTCalendarListener listener) {
+    }
 
-		calendarEnd.addSWTCalendarListener(listener);
-	}
-	
-	/**
-	 * Method getCalendarStart.
-	 * 
-	 * @return Calendar
-	 */
-	public Calendar getCalendarStart() {
-		return calendarStart.getCalendar();
-	}
-	
-	/**
-	 * Method setStartDate.
-	 * 
-	 * @param date
-	 *            Date
-	 */
-	public void setStartDate(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendarStart.setCalendar(calendar);
-	}
-	
-	/**
-	 * Method addStartDateChangedListener.
-	 * 
-	 * @param listener
-	 *            SWTCalendarListener
-	 */
-	public void addStartDateChangedListener(SWTCalendarListener listener) {
+    @Override
+    protected void setLogger() {
+        setLog(Logger.getLogger(this.getClass()));
+    }
 
-		calendarStart.addSWTCalendarListener(listener);
-	}
+
+    private void createGrpDateRange() {
+        grpDateRange = new Group(getShell(), SWT.NONE);
+        grpDateRange.setText("Período:");
+        grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
+        grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
+        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
+                180, 20));
+        lblStartDate.setText("Data Início:");
+        lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
+        lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
+                180, 20));
+        lblEndDate.setText("Data Fim:");
+        lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        calendarStart = new SWTCalendar(grpDateRange);
+        calendarStart.setBounds(20, 55, 220, 140);
+
+        calendarEnd = new SWTCalendar(grpDateRange);
+        calendarEnd.setBounds(280, 55, 220, 140);
+        calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
+            @Override
+            public void dateChanged(SWTCalendarEvent calendarEvent) {
+                Date date = calendarEvent.getCalendar().getTime();
+
+
+            }
+        });
+    }
+
+    /**
+     * Method getCalendarEnd.
+     *
+     * @return Calendar
+     */
+    public Calendar getCalendarEnd() {
+        return calendarEnd.getCalendar();
+    }
+
+    /**
+     * Method setEndDate.
+     *
+     * @param date Date
+     */
+    public void setEndtDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendarEnd.setCalendar(calendar);
+    }
+
+    /**
+     * Method addEndDateChangedListener.
+     *
+     * @param listener SWTCalendarListener
+     */
+    public void addEndDateChangedListener(SWTCalendarListener listener) {
+
+        calendarEnd.addSWTCalendarListener(listener);
+    }
+
+    /**
+     * Method getCalendarStart.
+     *
+     * @return Calendar
+     */
+    public Calendar getCalendarStart() {
+        return calendarStart.getCalendar();
+    }
+
+    /**
+     * Method setStartDate.
+     *
+     * @param date Date
+     */
+    public void setStartDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendarStart.setCalendar(calendar);
+    }
+
+    /**
+     * Method addStartDateChangedListener.
+     *
+     * @param listener SWTCalendarListener
+     */
+    public void addStartDateChangedListener(SWTCalendarListener listener) {
+
+        calendarStart.addSWTCalendarListener(listener);
+    }
 
 }

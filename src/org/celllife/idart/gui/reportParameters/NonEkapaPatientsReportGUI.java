@@ -20,7 +20,6 @@
 package org.celllife.idart.gui.reportParameters;
 
 import model.manager.reports.NonEkapaPatientsReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.gui.platform.GenericReportGui;

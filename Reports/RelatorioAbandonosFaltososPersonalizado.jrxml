@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="92"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -374,11 +374,11 @@ ao TARV
 		<band height="20" splitType="Stretch">
 			<subreport isUsingCache="true">
 				<reportElement key="subreport-1" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="623" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
-				<subreportParameter name="maxDays">
-					<subreportParameterExpression><![CDATA[$P{maxDays}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="showPatientNames">
 					<subreportParameterExpression><![CDATA[$P{showPatientNames}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="maxDays">
+					<subreportParameterExpression><![CDATA[$P{maxDays}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="clinicid">
 					<subreportParameterExpression><![CDATA[$P{clinicid}]]></subreportParameterExpression>

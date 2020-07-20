@@ -19,19 +19,8 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.PAVASManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.PatientVisit;
 import org.celllife.idart.database.hibernate.PatientVisitReason;
@@ -50,6 +39,12 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  */

@@ -1,11 +1,8 @@
 package org.celllife.idart.gui.reportParameters;
 
 import model.manager.excel.conversion.exceptions.ReportException;
-import model.manager.exports.excel.ExcelExporter;
 import model.manager.exports.excel.ExcelExporterDT;
-import model.manager.exports.excel.ExcelReportObject;
 import model.manager.exports.excel.ExcelReportObjectDT;
-
 import org.celllife.idart.misc.AbstractCancellableJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.program.Program;

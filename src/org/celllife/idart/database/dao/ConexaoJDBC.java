@@ -3949,6 +3949,57 @@ public class ConexaoJDBC {
 
     }
 
+    public List<HistoricoLevantamentoXLS> getReferralHistoricoLevantamentosXLS(String startDate, String endDate) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select distinct patientid as nid, " +
+                "patientfirstname ||' '|| patientlastname as nome, " +
+                "reasonforupdate as tipoPaciente, " +
+                "regimenome as regimeTerapeutico, " +
+                "CASE " +
+                "WHEN dispensatrimestral = 1 THEN 'DT' " +
+                "WHEN dispensasemestral = 1 THEN 'DS' " +
+                "ELSE 'DM' " +
+                "        END AS tipodispensa, " +
+                "pg_catalog.date(pickupdate) as dataLevantamento, " +
+                "to_date(dateexpectedstring, 'DD-Mon-YYYY') as dataProximoLev, " +
+                "mainclinicname as referencia " +
+                "from sync_temp_dispense " +
+                "where pg_catalog.date(pickupdate) >= '" + startDate + "'::date " +
+                "AND pg_catalog.date(pickupdate) < ('" + endDate + "'::date + INTERVAL '1 day') " +
+                "GROUP BY 1,2,3,4,5,6,7,8 " +
+                "order by 6";
+
+        List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+                HistoricoLevantamentoXLS levantamentoXLS = new HistoricoLevantamentoXLS();
+                levantamentoXLS.setPatientIdentifier(rs.getString("nid"));
+                levantamentoXLS.setNome(rs.getString("nome"));
+                levantamentoXLS.setApelido(rs.getString("apelido"));
+                levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
+                levantamentoXLS.setRegimeTerapeutico(rs.getString("regime"));
+                levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
+                levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
+                levantamentoXLS.setDataProximoLevantamento(rs.getString("dataproximolevantamento"));
+                levantamentoXLS.setClinic(rs.getString("referencia"));
+
+                levantamentoXLSs.add(levantamentoXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return levantamentoXLSs;
+
+    }
 
     /**
      * @param i
@@ -5415,6 +5466,189 @@ public class ConexaoJDBC {
         }
 
         return chamadaTelefonicaXLS;
+    }
+
+    public List<AbsenteeForSupportCall> getAbsentee(String minDays, String maxDays, Date date, String clinicid) {
+
+        List<AbsenteeForSupportCall> absenteeXLS = new ArrayList<AbsenteeForSupportCall>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data = dateFormat.format(date);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select " +
+                    "pat.patientid as patID, " +
+                    "(pat.lastname||', '|| pat.firstnames) as name, " +
+                    " pat.nextofkinname as supportername, " +
+                    "pat.nextofkinphone as supporterphone, " +
+                    "pat.cellphone as cellno, " +
+                    "date_part('year',age(pat.dateofbirth)) as age, " +
+                    "app.appointmentDate::date as dateexpected, " +
+                    "( '" + data + "'::date-app.appointmentDate::date)::integer as dayssinceexpected, " +
+                    "CASE " +
+                    "    WHEN (('" + data + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') " +
+                    "    ELSE " +
+                    "CASE " +
+                    "    WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days')" +
+                    "              ELSE null " +
+                    "    END " +
+                    "END " +
+                    "  AS datelostfollowup, " +
+                    "" +
+                    "  CASE " +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date " +
+                    "    ELSE null " +
+                    "  END " +
+                    "  AS datereturn, " +
+                    "max(app.appointmentDate) as ultimaData " +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt " +
+                    "where app.patient = pat.id " +
+                    "and idt.name = 'NID' " +
+                    "and pi.value = pat.patientid " +
+                    "and idt.id = pi.type_id " +
+                    "and " + clinicid + " = pat.clinic " +
+                    "and (app.visitDate > app.appointmentDate OR app.visitDate is null ) " +
+                    "and ('" + data + "'::date - app.appointmentDate::date) between " + minDays + " and " + maxDays + " " +
+                    "and exists (select prescription.id " +
+                    "from prescription " +
+                    "where prescription.patient = pat.id " +
+                    "and prescription.dispensatrimestral = 0 " +
+                    "and (('" + data + "' between prescription.date and prescription.endDate)or(('" + data + "' > prescription.date)) and (prescription.endDate is null))) " +
+                    "and exists (select id from episode where episode.patient = pat.id " +
+                    "and (('" + data + "' between episode.startdate and episode.stopdate)or(('" + data + "' > episode.startdate)) and (episode.stopdate is null))) " +
+                    "group by 1,2,3,4,5,6,7,8,9,10 " +
+                    "order by patID asc";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    AbsenteeForSupportCall absentee = new AbsenteeForSupportCall();
+                    absentee.setPatientIdentifier(rs.getString("patID"));
+                    absentee.setNome(rs.getString("name"));
+                    absentee.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    absentee.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    absentee.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+                    absentee.setContacto(rs.getString("cellno"));
+
+                    absenteeXLS.add(absentee);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return absenteeXLS;
+
+    }
+
+    public List<AbsenteeForSupportCall> getAbsenteeAndLostToFalowUp(String minDays, String maxDays, Date date, String clinicid) {
+
+        List<AbsenteeForSupportCall> absenteeAndLostToFalowUpXLS = new ArrayList<AbsenteeForSupportCall>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data = dateFormat.format(date);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select\n" +
+                    "pat.patientid as patID,\n" +
+                    "(pat.lastname||', '|| pat.firstnames) as name,\n" +
+                    " pat.nextofkinname as supportername,\n" +
+                    "pat.nextofkinphone as supporterphone,\n" +
+                    "pat.cellphone as cellno,\n" +
+                    "date_part('year',age(pat.dateofbirth)) as age,\n" +
+                    "app.appointmentDate::date as dateexpected,\n" +
+                    "('" + data + "'::date-app.appointmentDate::date)::integer as dayssinceexpected,\n" +
+                    "CASE\n" +
+                    "    WHEN (('" + data + "'::date-app.appointmentDate::date) > 59 AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "    ELSE\n" +
+                    "\tCASE\n" +
+                    "\t    WHEN ((app.appointmentDate::date - app.visitdate::date) > 61) THEN (app.appointmentDate::date + INTERVAL '60 days')\n" +
+                    "              ELSE null\n" +
+                    "    \tEND\n" +
+                    "END\n" +
+                    "  AS datelostfollowup,\n" +
+                    "\n" +
+                    "  CASE\n" +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) > 0 THEN app.visitdate::date\n" +
+                    "    ELSE null\n" +
+                    "  END\n" +
+                    "  AS datereturn,\n" +
+                    "  pat.address1 ||\n" +
+                    "case when ((pat.address2 is null)or(pat.address2 like ''))  then ''\n" +
+                    "else ',' || pat.address2\n" +
+                    "end\n" +
+                    "||\n" +
+                    "case when ((pat.address3 is null)or(pat.address3 like '')) then ''\n" +
+                    "else ',' || pat.address3\n" +
+                    "end\n" +
+                    "as address,\n" +
+                    "max(app.appointmentDate) as ultimaData\n" +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt\n" +
+                    "where app.patient = pat.id\n" +
+                    "and idt.name = 'NID'\n" +
+                    "and pi.value = pat.patientid\n" +
+                    "and idt.id = pi.type_id\n" +
+                    "and " + clinicid + " = pat.clinic " +
+                    "and app.appointmentDate is not null\n" +
+                    "and (app.appointmentDate::date) between ('" + data + "'::date - INTERVAL '90 days') and '" + data + "'::date\n" +
+                    "and exists (select prescription.id\n" +
+                    "from prescription\n" +
+                    "where prescription.patient = pat.id\n" +
+                    "and prescription.dispensatrimestral = 0\n" +
+                    "and (('" + data + "' between prescription.date and prescription.endDate)or(('" + data + "' > prescription.date)) and (prescription.endDate is null)))\n" +
+                    "and exists (select id from episode where episode.patient = pat.id\n" +
+                    "and (('" + data + "' between episode.startdate and episode.stopdate)or(('" + data + "' > episode.startdate)) and (episode.stopdate is null)))\n" +
+                    "group by 1,2,3,4,5,6,7,8,9,10,11\n" +
+                    "order by dayssinceexpected";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    AbsenteeForSupportCall absenteeAndLostToFalowUp = new AbsenteeForSupportCall();
+                    absenteeAndLostToFalowUp.setPatientIdentifier(rs.getString("patID"));
+                    absenteeAndLostToFalowUp.setNome(rs.getString("name"));
+                    absenteeAndLostToFalowUp.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    absenteeAndLostToFalowUp.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    absenteeAndLostToFalowUp.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+                    absenteeAndLostToFalowUp.setContacto(rs.getString("cellno"));
+
+                    absenteeAndLostToFalowUpXLS.add(absenteeAndLostToFalowUp);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return absenteeAndLostToFalowUpXLS;
+
     }
 
     public void UpdateDatabase() throws SQLException {
