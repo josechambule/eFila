@@ -29,26 +29,14 @@
 
 package org.celllife.idart.gui.stockTake;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.StockManager;
 import model.manager.reports.StockTakeReport;
 import model.manager.reports.StockTakeSheet;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockAdjustment;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.StockLevel;
-import org.celllife.idart.database.hibernate.StockTake;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericOthersGui;
 import org.celllife.idart.gui.search.Search;
@@ -60,31 +48,18 @@ import org.celllife.idart.gui.welcome.GenericWelcome;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  */

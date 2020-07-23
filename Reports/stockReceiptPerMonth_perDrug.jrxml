@@ -2,9 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stockReceiptPerMonth_perDrug" pageWidth="595" pageHeight="842" columnWidth="70" columnSpacing="5" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="thedrugid" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(8739)]]></defaultValueExpression>
 	</parameter>
@@ -18,16 +21,16 @@
 		<parameterDescription><![CDATA[clinic name]]></parameterDescription>
 	</parameter>
 	<queryString>
-		<![CDATA[select 
-	
+		<![CDATA[select
+
 	d.name as name,
         s.datereceived as recdate,
-	s.batchnumber as batchnumber, 
-	s.expirydate as expirydate,  
+	s.batchnumber as batchnumber,
+	s.expirydate as expirydate,
 	s.unitsreceived as unitsreceived,
 	s.manufacturer as manufacturer,
 	s.unitPrice as unitprice,
-	(unitsreceived * unitprice) as totalcost
+	round((unitsreceived * unitprice),2)::real as totalcost
 from stock as s, drug as d
 where date_trunc('month',s.datereceived) = $P{thedatereceived}
 and s.drug = d.id
@@ -41,8 +44,8 @@ order by d.name, recdate]]>
 	<field name="expirydate" class="java.sql.Timestamp"/>
 	<field name="unitsreceived" class="java.lang.Integer"/>
 	<field name="manufacturer" class="java.lang.String"/>
-	<field name="totalcost" class="java.lang.Integer"/>
-	<field name="unitprice" class="java.lang.Integer"/>
+	<field name="unitprice" class="java.math.BigDecimal"/>
+	<field name="totalcost" class="java.lang.Float"/>
 	<variable name="total" class="java.lang.Integer" incrementType="Column" calculation="Count">
 		<variableExpression><![CDATA[new Integer($F{unitsreceived}.intValue())]]></variableExpression>
 	</variable>
@@ -186,7 +189,7 @@ order by d.name, recdate]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[($F{unitprice}!=null) ? "R " + $F{unitprice} : " "]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{unitprice}!=null) ? $F{unitprice} +"MZ": " "]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line_06-4" stretchType="RelativeToBandHeight" mode="Opaque" x="418" y="0" width="1" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -207,7 +210,7 @@ order by d.name, recdate]]>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[($F{totalcost}!=null) ? "R " + $F{totalcost}: ""]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{totalcost}!=null) ? $F{totalcost} + "MZ" : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

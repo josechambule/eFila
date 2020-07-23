@@ -1,15 +1,14 @@
 package model.manager.reports;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import model.manager.AdministrationManager;
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.eclipse.swt.widgets.Shell;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MissedAppointmentsReportDT extends AbstractJasperReport {
 

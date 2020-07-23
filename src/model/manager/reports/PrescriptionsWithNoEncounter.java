@@ -1,17 +1,14 @@
 package model.manager.reports;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import model.manager.excel.conversion.exceptions.ReportException;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.eclipse.swt.widgets.Shell;
 
-import model.manager.excel.conversion.exceptions.ReportException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PrescriptionsWithNoEncounter extends AbstractJasperReport {
 	

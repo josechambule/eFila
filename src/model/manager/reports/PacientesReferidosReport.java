@@ -5,23 +5,20 @@
  */
 package model.manager.reports;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 import model.manager.excel.conversion.exceptions.ReportException;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.User;
 import org.eclipse.swt.widgets.Shell;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  *
  * @author colaco
  */
-public class PacientesReferidosReport extends AbstractJasperReport {
+public class  PacientesReferidosReport extends AbstractJasperReport {
 	
 	private final StockCenter stockCenter;
 	private final Date theEndDate;
@@ -68,9 +65,7 @@ public class PacientesReferidosReport extends AbstractJasperReport {
 
 	private String mesPortugues(Date data )
 	{
-		
-		
-		
+
 		String mes="";
 		
 		Calendar calendar = new GregorianCalendar();

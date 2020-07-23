@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.6963904734899635"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="16"/>
 	<property name="ireport.y" value="78"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -201,7 +201,7 @@ order by p.patientid asc]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[  Data de Referência]]></text>
+				<text><![CDATA[  Data de Entrada]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="tf_date" mode="Opaque" x="5" y="71" width="122" height="26" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -247,7 +247,7 @@ order by p.patientid asc]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Farmacia de Referência]]></text>
+				<text><![CDATA[US de Referência]]></text>
 			</staticText>
 			<line>
 				<reportElement x="123" y="179" width="1" height="32"/>

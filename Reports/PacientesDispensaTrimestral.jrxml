@@ -70,13 +70,13 @@ FROM  (
 	inner join prescription pre on pre.id = pa.prescription
 	inner join patient pat ON pre.patient=pat.id
 	INNER JOIN (SELECT MAX (startdate), patient, id
-				from episode WHERE stopdate is null
+				from episode WHERE stopdate is null and startdate <= $P{dateEnd}
 				GROUP BY 2,3) visit on visit.patient = pat.id
-	where (pg_catalog.date(pa.pickupdate) >= $P{dateStart} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd})
+	where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= $P{dateStart} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd})
 	OR (pg_catalog.date(pa.pickupdate) < $P{dateStart} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dateEnd}
 		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= $P{dateStart}
 		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= $P{dateEnd}
-	   )
+	   ))
 	   GROUP BY 5 order by 5) pack
 	   inner join prescription p on p.date = pack.predate and p.patient=pack.id
 	   inner join patient pat on pat.id = pack.id
