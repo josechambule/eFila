@@ -5729,7 +5729,7 @@ public class ConexaoJDBC {
                 "  GROUP BY 3  " +
                 ") as b on b.id = drug.id  " +
                 "left join  " +
-                "(select sum(sa.adjustedValue) as alladjusted, d.id  " +
+                "(select sum(sa.stockcount) as alladjusted, d.id  " +
                 "from drug as d, stock as s, stockAdjustment as sa  " +
                 "where d.id = d.id  " +
                 "and s.stockCenter = '" + clinic.getId() + "'  " +
@@ -5773,7 +5773,7 @@ public class ConexaoJDBC {
                 "  GROUP BY 3,4  " +
                 ") as e on e.id = drug.id and pg_catalog.date(e.packdate) = pg_catalog.date(drug.searchdate)  " +
                 "left join  " +
-                "(select sum(sa.adjustedValue) as adjusted, sa.notes,sa.captureDate, d.id  " +
+                "(select sum(sa.stockcount) as adjusted, sa.notes,sa.captureDate, d.id  " +
                 "from drug as d, stock as s, stockAdjustment as sa  " +
                 "where d.id = d.id  " +
                 "and s.stockCenter = '" + clinic.getId() + "'  " +
@@ -5813,29 +5813,30 @@ public class ConexaoJDBC {
                 long stock = 0;
                 long totalpills = 0;
 
-                somaUnidadesRecebidas = somaUnidadesRecebidas + rs.getInt("received") * drug.getPackSize();
-                somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
-                somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("dispensed") * drug.getPackSize() + rs.getInt("dispensedpills");
-                somaUnidadesDestruidas = somaUnidadesDestruidas + rs.getInt("destroyed") * drug.getPackSize() + rs.getInt("destroyedpills");
-                somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("adjusted") * drug.getPackSize();
 
                 totalpills = rs.getInt("openingpills") + somaUnidadesRecebidas
                         + rs.getInt("received") * drug.getPackSize() + somaUnidadesDevolvidas
                         + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills")
-                        - somaUnidadesDispensadas - somaUnidadesDestruidas - somaUnidadesAjustadas - dispensed * drug.getPackSize()
+                        - rs.getInt("dispensed") * drug.getPackSize() - somaUnidadesDispensadas
+                        - somaUnidadesDestruidas - somaUnidadesAjustadas - dispensed * drug.getPackSize()
                         - rs.getInt("dispensedpills") - rs.getInt("destroyed") * drug.getPackSize()
                         - rs.getInt("destroyedpills") - rs.getInt("adjusted");
 
+                somaUnidadesRecebidas = somaUnidadesRecebidas + rs.getInt("received") * drug.getPackSize();
+                somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
+                somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("dispensed") * drug.getPackSize() + rs.getInt("dispensedpills");
+                somaUnidadesDestruidas = somaUnidadesDestruidas + rs.getInt("destroyed") * drug.getPackSize() + rs.getInt("destroyedpills");
+                somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("adjusted");
 
-                if (rs.getInt("adjusted") % drug.getPackSize() == 0)
+
+
+             //   if (rs.getInt("adjusted") % drug.getPackSize() == 0)
                     lostAdjust = rs.getInt("adjusted") / drug.getPackSize();
-                else
-                    lostAdjust = rs.getInt("adjusted") / drug.getPackSize() + 1;
 
-                if (rs.getInt("dispensedpills") % drug.getPackSize() == 0)
+             //   if (rs.getInt("dispensedpills") % drug.getPackSize() == 0)
                     dispensed = rs.getInt("dispensed");
-                else
-                    dispensed = rs.getInt("dispensed") + 1;
+           //     else
+            //        dispensed = rs.getInt("dispensed") + 1;
 
                 if (totalpills % drug.getPackSize() == 0)
                     stock = totalpills / drug.getPackSize();
@@ -5911,7 +5912,7 @@ public class ConexaoJDBC {
                 "select sa.captureDate as datamovimento, " +
                 "' - ' as cliente, " +
                 "' Ajuste ' as tipomovimento, " +
-                "COALESCE(sa.adjustedValue, 0) as quantidade, " +
+                "COALESCE(sa.stockcount, 0) as quantidade, " +
                 "' - ' as numeroguia, " +
                 "d.id " +
                 "from drug as d " +
@@ -5949,7 +5950,7 @@ public class ConexaoJDBC {
                 "  GROUP BY 3 " +
                 ") as b on b.id = drug.id " +
                 "left join " +
-                "(select sum(sa.adjustedValue) as alladjusted, d.id " +
+                "(select sum(sa.stockcount) as alladjusted, d.id " +
                 "from drug as d, stock as s, stockAdjustment as sa " +
                 "where d.id = d.id " +
                 "and s.stockCenter =  '" + clinic.getId() + "' " +
@@ -6013,24 +6014,17 @@ public class ConexaoJDBC {
                 long stock = 0;
                 long totalpills = 0;
 
-                if (rs.getString("tipomovimento").startsWith("Requis")) {
-                    somaUnidadesRecebidas = somaUnidadesRecebidas + rs.getInt("quantidade");
+                if (rs.getString("tipomovimento").contains("Requis")) {
                     recebidos = rs.getInt("quantidade");
                 }
 
-                if (rs.getString("tipomovimento").startsWith("Dist")) {
-                    somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("quantidade");
+                if (rs.getString("tipomovimento").contains("Dist")) {
                     dispensados = rs.getInt("quantidade");
                 }
 
-                if (rs.getString("tipomovimento").startsWith("Ajuste")) {
-                    somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("quantidade");
-                    ajustados = rs.getInt("quantidade");
+                if (rs.getString("tipomovimento").contains("Ajuste")) {
+                    ajustados = rs.getInt("quantidade") / drug.getPackSize();
                 }
-
-
-                somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
-                somaUnidadesDestruidas = somaUnidadesDestruidas + rs.getInt("destroyed") * drug.getPackSize() + rs.getInt("destroyedpills");
 
                 totalpills = rs.getInt("openingpills")
                         + rs.getInt("returned") * drug.getPackSize()
@@ -6039,7 +6033,21 @@ public class ConexaoJDBC {
                         - rs.getInt("destroyedpills")
                         + somaUnidadesRecebidas * drug.getPackSize() + recebidos * drug.getPackSize()
                         - somaUnidadesDispensadas * drug.getPackSize() - dispensados * drug.getPackSize()
-                        - somaUnidadesAjustadas * drug.getPackSize() - ajustados * drug.getPackSize();
+                        - somaUnidadesAjustadas - ajustados * drug.getPackSize();
+
+                if (rs.getString("tipomovimento").contains("Requis")) {
+                    somaUnidadesRecebidas = somaUnidadesRecebidas + rs.getInt("quantidade");
+                }
+
+                if (rs.getString("tipomovimento").contains("Dist")) {
+                    somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("quantidade");
+                }
+
+                if (rs.getString("tipomovimento").contains("Ajuste")) {
+                    somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("quantidade");
+                }
+                somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
+                somaUnidadesDestruidas = somaUnidadesDestruidas + rs.getInt("destroyed") * drug.getPackSize() + rs.getInt("destroyedpills");
 
                 if (totalpills % drug.getPackSize() == 0)
                     stock = totalpills / drug.getPackSize();
@@ -6050,7 +6058,10 @@ public class ConexaoJDBC {
                 FichaStockXLS fichaStockXLS = new FichaStockXLS();
                 fichaStockXLS.setDataMovimento(rs.getString("datamovimento"));
                 fichaStockXLS.setTipoMovimento(rs.getString("tipomovimento"));
-                fichaStockXLS.setQuantidade(rs.getString("quantidade"));
+                if (rs.getString("tipomovimento").contains("Ajuste"))
+                    fichaStockXLS.setQuantidade(String.valueOf(ajustados));
+                else
+                    fichaStockXLS.setQuantidade(rs.getString("quantidade"));
                 fichaStockXLS.setCliente(rs.getString("cliente"));
                 fichaStockXLS.setStock(String.valueOf(stock));
                 fichaStockXLS.setNotes(rs.getString("numeroguia"));

@@ -197,6 +197,15 @@ public class HistoricoLevantamentos extends GenericReportGui {
 
 				Date theEndDate = calendarEnd.getCalendar().getTime();
 
+				Calendar c = Calendar.getInstance(Locale.US);
+				c.setLenient(true);
+				c.setTime(theStartDate);
+
+				if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+					c.add(Calendar.DAY_OF_WEEK, -2);
+					theStartDate = c.getTime();
+				}
+
 				String reportNameFile = "Reports/HistoricoLevantamento.xls";
 				try {
 					HistoricoLevantamentosExcel op = new HistoricoLevantamentosExcel(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(),

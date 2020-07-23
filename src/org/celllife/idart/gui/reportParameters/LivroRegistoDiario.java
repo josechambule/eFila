@@ -191,6 +191,15 @@ public class LivroRegistoDiario extends GenericReportGui {
 
             Date theEndDate = calendarEnd.getCalendar().getTime();
 
+            Calendar c = Calendar.getInstance(Locale.US);
+            c.setLenient(true);
+            c.setTime(theStartDate);
+
+            if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)) {
+                c.add(Calendar.DAY_OF_WEEK, -2);
+                theStartDate = c.getTime();
+            }
+
             String reportNameFile = "Reports/LivroRegistoDiarioARV.xls";
             try {
                 LivroRegistoDiarioExcel op = new LivroRegistoDiarioExcel(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(),
