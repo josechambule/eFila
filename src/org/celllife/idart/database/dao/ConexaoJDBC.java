@@ -6270,4 +6270,93 @@ public class ConexaoJDBC {
 
     }
 
+    public List<AbsenteeForSupportCall> getLostToFallowUp(Date dataInicial,Date dataFinal, String clinicid) {
+
+        List<AbsenteeForSupportCall> lostToFollowUpXLS = new ArrayList<AbsenteeForSupportCall>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String startDate = dateFormat.format(dataInicial);
+        
+        String endDate = dateFormat.format(dataFinal);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select " +
+                    "pat.patientid as patID, " +
+                    "(pat.lastname||', '|| pat.firstnames) as name, " +
+                    " pat.nextofkinname as supportername, " +
+                    "pat.nextofkinphone as supporterphone, " +
+                    "pat.cellphone as cellno, " +
+                    "date_part('year',age(pat.dateofbirth)) as age, " +
+                    "app.appointmentDate::date as dateexpected, " +
+                    "('"+startDate+"' ::date-app.appointmentDate::date)::integer as dayssinceexpected, " +
+                    "CASE " +
+                    "    WHEN ((('"+startDate+"' ::date-app.appointmentDate::date) > 59) OR (('"+endDate+"' ::date-app.appointmentDate::date) <= 90) AND app.visitdate::date IS NULL) THEN (app.appointmentDate::date + INTERVAL '60 days') " +
+                    "    ELSE " +
+                    " CASE " +
+                    "     WHEN ((app.appointmentDate::date - app.visitdate::date) > 60) THEN (app.appointmentDate::date + INTERVAL '60 days') " +
+                    "              ELSE null " +
+                    "     END " +
+                    "END " +
+                    "  AS datelostfollowup, " +
+                    " " +
+                    "  CASE " +
+                    "    WHEN (app.visitdate::date - app.appointmentdate::date) < 0 THEN app.visitdate::date " +
+                    "    ELSE null " +
+                    "  END " +
+                    "  AS datereturn, " +
+                    "max(app.appointmentDate) as ultimaData " +
+                    "from patient as pat, appointment as app, patientidentifier as pi,identifiertype as idt " +
+                    "where app.patient = pat.id " +
+                    "and idt.name = 'NID' " +
+                    "and pi.value = pat.patientid " +
+                    "and idt.id = pi.type_id " +
+                    "and "+clinicid+" = pat.clinic " +
+                    "and app.appointmentDate is not null " +
+                    "and (app.visitDate is null) " +
+                    "and (((app.appointmentDate::date + INTERVAL '60 days') between '"+startDate+"'  and '"+endDate+"' ) OR ((app.appointmentDate::date + INTERVAL '90 days') between '"+startDate+"'  and '"+endDate+"' )) " +
+                    "and exists (select prescription.id " +
+                    "from prescription " +
+                    "where prescription.patient = pat.id " +
+                    "and prescription.endDate is null) " +
+                    "and exists (select id from episode where episode.patient = pat.id " +
+                    "and episode.stopdate is null) " +
+                    "group by 1,2,3,4,5,6,7,8,9,10 " +
+                    "order by patID asc";
+
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    AbsenteeForSupportCall lostTofallowUp = new AbsenteeForSupportCall();
+                    lostTofallowUp.setPatientIdentifier(rs.getString("patID"));
+                    lostTofallowUp.setNome(rs.getString("name"));
+                    lostTofallowUp.setDataQueFaltouLevantamento(rs.getString("dateexpected"));
+                    lostTofallowUp.setDataIdentificouAbandonoTarv(rs.getString("datelostfollowup"));
+                    lostTofallowUp.setDataRegressoUnidadeSanitaria(rs.getString("datereturn"));
+                    lostTofallowUp.setContacto(rs.getString("cellno"));
+
+                    lostToFollowUpXLS.add(lostTofallowUp);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return lostToFollowUpXLS;
+
+    }
+
 }
