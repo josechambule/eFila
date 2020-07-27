@@ -1,11 +1,12 @@
 package org.celllife.idart.gui.reportParameters;
 
-import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.LivroRegistoDiarioXLS;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,7 +38,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public LivroRegistoDiarioExcel(boolean inicio,boolean manter, boolean alterar, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
+    public LivroRegistoDiarioExcel(boolean inicio, boolean manter, boolean alterar, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
         this.inicio = inicio;
         this.manter = manter;
         this.alterar = alterar;
@@ -53,13 +54,13 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
 
-            ConexaoJDBC con=new ConexaoJDBC();
+            ConexaoJDBC con = new ConexaoJDBC();
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(inicio, manter,alterar, sdf.format(theStartDate), sdf.format(theEndDate));
+            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(inicio, manter, alterar, sdf.format(theStartDate), sdf.format(theEndDate));
 
-            if(livroRegistoDiarios.size() > 0) {
+            if (livroRegistoDiarios.size() > 0) {
                 // Tell the user what you are doing
                 monitor.beginTask("Carregando a lista... ", livroRegistoDiarios.size());
 
@@ -75,6 +76,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 cellStyle.setBorderLeft(BorderStyle.THIN);
                 cellStyle.setBorderRight(BorderStyle.THIN);
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
 
                 HSSFRow healthFacility = sheet.getRow(10);
@@ -95,6 +97,13 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 for (int i = 15; i <= sheet.getLastRowNum(); i++) {
                     HSSFRow row = sheet.getRow(i);
                     deleteRow(sheet, row);
+
+                    for(int dm=0; dm < sheet.getNumMergedRegions(); dm++)
+                    {
+                        // Delete the region
+                        System.out.println("Merged region "+sheet.getNumMergedRegions());
+                        sheet.removeMergedRegion(dm);
+                    }
                 }
 
                 out = new FileOutputStream(new File(reportFileName));
@@ -102,9 +111,27 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
                 int rowNum = 15;
                 int i = 0;
+                LivroRegistoDiarioXLS xlsLivroTemp = null;
+
                 for (LivroRegistoDiarioXLS xls : livroRegistoDiarios) {
                     i++;
                     HSSFRow row = sheet.createRow(rowNum++);
+
+                    if (xlsLivroTemp != null)
+                        if (xlsLivroTemp.getPatientIdentifier().equalsIgnoreCase(xls.getPatientIdentifier()) &&
+                                xlsLivroTemp.getNome().equalsIgnoreCase(xls.getNome())) {
+
+                            for(int r = 1; r <= 17; r++){
+                                if(!(r == 9 || r==10)) {
+                                    sheet.addMergedRegion(new CellRangeAddress(
+                                            rowNum - 2,
+                                            rowNum - 1,
+                                            r,
+                                            r
+                                    ));
+                                }
+                            }
+                        }
 
                     HSSFCell createCellNid = row.createCell(1);
                     createCellNid.setCellValue(xls.getPatientIdentifier());
@@ -174,6 +201,8 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                     criancaExposta.setCellValue("");
                     criancaExposta.setCellStyle(cellStyle);
 
+                    xlsLivroTemp = xls;
+
                     // Optionally add subtasks
                     monitor.subTask("Carregando : " + i + " de " + livroRegistoDiarios.size() + "...");
 
@@ -213,7 +242,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
     }
 
-    public List<LivroRegistoDiarioXLS> getList(){
+    public List<LivroRegistoDiarioXLS> getList() {
         return this.livroRegistoDiarios;
     }
 
