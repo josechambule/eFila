@@ -52,7 +52,6 @@ import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericOthersGui;
 import org.celllife.idart.gui.search.PatientSearch;
 import org.celllife.idart.gui.search.Search;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -736,14 +735,6 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 
 		if (fieldsOk()) {
 
-			// before we try anything, lets ask the user for their password
-			ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-					getShell(), getHSession());
-			passwordDialog.setMessage("Por favor, coloque a sua senha");
-			// if password verified
-			String messg = passwordDialog.open();
-			if (messg.equalsIgnoreCase("verified")) {
-
 				if (rdBtnPackage.getSelection()) {
 					deletePackage();
 					clearForm();
@@ -769,15 +760,6 @@ public class DeleteStockPrescriptionsPackages extends GenericOthersGui {
 					closeAndReopenSession();
 					cmdSearchWidgetSelected();
 				}
-
-			}
-			// Incorrect password entered,
-			else if (messg.equalsIgnoreCase("unverified")) {
-				cmdCloseWidgetSelected();
-			} else if (messg.equalsIgnoreCase("cancel")) {
-				clearForm();
-			}
-
 		}
 
 	}

@@ -75,7 +75,6 @@ import org.celllife.idart.gui.prescription.AddPrescription;
 import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.reprintLabels.ReprintLabels;
 import org.celllife.idart.gui.stockOnHand.StockOnHandGui;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -3179,14 +3178,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     case SWT.YES: {
                         // ***************Ainda a configurar a informacao mais
                         // correcta
-                        ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(),
-                                getHSession());
-                        passwordDialog.setMessage("Por favor inserir a Password");
-                        // if password verified
-                        String messg = passwordDialog.open();
-                        if (messg.equalsIgnoreCase("verified")) {
-
-                        }
 
                         tx = getHSession().beginTransaction();
                         if (newPack.getPrescription() != null) {

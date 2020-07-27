@@ -29,7 +29,6 @@ import org.celllife.idart.database.hibernate.AtcCode;
 import org.celllife.idart.database.hibernate.ChemicalCompound;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.search.Search;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
@@ -256,11 +255,6 @@ public class AddChemicalCompound extends GenericFormGui {
 
 			// before we try anything, lets ask the user for their password
 			String confirm = "WARNING: You should only perform this action if you are sure you want to add a chemical compound to the database PERMANENTLY. The user who performed this action, as well as the current time, will be recorded in the Transaction Log.";
-			ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-					getShell(), "Please enter your Password", confirm, getHSession());
-			// if password verified
-			String messg = passwordDialog.open();
-			if (messg.equalsIgnoreCase("verified")) {
 
 				Transaction tx = null;
 
@@ -293,14 +287,6 @@ public class AddChemicalCompound extends GenericFormGui {
 				}
 
 				cmdCancelWidgetSelected();
-
-			}
-			// Incorrect password entered,
-			else if (messg.equalsIgnoreCase("unverified")) {
-				getShell().dispose();
-			} else if (messg.equalsIgnoreCase("cancel")) {
-				clearForm();
-			}
 		}
 
 	}

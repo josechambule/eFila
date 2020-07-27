@@ -48,7 +48,6 @@ import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.search.PatientSearch;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ComboUtils;
 import org.celllife.idart.gui.utils.LayoutUtils;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -1660,13 +1659,6 @@ public class MergePatients extends GenericFormGui {
 				case SWT.YES:
 					// before we try anything, lets ask the user for their password
 					String confirm = "AVISO: SO DEVERA EXECUTAR ESTA FUNCIONALIDADE SE TIVER CERTEZA QUE PRETENDE UNIR OS PACIENTES PERMANENTIMENTE.";
-					ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-							getShell(), "Por favor coloque a sua senha", confirm,
-							getHSession());
-					// if password verified
-					String messg = passwordDialog.open();
-
-					if (messg.equalsIgnoreCase("verified")) {
 
 						if (!savePatientsInMerge()) {
 							MessageBox mError = new MessageBox(getShell(),
@@ -1691,10 +1683,6 @@ public class MergePatients extends GenericFormGui {
 							new AddPatient(getParent(), leftPatient);
 							getShell().dispose();
 						}
-					} else {
-						break;
-
-					}
 					break;
 				case SWT.NO:
 					break;
