@@ -35,13 +35,17 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
     private boolean inicio;
     private boolean manter;
     private boolean alterar;
+    private boolean transfereDe;
+    private boolean reInicio;
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public LivroRegistoDiarioExcel(boolean inicio, boolean manter, boolean alterar, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
+    public LivroRegistoDiarioExcel(boolean inicio, boolean manter, boolean alterar, boolean transfereDe, boolean reInicio, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
         this.inicio = inicio;
         this.manter = manter;
         this.alterar = alterar;
+        this.transfereDe = transfereDe;
+        this.reInicio = reInicio;
         this.livroRegistoDiarios = livroRegistoDiarios;
         this.parent = parent;
         this.swtCal = swtCal;
@@ -58,7 +62,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(inicio, manter, alterar, sdf.format(theStartDate), sdf.format(theEndDate));
+            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(this.inicio, this.manter, this.alterar, this.transfereDe, this.reInicio, sdf.format(theStartDate), sdf.format(theEndDate));
 
             if (livroRegistoDiarios.size() > 0) {
                 // Tell the user what you are doing
@@ -101,7 +105,6 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                     for(int dm=0; dm < sheet.getNumMergedRegions(); dm++)
                     {
                         // Delete the region
-                        System.out.println("Merged region "+sheet.getNumMergedRegions());
                         sheet.removeMergedRegion(dm);
                     }
                 }

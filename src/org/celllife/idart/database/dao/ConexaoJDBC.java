@@ -3655,33 +3655,25 @@ public class ConexaoJDBC {
     }
 
     public String getLivroRegistoDiario(boolean i, boolean m,
-                                        boolean a, String startDate, String endDate) {
+                                        boolean a, boolean t, boolean r,String startDate, String endDate) {
 
         Vector<String> v = new Vector<String>();
 
-        if (i) {
+        if (i)
             v.add("Inicia");
-            v.add("Transfer de");
-        }
-        if (m) {
+        if (m)
             v.add("Manter");
-            v.add("Reiniciar");
-        }
-        if (a) {
+        if (a)
             v.add("Alterar");
-        }
+        if(t)
+            v.add("Transfer de");
+        if(r)
+            v.add("Reiniciar");
+
 
         String condicao = "(\'";
 
-        if (v.size() == 5) {
-            for (int j = 0; j < v.size() - 1; j++) {
-                condicao += v.get(j) + "\' , \'";
-            }
-
-            condicao += v.get(v.size() - 1) + "\')";
-        }
-
-        if (v.size() == 2) {
+        if (v.size() > 1) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }
@@ -3743,33 +3735,24 @@ public class ConexaoJDBC {
     }
 
     public String getQueryHistoricoLevantamentos(boolean i, boolean m,
-                                                 boolean a, String startDate, String endDate) {
+                                                 boolean a, boolean t, boolean r, String startDate, String endDate) {
 
         Vector<String> v = new Vector<String>();
 
-        if (i) {
+        if (i)
             v.add("Inicia");
-            v.add("Transfer de");
-        }
-        if (m) {
+        if (m)
             v.add("Manter");
-            v.add("Reiniciar");
-        }
-        if (a) {
+        if (a)
             v.add("Alterar");
-        }
+        if(t)
+            v.add("Transfer de");
+        if(r)
+            v.add("Reiniciar");
 
         String condicao = "(\'";
 
-        if (v.size() == 5) {
-            for (int j = 0; j < v.size() - 1; j++) {
-                condicao += v.get(j) + "\' , \'";
-            }
-
-            condicao += v.get(v.size() - 1) + "\')";
-        }
-
-        if (v.size() == 2) {
+        if (v.size() > 5) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }
@@ -3833,36 +3816,27 @@ public class ConexaoJDBC {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public List<HistoricoLevantamentoXLS> getQueryHistoricoLevantamentosXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException {
+    public List<HistoricoLevantamentoXLS> getQueryHistoricoLevantamentosXLS(boolean i, boolean m, boolean a,boolean t, boolean r, String startDate, String endDate) throws SQLException, ClassNotFoundException {
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
 
         Vector<String> v = new Vector<String>();
 
-        if (i) {
+        if (i)
             v.add("Inicia");
-            v.add("Transfer de");
-        }
-        if (m) {
+        if (m)
             v.add("Manter");
-            v.add("Reiniciar");
-        }
-        if (a) {
+        if (a)
             v.add("Alterar");
-        }
+        if(t)
+            v.add("Transfer de");
+        if(r)
+            v.add("Reiniciar");
 
         String condicao = "(\'";
 
-        if (v.size() == 5) {
-            for (int j = 0; j < v.size() - 1; j++) {
-                condicao += v.get(j) + "\' , \'";
-            }
-
-            condicao += v.get(v.size() - 1) + "\')";
-        }
-
-        if (v.size() == 2) {
+        if (v.size() > 5) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }
@@ -4002,7 +3976,7 @@ public class ConexaoJDBC {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public List<LivroRegistoDiarioXLS> getLivroRegistoDiarioXLS(boolean i, boolean m, boolean a, String startDate, String endDate) throws SQLException, ClassNotFoundException {
+    public List<LivroRegistoDiarioXLS> getLivroRegistoDiarioXLS(boolean i, boolean m, boolean a, boolean t, boolean r, String startDate, String endDate) throws SQLException, ClassNotFoundException {
 
         conecta(iDartProperties.hibernateUsername,
                 iDartProperties.hibernatePassword);
@@ -4011,29 +3985,20 @@ public class ConexaoJDBC {
 
         Vector<String> v = new Vector<String>();
 
-        if (i) {
+        if (i)
             v.add("Inicia");
-            v.add("Transfer de");
-        }
-        if (m) {
+        if (m)
             v.add("Manter");
-            v.add("Reiniciar");
-        }
-        if (a) {
+        if (a)
             v.add("Alterar");
-        }
+        if(t)
+            v.add("Transfer de");
+        if(r)
+            v.add("Reiniciar");
 
         String condicao = "(\'";
 
-        if (v.size() == 5) {
-            for (int j = 0; j < v.size() - 1; j++) {
-                condicao += v.get(j) + "\' , \'";
-            }
-
-            condicao += v.get(v.size() - 1) + "\')";
-        }
-
-        if (v.size() == 2) {
+        if (v.size() > 1) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }

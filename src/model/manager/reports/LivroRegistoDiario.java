@@ -20,11 +20,13 @@ public class LivroRegistoDiario extends AbstractJasperReport {
 	private boolean inicio;
 	private boolean manutencao;
 	private boolean alteraccao;
-	
+	private boolean trasfereDe;
+	private boolean reInicio;
+
 
 
 	public LivroRegistoDiario(Shell parent, Date theStartDate,
-			Date theEndDate, boolean inicio,boolean manutencao,boolean alteraccao) {
+			Date theEndDate, boolean inicio,boolean manutencao,boolean alteraccao, boolean trasfereDe, boolean reInicio) {
 		super(parent);
 		
 		this.theStartDate=theStartDate;
@@ -32,6 +34,8 @@ public class LivroRegistoDiario extends AbstractJasperReport {
 		this.alteraccao=alteraccao;
 		this.inicio=inicio;
 		this.manutencao=manutencao;
+		this.trasfereDe=trasfereDe;
+		this.reInicio=reInicio;
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public class LivroRegistoDiario extends AbstractJasperReport {
 
 		ConexaoJDBC con=new ConexaoJDBC();
 		
-		String query = con.getLivroRegistoDiario(this.inicio, this.manutencao, this.alteraccao,dateFormat.format(theStartDate),dateFormat.format(theEndDate));
+		String query = con.getLivroRegistoDiario(this.inicio, this.manutencao, this.alteraccao,this.trasfereDe,this.reInicio,dateFormat.format(theStartDate),dateFormat.format(theEndDate));
 
 //		Vector<String> v = new Vector<String>();
 //

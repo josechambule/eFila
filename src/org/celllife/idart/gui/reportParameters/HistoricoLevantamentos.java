@@ -73,6 +73,10 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	private Button chkBtnManutencao;
 	
 	private Button chkBtnAlteraccao;
+
+	private Button chkBtnTransfereDe;
+
+	private Button chkBtnReinicio;
 	
 	private List<HistoricoLevantamentoXLS> historicoLevantamentoXLS;
 	
@@ -144,9 +148,9 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
 			return;
 		}
-		
-		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
-		{
+
+		if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
+				chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
 			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
@@ -169,7 +173,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 					theStartDate = c.getTime();
 				}
 				
-				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
+				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection(), chkBtnTransfereDe.getSelection(), chkBtnReinicio.getSelection());
 				viewReport(report);
 			} catch (Exception e) {
 				getLog().error("Exception while running Historico levantamento report",e);
@@ -185,9 +189,9 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
 			return;
 		}
-		
-		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
-		{
+
+		if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
+				chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
 			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
@@ -209,7 +213,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 				String reportNameFile = "Reports/HistoricoLevantamento.xls";
 				try {
 					HistoricoLevantamentosExcel op = new HistoricoLevantamentosExcel(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(),
-							chkBtnAlteraccao.getSelection(), parent, reportNameFile, theStartDate, theEndDate);
+							chkBtnAlteraccao.getSelection(), chkBtnTransfereDe.getSelection(), chkBtnReinicio.getSelection(), parent, reportNameFile, theStartDate, theEndDate);
 					new ProgressMonitorDialog(parent).run(true, true, op);
 
 					if (op.getList() == null ||

@@ -34,13 +34,17 @@ public class HistoricoLevantamentosExcel implements IRunnableWithProgress {
     private boolean inicio;
     private boolean manter;
     private boolean alterar;
+    private boolean transfereDe;
+    private boolean reInicio;
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public HistoricoLevantamentosExcel(boolean inicio,boolean manter, boolean alterar, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
+    public HistoricoLevantamentosExcel(boolean inicio,boolean manter, boolean alterar, boolean transfereDe, boolean reInicio, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
         this.inicio = inicio;
         this.manter = manter;
         this.alterar = alterar;
+        this.transfereDe = transfereDe;
+        this.reInicio = reInicio;
         this.historicoLevantamentoXLS = historicoLevantamentoXLS;
         this.parent = parent;
         this.swtCal = swtCal;
@@ -57,7 +61,7 @@ public class HistoricoLevantamentosExcel implements IRunnableWithProgress {
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(inicio, manter,alterar, sdf.format(theStartDate), sdf.format(theEndDate));
+            historicoLevantamentoXLS = con.getQueryHistoricoLevantamentosXLS(this.inicio, this.manter,this.alterar,this.transfereDe, this.reInicio, sdf.format(theStartDate), sdf.format(theEndDate));
 
             if(historicoLevantamentoXLS.size() > 0) {
                 // Tell the user what you are doing
