@@ -104,7 +104,7 @@ public class DownloadClinic extends GenericFormGui {
 
         // grpClinicInfo
         grpClinicSearch = new Group(getShell(), SWT.NONE);
-        grpClinicSearch.setBounds(new Rectangle(73, 70, 500, 410));
+        grpClinicSearch.setBounds(new Rectangle(33, 70, 500, 190));
         // grpDrugInfo = new Group(getShell(), SWT.NONE);
         // grpDrugInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         // grpDrugInfo.setText("Drug Details");
@@ -115,15 +115,15 @@ public class DownloadClinic extends GenericFormGui {
                 15, 260, 20));
         lblInstructions.setText("Todos campos marcados com * são obrigatorios");
         lblInstructions.setFont(ResourceUtils
-                .getFont(iDartFont.VERASANS_10_ITALIC));
+                .getFont(iDartFont.VERASANS_8_ITALIC));
 
         // lblProvince & cmdProvince
         Label lblProvince = new Label(grpClinicSearch, SWT.NONE);
-        lblProvince.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 80, 100, 20));
+        lblProvince.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 50, 100, 20));
         lblProvince.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblProvince.setText("* Província:");
         cmbProvince = new CCombo(grpClinicSearch, SWT.BORDER);
-        cmbProvince.setBounds(new Rectangle(157, 80, 160, 20));
+        cmbProvince.setBounds(new Rectangle(157, 50, 160, 20));
         cmbProvince.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbProvince.setEditable(false);
         cmbProvince.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -138,11 +138,11 @@ public class DownloadClinic extends GenericFormGui {
 
         // lblDistrict & cmbDistrict
         Label lblDistrict = new Label(grpClinicSearch, SWT.NONE);
-        lblDistrict.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 110, 100, 20));
+        lblDistrict.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 80, 100, 20));
         lblDistrict.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblDistrict.setText("* Distrito:");
         cmbDistrict = new CCombo(grpClinicSearch, SWT.BORDER);
-        cmbDistrict.setBounds(new Rectangle(157, 110, 160, 20));
+        cmbDistrict.setBounds(new Rectangle(157, 80, 160, 20));
         cmbDistrict.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbDistrict.setEditable(false);
         cmbDistrict.setText("Seleccione o Distrito");
@@ -151,11 +151,11 @@ public class DownloadClinic extends GenericFormGui {
 
         // lblClinicFacilityType & cmbClinicFacilityType
         Label lblClinicFacilityType = new Label(grpClinicSearch, SWT.NONE);
-        lblClinicFacilityType.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 140, 100, 20));
+        lblClinicFacilityType.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 110, 100, 20));
         lblClinicFacilityType.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblClinicFacilityType.setText("* Tipo de Farmácia:");
         cmbFacilityType = new CCombo(grpClinicSearch, SWT.BORDER);
-        cmbFacilityType.setBounds(new Rectangle(157, 140, 160, 20));
+        cmbFacilityType.setBounds(new Rectangle(157, 110, 160, 20));
         cmbFacilityType.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbFacilityType.setEditable(false);
         cmbFacilityType.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -163,7 +163,7 @@ public class DownloadClinic extends GenericFormGui {
 
         // btnSearch
         btnSearch = new Button(grpClinicSearch, SWT.NONE);
-        btnSearch.setBounds(new Rectangle(157, 170, 152, 30));
+        btnSearch.setBounds(new Rectangle(157, 140, 152, 30));
         btnSearch.setText("Procurar");
         btnSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -319,8 +319,15 @@ public class DownloadClinic extends GenericFormGui {
 
     private void createGrpClinicColumnsSelection() {
 
+        lblClinicTableHeader = new Label(getShell(), SWT.BORDER);
+        lblClinicTableHeader.setBounds(new Rectangle(200, 270, 200, 20));
+        lblClinicTableHeader.setText("Lista de Farmácias");
+        lblClinicTableHeader.setAlignment(SWT.CENTER);
+        lblClinicTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        
+        
         lnkSelectAllColumns = new Link(getShell(), SWT.NONE);
-        lnkSelectAllColumns.setBounds(new Rectangle(130, 300, 350, 20));
+        lnkSelectAllColumns.setBounds(new Rectangle(70, 300, 450, 20));
         lnkSelectAllColumns
                 .setText("Por favor, seleccione as farmácias que pretende importar " +
                         "ou <A>Seleccionar todas</A> colunas");
@@ -338,15 +345,9 @@ public class DownloadClinic extends GenericFormGui {
 
     private void createTblClinic() {
 
-        lblClinicTableHeader = new Label(getShell(), SWT.BORDER);
-        lblClinicTableHeader.setBounds(new Rectangle(200, 280, 200, 20));
-        lblClinicTableHeader.setText("Lista de Farmácias");
-        lblClinicTableHeader.setAlignment(SWT.CENTER);
-        lblClinicTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
         tblColumns = CheckboxTableViewer.newCheckList(getShell(), SWT.BORDER);
         tblColumns.getTable().setBounds(
-                new org.eclipse.swt.graphics.Rectangle(115, 320, 420, 150));
+                new org.eclipse.swt.graphics.Rectangle(85, 320, 420, 150));
         tblColumns.getTable().setFont(
                 ResourceUtils.getFont(iDartFont.VERASANS_8));
         tblColumns.setContentProvider(new ArrayContentProvider());

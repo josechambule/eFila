@@ -102,7 +102,7 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
 
         // grpDrugInfo
         grpRegimenInfo = new Group(getShell(), SWT.NONE);
-        grpRegimenInfo.setBounds(new Rectangle(73, 70, 500, 410));
+        grpRegimenInfo.setBounds(new Rectangle(33, 70, 500, 170));
         // grpDrugInfo = new Group(getShell(), SWT.NONE);
         // grpDrugInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         // grpDrugInfo.setText("Drug Details");
@@ -113,17 +113,17 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
                 15, 260, 20));
         lblInstructions.setText("Todos campos marcados com * são obrigatorios");
         lblInstructions.setFont(ResourceUtils
-                .getFont(iDartFont.VERASANS_10_ITALIC));
+                .getFont(iDartFont.VERASANS_8_ITALIC));
 
 
         // lblEstadoDrug, rdBtnActive & rdBtnInactive
         Label lblEstadoDrug = new Label(grpRegimenInfo, SWT.NONE);
-        lblEstadoDrug.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 80, 100, 20));
+        lblEstadoDrug.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 80, 80, 20));
         lblEstadoDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblEstadoDrug.setText("* Estado :");
 
         rdBtnActive = new Button(grpRegimenInfo, SWT.RADIO);
-        rdBtnActive.setBounds(new Rectangle(190, 80, 80, 20));
+        rdBtnActive.setBounds(new Rectangle(150, 80, 50, 20));
         rdBtnActive.setText("Activo");
         rdBtnActive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         rdBtnActive.setSelection(true);
@@ -289,10 +289,16 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
 
     private void createGrpClinicColumnsSelection() {
 
+        lblRegimenTableHeader = new Label(getShell(), SWT.BORDER);
+        lblRegimenTableHeader.setBounds(new Rectangle(200, 270, 200, 20));
+        lblRegimenTableHeader.setText("Lista de Regimes Terapeuticos");
+        lblRegimenTableHeader.setAlignment(SWT.CENTER);
+        lblRegimenTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
         lnkSelectAllColumns = new Link(getShell(), SWT.NONE);
-        lnkSelectAllColumns.setBounds(new Rectangle(130, 260, 350, 20));
+        lnkSelectAllColumns.setBounds(new Rectangle(70, 300, 450, 20));
         lnkSelectAllColumns
-                .setText("Por favor, seleccione os medicamntos que pretende importar " +
+                .setText("Por favor, seleccione os Regimes que pretende importar " +
                         "ou <A>Seleccionar todas</A> colunas");
         lnkSelectAllColumns
                 .setFont(ResourceUtils.getFont(iDartFont.VERASANS_8_ITALIC));
@@ -308,15 +314,10 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
 
     private void createTblRegimen() {
 
-        lblRegimenTableHeader = new Label(getShell(), SWT.BORDER);
-        lblRegimenTableHeader.setBounds(new Rectangle(200, 290, 200, 20));
-        lblRegimenTableHeader.setText("Lista de Medicementos");
-        lblRegimenTableHeader.setAlignment(SWT.CENTER);
-        lblRegimenTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
+     
         tblColumns = CheckboxTableViewer.newCheckList(getShell(), SWT.BORDER);
         tblColumns.getTable().setBounds(
-                new org.eclipse.swt.graphics.Rectangle(115, 320, 420, 150));
+                new org.eclipse.swt.graphics.Rectangle(85, 320, 420, 150));
         tblColumns.getTable().setFont(
                 ResourceUtils.getFont(iDartFont.VERASANS_8));
         tblColumns.setContentProvider(new ArrayContentProvider());

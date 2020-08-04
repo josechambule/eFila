@@ -103,7 +103,7 @@ public class DownloadDrugs extends GenericFormGui {
 
         // grpDrugInfo
         grpDrugInfo = new Group(getShell(), SWT.NONE);
-        grpDrugInfo.setBounds(new Rectangle(73, 70, 500, 410));
+        grpDrugInfo.setBounds(new Rectangle(33, 70, 500, 180));
         // grpDrugInfo = new Group(getShell(), SWT.NONE);
         // grpDrugInfo.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         // grpDrugInfo.setText("Drug Details");
@@ -114,7 +114,7 @@ public class DownloadDrugs extends GenericFormGui {
                 15, 260, 20));
         lblInstructions.setText("Todos campos marcados com * são obrigatorios");
         lblInstructions.setFont(ResourceUtils
-                .getFont(iDartFont.VERASANS_10_ITALIC));
+                .getFont(iDartFont.VERASANS_8_ITALIC));
 
         // lblDeseaseType & cmbDeseaseType
         Label lblDeseaseType = new Label(grpDrugInfo, SWT.NONE);
@@ -130,12 +130,12 @@ public class DownloadDrugs extends GenericFormGui {
 
         // lblEstadoDrug, rdBtnActive & rdBtnInactive
         Label lblEstadoDrug = new Label(grpDrugInfo, SWT.NONE);
-        lblEstadoDrug.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 110, 100, 20));
+        lblEstadoDrug.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 110, 80, 20));
         lblEstadoDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblEstadoDrug.setText("* Estado :");
 
         rdBtnActive = new Button(grpDrugInfo, SWT.RADIO);
-        rdBtnActive.setBounds(new Rectangle(190, 110, 80, 20));
+        rdBtnActive.setBounds(new Rectangle(150, 110, 50, 20));
         rdBtnActive.setText("Activo");
         rdBtnActive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         rdBtnActive.setSelection(true);
@@ -272,8 +272,14 @@ public class DownloadDrugs extends GenericFormGui {
 
     private void createGrpClinicColumnsSelection() {
 
+        lblClinicTableHeader = new Label(getShell(), SWT.BORDER);
+        lblClinicTableHeader.setBounds(new Rectangle(200, 270, 200, 20));
+        lblClinicTableHeader.setText("Lista de Medicementos");
+        lblClinicTableHeader.setAlignment(SWT.CENTER);
+        lblClinicTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
         lnkSelectAllColumns = new Link(getShell(), SWT.NONE);
-        lnkSelectAllColumns.setBounds(new Rectangle(130, 260, 350, 20));
+        lnkSelectAllColumns.setBounds(new Rectangle(70, 300, 450, 20));
         lnkSelectAllColumns
                 .setText("Por favor, seleccione os medicamntos que pretende importar " +
                         "ou <A>Seleccionar todas</A> colunas");
@@ -291,15 +297,10 @@ public class DownloadDrugs extends GenericFormGui {
 
     private void createTblDrug() {
 
-        lblClinicTableHeader = new Label(getShell(), SWT.BORDER);
-        lblClinicTableHeader.setBounds(new Rectangle(200, 290, 200, 20));
-        lblClinicTableHeader.setText("Lista de Medicementos");
-        lblClinicTableHeader.setAlignment(SWT.CENTER);
-        lblClinicTableHeader.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
+      
         tblColumns = CheckboxTableViewer.newCheckList(getShell(), SWT.BORDER);
         tblColumns.getTable().setBounds(
-                new org.eclipse.swt.graphics.Rectangle(115, 320, 420, 150));
+                new org.eclipse.swt.graphics.Rectangle(85, 320, 420, 150));
         tblColumns.getTable().setFont(
                 ResourceUtils.getFont(iDartFont.VERASANS_8));
         tblColumns.setContentProvider(new ArrayContentProvider());
