@@ -276,6 +276,221 @@ public class ConexaoJDBC {
 
     }
 
+
+
+    public List<MmiaStock> getStockMmmia(Date dataInicial, Date dataFinal, StockCenter stockCenter) {
+
+        List<MmiaStock> mmiaStockXLSList = new ArrayList<MmiaStock>();
+
+       Integer drugId = null;
+       String drugFNM = null;
+       String drugName = null;
+       Integer drugPacksize = null;
+       String drugExpireDate = null;
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query =  " SELECT " +
+                            "   distinct " +
+                            "   drug.id, " +
+                            "   drug.atccode_id, " +
+                            "   drug.name, " +
+                            "   drug.packsize, " +
+                            "   MIN(to_char(stock.expirydate,'MM/YYYY')) as mindate " +
+                            " FROM " +
+                            "   drug, " +
+                            "   stock " +
+                            " WHERE " +
+                            "     drug.sidetreatment = 'F'" +
+                            " AND " +
+                            "     stock.stockcenter = " +stockCenter.getId()+
+                            " AND " +
+                            "   drug.id=stock.drug " +
+                            " GROUP BY 1,2,3,4 ";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                     drugId = rs.getInt("id");
+                     drugFNM = rs.getString("atccode_id");
+                     drugName = rs.getString("name");
+                     drugPacksize = rs.getInt("packsize");
+                     drugExpireDate = rs.getString("mindate");
+
+                    MmiaStock mmiaStock = getStockMmmia(dataInicial, dataFinal, stockCenter.getId(), drugId, drugPacksize );
+                    mmiaStock.setFnm(drugFNM);
+                    mmiaStock.setMedicamento(drugName);
+                    mmiaStock.setQuantidadeFrasco(drugName);
+                    mmiaStock.setValidade(drugExpireDate);
+                    mmiaStockXLSList.add(mmiaStock);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public MmiaStock getStockMmmia(Date dataInicial, Date dataFinal, Integer stockCenterId, Integer drugId, Integer drugPacksize ) {
+
+        MmiaStock mmiaStockLS = new MmiaStock();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String startDate = dateFormat.format(dataInicial);
+
+        String endDate = dateFormat.format(dataFinal);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query = "select " +
+                    " " +
+                    "COALESCE((a.received *   "+drugPacksize+" - COALESCE((b.issued*  "+drugPacksize+") + b.pills, 0) - COALESCE(f.adjusted, 0) + COALESCE((h.returned*  "+drugPacksize+") + h.pills, 0)), 0) " +
+                    " " +
+                    "as openingpills, " +
+                    " " +
+                    "COALESCE(c.received,0) as received, " +
+                    " " +
+                    "COALESCE(e.issued,0) as destroyed , COALESCE(e.pill,0) as destroyedpills, " +
+                    " " +
+                    "COALESCE(d.issued,0) as dispensed , COALESCE(d.pill,0) as dispensedpills, " +
+                    " " +
+                    "COALESCE(g.adjusted,0) as adjusted, " +
+                    " " +
+                    "COALESCE(i.returned,0) as returned , COALESCE(i.pills,0) as returnedpills " +
+                    " " +
+                    "from ( " +
+                    "select sum(s.unitsreceived) as received " +
+                    "from drug as d, stock as s " +
+                    "where s.drug = d.id and d.id = "+drugId+" and s.stockCenter = "+stockCenterId+" and s.datereceived::timestamp::date < '"+startDate+"'::timestamp::date " +
+                    " " +
+                    ") as a, " +
+                    " " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued,  MOD(sum(pd.amount), "+drugPacksize+") as pills " +
+                    " " +
+                    "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                    "where d.id =   "+drugId+" " +
+                    "and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id and pd.stock = s.id " +
+                    "and pd.parentpackage = p.id " +
+                    "and p.packdate::timestamp::date <   '"+startDate+"'::timestamp::date " +
+                    " " +
+                    ") as b, " +
+                    " " +
+                    "( " +
+                    "select sum(s.unitsreceived) as received from drug as d, stock as s " +
+                    "where d.id =   "+drugId+" and s.stockCenter =   "+stockCenterId+" and s.drug = d.id " +
+                    "and s.datereceived::timestamp::date  >=   '"+startDate+"'::timestamp::date AND s.datereceived::timestamp::date  <=   '"+endDate+"'::timestamp::date " +
+                    " " +
+                    ") as c, " +
+                    " " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, MOD(sum(pd.amount),  "+drugPacksize+") as pill " +
+                    "from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre " +
+                    "where d.id =   "+drugId+" and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
+                    "and p.prescription = pre.id " +
+                    "and p.packdate::timestamp::date >=   '"+startDate+"'::timestamp::date and p.packdate::timestamp::date <=   '"+endDate+"'::timestamp::date " +
+                    " " +
+                    ") as d, " +
+                    " " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, MOD(sum(pd.amount),  "+drugPacksize+") as pill " +
+                    "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                    "where d.id =   "+drugId+" and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
+                    "and p.prescription is null " +
+                    "and p.packdate::timestamp::date  >=   '"+startDate+"'::timestamp::date AND  p.packdate::timestamp::date <=   '"+endDate+"'::timestamp::date " +
+                    " " +
+                    ") as e, " +
+                    " " +
+                    "(select sum(sa.adjustedValue) as adjusted " +
+                    " " +
+                    "from drug as d, stock as s, stockAdjustment as sa " +
+                    "where d.id = "+drugId+" " +
+                    "and s.stockCenter = "+stockCenterId+" " +
+                    "and s.drug = d.id " +
+                    "and sa.stock = s.id " +
+                    "and sa.captureDate::timestamp::date <   '"+startDate+"'::timestamp::date " +
+                    " " +
+                    ") as f, " +
+                    " " +
+                    "(select sum(sa.adjustedValue) as adjusted " +
+                    " " +
+                    "from drug as d, stock as s, stockAdjustment as sa " +
+                    "where d.id =   "+drugId+" " +
+                    "and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id " +
+                    "and sa.stock = s.id " +
+                    "and sa.captureDate::timestamp::date  >= '"+startDate+"'::timestamp::date AND sa.captureDate::timestamp::date <=   '"+endDate+"'::timestamp::date " +
+                    " " +
+                    ") as g, " +
+                    " " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, MOD(sum(pd.amount),  "+drugPacksize+") as pills " +
+                    " " +
+                    "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                    "where d.id =   "+drugId+" " +
+                    "and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id and pd.stock = s.id " +
+                    "and pd.parentpackage = p.id " +
+                    "and p.stockReturned = true " +
+                    "and p.packageReturned = true " +
+                    "and p.dateReturned::timestamp::date <   '"+startDate+"'::timestamp::date " +
+                    " " +
+                    ") as h, " +
+                    " " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, MOD(sum(pd.amount),  "+drugPacksize+") as pills " +
+                    " " +
+                    "from drug as d, stock as s, packageddrugs as pd, package as p " +
+                    "where d.id =   "+drugId+" " +
+                    "and s.stockCenter =   "+stockCenterId+" " +
+                    "and s.drug = d.id and pd.stock = s.id " +
+                    "and pd.parentpackage = p.id " +
+                    "and p.stockReturned = true " +
+                    "and p.packageReturned = true " +
+                    "and p.dateReturned::timestamp::date  >=   '"+startDate+"'::date AND p.dateReturned::timestamp::timestamp::date <=   '"+endDate+"'::timestamp::date " +
+                    " " +
+                    ") as i ";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+
+
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return mmiaStockLS;
+
+    }
+
+
+
     /**
      * Mapa para pacientes e desagregacao no Relatorio de indicadores mensais
      *
@@ -6242,7 +6457,7 @@ public class ConexaoJDBC {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         String startDate = dateFormat.format(dataInicial);
-        
+
         String endDate = dateFormat.format(dataFinal);
 
         try {
