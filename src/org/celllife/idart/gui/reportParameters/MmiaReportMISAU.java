@@ -31,6 +31,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
@@ -42,6 +43,7 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +63,8 @@ public class MmiaReportMISAU extends GenericReportGui {
 
 	private CCombo cmbStockCenter;
 
+	private Shell parent;
+
 	/**
 	 * Constructor
 	 *
@@ -71,6 +75,7 @@ public class MmiaReportMISAU extends GenericReportGui {
 	 */
 	public MmiaReportMISAU(Shell parent, boolean activate) {
 		super(parent, REPORTTYPE_MIA, activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -178,13 +183,9 @@ public class MmiaReportMISAU extends GenericReportGui {
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 				 
-				//String strTheDate = "" + cmbYear.getText() + "-" + cmbMonth.getText() + "-01";
-				
-				Date theStartDate = calendarStart.getCalendar().getTime(); 
+				Date theStartDate = calendarStart.getCalendar().getTime();
 			
 				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-				
-				//theStartDate = sdf.parse(strTheDate);
 				
 				MiaReportMISAU report = new MiaReportMISAU(getShell(), pharm, theStartDate, theEndDate);
 				viewReport(report);
@@ -194,6 +195,62 @@ public class MmiaReportMISAU extends GenericReportGui {
 		}
 
 	}
+
+	@Override
+	protected void cmdViewReportXlsWidgetSelected() {
+		StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+
+		if (cmbStockCenter.getText().equals("")) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			missing.setText("No Pharmacy Was Selected");
+			missing.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			missing.open();
+
+		} else if (pharm == null) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+			missing.setText("Pharmacy not found");
+			missing.setMessage("There is no pharmacy called '"
+					+ cmbStockCenter.getText()
+					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+			missing.open();
+
+		}
+
+		else
+
+		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+			showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+			return;
+		} else {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+
+			Date theStartDate = calendarStart.getCalendar().getTime();
+
+			Date theEndDate=  calendarEnd.getCalendar().getTime();
+			String reportNameFile = "Reports/MmiaReportMISAU.xls";
+			try {
+				MmiaReportMISAUExcel op = new MmiaReportMISAUExcel(parent, reportNameFile, theStartDate, theEndDate,pharm);
+				new ProgressMonitorDialog(parent).run(true, true, op);
+
+				if (op.getList() == null ||
+						op.getList().size() <= 0) {
+					MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+	}
+
 
 	/**
 	 * This method is called when the user presses "Close" button
@@ -331,9 +388,5 @@ public class MmiaReportMISAU extends GenericReportGui {
 		calendarStart.addSWTCalendarListener(listener);
 	}
 
-	@Override
-	protected void cmdViewReportXlsWidgetSelected() {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

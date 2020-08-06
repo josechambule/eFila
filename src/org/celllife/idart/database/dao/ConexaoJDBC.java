@@ -287,6 +287,7 @@ public class ConexaoJDBC {
        String drugName = null;
        Integer drugPacksize = null;
        String drugExpireDate = null;
+       String drugpackFrom = null;
 
         try {
             conecta(iDartProperties.hibernateUsername,
@@ -296,19 +297,22 @@ public class ConexaoJDBC {
                             "   distinct " +
                             "   drug.id, " +
                             "   drug.atccode_id, " +
-                            "   drug.name, " +
-                            "   drug.packsize, " +
-                            "   MIN(to_char(stock.expirydate,'MM/YYYY')) as mindate " +
+                            "   drug.name , " +
+                            "   drug.packsize , " +
+                            "   drug.packsize || ' ' || form.formlanguage1 as packform , " +
+                            "   MAX(to_char(stock.expirydate,'MM/YYYY')) as mindate " +
                             " FROM " +
-                            "   drug, " +
-                            "   stock " +
+                            "   drug " +
+                            " INNER JOIN stock ON stock.drug = drug.id" +
+                            " LEFT JOIN form ON form.id = drug.form" +
                             " WHERE " +
                             "     drug.sidetreatment = 'F'" +
                             " AND " +
                             "     stock.stockcenter = " +stockCenter.getId()+
                             " AND " +
                             "   drug.id=stock.drug " +
-                            " GROUP BY 1,2,3,4 ";
+                            " GROUP BY 1,2,3,4,5 " +
+                            " ORDER BY drug.atccode_id asc ";
 
             ResultSet rs = st.executeQuery(query);
 
@@ -320,11 +324,12 @@ public class ConexaoJDBC {
                      drugName = rs.getString("name");
                      drugPacksize = rs.getInt("packsize");
                      drugExpireDate = rs.getString("mindate");
+                     drugpackFrom = rs.getString("packform");
 
-                    MmiaStock mmiaStock = getStockMmmia(dataInicial, dataFinal, stockCenter.getId(), drugId, drugPacksize );
+                    MmiaStock mmiaStock = getStockDetails(dataInicial, dataFinal, stockCenter.getId(), drugId, drugPacksize );
                     mmiaStock.setFnm(drugFNM);
                     mmiaStock.setMedicamento(drugName);
-                    mmiaStock.setQuantidadeFrasco(drugName);
+                    mmiaStock.setQuantidadeFrasco(drugpackFrom);
                     mmiaStock.setValidade(drugExpireDate);
                     mmiaStockXLSList.add(mmiaStock);
                 }
@@ -340,11 +345,11 @@ public class ConexaoJDBC {
             e.printStackTrace();
         }
 
-        return null;
+        return mmiaStockXLSList;
     }
 
 
-    public MmiaStock getStockMmmia(Date dataInicial, Date dataFinal, Integer stockCenterId, Integer drugId, Integer drugPacksize ) {
+    public MmiaStock getStockDetails(Date dataInicial, Date dataFinal, Integer stockCenterId, Integer drugId, Integer drugPacksize ) {
 
         MmiaStock mmiaStockLS = new MmiaStock();
 
@@ -354,25 +359,37 @@ public class ConexaoJDBC {
 
         String endDate = dateFormat.format(dataFinal);
 
+        int openingpills = 0;
+        int received = 0;
+        int dispensedpills = 0;
+        int dispensed = 0;
+        int adjusted = 0;
+        int adjustedpills = 0;
+        int destroyed = 0;
+        int destroyedpills = 0;
+        int returned = 0;
+        int returnedpills = 0;
+
+
         try {
             conecta(iDartProperties.hibernateUsername,
                     iDartProperties.hibernatePassword);
 
             String query = "select " +
                     " " +
-                    "COALESCE((a.received *   "+drugPacksize+" - COALESCE((b.issued*  "+drugPacksize+") + b.pills, 0) - COALESCE(f.adjusted, 0) + COALESCE((h.returned*  "+drugPacksize+") + h.pills, 0)), 0) " +
+                    "COALESCE(( COALESCE(a.received, 0) - COALESCE(b.issued + b.pills, 0) - COALESCE(f.adjusted + f.pills, 0) + COALESCE(h.returned + h.pills, 0)), 0) " +
                     " " +
                     "as openingpills, " +
                     " " +
                     "COALESCE(c.received,0) as received, " +
                     " " +
-                    "COALESCE(e.issued,0) as destroyed , COALESCE(e.pill,0) as destroyedpills, " +
+                    "COALESCE(e.issued,0) + COALESCE(e.pills,0) as destroyed, " +
                     " " +
-                    "COALESCE(d.issued,0) as dispensed , COALESCE(d.pill,0) as dispensedpills, " +
+                    "COALESCE(d.issued,0) + COALESCE(d.pills,0) as dispensed, " +
                     " " +
-                    "COALESCE(g.adjusted,0) as adjusted, " +
+                    "COALESCE(g.adjusted,0) + COALESCE(g.pills,0) as adjusted, " +
                     " " +
-                    "COALESCE(i.returned,0) as returned , COALESCE(i.pills,0) as returnedpills " +
+                    "COALESCE(i.returned,0) + COALESCE(i.pills,0) as returned " +
                     " " +
                     "from ( " +
                     "select sum(s.unitsreceived) as received " +
@@ -381,7 +398,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as a, " +
                     " " +
-                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued,  MOD(sum(pd.amount), "+drugPacksize+") as pills " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued,  CASE WHEN MOD(sum(pd.amount), "+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     " " +
                     "from drug as d, stock as s, packageddrugs as pd, package as p " +
                     "where d.id =   "+drugId+" " +
@@ -399,7 +416,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as c, " +
                     " " +
-                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, MOD(sum(pd.amount),  "+drugPacksize+") as pill " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, CASE WHEN MOD(sum(pd.amount),  "+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     "from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre " +
                     "where d.id =   "+drugId+" and s.stockCenter =   "+stockCenterId+" " +
                     "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
@@ -408,7 +425,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as d, " +
                     " " +
-                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, MOD(sum(pd.amount),  "+drugPacksize+") as pill " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as issued, CASE WHEN MOD(sum(pd.amount),  "+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     "from drug as d, stock as s, packageddrugs as pd, package as p " +
                     "where d.id =   "+drugId+" and s.stockCenter =   "+stockCenterId+" " +
                     "and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id " +
@@ -417,7 +434,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as e, " +
                     " " +
-                    "(select sum(sa.adjustedValue) as adjusted " +
+                    "(select round(floor(sum(sa.adjustedvalue::real)/"+drugPacksize+")::numeric,0) as adjusted, CASE WHEN MOD(sum(sa.adjustedvalue),"+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     " " +
                     "from drug as d, stock as s, stockAdjustment as sa " +
                     "where d.id = "+drugId+" " +
@@ -428,7 +445,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as f, " +
                     " " +
-                    "(select sum(sa.adjustedValue) as adjusted " +
+                    "(select round(floor(sum(sa.adjustedvalue::real)/"+drugPacksize+")::numeric,0) as adjusted, CASE WHEN MOD(sum(sa.adjustedvalue),"+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     " " +
                     "from drug as d, stock as s, stockAdjustment as sa " +
                     "where d.id =   "+drugId+" " +
@@ -439,7 +456,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as g, " +
                     " " +
-                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, MOD(sum(pd.amount),  "+drugPacksize+") as pills " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, CASE WHEN MOD(sum(pd.amount),  "+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     " " +
                     "from drug as d, stock as s, packageddrugs as pd, package as p " +
                     "where d.id =   "+drugId+" " +
@@ -452,7 +469,7 @@ public class ConexaoJDBC {
                     " " +
                     ") as h, " +
                     " " +
-                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, MOD(sum(pd.amount),  "+drugPacksize+") as pills " +
+                    "(select round(floor(sum(pd.amount::real)/"+drugPacksize+")::numeric,0) as returned, CASE WHEN MOD(sum(pd.amount),  "+drugPacksize+") > 0 THEN 1 ELSE 0 END as pills " +
                     " " +
                     "from drug as d, stock as s, packageddrugs as pd, package as p " +
                     "where d.id =   "+drugId+" " +
@@ -470,7 +487,12 @@ public class ConexaoJDBC {
             if (rs != null) {
 
                 while (rs.next()) {
-
+                    openingpills = rs.getInt("openingpills");
+                    received = rs.getInt("received");
+                    dispensed = rs.getInt("dispensed");
+                    adjusted = rs.getInt("adjusted");
+                    destroyed = rs.getInt("destroyed");
+                    returned = rs.getInt("returned");
 
                 }
                 rs.close();
@@ -485,10 +507,78 @@ public class ConexaoJDBC {
             e.printStackTrace();
         }
 
+        int totalpills = openingpills + returned + received - dispensed - destroyed - adjusted ;
+
+        mmiaStockLS.setSaldo(String.valueOf(openingpills));
+        mmiaStockLS.setEntrdas(String.valueOf(received));
+        mmiaStockLS.setSaidas(String.valueOf(dispensed));
+        mmiaStockLS.setPerdasAjustes(String.valueOf(adjusted));
+        mmiaStockLS.setInventario(String.valueOf(totalpills));
+
         return mmiaStockLS;
 
     }
 
+    public List<MmiaRegimeTerapeutico> getRegimenMmmia(Date dataInicial, Date dataFinal) {
+
+        List<MmiaRegimeTerapeutico> mmiaRegimenXLSList = new ArrayList<MmiaRegimeTerapeutico>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String startDate = dateFormat.format(dataInicial);
+
+        String endDate = dateFormat.format(dataFinal);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query =  " SELECT  distinct rt.regimeesquema,rt.codigoregime, count(distinct p.patient) as totalpacientes " +
+                    "FROM (select max(pre.date) predate, max(pa.pickupdate) pickupdate, pat.id " +
+                    "from package pa " +
+                    "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                    "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                    "inner join prescription pre on pre.id = pa.prescription " +
+                    "inner join patient pat ON pre.patient=pat.id " +
+                    "where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <=   '"+endDate+"') " +
+                    " OR (pg_catalog.date(pa.pickupdate) < '" + startDate + "' and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) >   '"+endDate+"' " +
+                    "  and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day',   '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= '" + startDate + "' " +
+                    "  and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day',   '"+endDate+"'::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <=   '"+endDate+"')) " +
+                    "GROUP BY 3 order by 3) pack " +
+                    "inner join prescription p on p.date = pack.predate and p.patient=pack.id " +
+                    "inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate " +
+                    "inner join regimeterapeutico rt on rt.regimeid = p.regimeid " +
+                    "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                    "    from episode WHERE stopdate is null and startdate <=   '"+endDate+"' " +
+                    "    GROUP BY 2,3 " +
+                    ") visit on visit.patient = pack.id " +
+                    "where visit.startreason not like '%ansito%' and visit.startreason not like '%ternidade%' " +
+                    "group by 1,2 order by 1";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    MmiaRegimeTerapeutico mmiaRegimeTerapeutico = new MmiaRegimeTerapeutico();
+                    mmiaRegimeTerapeutico.setCodigo(rs.getString("codigoregime"));
+                    mmiaRegimeTerapeutico.setRegimeTerapeutico(rs.getString("regimeesquema"));
+                    mmiaRegimeTerapeutico.setTotalDoentes(String.valueOf(rs.getInt("totalpacientes")));
+
+                    mmiaRegimenXLSList.add(mmiaRegimeTerapeutico);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return mmiaRegimenXLSList;
+    }
 
 
     /**
