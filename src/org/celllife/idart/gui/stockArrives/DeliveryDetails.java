@@ -260,7 +260,7 @@ public class DeliveryDetails extends GenericFormGui {
 		Label lblBatchNumber = new Label(grpBatchDetails, SWT.NONE);
 		lblBatchNumber.setBounds(new Rectangle(20, 60, 100, 20));
 		lblBatchNumber.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		lblBatchNumber.setText("Número do Lote");
+		lblBatchNumber.setText("*Número do Lote");
 
 		txtBatchNumber = new Text(grpBatchDetails, SWT.BORDER);
 		txtBatchNumber.setBounds(new Rectangle(150, 59, 90, 20));
@@ -600,7 +600,14 @@ public class DeliveryDetails extends GenericFormGui {
 	@Override
 	protected boolean fieldsOk() {
 		boolean result = true;
-		if (txtDrugName.getText().equals("")) {
+		if (txtBatchNumber.getText().equals("")) {
+			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+			m.setMessage("Por favor, introduza o Número do Lote");
+			m.setText("O campo  Número do Lote do medicamento não pode ser vazio");
+			m.open();
+			txtBatchNumber.setFocus();
+			result = false;
+		} else if (txtDrugName.getText().equals("")) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m
 			.setMessage("Por favor, carregue o medicamento apresentado na lista de medicamentos (Utilize o botão 'Pesquisar medicamento').");
@@ -644,7 +651,7 @@ public class DeliveryDetails extends GenericFormGui {
 						.checkPositiveNumericValue(txtUnitPrice))) {
 			MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
 			m
-			.setMessage("TIntroduza um valor maior que zero (Ex. '5.00'). Caso nao queira especificar o valor, pode deixar este campo em branco.");
+			.setMessage("Introduza um valor maior que zero (Ex. '5.00'). Caso nao queira especificar o valor, pode deixar este campo em branco.");
 			m.setText("Valor incorrecto");
 			m.open();
 			txtUnitPrice.setText("");
@@ -816,22 +823,24 @@ public class DeliveryDetails extends GenericFormGui {
 				sixMonthsFromNow.add(Calendar.MONTH, 6);
 
 				if (expiryDate.before(today)) {
-					MessageBox m = new MessageBox(getShell(), SWT.ICON_QUESTION
-							| SWT.YES | SWT.NO);
-					m.setText("O Stock ja esta expirado");
-					m
-					.setMessage("Este stock ja esta expirado. Tem a certeza que pretende adicionar?");
+					MessageBox feedback = new MessageBox(getShell(), SWT.OK);
+					feedback.setMessage("Este stock ja está expirado e não será adicionado.Por favor, verifique a data de validade!");
+					feedback.setText("O Stock ja está expirado");
+					feedback.open();
+					expiryDateOkay = false;
 
-					switch (m.open()) {
+					cmbExpiryMonth.setFocus();
 
-					case SWT.YES:
-						expiryDateOkay = true;
-						break;
-					case SWT.NO:
-						expiryDateOkay = false;
-						cmbExpiryMonth.setFocus();
-						break;
-					}
+//					switch (m.open()) {
+//
+//					case SWT.YES:
+//						expiryDateOkay = true;
+//						break;
+//					case SWT.NO:
+//						expiryDateOkay = false;
+//						cmbExpiryMonth.setFocus();
+//						break;
+//					}
 				}
 
 				else if (expiryDate.before(sixMonthsFromNow)) {
