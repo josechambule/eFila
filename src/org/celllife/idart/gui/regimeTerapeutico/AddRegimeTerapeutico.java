@@ -184,7 +184,7 @@ public class AddRegimeTerapeutico extends GenericFormGui {
         grpRegimen.setText(Messages.getString("adddruggroup.label.regimen.title")); //$NON-NLS-1$
         grpRegimen.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
-        // Codigo do Regime FNM
+        // Codigo do Regime
         lblCodigoRegime = new Label(grpRegimen, SWT.NONE);
         lblCodigoRegime.setBounds(new Rectangle(30, 20, 110, 20));
         lblCodigoRegime.setText(Messages.getString("adddruggroup.label.codigo.regime.title")); //$NON-NLS-1$

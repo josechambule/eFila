@@ -194,7 +194,6 @@ public class MmiaReportMISAUExcel implements IRunnableWithProgress {
                 Thread.sleep(5);
                 // Optionally add subtasks
 
-
                 // Tell the monitor that you successfully finished one item of "workload"-many
                 monitor.worked(1);
                 // Check if the user pressed "cancel"

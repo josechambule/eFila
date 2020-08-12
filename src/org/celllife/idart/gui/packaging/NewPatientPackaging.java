@@ -2600,9 +2600,9 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             }
             pillCountTable.getTable().setEnabled(false);
             // Disabling the label printing.
-            rdBtnYesAppointmentDate.setEnabled(false);
+            rdBtnYesAppointmentDate.setEnabled(true);
             rdBtnYesAppointmentDate.setSelection(false);
-            rdBtnNoAppointmentDate.setEnabled(false);
+            rdBtnNoAppointmentDate.setEnabled(true);
             rdBtnNoAppointmentDate.setSelection(false);
         } else {
             if (previousPack != null) {
