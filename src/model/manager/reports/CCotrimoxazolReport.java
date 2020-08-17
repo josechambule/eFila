@@ -62,12 +62,6 @@ public class CCotrimoxazolReport extends AbstractJasperReport {
 
 		map.put("facilityName", LocalObjects.currentClinic.getClinicName());
 
-
-
- 
-
-
-		
 		return map;
 	}
 

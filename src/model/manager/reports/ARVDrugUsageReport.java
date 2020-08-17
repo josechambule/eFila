@@ -7,9 +7,12 @@ import org.celllife.idart.database.hibernate.Drug;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class ARVDrugUsageReport extends AbstractJasperReport {
 
@@ -32,12 +35,12 @@ public class ARVDrugUsageReport extends AbstractJasperReport {
 	@Override
 	protected void generateData() throws ReportException {
 		final List<String[]> theStringList = new ArrayList<String[]>();
+
 		theStringList.addAll(getARVDrugUsagePerDay());
 
 		// print the header
 		theStringList.add(0, new String[] { "date", "drug1", "drug2", "drug3",
-				"drug4", "drug5", "drug6", "drug7", "drug8", "drug9", "drug10",
-		"drug11" });
+				"drug4", "drug5", "drug6", "drug7", "drug8", "drug9", "drug10","drug11" });
 
 		// take off the last row - this is the totals, passed as parameters
 		// later
@@ -45,6 +48,7 @@ public class ARVDrugUsageReport extends AbstractJasperReport {
 		theStringList.remove(theStringList.size() - 1);
 
 		csvFile = createCSVFile("tmpARVDrugUsage.csv", theStringList, true);
+
 	}
 
 	@Override
@@ -107,9 +111,10 @@ public class ARVDrugUsageReport extends AbstractJasperReport {
 
 					Integer[] dispQuantities = getTotalForDrugForDay(theDrug,
 							theDate, stockCenterId);
+
 					usageArray[i] = (dispQuantities[1] == 0 ? ""
-							+ dispQuantities[0] : "" + dispQuantities[0] + " ("
-							+ dispQuantities[1] + ")");
+							+ dispQuantities[0] : "" + (dispQuantities[0] + 1));
+//							+ dispQuantities[1] + ")");
 
 					totalArray[i - 1] = totalArray[i - 1]
 					                               + (dispQuantities[0] * theDrug.getPackSize())
@@ -140,9 +145,12 @@ public class ARVDrugUsageReport extends AbstractJasperReport {
 		while (it2.hasNext()) {
 			Drug theDrug = it2.next();
 			int fullPacks = totalArray[count] / theDrug.getPackSize();
+
 			int loosePills = totalArray[count] % theDrug.getPackSize();
+
 			usageArray[count + 1] = loosePills == 0 ? "" + fullPacks : ""
-				+ fullPacks + " (" + loosePills + ")";
+				+ (fullPacks + 1);
+//				+ fullPacks + " (" + loosePills + ")";
 			count++;
 		}
 

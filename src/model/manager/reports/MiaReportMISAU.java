@@ -90,7 +90,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
             map.put("mesesdispensadosparaDM", String.valueOf(mesesdispensadosparaDM));
             map.put("mesesdispensadosparaDT", String.valueOf(mesesdispensadosparaDT));
             map.put("mesesdispensadosparaDS", String.valueOf(mesesdispensadosparaDS));
-            map.put("mesesdispensados", String.valueOf(mesesdispensados));
+            map.put("mesesdispensados", String.valueOf(mesesdispensadosparaDM+mesesdispensadosparaDT+mesesdispensadosparaDS));
 
             map.put("totalpacientesadulto", String.valueOf(adultosEmTarv));
             map.put("totalpacientes04", String.valueOf(pediatrico04EmTARV));

@@ -35,28 +35,31 @@
 	<queryString>
 		<![CDATA[select
 
-COALESCE((a.received * $P{packsize} - COALESCE((b.issued*$P{packsize}) + b.pills, 0) - COALESCE(f.adjusted, 0) + COALESCE((h.returned*$P{packsize}) + h.pills, 0)), 0)
+COALESCE((a.received - COALESCE(b.issued + b.pills, 0) - COALESCE(f.adjusted + f.pills, 0) + COALESCE(h.returned + h.pills, 0)), 0)
 
 as openingpills,
 
 COALESCE(c.received,0) as received,
 
-COALESCE(e.issued,0) as destroyed , COALESCE(e.pill,0) as destroyedpills,
+COALESCE(e.issued,0) as destroyed , COALESCE(e.pills,0) as destroyedpills,
 
-COALESCE(d.issued,0) as dispensed , COALESCE(d.pill,0) as dispensedpills,
+COALESCE(d.issued,0) as dispensed , COALESCE(d.pills,0) as dispensedpills,
 
-COALESCE(g.adjusted,0) as adjusted,
+COALESCE(g.adjusted,0) as adjusted , COALESCE(g.pills,0) as adjustedpills,
 
-COALESCE(i.returned,0) as returned , COALESCE(i.pills,0) as returnedpills
+COALESCE(i.returned,0) as returned , COALESCE(i.pills,0) as returnedpills,
 
-from (
+drug.atccode_id as fnm
+
+from drug,
+(
 select sum(s.unitsreceived) as received
 from drug as d, stock as s
 where s.drug = d.id and d.id = $P{id} and s.stockCenter = $P{stockCenterId} and s.datereceived < $P{monthStart}::timestamp
 
 ) as a,
 
-(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued,  MOD(sum(pd.amount),$P{packsize}) as pills
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, CASE WHEN MOD(sum(pd.amount),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = $P{id}
@@ -75,7 +78,7 @@ and s.datereceived between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 
 ) as c,
 
-(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, CASE WHEN MOD(sum(pd.amount),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 from drug as d, stock as s, packageddrugs as pd, package as p,prescription as pre
 where d.id = $P{id} and s.stockCenter = $P{stockCenterId}
 and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
@@ -85,7 +88,7 @@ and p.packdate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 
 ) as d,
 
-(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, MOD(sum(pd.amount),$P{packsize}) as pill
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as issued, CASE WHEN MOD(sum(pd.amount),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = $P{id} and s.stockCenter = $P{stockCenterId}
 and s.drug = d.id and pd.stock = s.id and pd.parentpackage = p.id
@@ -95,8 +98,7 @@ and p.packdate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 
 ) as e,
 
-(select sum(sa.adjustedValue) as adjusted
-
+ (select round(floor(sum(sa.adjustedValue::real)/$P{packsize})::numeric,0) as adjusted, CASE WHEN MOD(sum(sa.adjustedValue),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 from drug as d, stock as s, stockAdjustment as sa
 where d.id = $P{id}
 and s.stockCenter = $P{stockCenterId}
@@ -105,8 +107,7 @@ and sa.stock = s.id
 and sa.captureDate < $P{monthStart}::timestamp
 ) as f,
 
-(select sum(sa.adjustedValue) as adjusted
-
+(select round(floor(sum(sa.adjustedValue::real)/$P{packsize})::numeric,0) as adjusted, CASE WHEN MOD(sum(sa.adjustedValue),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 from drug as d, stock as s, stockAdjustment as sa
 where d.id = $P{id}
 and s.stockCenter = $P{stockCenterId}
@@ -117,7 +118,7 @@ and sa.captureDate between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 
 ) as g,
 
-(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, MOD(sum(pd.amount),$P{packsize}) as pills
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, CASE WHEN MOD(sum(pd.amount),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = $P{id}
@@ -130,7 +131,7 @@ and p.dateReturned < $P{monthStart}::timestamp
 
 ) as h,
 
-(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, MOD(sum(pd.amount),$P{packsize}) as pills
+(select round(floor(sum(pd.amount::real)/$P{packsize})::numeric,0) as returned, CASE WHEN MOD(sum(pd.amount),$P{packsize}) > 0 THEN 1 ELSE 0 END as pills
 
 from drug as d, stock as s, packageddrugs as pd, package as p
 where d.id = $P{id}
@@ -141,29 +142,29 @@ and p.stockReturned = true
 and p.packageReturned = true
 and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 
-) as i]]>
+) as i
+where drug.id = $P{id}]]>
 	</queryString>
+	<field name="openingpills" class="java.math.BigDecimal"/>
 	<field name="received" class="java.lang.Long"/>
-	<field name="dispensed" class="java.lang.Long"/>
-	<field name="openingpills" class="java.lang.Integer"/>
-	<field name="destroyed" class="java.lang.Integer"/>
+	<field name="destroyed" class="java.math.BigDecimal"/>
 	<field name="destroyedpills" class="java.lang.Integer"/>
-	<field name="adjusted" class="java.lang.Integer"/>
-	<field name="dispensedpills" class="java.lang.Long"/>
-	<field name="returned" class="java.lang.Integer"/>
+	<field name="dispensed" class="java.math.BigDecimal"/>
+	<field name="dispensedpills" class="java.lang.Integer"/>
+	<field name="adjusted" class="java.math.BigDecimal"/>
+	<field name="adjustedpills" class="java.lang.Integer"/>
+	<field name="returned" class="java.math.BigDecimal"/>
 	<field name="returnedpills" class="java.lang.Integer"/>
-	<variable name="totalPills" class="java.lang.Long">
-		<variableExpression><![CDATA[new Long($F{openingpills}.longValue()  + ($F{received}.longValue()*$P{packsize}.intValue())
-- ($F{dispensed}.longValue()*$P{packsize}.intValue()) - $F{dispensedpills}.longValue()
-- ($F{destroyed}.longValue()*$P{packsize}.intValue()) - $F{destroyedpills}.longValue()
-- $F{adjusted}.intValue()
-+ ($F{returned}.intValue()*$P{packsize}.intValue()) + $F{returnedpills}.intValue()
-)]]></variableExpression>
+	<field name="fnm" class="java.lang.String"/>
+	<variable name="totalPills" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{openingpills}.intValue()  + ($F{received}.intValue())
+- ($F{dispensed}.intValue()) - $F{dispensedpills}.intValue()
+- ($F{destroyed}.intValue()) - $F{destroyedpills}.intValue()
+- $F{adjusted}.intValue() - $F{adjustedpills}.intValue()
++ ($F{returned}.intValue()) + $F{returnedpills}.intValue()]]></variableExpression>
 	</variable>
-	<variable name="totalString" class="java.lang.String">
-		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0)?
-(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()
-:(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString() + " ("+ (new Long($V{totalPills}.longValue()%$P{packsize}.intValue())).toString() +")"]]></variableExpression>
+	<variable name="totalString" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{totalPills}]]></variableExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -209,8 +210,7 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{dispensedpills}.intValue()==0?$F{dispensed}.toString():
-($F{dispensed}).toString() +" (" + ($F{dispensedpills}).toString() + ")"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{dispensedpills}.intValue() + $F{dispensed}.intValue())]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="textField-4" mode="Transparent" x="490" y="2" width="40" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -223,10 +223,10 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{totalString}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="textField-6" mode="Transparent" x="3" y="2" width="145" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField-6" mode="Transparent" x="3" y="2" width="198" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -234,16 +234,10 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="6" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{name}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement key="line-8" mode="Opaque" x="150" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
-				<graphicElement fill="Solid">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 			<line>
 				<reportElement key="line-9" mode="Opaque" x="297" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<graphicElement fill="Solid">
@@ -279,8 +273,7 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[($F{openingpills}.intValue()%$P{packsize}.intValue())==0?new Integer($F{openingpills}.intValue()/$P{packsize}.intValue()).toString():
-(new Integer($F{openingpills}.intValue()/$P{packsize}.intValue()).toString() + " (" + new Integer($F{openingpills}.intValue()%$P{packsize}.intValue()).toString() + ")")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{openingpills}.toString()]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-20" mode="Opaque" x="201" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -294,32 +287,6 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 					<pen lineWidth="0.25" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField isBlankWhenNull="false">
-				<reportElement key="textField-8" x="152" y="2" width="47" height="16"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{NSN}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="false">
-				<reportElement key="textField-9" x="203" y="2" width="47" height="16"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{StockCode}]]></textFieldExpression>
-			</textField>
 			<line>
 				<reportElement key="line-27" mode="Opaque" x="375" y="0" width="1" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
 				<graphicElement fill="Solid">
@@ -337,8 +304,7 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{destroyedpills}.intValue()==0?$F{destroyed}.toString():
-($F{destroyed}).toString() +" (" + ($F{destroyedpills}).toString() + ")"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{destroyedpills}.intValue()+ $F{destroyed}.intValue())]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-28" x="532" y="0" width="1" height="20"/>
@@ -354,8 +320,7 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[($F{adjusted}.intValue()%$P{packsize}.intValue())==0?new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString():
-(new Integer($F{adjusted}.intValue()/$P{packsize}.intValue()).toString() + " (" + new Integer($F{adjusted}.intValue()%$P{packsize}.intValue()).toString() + ")")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{adjusted}.intValue() + $F{adjustedpills}.intValue())]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-12" x="453" y="2" width="33" height="16"/>
@@ -368,12 +333,18 @@ and p.dateReturned between $P{monthStart}::timestamp and $P{monthEnd}::timestamp
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{returnedpills}.intValue()==0?$F{returned}.toString():
-($F{returned}).toString() +" (" + ($F{returnedpills}).toString() + ")"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{returnedpills}.intValue() + $F{returned}.intValue())]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-29" x="488" y="0" width="1" height="20"/>
 			</line>
+			<textField>
+				<reportElement x="202" y="2" width="50" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fnm}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

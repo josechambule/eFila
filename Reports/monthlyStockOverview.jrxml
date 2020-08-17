@@ -57,7 +57,7 @@ order by d.name asc]]>
 	<title>
 		<band height="152" splitType="Stretch">
 			<staticText>
-				<reportElement key="st_heading" mode="Transparent" x="2" y="5" width="334" height="23" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_heading" mode="Transparent" x="2" y="28" width="334" height="23" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -67,23 +67,10 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="CP1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Monthly Receipts & Issues: ARV Drugs]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="st_pharmacist" mode="Opaque" x="2" y="50" width="121" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[Responsible Pharmacist:]]></text>
+				<text><![CDATA[ARV Recebidos no Mês]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="tf_facilityName" mode="Opaque" x="132" y="35" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="tf_facilityName" mode="Opaque" x="132" y="58" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -96,7 +83,7 @@ order by d.name asc]]>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{facilityName} + ": " + $P{stockCenterName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="st_date" mode="Opaque" x="2" y="65" width="70" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_date" mode="Opaque" x="2" y="74" width="70" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -106,10 +93,10 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Balances for:]]></text>
+				<text><![CDATA[Período]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="tf_date" mode="Opaque" x="132" y="65" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="tf_date" mode="Opaque" x="132" y="74" width="277" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -126,7 +113,7 @@ order by d.name asc]]>
 				<graphicElement fill="Solid"/>
 			</line>
 			<staticText>
-				<reportElement key="st_drug" mode="Opaque" x="5" y="100" width="145" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_drug" mode="Opaque" x="5" y="100" width="198" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -136,10 +123,10 @@ order by d.name asc]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[DRUG]]></text>
+				<text><![CDATA[Medicamento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="st_facilityName" mode="Transparent" x="2" y="35" width="70" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="st_facilityName" mode="Transparent" x="2" y="58" width="91" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -149,34 +136,8 @@ order by d.name asc]]>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Facility Name:]]></text>
+				<text><![CDATA[Unidade Sanitária]]></text>
 			</staticText>
-			<staticText>
-				<reportElement key="st_area" mode="Transparent" x="2" y="80" width="120" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[Area (Pharmacy / Store):]]></text>
-			</staticText>
-			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="tf_pharmacist" mode="Opaque" x="132" y="50" width="278" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{pharmacist1}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement key="st_openingBalance" mode="Transparent" x="256" y="100" width="41" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
@@ -188,8 +149,7 @@ order by d.name asc]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[OPENING
-BALANCE]]></text>
+				<text><![CDATA[SALDO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_stockReceived" mode="Transparent" x="301" y="100" width="33" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -202,8 +162,7 @@ BALANCE]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[STOCK
-RECEIVED]]></text>
+				<text><![CDATA[RECEBIDO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_stockIssued" mode="Transparent" x="338" y="100" width="37" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -216,8 +175,7 @@ RECEIVED]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[STOCK
-ISSUED]]></text>
+				<text><![CDATA[SAIDAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_stockOnHand" mode="Transparent" x="492" y="100" width="38" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -230,15 +188,10 @@ ISSUED]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[STOCK
-ON HAND]]></text>
+				<text><![CDATA[STOCK ACTUAL´]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-2" mode="Opaque" x="2" y="98" width="1" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
-				<graphicElement fill="Solid"/>
-			</line>
-			<line>
-				<reportElement key="line-3" mode="Opaque" x="152" y="98" width="1" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
 				<graphicElement fill="Solid"/>
 			</line>
 			<line>
@@ -292,7 +245,7 @@ ON HAND]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[No. of Full Containers (No. of Loose Pills)]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="st_tablets" mode="Transparent" x="3" y="138" width="147" height="13" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -305,20 +258,7 @@ ON HAND]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Tablets / Capsules]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="st_areaPharmacy" mode="Transparent" x="132" y="80" width="280" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[Pharmacy]]></text>
+				<text><![CDATA[Frascos / Capsulas]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-23" mode="Opaque" x="203" y="98" width="1" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -328,19 +268,6 @@ ON HAND]]></text>
 				<reportElement key="line-24" mode="Opaque" x="254" y="98" width="1" height="34" forecolor="#000000" backcolor="#FFFFFF"/>
 				<graphicElement fill="Solid"/>
 			</line>
-			<staticText>
-				<reportElement key="st_openingBalance-2" mode="Transparent" x="154" y="100" width="47" height="32" forecolor="#000000" backcolor="#FFFFFF"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[DRUG CODE 1]]></text>
-			</staticText>
 			<staticText>
 				<reportElement key="st_openingBalance-3" mode="Transparent" x="205" y="100" width="47" height="32" isRemoveLineWhenBlank="true" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
@@ -352,7 +279,7 @@ ON HAND]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[DRUG CODE 2]]></text>
+				<text><![CDATA[FNM]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-25" mode="Opaque" x="254" y="138" width="1" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -388,8 +315,7 @@ ON HAND]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 					<font fontName="Arial" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[STOCK
-DESTROYED]]></text>
+				<text><![CDATA[DESTRUIDO]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-28" x="451" y="98" width="1" height="34"/>
@@ -405,7 +331,7 @@ DESTROYED]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[STOCK ADJUSTED]]></text>
+				<text><![CDATA[AJUSTE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-4" mode="Opaque" x="453" y="100" width="33" height="32"/>
@@ -418,7 +344,7 @@ DESTROYED]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[STOCK RETURNED]]></text>
+				<text><![CDATA[DEVOLVIDO]]></text>
 			</staticText>
 			<line>
 				<reportElement key="line-29" x="490" y="98" width="1" height="34"/>
@@ -447,11 +373,11 @@ DESTROYED]]></text>
 				<subreportParameter name="ATC">
 					<subreportParameterExpression><![CDATA[$F{atccode}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="stockCenterId">
-					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="packsize">
 					<subreportParameterExpression><![CDATA[$F{packsize}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="stockCenterId">
+					<subreportParameterExpression><![CDATA[$P{stockCenterId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="name">
 					<subreportParameterExpression><![CDATA[$F{name}]]></subreportParameterExpression>

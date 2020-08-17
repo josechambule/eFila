@@ -9,7 +9,9 @@ public class HistoricoLevantamentoXLS {
 	private String apelido;
 	
 	private String tipoTarv;
-	
+
+	private String tipoPaciente;
+
 	private String regimeTerapeutico;
 	
 	private String tipoDispensa;
@@ -89,5 +91,13 @@ public class HistoricoLevantamentoXLS {
 
 	public void setClinic(String clinic) {
 		this.clinic = clinic;
+	}
+
+	public String getTipoPaciente() {
+		return tipoPaciente;
+	}
+
+	public void setTipoPaciente(String tipoPaciente) {
+		this.tipoPaciente = tipoPaciente;
 	}
 }

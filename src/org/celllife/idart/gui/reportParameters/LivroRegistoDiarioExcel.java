@@ -89,12 +89,12 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 healthFacilityCell.setCellStyle(cellStyle);
 
                 HSSFRow reportPeriod = sheet.getRow(10);
-                HSSFCell reportPeriodCell = reportPeriod.createCell(16);
+                HSSFCell reportPeriodCell = reportPeriod.createCell(15);
                 reportPeriodCell.setCellValue(sdf.format(theStartDate) + " à " + sdf.format(theEndDate));
                 reportPeriodCell.setCellStyle(cellStyle);
 
                 HSSFRow reportYear = sheet.getRow(11);
-                HSSFCell reportYearCell = reportYear.createCell(16);
+                HSSFCell reportYearCell = reportYear.createCell(15);
                 reportYearCell.setCellValue(sdfYear.format(theStartDate));
                 reportYearCell.setCellStyle(cellStyle);
 
@@ -124,8 +124,8 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                         if (xlsLivroTemp.getPatientIdentifier().equalsIgnoreCase(xls.getPatientIdentifier()) &&
                                 xlsLivroTemp.getNome().equalsIgnoreCase(xls.getNome())) {
 
-                            for(int r = 1; r <= 17; r++){
-                                if(!(r == 9 || r==10)) {
+                            for(int r = 1; r <= 18; r++){
+                                if(!(r == 10 || r==11)) {
                                     sheet.addMergedRegion(new CellRangeAddress(
                                             rowNum - 2,
                                             rowNum - 1,
@@ -144,63 +144,67 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                     createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
                     createCellNome.setCellStyle(cellStyle);
 
-                    HSSFCell zeroQuatro = row.createCell(3);
+                    HSSFCell tipoPaciente= row.createCell(3);
+                    tipoPaciente.setCellValue(xls.getTipoPaciente());
+                    tipoPaciente.setCellStyle(cellStyle);
+
+                    HSSFCell zeroQuatro = row.createCell(4);
                     zeroQuatro.setCellValue(xls.getZeroQuatro());
                     zeroQuatro.setCellStyle(cellStyle);
 
-                    HSSFCell cincoNove = row.createCell(4);
+                    HSSFCell cincoNove = row.createCell(5);
                     cincoNove.setCellValue(xls.getCincoNove());
                     cincoNove.setCellStyle(cellStyle);
 
-                    HSSFCell dezCatorze = row.createCell(5);
+                    HSSFCell dezCatorze = row.createCell(6);
                     dezCatorze.setCellValue(xls.getDezCatorze());
                     dezCatorze.setCellStyle(cellStyle);
 
-                    HSSFCell maiorQuinze = row.createCell(6);
+                    HSSFCell maiorQuinze = row.createCell(7);
                     maiorQuinze.setCellValue(xls.getMaiorQuinze());
                     maiorQuinze.setCellStyle(cellStyle);
 
-                    HSSFCell createCellTipoTarv = row.createCell(7);
+                    HSSFCell createCellTipoTarv = row.createCell(8);
                     createCellTipoTarv.setCellValue(xls.getTipoTarv());
                     createCellTipoTarv.setCellStyle(cellStyle);
 
-                    HSSFCell createCellRegimeTerapeutico = row.createCell(8);
+                    HSSFCell createCellRegimeTerapeutico = row.createCell(9);
                     createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
                     createCellRegimeTerapeutico.setCellStyle(cellStyle);
 
-                    HSSFCell produtos = row.createCell(9);
+                    HSSFCell produtos = row.createCell(10);
                     produtos.setCellValue(xls.getProdutos());
                     produtos.setCellStyle(cellStyle);
 
-                    HSSFCell quantidade = row.createCell(10);
+                    HSSFCell quantidade = row.createCell(11);
                     quantidade.setCellValue(xls.getQuantidade());
                     quantidade.setCellStyle(cellStyle);
 
-                    HSSFCell createCellTipoDispensa = row.createCell(11);
+                    HSSFCell createCellTipoDispensa = row.createCell(12);
                     createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
                     createCellTipoDispensa.setCellStyle(cellStyle);
 
-                    HSSFCell linhaNome = row.createCell(12);
+                    HSSFCell linhaNome = row.createCell(13);
                     linhaNome.setCellValue(xls.getLinha());
                     linhaNome.setCellStyle(cellStyle);
 
-                    HSSFCell createCellDataLevantamento = row.createCell(13);
+                    HSSFCell createCellDataLevantamento = row.createCell(14);
                     createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
                     createCellDataLevantamento.setCellStyle(cellStyle);
 
-                    HSSFCell createCellDataProximoLevantamento = row.createCell(14);
+                    HSSFCell createCellDataProximoLevantamento = row.createCell(15);
                     createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
                     createCellDataProximoLevantamento.setCellStyle(cellStyle);
 
-                    HSSFCell ppe = row.createCell(15);
+                    HSSFCell ppe = row.createCell(16);
                     ppe.setCellValue(xls.getPpe());
                     ppe.setCellStyle(cellStyle);
 
-                    HSSFCell prep = row.createCell(16);
+                    HSSFCell prep = row.createCell(17);
                     prep.setCellValue(xls.getPrep());
                     prep.setCellStyle(cellStyle);
 
-                    HSSFCell criancaExposta = row.createCell(17);
+                    HSSFCell criancaExposta = row.createCell(18);
                     criancaExposta.setCellValue("");
                     criancaExposta.setCellStyle(cellStyle);
 

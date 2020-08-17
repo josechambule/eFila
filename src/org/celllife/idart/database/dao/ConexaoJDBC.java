@@ -3998,8 +3998,14 @@ public class ConexaoJDBC {
                 + " p.reasonforupdate as tipotarv, "
                 + " reg.regimeesquema as regime,  "
                 + " CASE  "
-                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DT' "
+                + "                ELSE 'DT - TRANSPORTE' "
+                + "           END "
+                + " 	WHEN p.dispensasemestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DS' "
+                + "                ELSE 'DS - TRANSPORTE' "
+                + "           END "
                 + " 	ELSE 'DM' "
                 + " END AS tipodispensa, "
                 + " pa.pickupdate::date as datalevantamento, "
@@ -4011,10 +4017,11 @@ public class ConexaoJDBC {
                 + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) BETWEEN 10 AND 14 THEN 'Sim' ELSE 'Nao' END AS DezCatorze, "
                 + " CASE WHEN EXTRACT(year FROM age('" + endDate + "',pat.dateofbirth)) >= 15 THEN 'Sim' ELSE 'Nao' END AS Maior15, "
                 + " l.linhanome, "
-                + " pack.packid as packid "
+                + " pack.packid as packid, "
+                + " ep.startreason  "
                 + " FROM  ( "
                 + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                + " 			pat.id "
+                + " 			pat.id, max(visit.id) episode"
                 + "	from package pa "
                 + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
                 + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
@@ -4034,6 +4041,7 @@ public class ConexaoJDBC {
                 + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
                 + "	inner join linhat l on l.linhaid = p.linhaid "
                 + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " inner join episode ep on ep.id = pack.episode "
                 + "	where p.reasonforupdate IN " + condicao + " ";
 
         return query;
@@ -4057,7 +4065,7 @@ public class ConexaoJDBC {
 
         String condicao = "(\'";
 
-        if (v.size() > 5) {
+        if (v.size() > 1) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }
@@ -4077,15 +4085,22 @@ public class ConexaoJDBC {
                 + " p.reasonforupdate as tipotarv, "
                 + " reg.regimeesquema as regime,  "
                 + " CASE  "
-                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DT' "
+                + "                ELSE 'DT - TRANSPORTE' "
+                + "           END "
+                + " 	WHEN p.dispensasemestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DS' "
+                + "                ELSE 'DS - TRANSPORTE' "
+                + "           END "
                 + " 	ELSE 'DM' "
                 + " END AS tipodispensa, "
                 + " pa.pickupdate::date as datalevantamento, "
-                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
+                + " ep.startreason  "
                 + " FROM  ( "
                 + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                + " 			pat.id "
+                + " 			pat.id, max(visit.id) episode "
                 + "	from package pa "
                 + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
                 + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
@@ -4105,6 +4120,7 @@ public class ConexaoJDBC {
                 + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
                 + "	inner join linhat l on l.linhaid = p.linhaid "
                 + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " inner join episode ep on ep.id = pack.episode "
                 + "	where p.reasonforupdate IN " + condicao + " ";
 
         return query;
@@ -4141,7 +4157,7 @@ public class ConexaoJDBC {
 
         String condicao = "(\'";
 
-        if (v.size() > 5) {
+        if (v.size() > 1) {
             for (int j = 0; j < v.size() - 1; j++) {
                 condicao += v.get(j) + "\' , \'";
             }
@@ -4161,15 +4177,22 @@ public class ConexaoJDBC {
                 + " p.reasonforupdate as tipotarv, "
                 + " reg.regimeesquema as regime,  "
                 + " CASE  "
-                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DT' "
+                + "                ELSE 'DT - TRANSPORTE' "
+                + "           END "
+                + " 	WHEN p.dispensasemestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DS' "
+                + "                ELSE 'DS - TRANSPORTE' "
+                + "           END "
                 + " 	ELSE 'DM' "
                 + " END AS tipodispensa, "
                 + " pa.pickupdate::date as datalevantamento, "
-                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento  "
+                + " to_date(pack.dateexpectedstring, 'DD-Mon-YYYY') as dataproximolevantamento,  "
+                + " ep.startreason  "
                 + " FROM  ( "
                 + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                + " 			pat.id "
+                + " 			pat.id , max(visit.id) episode "
                 + "	from package pa "
                 + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
                 + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
@@ -4189,6 +4212,7 @@ public class ConexaoJDBC {
                 + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
                 + "	inner join linhat l on l.linhaid = p.linhaid "
                 + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " inner join episode ep on ep.id = pack.episode "
                 + "	where p.reasonforupdate IN " + condicao + " ";
 
         List<HistoricoLevantamentoXLS> levantamentoXLSs = new ArrayList<HistoricoLevantamentoXLS>();
@@ -4202,6 +4226,7 @@ public class ConexaoJDBC {
                 levantamentoXLS.setNome(rs.getString("nome"));
                 levantamentoXLS.setApelido(rs.getString("apelido"));
                 levantamentoXLS.setTipoTarv(rs.getString("tipotarv"));
+                levantamentoXLS.setTipoPaciente(rs.getString("startreason"));
                 levantamentoXLS.setRegimeTerapeutico(rs.getString("regime"));
                 levantamentoXLS.setTipoDispensa(rs.getString("tipodispensa"));
                 levantamentoXLS.setDataLevantamento(rs.getString("datalevantamento"));
@@ -4323,8 +4348,14 @@ public class ConexaoJDBC {
                 + " p.reasonforupdate as tipotarv, "
                 + " reg.regimeesquema as regime,  "
                 + " CASE  "
-                + " 	WHEN p.dispensatrimestral = 1 THEN 'DT' "
-                + " 	WHEN p.dispensasemestral = 1 THEN 'DS'  "
+                + " 	WHEN p.dispensatrimestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DT' "
+                + "                ELSE 'DT - TRANSPORTE' "
+                + "           END "
+                + " 	WHEN p.dispensasemestral = 1 THEN "
+                + "           CASE WHEN  pack.pickupdate >= '" + startDate + "' THEN 'DS' "
+                + "                ELSE 'DS - TRANSPORTE' "
+                + "           END "
                 + " 	ELSE 'DM' "
                 + " END AS tipodispensa, "
                 + " pa.pickupdate::date as datalevantamento, "
@@ -4338,10 +4369,11 @@ public class ConexaoJDBC {
                 + " l.linhanome, "
                 + " pack.packid as packid,"
                 + " drug_set.name, "
-                + " drug_set.amount "
+                + " drug_set.amount, "
+                + " ep.startreason  "
                 + " FROM  ( "
                 + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pdit.dateexpectedstring) dateexpectedstring, max(pa.id) packid, "
-                + " 			pat.id "
+                + " 			pat.id, max(visit.id) episode "
                 + "	from package pa "
                 + "	inner join packageddrugs pds on pds.parentpackage = pa.id "
                 + "	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id "
@@ -4361,6 +4393,7 @@ public class ConexaoJDBC {
                 + "	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate  "
                 + "	inner join linhat l on l.linhaid = p.linhaid "
                 + "	inner join regimeterapeutico reg on reg.regimeid = p.regimeid "
+                + " inner join episode ep on ep.id = pack.episode "
                 + "  LEFT JOIN ("
                 + "      select drug.name, sum(packdrug.amount) as amount, pack.id as drugid"
                 + "      from packageddrugs as packdrug, stock, drug, prescribeddrugs as predrug,"
@@ -4385,6 +4418,7 @@ public class ConexaoJDBC {
                 registoDiarioXLS.setPatientIdentifier(rs.getString("nid"));
                 registoDiarioXLS.setNome(rs.getString("nome"));
                 registoDiarioXLS.setApelido(rs.getString("apelido"));
+                registoDiarioXLS.setTipoPaciente(rs.getString("startreason"));
                 registoDiarioXLS.setZeroQuatro(rs.getString("zeroquatro"));
                 registoDiarioXLS.setCincoNove(rs.getString("cinconove"));
                 registoDiarioXLS.setDezCatorze(rs.getString("dezcatorze"));
