@@ -1,8 +1,17 @@
 package model.manager;
 
+import model.manager.reports.LinhaTerapeuticaXLS;
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.*;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class OpenmrsErrorLogManager {
 	
@@ -12,4 +21,26 @@ public class OpenmrsErrorLogManager {
 		if (errorLog!=null)
 			session.save(errorLog);
 	}
+
+
+	public static OpenmrsErrorLog getErrorLog(Session sess, Prescription prescription) throws HibernateException {
+
+		OpenmrsErrorLog error = (OpenmrsErrorLog) sess.createQuery(
+				"select c from OpenmrsErrorLog as c where c.prescription = :prescription").setParameter("prescription",prescription)
+				.uniqueResult();
+		return error;
+	}
+
+	public static void removeErrorLog(Session session,  OpenmrsErrorLog error) {
+		if(error != null)
+			session.delete(error);
+	}
+
+	public static List<OpenmrsErrorLog> getOpenmrsErrorList(Session sess,String startDate, String endDate, StockCenter clinic) throws SQLException, ClassNotFoundException {
+
+		String query = "from OpenmrsErrorLog where datecreated between '"+startDate+"' and '"+endDate+"' ";
+
+		return (List<OpenmrsErrorLog>) sess.createQuery(query).list();
+	}
+
 }

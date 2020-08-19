@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import model.manager.reports.OpenmrsErrorLog;
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.dataExports.DataExport;
 import org.celllife.idart.gui.dataQuality.DataQuality;
@@ -514,6 +515,8 @@ public class NewReports extends GenericAdminGui {
                 new EpisodeStats(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG,
                 new TransactionLog(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_OPENMRS_LOG,
+                new OpenmrsErrorLogReport(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIBING_DOCTORS,
                 new PrescribingDoctors(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_PEPFAR,

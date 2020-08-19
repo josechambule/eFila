@@ -2896,15 +2896,20 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                 System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
 
-                if (postOpenMrsEncounterStatus)
+                if (postOpenMrsEncounterStatus) {
                     PackageManager.savePackage(getHSession(), newPack);
+
+                    OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(getHSession(),newPack.getPrescription());
+                    if(errorLog != null)
+                    OpenmrsErrorLogManager.removeErrorLog(getHSession(),errorLog);
+                }
 
             } catch (Exception e) {
                 System.out.println("Criou o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
                 getLog().info(e.getMessage());
                 OpenmrsErrorLog errorLog = new OpenmrsErrorLog();
-                errorLog.setPatient(patientId);
-                errorLog.setPrescription(newPack.getPrescription().getId());
+                errorLog.setPatient(newPack.getPrescription().getPatient());
+                errorLog.setPrescription(newPack.getPrescription());
                 errorLog.setPickupdate(newPack.getPickupDate());
                 errorLog.setReturnpickupdate(dtNextPickUp);
                 errorLog.setErrordescription(e.getMessage());

@@ -1,25 +1,8 @@
-/*
- * iDART: The Intelligent Dispensing of Antiretroviral Treatment
- * Copyright (C) 2006 Cell-Life
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License version
- * 2 for more details.
- *
- * You should have received a copy of the GNU General Public License version 2
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- */
 package org.celllife.idart.gui.reportParameters;
 
 import model.manager.AdministrationManager;
 import model.manager.reports.LinhaTerapeutica;
+import model.manager.reports.OpenmrsErrorLog;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
@@ -43,12 +26,9 @@ import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- */
-public class RegimeTerapeuticoReport extends GenericReportGui {
+public class OpenmrsErrorLogReport extends GenericReportGui {
 
     private Group grpDateRange;
 
@@ -66,8 +46,8 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
      * @param parent Shell
      * @param activate boolean
      */
-    public RegimeTerapeuticoReport(Shell parent, boolean activate) {
-        super(parent, REPORTTYPE_MIA, activate);
+    public OpenmrsErrorLogReport(Shell parent, boolean activate) {
+        super(parent, REPORTTYPE_MONITORINGANDEVALUATION, activate);
     }
 
     /**
@@ -76,7 +56,7 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
     @Override
     protected void createShell() {
         Rectangle bounds = new Rectangle(100, 50, 600, 510);
-        buildShell(REPORT_LINHAS_TERAPEUTICAS, bounds);
+        buildShell(REPORT_OPENMRS_LOG, bounds);
         // create the composites
         createMyGroups();
     }
@@ -92,8 +72,8 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
      */
     @Override
     protected void createCompHeader() {
-        iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
-        buildCompdHeader("Linhas Terapeuticas", icoImage);
+        iDartImage icoImage = iDartImage.REPORT_OUTGOINGPACKAGES;
+        buildCompdHeader(REPORT_OPENMRS_LOG, icoImage);
     }
 
     /**
@@ -199,15 +179,15 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
 
                 Date theEndDate=  calendarEnd.getCalendar().getTime();
 
-                LinhaTerapeutica report = new LinhaTerapeutica(getShell(),theStartDate,theEndDate);
-        
+                OpenmrsErrorLog report = new OpenmrsErrorLog(getShell(),theStartDate,theEndDate);
+
                 viewReport(report);
             } catch (Exception e) {
                 getLog()
                         .error(
                                 "Exception while running Monthly Receipts and Issues report",
                                 e);
-           
+
             }
         }
 
@@ -242,28 +222,28 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
             missing.open();
 
         }else {
-                Date theStartDate = calendarStart.getCalendar().getTime();
+            Date theStartDate = calendarStart.getCalendar().getTime();
 
-                Date theEndDate=  calendarEnd.getCalendar().getTime();
+            Date theEndDate=  calendarEnd.getCalendar().getTime();
 
-                String reportNameFile = "Reports/NovasLinhasTerapeuticas.xls";
-                try {
-                    RegimeTerapeuticoExcel op = new RegimeTerapeuticoExcel(getShell(), reportNameFile, pharm, theStartDate, theEndDate);
-                    new ProgressMonitorDialog(getShell()).run(true, true, op);
+            String reportNameFile = "Reports/OpenmrsErrorLog.xls";
+            try {
+                OpenmrsErrorLogExcel op = new OpenmrsErrorLogExcel(getShell(), reportNameFile, pharm, theStartDate, theEndDate);
+                new ProgressMonitorDialog(getShell()).run(true, true, op);
 
-                    if (op.getList() == null ||
-                            op.getList().size() <= 0) {
-                        MessageBox mNoPages = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-                        mNoPages.setText("O relatório não possui páginas");
-                        mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
-                        mNoPages.open();
-                    }
-
-                } catch (InvocationTargetException ex) {
-                    ex.printStackTrace();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                if (op.getList() == null ||
+                        op.getList().size() <= 0) {
+                    MessageBox mNoPages = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+                    mNoPages.setText("O relatório não possui páginas");
+                    mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                    mNoPages.open();
                 }
+
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

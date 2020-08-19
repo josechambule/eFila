@@ -375,7 +375,7 @@ public class MissedAppointments extends GenericReportGui {
 						op.getList().size() <= 0) {
 					MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
 					mNoPages.setText("O relatório não possui páginas");
-					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 					mNoPages.open();
 				}
 

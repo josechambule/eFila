@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.database.hibernate.OpenmrsErrorLog;
 import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.sync.dispense.SyncLinha;
 import org.celllife.idart.gui.sync.patients.SyncLinhaPatients;
@@ -6660,6 +6661,51 @@ public class ConexaoJDBC {
         }
 
         return lostToFollowUpXLS;
+
+    }
+
+
+    public List<LinhaTerapeuticaXLS> getLinhaTerapeutocaXLS(String startDate, String endDate, StockCenter clinic) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select rt.codigoregime, " +
+                " rt.regimeesquema, " +
+                " rt.active, " +
+                " count(*)  as total_prescricao " +
+                " from package pack " +
+                " inner join prescription pr on pr.id = pack.prescription " +
+                " inner join regimeterapeutico rt on pr.regimeid = rt.regimeid " +
+                " where pr.date between '"+ startDate +"' and '"+ endDate+"' " +
+                " group by 1,2,3 " +
+                " order by 3 asc";
+
+        List<LinhaTerapeuticaXLS> listLinhaTerapeuticaXLS = new ArrayList<LinhaTerapeuticaXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                LinhaTerapeuticaXLS linhaTerapeuticaXLS = new LinhaTerapeuticaXLS();
+                linhaTerapeuticaXLS.setCodigoRegime(rs.getString("codigoregime"));
+                linhaTerapeuticaXLS.setRegime(rs.getString("regimeesquema"));
+                if (rs.getBoolean("active"))
+                    linhaTerapeuticaXLS.setActivo("Activo");
+                else
+                    linhaTerapeuticaXLS.setActivo("Inactivo");
+                linhaTerapeuticaXLS.setContagem(rs.getString("total_prescricao"));
+
+                listLinhaTerapeuticaXLS.add(linhaTerapeuticaXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return listLinhaTerapeuticaXLS;
 
     }
 
