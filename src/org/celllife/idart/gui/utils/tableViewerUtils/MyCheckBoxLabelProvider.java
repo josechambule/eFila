@@ -4,7 +4,6 @@
 package org.celllife.idart.gui.utils.tableViewerUtils;
 
 import model.nonPersistent.PackagesWithSelection;
-
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.eclipse.jface.resource.JFaceResources;

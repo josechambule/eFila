@@ -1,7 +1,6 @@
 package model.manager.exports.columns;
 
 import model.manager.exports.SimpleColumn;
-
 import org.celllife.idart.database.hibernate.AttributeType;
 import org.celllife.idart.database.hibernate.IdentifierType;
 

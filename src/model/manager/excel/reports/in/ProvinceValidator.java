@@ -1,11 +1,10 @@
 package model.manager.excel.reports.in;
 
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.excel.interfaces.SessionBasedImportValidator;
-
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class ProvinceValidator implements SessionBasedImportValidator<String> {
 

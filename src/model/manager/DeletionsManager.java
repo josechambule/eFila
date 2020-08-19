@@ -1,30 +1,8 @@
 package model.manager;
 
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.Logging;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.RegimeTerapeutico;
-import org.celllife.idart.database.hibernate.Regimen;
-import org.celllife.idart.database.hibernate.RegimenDrugs;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockLevel;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.AdherenceRecord;
 import org.celllife.idart.database.hibernate.tmp.DeletedItem;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
@@ -32,9 +10,9 @@ import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.facade.PillCountFacade;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
-import javax.help.search.SearchQuery;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *

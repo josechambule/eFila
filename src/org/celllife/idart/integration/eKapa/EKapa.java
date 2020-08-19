@@ -1,14 +1,6 @@
 package org.celllife.idart.integration.eKapa;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.PatientManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -16,6 +8,13 @@ import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
 import org.celllife.idart.misc.PatientBarcodeParser;
 import org.hibernate.Session;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The eKapa class represents the interface to the eKapa database.

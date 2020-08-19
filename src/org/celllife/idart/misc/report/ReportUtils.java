@@ -9,13 +9,14 @@ package org.celllife.idart.misc.report;
  *
  */
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import model.manager.DrugManager;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class ReportUtils extends net.sf.jasperreports.engine.JRDefaultScriptlet {
 

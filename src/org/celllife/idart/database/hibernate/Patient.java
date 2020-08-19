@@ -19,34 +19,18 @@
 
 package org.celllife.idart.database.hibernate;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
-
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.misc.DateFieldComparator;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
+
+import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  */

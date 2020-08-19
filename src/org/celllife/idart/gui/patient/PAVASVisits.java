@@ -1,11 +1,7 @@
 package org.celllife.idart.gui.patient;
 
-import java.util.Date;
-import java.util.List;
-
 import model.manager.PAVASManager;
 import model.manager.PatientManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.function.DateRuleFactory;
 import org.celllife.idart.database.hibernate.Patient;
@@ -22,14 +18,12 @@ import org.celllife.idart.gui.widget.DateInputValidator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.util.Date;
+import java.util.List;
 
 public class PAVASVisits extends GenericFormGui {
 

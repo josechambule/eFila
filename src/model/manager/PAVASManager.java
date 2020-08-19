@@ -19,16 +19,12 @@
 
 package model.manager;
 
-import java.util.Date;
-import java.util.List;
-
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PatientStatTypes;
-import org.celllife.idart.database.hibernate.PatientStatistic;
-import org.celllife.idart.database.hibernate.PatientVisit;
-import org.celllife.idart.database.hibernate.PatientVisitReason;
+import org.celllife.idart.database.hibernate.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  */

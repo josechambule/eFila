@@ -1,8 +1,8 @@
 package org.celllife.idart.gui.widget;
 
-import java.util.Date;
-
 import org.celllife.function.IRule;
+
+import java.util.Date;
 
 public class DateInputValidator implements IObjectInputValidator {
 

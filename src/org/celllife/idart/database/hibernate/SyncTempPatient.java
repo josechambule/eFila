@@ -7,50 +7,82 @@ package org.celllife.idart.database.hibernate;
 
 import org.celllife.idart.misc.iDARTUtil;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
  * @author colaco
  */
 @Entity
-@XmlRootElement
 @Table(name = "sync_temp_patients")
 public class SyncTempPatient {
-
     @Id
     private Integer id;
-    private Boolean accountStatus;
-    private String address1;
-    private String address2;
-    private String address3;
+    @Column(name = "accountstatus")
+    private Boolean accountstatus;
+    @Column(name = "cellphone", length = 255)
     private String cellphone;
-    private Date dateOfBirth;
-    private Integer clinic;
-    private String clinicName;
-    private Integer mainClinic;
-    private String mainClinicName;
-    private String nextOfKinName;
-    private String nextOfKinPhone;
-    private String firstNames;
-    private String homePhone;
+    @Column(name = "dateofbirth")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateofbirth;
+    @Basic(optional = false)
+    @Column(name = "clinic", nullable = false)
+    private int clinic;
+    @Column(name = "clinicname", length = 255)
+    private String clinicname;
+    @Column(name = "clinicuuid", length = 255)
+    private String clinicuuid;
+    @Basic(optional = false)
+    @Column(name = "mainclinic", nullable = false)
+    private int mainclinic;
+    @Column(name = "mainclinicname", length = 255)
+    private String mainclinicname;
+    @Column(name = "mainclinicuuid", length = 255)
+    private String mainclinicuuid;
+    @Column(name = "firstnames", length = 255)
+    private String firstnames;
+    @Column(name = "homephone", length = 255)
+    private String homephone;
+    @Column(name = "lastname", length = 255)
     private String lastname;
-    private char modified;
-    private String patientId;
+    @Column(name = "modified")
+    private Character modified;
+    @Basic(optional = false)
+    @Column(name = "patientid", nullable = false, length = 255)
+    private String patientid;
+    @Column(name = "province", length = 255)
     private String province;
-    private char sex;
-    private String workPhone;
+    @Column(name = "sex")
+    private Character sex;
+    @Column(name = "syncstatus")
+    private Character syncstatus;
+    @Column(name = "workphone", length = 255)
+    private String workphone;
+    @Column(name = "address1", length = 255)
+    private String address1;
+    @Column(name = "address2", length = 255)
+    private String address2;
+    @Column(name = "address3", length = 255)
+    private String address3;
+    @Column(name = "nextofkinname", length = 255)
+    private String nextofkinname;
+    @Column(name = "nextofkinphone", length = 255)
+    private String nextofkinphone;
+    @Column(name = "race", length = 255)
     private String race;
-    private String uuid;
+    @Column(name = "uuidopenmrs", length = 255)
+    private String uuidopenmrs;
+    @Column(name = "datainiciotarv", length = 255)
     private String datainiciotarv;
+    @Column(name = "syncuuid", length = 255)
+    private String syncuuid ;
 
     public SyncTempPatient() {
         super();
         this.id = -1;
+        this.syncuuid = UUID.randomUUID().toString();
     }
 
     /**
@@ -61,43 +93,7 @@ public class SyncTempPatient {
      */
     @Deprecated
     public Boolean getAccountStatus() {
-        return accountStatus;
-    }
-
-    /**
-     * Method getAddress1.
-     *
-     * @return String
-     */
-    public String getAddress1() {
-        if (address1 == null) {
-            return "";
-        }
-        return address1;
-    }
-
-    /**
-     * Method getAddress2.
-     *
-     * @return String
-     */
-    public String getAddress2() {
-        if (address2 == null) {
-            return "";
-        }
-        return address2;
-    }
-
-    /**
-     * Method getAddress3.
-     *
-     * @return String
-     */
-    public String getAddress3() {
-        if (address3 == null) {
-            return "";
-        }
-        return address3;
+        return accountstatus;
     }
 
     /**
@@ -123,20 +119,8 @@ public class SyncTempPatient {
     }
 
     public int getAgeAt(Date date) {
-        return iDARTUtil.getAgeAt(getDateOfBirth() == null ? new Date()
-                : getDateOfBirth(), date);
-    }
-
-    /**
-     * Method getCellphone.
-     *
-     * @return String
-     */
-    public String getCellphone() {
-        if (cellphone == null) {
-            return "";
-        }
-        return cellphone;
+        return iDARTUtil.getAgeAt(getDateofbirth() == null ? new Date()
+                : getDateofbirth(), date);
     }
 
     /**
@@ -144,426 +128,237 @@ public class SyncTempPatient {
      *
      * @return Clinic
      */
-    public Integer getCurrentClinic() {
+    public Integer getCurrentclinic() {
         return clinic;
     }
 
-    /**
-     * Method getDateOfBirth.
-     *
-     * @return Date
-     */
-    public Date getDateOfBirth() {
-        return dateOfBirth;
+    public char getSyncstatus(){
+            return syncstatus;
     }
 
-    /**
-     * Method getFirstNames.
-     *
-     * @return String
-     */
-    public String getFirstNames() {
-        if (firstNames == null) {
-            return "";
-        }
-        return firstNames;
+    public void setSyncstatus(char syncstatus) {
+        this.syncstatus = syncstatus;
     }
 
-    /**
-     * Method getHomePhone.
-     *
-     * @return String
-     */
-    public String getHomePhone() {
-        if (homePhone == null) {
-            return "";
-        }
-        return homePhone;
+
+    public Boolean getAccountstatus() {
+        return accountstatus;
     }
 
-    /**
-     * Method getId.
-     *
-     * @return int
-     */
-    public int getId() {
-        return id;
+    public void setAccountstatus(Boolean accountstatus) {
+        this.accountstatus = accountstatus;
     }
 
-    /**
-     * Method getLastname.
-     *
-     * @return String
-     */
-    public String getLastname() {
-        if (lastname == null) {
-            return "";
-        }
-        return lastname;
+    public String getCellphone() {
+        return cellphone;
     }
 
-    /**
-     * Method getModified.
-     *
-     * @return char
-     */
-    public char getModified() {
-        return modified;
-    }
-
-    /**
-     * Method getNextOfKinName.
-     *
-     * @return String
-     */
-    public String getNextOfKinName() {
-        if (nextOfKinName == null) {
-            return "";
-        }
-        return nextOfKinName;
-    }
-
-    /**
-     * Method getNextOfKinPhone.
-     *
-     * @return String
-     */
-    public String getNextOfKinPhone() {
-        if (nextOfKinPhone == null) {
-            return "";
-        }
-        return nextOfKinPhone;
-    }
-
-    /**
-     * Method getPatientId.
-     *
-     * @return String
-     */
-    public String getPatientId() {
-        return patientId;
-    }
-
-    /**
-     * Method getProvince.
-     *
-     * @return String
-     */
-    public String getProvince() {
-        if (province == null) {
-            return "";
-        }
-        return province;
-    }
-
-    /**
-     * Method getRace.
-     *
-     * @return String
-     */
-    public String getRace() {
-        if (race == null) {
-            return "";
-        }
-        return race;
-    }
-
-    /**
-     * Method getUuid.
-     *
-     * @return String
-     */
-    public String getUuid() {
-        if (uuid == null) {
-            return "";
-        }
-        return uuid;
-    }
-
-    /**
-     * Method getSex.
-     *
-     * @return char
-     */
-    public char getSex() {
-        return sex;
-    }
-
-    /**
-     * Method getWorkPhone.
-     *
-     * @return String
-     */
-    public String getWorkPhone() {
-        if (workPhone == null) {
-            return "";
-        }
-        return workPhone;
-    }
-
-    /**
-     * Method getClinicName.
-     *
-     * @return String
-     */
-    public String getClinicName() {
-        if (clinicName == null) {
-            return "";
-        }
-        return clinicName;
-    }
-
-    /**
-     * Method getMainClinic.
-     *
-     * @return Clinic
-     */
-    public Integer getMainClinic() {
-        return mainClinic;
-    }
-
-    /**
-     * Method getMainClinicName.
-     *
-     * @return String
-     */
-    public String getMainClinicName() {
-        if (mainClinicName == null) {
-            return "";
-        }
-        return mainClinicName;
-    }
-
-    /**
-     * Method getDataInicioTarv.
-     *
-     * @return String
-     */
-    public String getDataInicioTarv() {
-        if (datainiciotarv == null) {
-            return "";
-        }
-        return datainiciotarv;
-    }
-
-    /**
-     * Method setAccountStatus.
-     *
-     * @param accountStatus Boolean
-     */
-    public void setAccountStatus(Boolean accountStatus) {
-        this.accountStatus = accountStatus;
-    }
-
-    /**
-     * Method setAddress1.
-     *
-     * @param address1 String
-     */
-    public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
-    /**
-     * Method setAddress2.
-     *
-     * @param address2 String
-     */
-    public void setAddress2(String address2) {
-        this.address2 = address2;
-    }
-
-    /**
-     * Method setAddress3.
-     *
-     * @param address3 String
-     */
-    public void setAddress3(String address3) {
-        this.address3 = address3;
-    }
-
-    /**
-     * Method setCellphone.
-     *
-     * @param cellphone String
-     */
     public void setCellphone(String cellphone) {
         this.cellphone = cellphone;
     }
 
-    /**
-     * Method setClinic.
-     *
-     * @param clinic Clinic
-     */
-    public void setClinic(Integer clinic) {
+    public Date getDateofbirth() {
+        return dateofbirth;
+    }
+
+    public void setDateofbirth(Date dateofbirth) {
+        this.dateofbirth = dateofbirth;
+    }
+
+    public int getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(int clinic) {
         this.clinic = clinic;
     }
 
-    /**
-     * Method setDateOfBirth.
-     *
-     * @param dateOfBirth Date
-     */
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public String getClinicname() {
+        return clinicname;
     }
 
-    /**
-     * Method setFirstNames.
-     *
-     * @param firstNames String
-     */
-    public void setFirstNames(String firstNames) {
-        this.firstNames = firstNames;
+    public void setClinicname(String clinicname) {
+        this.clinicname = clinicname;
     }
 
-    /**
-     * Method setHomePhone.
-     *
-     * @param homePhone String
-     */
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
+    public int getMainclinic() {
+        return mainclinic;
     }
 
-    /**
-     * Method setId.
-     *
-     * @param id int
-     */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMainclinic(int mainclinic) {
+        this.mainclinic = mainclinic;
     }
 
-    /**
-     * Method setLastname.
-     *
-     * @param lastname String
-     */
+    public String getFirstnames() {
+        return firstnames;
+    }
+
+    public void setFirstnames(String firstnames) {
+        this.firstnames = firstnames;
+    }
+
+    public String getHomephone() {
+        return homephone;
+    }
+
+    public void setHomephone(String homephone) {
+        this.homephone = homephone;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
-    /**
-     * Method setModified.
-     *
-     * @param modified char
-     */
-    public void setModified(char modified) {
+    public Character getModified() {
+        return modified;
+    }
+
+    public void setModified(Character modified) {
         this.modified = modified;
     }
 
-    /**
-     * Method setNextOfKinName.
-     *
-     * @param nextOfKinName String
-     */
-    public void setNextOfKinName(String nextOfKinName) {
-        this.nextOfKinName = nextOfKinName;
+    public String getPatientid() {
+        return patientid;
     }
 
-    /**
-     * Method setNextOfKinPhone.
-     *
-     * @param nextOfKinPhone String
-     */
-    public void setNextOfKinPhone(String nextOfKinPhone) {
-        this.nextOfKinPhone = nextOfKinPhone;
+    public void setPatientid(String patientid) {
+        this.patientid = patientid;
     }
 
-    /**
-     * Method setPatientId.
-     *
-     * @param patientId String
-     */
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public String getProvince() {
+        return province;
     }
 
-    /**
-     * Method setProvince.
-     *
-     * @param province String
-     */
     public void setProvince(String province) {
         this.province = province;
     }
 
-    /**
-     * Method setRace.
-     *
-     * @param race String
-     */
+    public Character getSex() {
+        return sex;
+    }
+
+    public void setSex(Character sex) {
+        this.sex = sex;
+    }
+
+    public String getWorkphone() {
+        return workphone;
+    }
+
+    public void setWorkphone(String workphone) {
+        this.workphone = workphone;
+    }
+
+    public String getAddress1() {
+        return address1;
+    }
+
+    public void setAddress1(String address1) {
+        this.address1 = address1;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    public String getAddress3() {
+        return address3;
+    }
+
+    public void setAddress3(String address3) {
+        this.address3 = address3;
+    }
+
+    public String getNextofkinname() {
+        return nextofkinname;
+    }
+
+    public void setNextofkinname(String nextofkinname) {
+        this.nextofkinname = nextofkinname;
+    }
+
+    public String getNextofkinphone() {
+        return nextofkinphone;
+    }
+
+    public void setNextofkinphone(String nextofkinphone) {
+        this.nextofkinphone = nextofkinphone;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
     public void setRace(String race) {
         this.race = race;
     }
 
-    /**
-     * Method setUuid.
-     *
-     * @param uuid String
-     */
+    public String getUuid() {
+        return uuidopenmrs;
+    }
+
     public void setUuid(String uuid) {
-        this.uuid = uuid;
+        this.uuidopenmrs = uuid;
     }
 
-    /**
-     * Method setSex.
-     *
-     * @param sex char
-     */
-    public void setSex(char sex) {
-        this.sex = sex;
+    public String getSyncuuid() {
+        return syncuuid;
     }
 
-    /**
-     * Method setWorkPhone.
-     *
-     * @param workPhone String
-     */
-    public void setWorkPhone(String workPhone) {
-        this.workPhone = workPhone;
+    public void setSyncuuid(String syncuuid) {
+        this.syncuuid = syncuuid;
     }
 
-    /**
-     * Method setClinicName.
-     *
-     * @param clinicName
-     */
-    public void setClinicName(String clinicName) {
-        this.clinicName = clinicName;
+    public String getDatainiciotarv() {
+        return datainiciotarv;
     }
 
-    /**
-     * Method setMainClinic.
-     *
-     * @param clinic
-     */
-    public void setMainClinic(Integer clinic) {
-        this.mainClinic = clinic;
-    }
-
-    /**
-     * Method setMainClinicName.
-     *
-     * @param mainClinicName
-     */
-    public void setMainClinicName(String mainClinicName) {
-        this.mainClinicName = mainClinicName;
-    }
-
-    /**
-     * Method setDataInicioTarv.
-     *
-     * @param datainiciotarv
-     */
-    public void setDataInicioTarv(String datainiciotarv) {
+    public void setDatainiciotarv(String datainiciotarv) {
         this.datainiciotarv = datainiciotarv;
     }
 
     @Override
     public String toString() {
-        return getFirstNames() + " " + getLastname();
+        return getFirstnames() + " " + getLastname() + " - "+ getPatientid();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMainclinicname() {
+        return mainclinicname;
+    }
+
+    public void setMainclinicname(String mainclinicname) {
+        this.mainclinicname = mainclinicname;
+    }
+
+    public String getClinicuuid() {
+        return clinicuuid;
+    }
+
+    public void setClinicuuid(String clinicuuid) {
+        this.clinicuuid = clinicuuid;
+    }
+
+    public String getMainclinicuuid() {
+        return mainclinicuuid;
+    }
+
+    public void setMainclinicuuid(String mainclinicuuid) {
+        this.mainclinicuuid = mainclinicuuid;
     }
 }

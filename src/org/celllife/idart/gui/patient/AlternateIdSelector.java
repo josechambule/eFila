@@ -1,7 +1,5 @@
 package org.celllife.idart.gui.patient;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.gui.platform.GenericOthersGui;
@@ -12,11 +10,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
+
+import java.util.List;
 
 /**
  */

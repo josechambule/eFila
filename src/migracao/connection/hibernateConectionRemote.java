@@ -10,9 +10,7 @@
  */
 package migracao.connection;
 
-import migracao.entidades.*;
 import org.celllife.idart.commonobjects.JdbcProperties;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;

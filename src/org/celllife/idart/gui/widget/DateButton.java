@@ -1,9 +1,5 @@
 package org.celllife.idart.gui.widget;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.celllife.function.DateRule;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -17,6 +13,10 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.vafada.swtcalendar.SWTCalendarDialog;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * DateButton is an extension of {@link Button} that displays a date as the text

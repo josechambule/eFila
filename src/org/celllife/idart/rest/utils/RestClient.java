@@ -1,12 +1,6 @@
 package org.celllife.idart.rest.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-
+import model.nonPersistent.Autenticacao;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.StringEntity;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -14,7 +8,12 @@ import org.celllife.idart.database.hibernate.PackagedDrugs;
 import org.celllife.idart.database.hibernate.PrescribedDrugs;
 import org.celllife.idart.rest.ApiAuthRest;
 
-import model.nonPersistent.Autenticacao;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -25,7 +24,6 @@ import model.nonPersistent.Autenticacao;
 public class RestClient {
 	
 	Properties prop = new Properties();
-	//InputStream input = null;
 
 	 File input = new File("jdbc.properties");
 	 File myFile = new File("jdbc_auto_generated.properties");

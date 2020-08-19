@@ -1,13 +1,12 @@
 package model.manager.excel.reports.in;
 
-import java.util.Date;
-
 import model.manager.excel.conversion.exceptions.PatientException;
 import model.manager.excel.interfaces.ImportConverter;
-
 import org.celllife.idart.database.hibernate.AttributeType;
 import org.celllife.idart.database.hibernate.PatientAttribute;
 import org.celllife.idart.misc.iDARTUtil;
+
+import java.util.Date;
 
 public class PatientAttributeConverter implements ImportConverter<PatientAttribute> {
 

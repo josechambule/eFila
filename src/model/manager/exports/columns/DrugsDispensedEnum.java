@@ -48,7 +48,7 @@ public enum DrugsDispensedEnum {
 
 	/**
 	 * @param title
-	 * @param displayName
+	 * @param columnWidth
 	 * @param dataType
 	 */
 	private DrugsDispensedEnum(String title, Class dataType, int columnWidth) {

@@ -1,19 +1,12 @@
 package model.manager;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.celllife.idart.database.hibernate.*;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import java.util.*;
 
 public class PrescriptionManager {
 
@@ -180,7 +173,7 @@ public class PrescriptionManager {
 		List<Doctor> doc = null;
 		doc = session.createQuery(
 				"select doctor from Doctor as doctor "
-						+ "where doctor.firstname = 'Provider' OR doctor.firstname = 'Provedor' limit 1").list();
+						+ "where doctor.firstname = 'Provider' OR doctor.firstname = 'Provedor'").list();
 
 		Iterator<Doctor> iter = doc.iterator();
 		if (iter.hasNext()) {

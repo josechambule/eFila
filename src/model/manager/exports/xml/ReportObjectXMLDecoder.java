@@ -13,11 +13,11 @@
  */
 package model.manager.exports.xml;
 
+import model.manager.exports.ReportObject;
+
 import java.beans.XMLDecoder;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-
-import model.manager.exports.ReportObject;
 
 public class ReportObjectXMLDecoder {
 

@@ -3,8 +3,6 @@
  */
 package migracao.swingreverse;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
 import migracao.connection.hibernateConection;
 import migracao.connection.hibernateConectionRemote;
 import migracao.entidades.*;
@@ -13,6 +11,8 @@ import migracao.entidadesHibernate.ExportDispense.PatientExportService;
 import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
 import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.entidadesHibernate.servicos.*;
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.PatientIdentifier;

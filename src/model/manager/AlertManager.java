@@ -1,11 +1,11 @@
 package model.manager;
 
-import java.util.Date;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Alerts;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.Date;
 
 public class AlertManager {
 	

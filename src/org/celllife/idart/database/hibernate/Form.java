@@ -239,4 +239,9 @@ public class Form {
 	public void setDispInstructions2(String dispInstructions2) {
 		this.dispInstructions2 = dispInstructions2;
 	}
+
+	@Override
+	public String toString() {
+		return form;
+	}
 }

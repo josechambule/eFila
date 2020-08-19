@@ -19,23 +19,15 @@
 
 package org.celllife.idart.print.barcode;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.io.File;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.print.barcode.CompactCode128.CharacterCode;
 import org.celllife.idart.print.label.PrintLayoutUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.util.Vector;
 
 /*
  * Code128 Barcode representation, without barcode text Uses modes B and C to

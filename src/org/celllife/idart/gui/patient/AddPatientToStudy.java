@@ -1,34 +1,11 @@
 package org.celllife.idart.gui.patient;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.core.Response.Status;
-
-import model.manager.AdministrationManager;
-import model.manager.AlertManager;
-import model.manager.CampaignManager;
-import model.manager.DrugManager;
-import model.manager.PackageManager;
-import model.manager.PatientManager;
-import model.manager.StudyManager;
-
+import model.manager.*;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.PropertiesManager;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.Campaign;
-import org.celllife.idart.database.hibernate.CampaignParticipant;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.StudyParticipant;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.search.PatientSearch;
@@ -54,17 +31,18 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import javax.ws.rs.core.Response.Status;
+import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class AddPatientToStudy extends GenericFormGui {
 	

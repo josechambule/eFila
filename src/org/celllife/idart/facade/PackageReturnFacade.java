@@ -1,20 +1,17 @@
 package org.celllife.idart.facade;
 
-import java.util.Date;
-import java.util.List;
-
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Packages;
 import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.events.PackageEvent;
-import org.celllife.idart.events.PackageEvent.Type;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.util.Date;
+import java.util.List;
 
 
 

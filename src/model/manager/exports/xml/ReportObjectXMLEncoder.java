@@ -13,11 +13,11 @@
  */
 package model.manager.exports.xml;
 
+import org.apache.log4j.Logger;
+
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-
-import org.apache.log4j.Logger;
 
 public class ReportObjectXMLEncoder {
 

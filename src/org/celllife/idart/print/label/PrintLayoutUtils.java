@@ -19,19 +19,15 @@
 
 package org.celllife.idart.print.label;
 
-import java.awt.Component;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.util.StringTokenizer;
-
-import javax.swing.RepaintManager;
-
 import net.sourceforge.barbecue.BarcodeFactory;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.PrinterProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.StringTokenizer;
 
 /**
  */

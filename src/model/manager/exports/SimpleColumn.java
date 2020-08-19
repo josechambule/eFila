@@ -1,8 +1,8 @@
 package model.manager.exports;
 
-import java.io.Serializable;
-
 import model.manager.exports.columns.SimpleColumnsEnum;
+
+import java.io.Serializable;
 
 /**
  * Object representation of a simple data export column.

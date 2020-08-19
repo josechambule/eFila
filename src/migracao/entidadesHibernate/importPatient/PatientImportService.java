@@ -10,11 +10,12 @@ import migracao.entidadesHibernate.ImportDao.PatientImportDao;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.SyncTempDispense;
 import org.celllife.idart.database.hibernate.SyncTempPatient;
-//import org.celllife.idart.database.hibernate.SyncTempDispense;
-//import org.celllife.idart.database.hibernate.SyncTempPatient;
 
 import java.util.Date;
 import java.util.List;
+
+//import org.celllife.idart.database.hibernate.SyncTempDispense;
+//import org.celllife.idart.database.hibernate.SyncTempPatient;
 
 public class PatientImportService {
 

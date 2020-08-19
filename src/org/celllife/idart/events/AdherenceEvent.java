@@ -1,8 +1,8 @@
 package org.celllife.idart.events;
 
-import java.util.Set;
-
 import org.celllife.idart.database.hibernate.PillCount;
+
+import java.util.Set;
 
 public class AdherenceEvent {
 

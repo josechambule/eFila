@@ -1,12 +1,8 @@
 package org.celllife.idart.misc;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.core.runtime.AssertionFailedException;
+
+import java.util.*;
 
 /**
  * This class compares dates according the the Calendar fields. The comparator

@@ -1,15 +1,14 @@
 package model.manager.excel.reports.in;
 
+import model.manager.excel.conversion.exceptions.PatientException;
+import model.manager.excel.interfaces.BaseImportColumn;
+import model.manager.excel.interfaces.ImportColumn;
+import org.hibernate.Session;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import model.manager.excel.conversion.exceptions.PatientException;
-import model.manager.excel.interfaces.BaseImportColumn;
-import model.manager.excel.interfaces.ImportColumn;
-
-import org.hibernate.Session;
 
 public class MultiImportColumn<T> extends BaseImportColumn<Set<T>> implements ImportColumn<Set<T>> {
 	

@@ -1,15 +1,8 @@
 package model.manager.exports.iedea;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.PatientManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.nonPersistent.EntitySet;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -17,6 +10,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.hibernate.Session;
 import org.iedea.ARKEKapaExport;
 import org.iedea.util.IedeaJaxbUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class IedeaExporter {
 

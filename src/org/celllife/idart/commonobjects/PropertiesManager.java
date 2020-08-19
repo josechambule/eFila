@@ -1,5 +1,9 @@
 package org.celllife.idart.commonobjects;
 
+import com.pholser.util.properties.PropertyBinder;
+import org.apache.log4j.Logger;
+import org.celllife.idart.misc.iDARTRuntimeException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,11 +12,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.misc.iDARTRuntimeException;
-
-import com.pholser.util.properties.PropertyBinder;
 
 public class PropertiesManager {
 

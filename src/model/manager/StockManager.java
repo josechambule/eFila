@@ -1,29 +1,20 @@
 package model.manager;
 
+import model.nonPersistent.BatchDetail;
+import model.nonPersistent.DrugDetail;
+import model.nonPersistent.StockLevelInfo;
+import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import model.nonPersistent.BatchDetail;
-import model.nonPersistent.DrugDetail;
-import model.nonPersistent.StockLevelInfo;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Logging;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockAdjustment;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.StockLevel;
-import org.celllife.idart.database.hibernate.StockTake;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 /**
  */

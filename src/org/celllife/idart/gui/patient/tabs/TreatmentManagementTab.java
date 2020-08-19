@@ -1,12 +1,6 @@
 package org.celllife.idart.gui.patient.tabs;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import model.manager.PatientManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -22,14 +16,15 @@ import org.celllife.idart.rest.utils.RestClient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TreatmentManagementTab extends GenericTab implements IPatientTab {
 

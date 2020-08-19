@@ -19,18 +19,6 @@
 
 package org.celllife.idart.gui.welcome;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.Vector;
-
-import javax.help.HelpSet;
-import javax.help.HelpSetException;
-import javax.help.JHelp;
-import javax.swing.JFrame;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -38,15 +26,9 @@ import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.GUIException;
 import org.celllife.idart.gui.alert.Alert;
-import org.celllife.idart.gui.alert.AlertLogOff;
 import org.celllife.idart.gui.alert.RiscoRoptura;
 import org.celllife.idart.gui.platform.GenericGuiInterface;
-import org.celllife.idart.gui.sync.dispense.Sync;
-import org.celllife.idart.gui.utils.LayoutUtils;
-import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
-import org.celllife.idart.gui.utils.iDartFont;
-import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.gui.utils.*;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.LoginTimer;
 import org.eclipse.swt.SWT;
@@ -56,15 +38,18 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.*;
+
+import javax.help.HelpSet;
+import javax.help.HelpSetException;
+import javax.help.JHelp;
+import javax.swing.*;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Vector;
 
 public abstract class GenericWelcome implements GenericGuiInterface {
 

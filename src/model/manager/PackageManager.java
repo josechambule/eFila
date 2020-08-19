@@ -18,28 +18,10 @@
  */
 package model.manager;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Form;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PillCount;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.User;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.model.utils.PackageLifeStage;
@@ -47,9 +29,13 @@ import org.celllife.idart.print.label.DrugLabel;
 import org.celllife.idart.print.label.PackageCoverLabel;
 import org.celllife.idart.print.label.PrintThread;
 import org.celllife.idart.print.label.ScriptSummaryLabel;
+import org.celllife.idart.rest.utils.RestUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  */
@@ -64,7 +50,7 @@ public class PackageManager {
 	 *            Session
 	 * @param d
 	 *            Drug
-	 * @param c
+	 * @param stockCenter
 	 *            Clinic
 	 * @return boolean
 	 * @throws HibernateException
@@ -197,8 +183,7 @@ public class PackageManager {
 		presc = session.createQuery(
 				"select prescription from Prescription as prescription "
 						+ "where prescription.date = '"
-						+ datePickup + "' AND patient = " + patient.getId()
-		).list();
+						+ RestUtils.castDateToString(datePickup) + "' AND patient = " + patient.getId()).list();
 
 		Iterator<Prescription> iter = presc.iterator();
 		if (iter.hasNext()) {
@@ -954,7 +939,7 @@ public class PackageManager {
 	 * @param pdisForLabels
 	 *            List<PackageDrugInfo>
 	 * @param qtysForLabels
-	 * @param pInfo
+	 * @param sess
 	 *            PackageInfo
 	 * @return boolean
 	 * @throws HibernateException
@@ -1212,12 +1197,12 @@ public class PackageManager {
 	}
 
 	/**
-	 * @param pInfo
-	 * @param printPackageCover
+	 * @param leaveQuantitiesBlank
+	 * @param pdi
 	 * @param leaveQuantitiesBlank
 	 * @param pdi
 	 * @param theForm
-	 * @param patientName
+	 * @param nextAppointmentDate
 	 * @return
 	 */
 	private static Object createLabel(boolean leaveQuantitiesBlank,

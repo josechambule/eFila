@@ -1,14 +1,6 @@
 package org.celllife.idart.start;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.List;
-
 import model.manager.StockManager;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -17,6 +9,13 @@ import org.celllife.idart.database.hibernate.StockTake;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
 
 public class FixStockLevels {
 

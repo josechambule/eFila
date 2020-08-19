@@ -1,22 +1,15 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import model.manager.excel.conversion.exceptions.ReportException;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Drug;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ARVDrugUsageReport extends AbstractJasperReport {
 

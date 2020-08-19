@@ -1,17 +1,12 @@
 package org.celllife.idart.start;
 
 
-import org.apache.log4j.xml.DOMConfigurator;
-import org.celllife.idart.commonobjects.iDartProperties;
-
 import java.io.BufferedReader;
-
 import java.io.File;
 import java.io.FileReader;
-
-import java.sql.SQLException;
-import java.sql.DriverManager;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class UpdateDatabase {

@@ -1,19 +1,9 @@
 package org.celllife.idart.gui.patient;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
 import model.manager.PAVASManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.PatientStatTypes;
-import org.celllife.idart.database.hibernate.PatientStatistic;
-import org.celllife.idart.database.hibernate.PatientVisit;
-import org.celllife.idart.database.hibernate.PatientVisitReason;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.reportParameters.CohortsReport;
@@ -31,15 +21,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 
 public class ShowPAVAS extends GenericFormGui {
 

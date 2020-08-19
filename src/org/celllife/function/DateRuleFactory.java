@@ -1,10 +1,10 @@
 package org.celllife.function;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import org.celllife.function.DateRule.RangeSelectionEnum;
 import org.celllife.idart.misc.DateFieldComparator;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class DateRuleFactory {
 

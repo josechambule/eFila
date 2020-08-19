@@ -19,9 +19,6 @@
 
 package org.celllife.idart.gui.label;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Patient;
@@ -38,14 +35,10 @@ import org.celllife.idart.print.label.PatientInfoLabel;
 import org.celllife.idart.print.label.PrintLabel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  */

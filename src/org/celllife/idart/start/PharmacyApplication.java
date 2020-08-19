@@ -20,32 +20,25 @@
 
 package org.celllife.idart.start;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import model.manager.StockManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.*;
-import org.celllife.idart.database.ConnectException;
-import org.celllife.idart.database.DatabaseEmptyException;
-import org.celllife.idart.database.DatabaseException;
-import org.celllife.idart.database.DatabaseTools;
-import org.celllife.idart.database.DatabaseWizard;
+import org.celllife.idart.database.*;
 import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
 import org.celllife.idart.gui.login.LoginErr;
-import org.celllife.idart.gui.welcome.ClinicWelcome;
-import org.celllife.idart.gui.welcome.GenericWelcome;
-import org.celllife.idart.gui.welcome.Load;
-import org.celllife.idart.gui.welcome.PharmacyWelcome;
-import org.celllife.idart.gui.welcome.ReportWorkerWelcome;
-import org.celllife.idart.gui.welcome.StudyWorkerWelcome;
+import org.celllife.idart.gui.welcome.*;
 import org.celllife.idart.integration.eKapa.EkapaSubmitJob;
 import org.celllife.idart.integration.eKapa.JobScheduler;
 import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.task.TaskManager;
+import org.celllife.idart.rest.utils.RestFarmac;
 import org.celllife.idart.sms.SmsRetrySchedulerJob;
 import org.celllife.idart.sms.SmsSchedulerJob;
 import org.eclipse.jface.window.Window;
@@ -56,9 +49,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
-import model.manager.StockManager;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 /**
  *
@@ -80,7 +78,7 @@ public class PharmacyApplication {
         DOMConfigurator.configure("log4j.xml");
 
         // used for gui testing
-        System.setProperty("org.eclipse.swtbot.search.defaultKey",iDartProperties.SWTBOT_KEY);
+        System.setProperty("org.eclipse.swtbot.search.defaultKey", iDartProperties.SWTBOT_KEY);
 
         log.info("");
         log.info("*********************");
@@ -103,7 +101,7 @@ public class PharmacyApplication {
         }
     }
 
-    private static void updateDatabase(){
+    private static void updateDatabase() {
         try {
             ConexaoJDBC conn = new ConexaoJDBC();
             conn.UpdateDatabase();
@@ -182,6 +180,7 @@ public class PharmacyApplication {
         boolean userExited;
         GenericWelcome welcome = null;
         JobScheduler scheduler = new JobScheduler();
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         EventManager events = new EventManager();
         events.register();
         do {
@@ -190,6 +189,8 @@ public class PharmacyApplication {
             if (loginScreen.isSuccessfulLogin()) {
                 startEkapaJob(scheduler);
                 startSmsJobs(scheduler);
+                if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
+                    startRestFarmacThread(executorService);
 
                 try {
                     String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
@@ -228,6 +229,7 @@ public class PharmacyApplication {
         } while (!userExited && welcome != null && welcome.isTimedOut());
 
         scheduler.shutdown();
+        executorService.shutdown();
         events.deRegister();
         log.info("");
         log.info("*********************");
@@ -254,6 +256,52 @@ public class PharmacyApplication {
                 scheduler.schedule(EkapaSubmitJob.JOB_NAME, EkapaSubmitJob.GROUP_NAME, EkapaSubmitJob.class, 2);
             }
         }
+    }
+
+    public static void startRestFarmacThread(ScheduledExecutorService executorService) {
+
+        final String url = CentralizationProperties.centralized_server_url;
+
+
+        executorService.scheduleWithFixedDelay(new Runnable() {
+            public void run() {
+                Session sess = HibernateUtil.getNewSession();
+                Transaction tx = sess.beginTransaction();
+
+                try {
+                    if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+                        RestFarmac.setCentralPatients(sess);
+                        RestFarmac.setCentralDispenses(sess);
+                    } else {
+                        if (getServerStatus(url).contains("Red"))
+                            System.out.println("Servidor Rest offline, verifique a sua internet ou contacte o administrador");
+                        else {
+                            Clinic mainClinic = AdministrationManager.getMainClinic(sess);
+                            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
+                                RestFarmac.restPostPatients(sess, url);
+                                RestFarmac.restGeAllDispenses(url, mainClinic);
+                                RestFarmac.setDispensesFromRest(sess);
+                            } else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
+                                RestFarmac.restGeAllPatients(url, mainClinic);
+                                RestFarmac.setPatientsFromRest(sess);
+                                RestFarmac.restPostDispenses(sess, url);
+                            }
+                        }
+                    }
+                    assert tx != null;
+                    tx.commit();
+                    sess.flush();
+                    sess.close();
+                } catch (IOException e) {
+                    assert tx != null;
+                    tx.rollback();
+                    sess.close();
+                    e.printStackTrace();
+                }
+
+            }
+        }, 0, 30, TimeUnit.SECONDS);
+
     }
 
     private static void closeAllShells() {
@@ -345,6 +393,24 @@ public class PharmacyApplication {
         }
 
         try {
+            CentralizationProperties.setCentralizationProperties();
+
+            if (log.isTraceEnabled()) {
+                try {
+                    log.trace("Current Centralization iDART properties: \n"
+                            + CentralizationProperties.centralizationProperties());
+                } catch (Exception e1) {
+                    log.error("Error printing Centralization properties", e1);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to load centralization.properties file.", e);
+            showStartupErrorDialog("Unable to load properties from centralization.properties file." +
+                    " Please ensure it exists.");
+            System.exit(1);
+        }
+
+        try {
             PropertiesManager.sms();
 
             if (log.isTraceEnabled()) {
@@ -403,6 +469,19 @@ public class PharmacyApplication {
             // set default clinic
             LocalObjects.mainClinic = AdministrationManager
                     .getMainClinic(hSession);
+
+            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
+                if (LocalObjects.mainClinic.getUuid() != JdbcProperties.location) {
+                    LocalObjects.mainClinic.setUuid(JdbcProperties.location);
+                    AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
+                }
+            }else {
+                if(CentralizationProperties.location != null && !CentralizationProperties.location.isEmpty() )
+                if (LocalObjects.mainClinic.getUuid() != CentralizationProperties.location) {
+                    LocalObjects.mainClinic.setUuid(CentralizationProperties.location);
+                    AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
+                }
+            }
             LocalObjects.nationalIdentifierType = AdministrationManager
                     .getNationalIdentifierType(hSession);
 

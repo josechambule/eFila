@@ -19,35 +19,12 @@
 
 package org.celllife.idart.gui.deletions;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import model.manager.DeletionsManager;
-import model.manager.DrugManager;
-import model.manager.PackageManager;
-import model.manager.PatientManager;
-import model.manager.StockManager;
-
+import model.manager.*;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.commonobjects.iDartProperties.LabelType;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.Form;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Stock;
-import org.celllife.idart.database.hibernate.StockCenter;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericOthersGui;
 import org.celllife.idart.gui.search.PatientSearch;
@@ -67,17 +44,15 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  */

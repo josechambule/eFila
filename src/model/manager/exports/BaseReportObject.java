@@ -1,11 +1,11 @@
 package model.manager.exports;
 
+import model.manager.exports.columns.SimpleColumnsEnum;
+import model.nonPersistent.EntitySet;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import model.manager.exports.columns.SimpleColumnsEnum;
-import model.nonPersistent.EntitySet;
 
 public abstract class BaseReportObject implements ReportObject {
 

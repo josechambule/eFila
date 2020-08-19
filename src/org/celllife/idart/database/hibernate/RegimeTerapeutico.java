@@ -1,22 +1,18 @@
 package org.celllife.idart.database.hibernate;
 
-import java.util.Iterator;
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
+
+import javax.persistence.*;
+import java.util.Iterator;
+import java.util.List;
 
 @Entity
 public class RegimeTerapeutico {
 
 	@Id
 	@GeneratedValue
-	private int regimeid;
+	private Integer regimeid;
 	private String regimeesquema;
 	private boolean active;
 	private String regimenomeespecificado;
@@ -38,7 +34,7 @@ public class RegimeTerapeutico {
 	@IndexColumn(name = "regimenDrugsIndex")
 	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
 			org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-	private List<RegimenDrugs> regimenDrugs;
+	private List<RegimenDrugs> regimendrugs;
     
 	public String getRegimenomeespecificado() {
 		return regimenomeespecificado;
@@ -56,11 +52,11 @@ public class RegimeTerapeutico {
 		this.codigoregime = codigoregime;
 	}
 
-	public int getRegimeid() {
+	public Integer getRegimeid() {
 		return regimeid;
 	}
 
-	public void setRegimeid(int regimeid) {
+	public void setRegimeid(Integer regimeid) {
 		this.regimeid = regimeid;
 	}
 
@@ -116,7 +112,7 @@ public class RegimeTerapeutico {
 	 * @return List<RegimenDrugs>
 	 */
 	public List<RegimenDrugs> getRegimenDrugs() {
-		return regimenDrugs;
+		return regimendrugs;
 	}
 
 	/**
@@ -124,7 +120,7 @@ public class RegimeTerapeutico {
 	 * @param regimenDrugs List<RegimenDrugs>
 	 */
 	public void setRegimenDrugs(List<RegimenDrugs> regimenDrugs) {
-		this.regimenDrugs = regimenDrugs;
+		this.regimendrugs = regimenDrugs;
 	}
         
     	/**
@@ -157,6 +153,6 @@ public class RegimeTerapeutico {
         
 	@Override
 	public String toString() {
-		return regimeesquema + " " + regimeesquemaidart;
+		return "[ "+ codigoregime +" ] "+ regimeesquema ;
 	}
 }

@@ -5,7 +5,6 @@ import model.manager.exports.ExportColumn;
 import model.manager.exports.columns.ColumnModifier;
 import model.manager.exports.columns.EpisodeDetailsEnum;
 import model.manager.exports.columns.IColumnEnum;
-
 import org.celllife.idart.gui.dataExports.listViewerUtils.ExportListViewerContentProvider;
 import org.celllife.idart.gui.dataExports.listViewerUtils.ExportListViewerLabelProvider;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -15,11 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 public class EpisodeGroupGUI implements iDataExport {
 

@@ -1,15 +1,10 @@
 package org.celllife.idart.print.label;
 
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import org.apache.log4j.Logger;
+
+import java.awt.print.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * This is the default printer class to print label printers.

@@ -5,10 +5,9 @@ import model.manager.DrugManager;
 import model.manager.reports.FichaStockReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.StockAdjustment;
 import org.celllife.idart.database.hibernate.StockCenter;
-import org.celllife.idart.database.hibernate.StockTake;
 import org.celllife.idart.gui.platform.GenericReportGui;
 import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
@@ -17,16 +16,16 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.vafada.swtcalendar.SWTCalendar;
-import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,6 +62,8 @@ public class FichaStock extends GenericReportGui {
 
     private  List<Drug> drugList;
 
+    private final Shell parent;
+
 
     /**
      * Constructor
@@ -74,6 +75,7 @@ public class FichaStock extends GenericReportGui {
      */
     public FichaStock(Shell parent, boolean activate) {
         super(parent, REPORTTYPE_STOCK, activate);
+        this.parent = parent;
     }
 
     /**
@@ -399,7 +401,52 @@ public class FichaStock extends GenericReportGui {
 
     @Override
     protected void cmdViewReportXlsWidgetSelected() {
-        // TODO Auto-generated method stub
+
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+
+        if (cmbStockCenter.getText().equals("")) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("No Pharmacy Was Selected");
+            missing.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        } else if (pharm == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("Pharmacy not found");
+            missing.setMessage("There is no pharmacy called '"
+                    + cmbStockCenter.getText()
+                    + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        }else if (localDrug == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("O medicamento nao foi seleccionado");
+            missing.setMessage("Nao existe nehum medicamento seleccionado '");
+            missing.open();
+
+        } else {
+            String reportNameFile = "Reports/FichaStock.xls";
+            try {
+                FichaStockExcel op = new FichaStockExcel(parent, reportNameFile, pharm, calendarStart.getCalendar().getTime(), calendarStart.getCalendar().getTime(), localDrug);
+                new ProgressMonitorDialog(parent).run(true, true, op);
+
+                if (op.getList() == null ||
+                        op.getList().size() <= 0) {
+                    MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+                    mNoPages.setText("O relatório não possui páginas");
+                    mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.\n \n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                    mNoPages.open();
+                }
+
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
 
     }
 }

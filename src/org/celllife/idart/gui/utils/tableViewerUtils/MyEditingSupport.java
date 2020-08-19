@@ -20,7 +20,6 @@
 package org.celllife.idart.gui.utils.tableViewerUtils;
 
 import model.nonPersistent.PackagesWithSelection;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;

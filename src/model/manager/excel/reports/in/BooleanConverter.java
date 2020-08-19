@@ -1,10 +1,10 @@
 package model.manager.excel.reports.in;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import model.manager.excel.conversion.exceptions.PatientException;
 import model.manager.excel.interfaces.ImportConverter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class BooleanConverter implements ImportConverter<Boolean> {
 

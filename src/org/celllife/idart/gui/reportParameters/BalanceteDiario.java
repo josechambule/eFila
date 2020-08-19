@@ -3,9 +3,9 @@ package org.celllife.idart.gui.reportParameters;
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
 import model.manager.reports.BalanceteDiarioReport;
-import model.manager.reports.FichaStockReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.gui.platform.GenericReportGui;
@@ -16,6 +16,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,6 +26,7 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,17 +63,17 @@ public class BalanceteDiario extends GenericReportGui {
 
     private List<Drug> drugList;
 
+    private final Shell parent;
 
     /**
      * Constructor
      *
-     * @param parent
-     *            Shell
-     * @param activate
-     *            boolean
+     * @param parent   Shell
+     * @param activate boolean
      */
     public BalanceteDiario(Shell parent, boolean activate) {
         super(parent, REPORTTYPE_STOCK, activate);
+        this.parent = parent;
     }
 
     /**
@@ -94,7 +96,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method initializes compHeader
-     *
      */
     @Override
     protected void createCompHeader() {
@@ -104,7 +105,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method initializes grpClinicSelection
-     *
      */
     private void createGrpClinicSelection() {
 
@@ -130,7 +130,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method initializes grpDateInfo
-     *
      */
     private void createGrpDateInfo() {
 
@@ -139,7 +138,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method initializes compButtons
-     *
      */
     @Override
     protected void createCompButtons() {
@@ -149,7 +147,7 @@ public class BalanceteDiario extends GenericReportGui {
     @Override
     protected void cmdViewReportWidgetSelected() {
 
-        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),cmbStockCenter.getText());
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(), cmbStockCenter.getText());
 
         if (cmbStockCenter.getText().equals("")) {
 
@@ -167,35 +165,29 @@ public class BalanceteDiario extends GenericReportGui {
                     + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
             missing.open();
 
-        }else if (localDrug == null) {
+        } else if (localDrug == null) {
 
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
             missing.setText("O medicamento nao foi seleccionado");
             missing.setMessage("Nao existe nehum medicamento seleccionado '");
             missing.open();
 
-        }
-
-        else
-
-        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-            showMessage(MessageDialog.ERROR, "End date before start date","You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
+            showMessage(MessageDialog.ERROR, "End date before start date", "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
             return;
-        }
-
-        else {
+        } else {
             try {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
 
                 Date theStartDate = calendarStart.getCalendar().getTime();
 
-                Date theEndDate=  calendarEnd.getCalendar().getTime();
+                Date theEndDate = calendarEnd.getCalendar().getTime();
 
-                BalanceteDiarioReport report = new BalanceteDiarioReport(getShell(), pharm, theStartDate, theEndDate,localDrug.getId());
+                BalanceteDiarioReport report = new BalanceteDiarioReport(getShell(), pharm, theStartDate, theEndDate, localDrug.getId());
                 viewReport(report);
             } catch (Exception e) {
-                getLog().error("Exception while running Monthly Receipts and Issues report",e);
+                getLog().error("Exception while running Monthly Receipts and Issues report", e);
             }
         }
 
@@ -203,7 +195,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method is called when the user presses "Close" button
-     *
      */
     @Override
     protected void cmdCloseWidgetSelected() {
@@ -213,8 +204,7 @@ public class BalanceteDiario extends GenericReportGui {
     /**
      * Method getMonthName.
      *
-     * @param intMonth
-     *            int
+     * @param intMonth int
      * @return String
      */
     private String getMonthName(int intMonth) {
@@ -249,12 +239,12 @@ public class BalanceteDiario extends GenericReportGui {
         grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,180, 20));
+        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30, 180, 20));
         lblStartDate.setText("Data Início:");
         lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-        lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,180, 20));
+        lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30, 180, 20));
         lblEndDate.setText("Data Fim:");
         lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
@@ -273,7 +263,6 @@ public class BalanceteDiario extends GenericReportGui {
 
     /**
      * This method initialises grpDrugInfo
-     *
      */
     private void createGrpDrugInfo() {
 
@@ -365,8 +354,7 @@ public class BalanceteDiario extends GenericReportGui {
     /**
      * Method setEndDate.
      *
-     * @param date
-     *            Date
+     * @param date Date
      */
     public void setEndtDate(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -377,8 +365,7 @@ public class BalanceteDiario extends GenericReportGui {
     /**
      * Method addEndDateChangedListener.
      *
-     * @param listener
-     *            SWTCalendarListener
+     * @param listener SWTCalendarListener
      */
     public void addEndDateChangedListener(SWTCalendarListener listener) {
 
@@ -397,8 +384,7 @@ public class BalanceteDiario extends GenericReportGui {
     /**
      * Method setStartDate.
      *
-     * @param date
-     *            Date
+     * @param date Date
      */
     public void setStartDate(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -409,8 +395,7 @@ public class BalanceteDiario extends GenericReportGui {
     /**
      * Method addStartDateChangedListener.
      *
-     * @param listener
-     *            SWTCalendarListener
+     * @param listener SWTCalendarListener
      */
     public void addStartDateChangedListener(SWTCalendarListener listener) {
 
@@ -419,7 +404,53 @@ public class BalanceteDiario extends GenericReportGui {
 
     @Override
     protected void cmdViewReportXlsWidgetSelected() {
-        // TODO Auto-generated method stub
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(), cmbStockCenter.getText());
 
+        if (cmbStockCenter.getText().equals("")) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("No Pharmacy Was Selected");
+            missing.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        } else if (pharm == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("Pharmacy not found");
+            missing.setMessage("There is no pharmacy called '"
+                    + cmbStockCenter.getText()
+                    + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+            missing.open();
+
+        } else if (localDrug == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+            missing.setText("O medicamento nao foi seleccionado");
+            missing.setMessage("Nao existe nehum medicamento seleccionado '");
+            missing.open();
+
+        } else if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())) {
+            showMessage(MessageDialog.ERROR, "End date before start date", "You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
+            return;
+        }else {
+            String reportNameFile = "Reports/Balancete.xls";
+            try {
+                BalanceteDiarioExcel op = new BalanceteDiarioExcel(parent, reportNameFile, pharm, calendarStart.getCalendar().getTime(), calendarEnd.getCalendar().getTime(), localDrug);
+                new ProgressMonitorDialog(parent).run(true, true, op);
+
+                if (op.getList() == null ||
+                        op.getList().size() <= 0) {
+                    MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+                    mNoPages.setText("O relatório não possui páginas");
+                    mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.\n \n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                    mNoPages.open();
+                }
+
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

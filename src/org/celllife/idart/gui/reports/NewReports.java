@@ -18,12 +18,11 @@
  */
 package org.celllife.idart.gui.reports;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import model.manager.exports.iedea.IedeaExporter;
+import model.manager.reports.FarmaciasRegistadas;
+import model.manager.reports.HistoricoLevantamentoReferidosDEouPARA;
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.gui.dataExports.DataExport;
 import org.celllife.idart.gui.dataQuality.DataQuality;
 import org.celllife.idart.gui.platform.GenericAdminGui;
@@ -48,19 +47,15 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 
-import model.manager.exports.iedea.IedeaExporter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
+ *
  */
 public class NewReports extends GenericAdminGui {
 
@@ -374,14 +369,14 @@ public class NewReports extends GenericAdminGui {
     private void populateReportLists() {
 
         // MMIA Reports
-		/*
+        /*
          * reportGUIs.put(GenericReportGuiInterface.REPORT_MIA, new
          * MmiaReport(getShell(), false));
          */
         reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
                 new MmiaReportMISAU(getShell(), false));
-      
-      	reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
+
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRICOES_SEM_DISPENSAS, new PrescriptionsWithNoEncounter(getShell(), false));
 
         reportGUIs.put(GenericReportGuiInterface.REPORT_LIVRO_ELETRONICO_ARV,
                 new LivroRegistoDiario(getShell(), false));
@@ -421,6 +416,9 @@ public class NewReports extends GenericAdminGui {
         reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_DISPENSA_TRIMESTRAL,
                 new CohortDispensaTrimestral(getShell(), false));
 
+        reportGUIs.put(GenericReportGuiInterface.REPORT_REFERIDOS_LEVANTAMENTOS_ARV,
+                new HistoricoLevantamentoReferidosDEouPARAReport(getShell(), false));
+
         // Patient Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,
                 new PatientHistory(getShell(), false));
@@ -430,8 +428,20 @@ public class NewReports extends GenericAdminGui {
         reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING,
                 new PackageTracking(getShell(), false));
 
-        reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
-                new PacientesReferidos(getShell(), false));
+        if (!CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
+                    new PacientesReferidos(getShell(), false));
+        }
+
+        if (!CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_RECEBIDOS,
+                    new PacientesRecebidosDaReferencia(getShell(), false));
+        }
+
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_FARMACIAS_REGISTADAS,
+                    new FarmaciasRegistadasReport(getShell(), false));
+        }
 
         // Stock Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,
@@ -441,7 +451,7 @@ public class NewReports extends GenericAdminGui {
                 new DailyDispensingTotals(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE,
                 new StockTakeReportGUI(getShell(), false));
-        
+
         reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED,
                 new DrugsDispensed(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS,
@@ -569,7 +579,6 @@ public class NewReports extends GenericAdminGui {
 
     /**
      * This method initializes compButtons
-     *
      */
     protected void createCompButtons() {
         compButton = new Composite(getShell(), SWT.NONE);
@@ -593,8 +602,8 @@ public class NewReports extends GenericAdminGui {
                     @Override
                     public void widgetSelected(
                             org.eclipse.swt.events.SelectionEvent e) {
-                                cmdDataExportsSelected();
-                            }
+                        cmdDataExportsSelected();
+                    }
                 });
 
         btnDataQuality = new Button(compButton, SWT.NONE);
@@ -609,15 +618,14 @@ public class NewReports extends GenericAdminGui {
                     @Override
                     public void widgetSelected(
                             org.eclipse.swt.events.SelectionEvent e) {
-                                cmdDataQualitySelected();
-                            }
+                        cmdDataQualitySelected();
+                    }
                 });
         compButton.layout();
     }
 
     /**
      * Deselects all previously selected values in the tables
-     *
      */
     private void clearSelections() {
         for (int i = 0; i < tblClinicManagementReports.getItemCount(); i++) {

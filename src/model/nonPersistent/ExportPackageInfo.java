@@ -1,13 +1,8 @@
 package model.nonPersistent;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.exports.columns.PackageDetailsEnum;
+
+import java.util.*;
 
 public class ExportPackageInfo {
 

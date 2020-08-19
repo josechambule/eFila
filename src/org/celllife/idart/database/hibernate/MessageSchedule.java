@@ -1,15 +1,9 @@
 package org.celllife.idart.database.hibernate;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 import org.celllife.idart.sms.SmsType;
+
+import javax.persistence.*;
+import java.util.Date;
 
 // this class represents the messages that were scheduled 
 @Entity

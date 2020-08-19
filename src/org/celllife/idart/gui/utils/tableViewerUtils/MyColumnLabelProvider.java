@@ -17,12 +17,8 @@
  * 
  */package org.celllife.idart.gui.utils.tableViewerUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import model.manager.PatientManager;
 import model.nonPersistent.PackagesWithSelection;
-
 import org.celllife.idart.database.hibernate.Appointment;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,6 +26,9 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MyColumnLabelProvider {
 

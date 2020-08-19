@@ -1,28 +1,22 @@
 package org.celllife.idart.database;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import liquibase.change.custom.CustomSqlChange;
 import liquibase.change.custom.CustomSqlRollback;
 import liquibase.database.Database;
-import liquibase.exception.CustomChangeException;
-import liquibase.exception.RollbackImpossibleException;
-import liquibase.exception.SetupException;
-import liquibase.exception.UnsupportedChangeException;
-import liquibase.exception.ValidationErrors;
+import liquibase.exception.*;
 import liquibase.resource.ResourceAccessor;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.UpdateStatement;
-
-import org.celllife.idart.database.hibernate.AtcCode;
 import org.celllife.idart.database.hibernate.ChemicalCompound;
 import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.hibernate.Session;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class LinkDrugsToAtcCodes_3_8_9 implements CustomSqlChange, CustomSqlRollback {
 

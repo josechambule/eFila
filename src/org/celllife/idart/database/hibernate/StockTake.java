@@ -19,15 +19,14 @@
 
 package org.celllife.idart.database.hibernate;
 
-import java.util.Date;
-import java.util.Set;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
+import java.util.Date;
+import java.util.Set;
 
 /**
  */

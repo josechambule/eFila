@@ -1,56 +1,34 @@
 package org.celllife.idart.integration.eKapa.gui;
 
-import java.sql.SQLException;
-import java.text.Collator;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.gui.utils.LayoutUtils;
-import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
-import org.celllife.idart.gui.utils.iDartFont;
-import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.gui.utils.*;
 import org.celllife.idart.gui.welcome.GenericWelcome;
 import org.celllife.idart.integration.eKapa.EKapa;
 import org.celllife.idart.integration.eKapa.EKapa.NumberType;
 import org.celllife.idart.misc.PatientBarcodeParser;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Session;
+
+import java.sql.SQLException;
+import java.text.Collator;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Creates the Gui screen and generates an iDart patient object corresponding to

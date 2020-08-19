@@ -1,18 +1,17 @@
 package org.celllife.idart.gui.dataQualityexports;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.database.hibernate.ChemicalDrugStrength;
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Regimen;
 import org.celllife.idart.database.hibernate.RegimenDrugs;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
-import java.util.*;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class RegimenBreakdowns extends DataQualityBase {
 

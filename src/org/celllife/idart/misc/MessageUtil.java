@@ -1,10 +1,10 @@
 package org.celllife.idart.misc;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class MessageUtil {
 

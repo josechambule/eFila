@@ -3,6 +3,11 @@
  */
 package org.celllife.idart.misc;
 
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.gui.welcome.GenericWelcome;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,11 +16,6 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.gui.welcome.GenericWelcome;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 
 /**
  *

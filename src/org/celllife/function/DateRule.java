@@ -1,12 +1,12 @@
 package org.celllife.function;
 
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-
 import org.celllife.idart.database.hibernate.APIException;
 import org.celllife.idart.misc.DateFieldComparator;
 import org.celllife.idart.misc.iDARTUtil;
+
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * <code>DateRangeRule</code> represents a rule that can be evaluated against a

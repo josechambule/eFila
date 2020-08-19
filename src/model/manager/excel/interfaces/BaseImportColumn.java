@@ -1,7 +1,6 @@
 package model.manager.excel.interfaces;
 
 import model.manager.excel.conversion.exceptions.PatientException;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.celllife.idart.database.hibernate.Patient;
 

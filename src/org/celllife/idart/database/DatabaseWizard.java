@@ -1,8 +1,5 @@
 package org.celllife.idart.database;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -16,6 +13,9 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class DatabaseWizard extends Wizard {
 	private static Logger log = Logger.getLogger(DatabaseWizard.class);

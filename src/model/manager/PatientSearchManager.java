@@ -1,7 +1,5 @@
 package model.manager;
 
-import java.util.List;
-
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.gui.patient.AlternateIdSelector;
@@ -10,6 +8,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.Session;
+
+import java.util.List;
 
 /**
  * Class to manage how a patient is selected when a patient ID is scanned or

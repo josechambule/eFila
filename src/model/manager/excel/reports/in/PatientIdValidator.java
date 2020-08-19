@@ -1,15 +1,14 @@
 package model.manager.excel.reports.in;
 
-import java.text.MessageFormat;
-
 import model.manager.PatientManager;
 import model.manager.excel.interfaces.SessionBasedImportValidator;
-
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.iDARTUtil;
 import org.hibernate.Session;
+
+import java.text.MessageFormat;
 
 public class PatientIdValidator implements SessionBasedImportValidator<PatientIdentifier> {
 

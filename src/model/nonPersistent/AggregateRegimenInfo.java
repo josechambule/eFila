@@ -1,19 +1,13 @@
 package model.nonPersistent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.DrugManager;
 import model.manager.PatientSetManager;
-
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.Prescription;
 import org.hibernate.Session;
+
+import java.util.*;
 
 public class AggregateRegimenInfo {
 

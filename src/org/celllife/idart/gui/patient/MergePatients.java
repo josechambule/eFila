@@ -19,67 +19,35 @@
 
 package org.celllife.idart.gui.patient;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
 import model.manager.PackageManager;
 import model.manager.PatientManager;
 import model.manager.TemporaryRecordsManager;
 import model.manager.reports.PatientHistoryReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.database.hibernate.AlternatePatientIdentifier;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.Pregnancy;
-import org.celllife.idart.database.hibernate.Prescription;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.reportParameters.PatientHistory;
 import org.celllife.idart.gui.search.PatientSearch;
 import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
-import org.celllife.idart.gui.utils.ComboUtils;
-import org.celllife.idart.gui.utils.LayoutUtils;
-import org.celllife.idart.gui.utils.ResourceUtils;
-import org.celllife.idart.gui.utils.iDartColor;
-import org.celllife.idart.gui.utils.iDartFont;
-import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.gui.utils.*;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.PatientBarcodeParser;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.*;
 
 /**
  */

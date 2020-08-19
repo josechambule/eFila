@@ -1,14 +1,13 @@
 package model.manager.reports;
 
+import model.manager.excel.conversion.exceptions.ReportException;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.eclipse.swt.widgets.Shell;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import model.manager.excel.conversion.exceptions.ReportException;
-
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.eclipse.swt.widgets.Shell;
 
 public class StockReceiptReport extends AbstractJasperReport {
 

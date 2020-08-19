@@ -1,11 +1,10 @@
 package model.manager.excel.interfaces;
 
-import java.util.List;
-
 import model.manager.excel.conversion.exceptions.PatientException;
-
 import org.celllife.idart.database.hibernate.Patient;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public interface ImportColumn<T> {
 

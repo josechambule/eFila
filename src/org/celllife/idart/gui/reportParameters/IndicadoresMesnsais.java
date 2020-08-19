@@ -24,16 +24,9 @@
 
 package org.celllife.idart.gui.reportParameters;
 
-import java.util.Calendar;
-import java.util.Date;
 import model.manager.reports.IndicadoresMensaisReport;
-
-import model.manager.reports.TransactionLoggingReport;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.gui.platform.GenericReportGui;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORTTYPE_MONITORINGANDEVALUATION;
-import static org.celllife.idart.gui.platform.GenericReportGuiInterface.REPORT_INDICADORES_MENSAIS;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
@@ -45,6 +38,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  */

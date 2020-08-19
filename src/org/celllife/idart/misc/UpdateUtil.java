@@ -1,5 +1,7 @@
 package org.celllife.idart.misc;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -7,8 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
 
 public class UpdateUtil {
 

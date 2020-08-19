@@ -5,14 +5,14 @@
  */
 package migracao.swingreverse;
 
+import migracao.connection.hibernateConection;
+import migracao.entidadesHibernate.ExportDispense.PackageDrugInfoExportService;
+import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.farmac.JRestoreController;
 import migracao.farmac.PasswordProtectedZip;
 import model.manager.*;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import migracao.connection.hibernateConection;
-import migracao.entidadesHibernate.ExportDispense.PackageDrugInfoExportService;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
@@ -321,7 +321,7 @@ public class Task6 extends SwingWorker<String, Void> {
 
         Prescription prescription = null;
 
-        prescription = PackageManager.getPrescriptionFromPatient(sess, patient, syncTempDispense.get(0).getDispensedate());
+        prescription = PackageManager.getPrescriptionFromPatient(sess, patient, (java.sql.Date) syncTempDispense.get(0).getDispensedate());
 
         if (prescription == null) {
             prescription = new Prescription();
@@ -329,8 +329,8 @@ public class Task6 extends SwingWorker<String, Void> {
             //   String prescriptionId = PackageManager.getNewPrescriptionId(sess, patient, syncTempDispense.getDate());
             SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
             Doctor doctorProvider = PrescriptionManager.getProvider(sess);
-            LinhaT linhat = AdministrationManager.getLinha(sess, syncTempDispense.get(0).getLinhaid());
-            RegimeTerapeutico regimeTerapeutico = AdministrationManager.getRegimeTerapeutico(sess, syncTempDispense.get(0).getRegimeid());
+            LinhaT linhat = null;
+            RegimeTerapeutico regimeTerapeutico = null;
 
             prescription.setClinicalStage(0);
             prescription.setCurrent('T');

@@ -1,33 +1,11 @@
 package model.manager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
-
 import model.manager.exports.ScriptColumn;
 import model.nonPersistent.EntitySet;
 import model.nonPersistent.ExportDrugInfo;
 import model.nonPersistent.ExportPackageInfo;
-
 import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.APIException;
-import org.celllife.idart.database.hibernate.AccumulatedDrugs;
-import org.celllife.idart.database.hibernate.Appointment;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PackagedDrugs;
-import org.celllife.idart.database.hibernate.Packages;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Regimen;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.DAOException;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -37,6 +15,9 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class PatientSetManager {
 

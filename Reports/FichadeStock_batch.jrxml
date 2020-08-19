@@ -80,7 +80,7 @@ UNION
 select sa.captureDate as datamovimento,
 ' - ' as cliente,
 ' Ajuste ' as tipomovimento,
-COALESCE(sa.adjustedValue, 0) as quantidade,
+COALESCE(sa.stockcount, 0) as quantidade,
 ' - ' as numeroguia,
 d.id
 from drug as d
@@ -106,7 +106,7 @@ drug.id
 
 from
 (select generate_series($P{monthStart}::date, $P{monthStart}::date, '1 day'::interval) searchdate, id
-from drug where id = 41287
+from drug where id = $P{id}
 ) as drug
 left join
 
@@ -128,7 +128,7 @@ and pg_catalog.date(p.packdate) < $P{monthStart}::date
 ) as b on b.id = drug.id
 
 left join
-(select sum(sa.adjustedValue) as alladjusted, d.id
+(select sum(sa.stockcount) as alladjusted, d.id
 from drug as d, stock as s, stockAdjustment as sa
 where d.id = d.id
 and s.stockCenter = $P{stockCenterId}
@@ -198,13 +198,13 @@ $F{openingpills}.longValue()
 )
 + $V{somaUnidadesRecebidas}*$P{packsize}.intValue() + $V{UnidadesRecebidas}*$P{packsize}.intValue()
 - $V{somaUnidadesDispensadas}*$P{packsize}.intValue() - $V{UnidadesDispensadas}*$P{packsize}.intValue()
-- $V{somaUnidadesAjustadas}*$P{packsize}.intValue() - $V{UnidadesAjustadas}*$P{packsize}.intValue()]]></variableExpression>
+- $V{somaUnidadesAjustadas} - $V{UnidadesAjustadas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
-	<variable name="totalString" class="java.lang.String">
-		<variableExpression><![CDATA[(($V{totalPills}.longValue()%$P{packsize}.intValue())==0)?
-(new Long($V{totalPills}.longValue()/$P{packsize}.intValue())).toString()
-:(new Long(($V{totalPills}.longValue()/$P{packsize}.intValue())+1)).toString()]]></variableExpression>
+	<variable name="totalString" class="java.lang.Long">
+		<variableExpression><![CDATA[$V{totalPills}.longValue()%$P{packsize}.intValue() == 0 ?
+$V{totalPills}.longValue()/$P{packsize}.intValue()
+:$V{totalPills}.longValue()/$P{packsize}.intValue() +1]]></variableExpression>
 	</variable>
 	<variable name="somaUnidadesRecebidas" class="java.lang.Long">
 		<variableExpression><![CDATA[$V{UnidadesRecebidas} + $V{somaUnidadesRecebidas}]]></variableExpression>
@@ -214,7 +214,7 @@ $F{openingpills}.longValue()
 		<variableExpression><![CDATA[$V{UnidadesDispensadas} + $V{somaUnidadesDispensadas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
-	<variable name="somaUnidadesAjustadas" class="java.lang.Long" resetType="Column" incrementType="Column" calculation="Sum">
+	<variable name="somaUnidadesAjustadas" class="java.lang.Long" incrementType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$V{UnidadesAjustadas} + $V{somaUnidadesAjustadas}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
@@ -227,7 +227,9 @@ $F{openingpills}.longValue()
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="UnidadesAjustadas" class="java.lang.Long" resetType="None">
-		<variableExpression><![CDATA[($F{tipomovimento}.startsWith( "Ajuste" ) ? $F{quantidade}.longValue() : 0)]]></variableExpression>
+		<variableExpression><![CDATA[$F{tipomovimento}.contains( "Ajuste" ) ?
+    $F{quantidade}.longValue()
+: 0]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<background>
@@ -318,7 +320,11 @@ $F{openingpills}.longValue()
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{quantidade}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{tipomovimento}.contains(  "Ajuste" ) ?
+    $F{quantidade}.longValue()%$P{packsize} == 0 ?
+        $F{quantidade}.longValue()/$P{packsize}
+        :  $F{quantidade}.longValue()/$P{packsize}
+: $F{quantidade}.longValue()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="454" y="1" width="93" height="18"/>
@@ -332,7 +338,7 @@ $F{openingpills}.longValue()
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totalString}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -386,7 +392,7 @@ $F{openingpills}.longValue()
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalString}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{totalString}]]></textFieldExpression>
 			</textField>
 		</band>
 	</lastPageFooter>

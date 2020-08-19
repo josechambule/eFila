@@ -1,23 +1,16 @@
 package model.manager.excel.reports.in;
 
+import model.manager.PatientManager;
+import model.manager.excel.conversion.exceptions.PatientException;
+import model.manager.excel.interfaces.ImportColumn;
+import org.apache.log4j.Logger;
+import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.misc.iDARTUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import model.manager.PatientManager;
-import model.manager.excel.conversion.exceptions.PatientException;
-import model.manager.excel.interfaces.ImportColumn;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.database.hibernate.AttributeType;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.IdentifierType;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.database.hibernate.PatientAttribute;
-import org.celllife.idart.database.hibernate.PatientIdentifier;
-import org.celllife.idart.misc.iDARTUtil;
 
 public class PatientSheet extends BaseImportSheet {
 	

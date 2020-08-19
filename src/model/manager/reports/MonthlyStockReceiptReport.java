@@ -1,13 +1,12 @@
 package model.manager.reports;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.eclipse.swt.widgets.Shell;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MonthlyStockReceiptReport extends AbstractJasperReport {
 

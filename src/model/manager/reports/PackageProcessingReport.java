@@ -1,17 +1,8 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import model.manager.PackageManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -21,6 +12,10 @@ import org.celllife.idart.database.hibernate.Prescription;
 import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.model.utils.PackageLifeStage;
 import org.eclipse.swt.widgets.Shell;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PackageProcessingReport extends AbstractJasperReport {
 

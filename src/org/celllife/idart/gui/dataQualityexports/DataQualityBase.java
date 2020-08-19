@@ -1,16 +1,15 @@
 package org.celllife.idart.gui.dataQualityexports;
 
+import model.manager.excel.conversion.exceptions.ReportException;
+import org.apache.log4j.Logger;
+import org.celllife.idart.misc.AbstractCancellableJob;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import model.manager.excel.conversion.exceptions.ReportException;
-
-import org.apache.log4j.Logger;
-import org.celllife.idart.misc.AbstractCancellableJob;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class DataQualityBase extends AbstractCancellableJob implements
 		DataQualityInterface {

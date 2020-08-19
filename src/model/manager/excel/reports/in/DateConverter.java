@@ -1,13 +1,12 @@
 package model.manager.excel.reports.in;
 
+import model.manager.excel.interfaces.ImportConverter;
+import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.misc.iDARTUtil;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import model.manager.excel.interfaces.ImportConverter;
-
-import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.misc.iDARTUtil;
 
 public class DateConverter implements ImportConverter<Date> {
 	

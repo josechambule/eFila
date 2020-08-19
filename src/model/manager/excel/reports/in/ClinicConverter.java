@@ -1,15 +1,14 @@
 package model.manager.excel.reports.in;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import model.manager.AdministrationManager;
 import model.manager.excel.interfaces.SessionBasedImportConverter;
-
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.User;
 import org.hibernate.Session;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ClinicConverter implements SessionBasedImportConverter<Clinic> {
 

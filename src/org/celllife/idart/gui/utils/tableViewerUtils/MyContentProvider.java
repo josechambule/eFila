@@ -18,13 +18,12 @@
  */
 package org.celllife.idart.gui.utils.tableViewerUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import model.nonPersistent.PackagesWithSelection;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyContentProvider implements IStructuredContentProvider {
 

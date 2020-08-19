@@ -1,21 +1,9 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import model.manager.PrescriptionManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.nonPersistent.AggregateRegimenInfo;
 import model.nonPersistent.RegimenInfo;
-
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.Prescription;
 import org.celllife.idart.database.hibernate.Regimen;
@@ -23,6 +11,12 @@ import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class DrugCombinationReport extends AbstractJasperReport {
 

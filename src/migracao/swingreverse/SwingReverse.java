@@ -6,13 +6,13 @@
  */
 package migracao.swingreverse;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
 import migracao.entidades.*;
 import migracao.entidadesHibernate.importPatient.PatientAttributeImportService;
 import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
 import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.entidadesHibernate.servicos.*;
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
 import org.celllife.idart.database.hibernate.AttributeType;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.IdentifierType;

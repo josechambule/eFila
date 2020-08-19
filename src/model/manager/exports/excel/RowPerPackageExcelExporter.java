@@ -1,18 +1,17 @@
 package model.manager.exports.excel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import model.manager.AdministrationManager;
 import model.manager.excel.interfaces.GenerateExcelReportInterface;
 import model.manager.excel.reports.out.DrugDispensedReport;
 import model.manager.exports.DataExportFunctions;
 import model.nonPersistent.EntitySet;
-
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.hibernate.Query;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class RowPerPackageExcelExporter extends ExcelExporter {
 

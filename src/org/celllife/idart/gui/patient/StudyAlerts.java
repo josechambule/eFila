@@ -1,10 +1,5 @@
 package org.celllife.idart.gui.patient;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Alerts;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -19,17 +14,12 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 public class StudyAlerts  extends GenericFormGui {

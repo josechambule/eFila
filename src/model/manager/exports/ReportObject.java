@@ -1,9 +1,9 @@
 package model.manager.exports;
 
-import java.util.List;
-
 import model.manager.exports.columns.SimpleColumnsEnum;
 import model.nonPersistent.EntitySet;
+
+import java.util.List;
 
 public interface ReportObject {
 	public Integer getReportObjectId();

@@ -1,9 +1,9 @@
 package model.nonPersistent;
 
-import java.text.MessageFormat;
-
 import org.celllife.idart.database.hibernate.Drug;
 import org.celllife.idart.database.hibernate.Stock;
+
+import java.text.MessageFormat;
 
 public class StockLevelInfo {
 	

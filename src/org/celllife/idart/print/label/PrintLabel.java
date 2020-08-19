@@ -19,37 +19,19 @@
 
 package org.celllife.idart.print.label;
 
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintException;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.DocAttributeSet;
-import javax.print.attribute.HashDocAttributeSet;
-
 import org.celllife.idart.commonobjects.PrinterProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+
+import javax.print.*;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import java.awt.print.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  *

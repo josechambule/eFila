@@ -1,17 +1,17 @@
 package org.celllife.idart.misc;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.DatabaseTools;
 import org.celllife.idart.misc.execute.ILogDevice;
 import org.celllife.idart.misc.execute.Log4jDevice;
 import org.celllife.idart.misc.execute.SysCommandExecutor;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 
 public class DBScriptRunner {
 	private String password;

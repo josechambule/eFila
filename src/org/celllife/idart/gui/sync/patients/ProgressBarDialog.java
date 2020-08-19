@@ -1,8 +1,5 @@
 package org.celllife.idart.gui.sync.patients;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -17,13 +14,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * progress bar dialog.

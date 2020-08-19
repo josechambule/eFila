@@ -1,7 +1,6 @@
 package model.manager.excel.reports.in;
 
 import model.manager.excel.interfaces.ImportConverter;
-
 import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
 

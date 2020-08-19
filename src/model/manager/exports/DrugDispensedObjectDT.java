@@ -1,14 +1,11 @@
 package model.manager.exports;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.celllife.idart.database.hibernate.PatientAttributeInterface;
-
-import model.manager.exports.columns.DrugDetailsEnum;
 import model.manager.exports.columns.DrugDetailsEnumDT;
 import model.manager.exports.columns.DrugsDispensedEnumDT;
 import model.manager.exports.columns.PackageDetailsEnum;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This object will be used to represent the columns in the drug dispensed
