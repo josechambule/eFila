@@ -19,37 +19,23 @@
 
 package model.manager.reports;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import model.manager.PrescriptionManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import model.nonPersistent.DrugCombination;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Drug;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Regimen;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.JDBCUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  */

@@ -73,6 +73,10 @@ public class HistoricoLevantamentos extends GenericReportGui {
 	private Button chkBtnManutencao;
 	
 	private Button chkBtnAlteraccao;
+
+	private Button chkBtnTransfereDe;
+
+	private Button chkBtnReinicio;
 	
 	private List<HistoricoLevantamentoXLS> historicoLevantamentoXLS;
 	
@@ -144,9 +148,9 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
 			return;
 		}
-		
-		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
-		{
+
+		if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
+				chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
 			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
@@ -169,7 +173,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 					theStartDate = c.getTime();
 				}
 				
-				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection());
+				HHistoricoLevantamentos report = new HHistoricoLevantamentos(getShell(), theStartDate, theEndDate,chkBtnInicio.getSelection(),chkBtnManutencao.getSelection(),chkBtnAlteraccao.getSelection(), chkBtnTransfereDe.getSelection(), chkBtnReinicio.getSelection());
 				viewReport(report);
 			} catch (Exception e) {
 				getLog().error("Exception while running Historico levantamento report",e);
@@ -185,9 +189,9 @@ public class HistoricoLevantamentos extends GenericReportGui {
 			showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\\nSelecione uma data de término após a data de início.");
 			return;
 		}
-		
-		if(chkBtnInicio.getSelection()==false && chkBtnManutencao.getSelection()==false && chkBtnAlteraccao.getSelection()==false)
-		{
+
+		if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
+				chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
 			showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv","Seleccione pelo menos um tipo TARV.");
 			return;
 			
@@ -197,17 +201,26 @@ public class HistoricoLevantamentos extends GenericReportGui {
 
 				Date theEndDate = calendarEnd.getCalendar().getTime();
 
+				Calendar c = Calendar.getInstance(Locale.US);
+				c.setLenient(true);
+				c.setTime(theStartDate);
+
+				if(Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)){
+					c.add(Calendar.DAY_OF_WEEK, -2);
+					theStartDate = c.getTime();
+				}
+
 				String reportNameFile = "Reports/HistoricoLevantamento.xls";
 				try {
 					HistoricoLevantamentosExcel op = new HistoricoLevantamentosExcel(chkBtnInicio.getSelection(), chkBtnManutencao.getSelection(),
-							chkBtnAlteraccao.getSelection(), parent, reportNameFile, theStartDate, theEndDate);
+							chkBtnAlteraccao.getSelection(), chkBtnTransfereDe.getSelection(), chkBtnReinicio.getSelection(), parent, reportNameFile, theStartDate, theEndDate);
 					new ProgressMonitorDialog(parent).run(true, true, op);
 
 					if (op.getList() == null ||
 							op.getList().size() <= 0) {
 						MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
 						mNoPages.setText("O relatório não possui páginas");
-						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado. \\ n \\ n Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
 						mNoPages.open();
 					}
 
@@ -253,31 +266,46 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		grpTipoTarv.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		grpTipoTarv.setBounds(new Rectangle(55, 90, 520, 50));
 		grpTipoTarv.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		
+
 		//chk button Inicio
-		chkBtnInicio= new Button(grpTipoTarv, SWT.CHECK);
-		chkBtnInicio.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		chkBtnInicio.setBounds(new Rectangle(50, 20, 100, 20));
+		chkBtnInicio = new Button(grpTipoTarv, SWT.CHECK);
+		chkBtnInicio.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		chkBtnInicio.setBounds(new Rectangle(10, 20, 100, 20));
 		chkBtnInicio.setText("Início");
 		chkBtnInicio.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnInicio.setSelection(false);
-		
-		//chk button  Manter
-		chkBtnManutencao= new Button(grpTipoTarv, SWT.CHECK);
-		chkBtnManutencao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		chkBtnManutencao.setBounds(new Rectangle(350, 20, 100, 20));
-		chkBtnManutencao.setText("Manutenção");
-		chkBtnManutencao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		chkBtnManutencao.setSelection(false);
-		
+
 		//chk button Alterar
-		chkBtnAlteraccao= new Button(grpTipoTarv, SWT.CHECK);
-		chkBtnAlteraccao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1,1));
-		chkBtnAlteraccao.setBounds(new Rectangle(200, 20, 100, 20));
+		chkBtnAlteraccao = new Button(grpTipoTarv, SWT.CHECK);
+		chkBtnAlteraccao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		chkBtnAlteraccao.setBounds(new Rectangle(115, 20, 100, 20));
 		chkBtnAlteraccao.setText("Alteração");
 		chkBtnAlteraccao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		chkBtnAlteraccao.setSelection(false);
-		
+
+		//chk button  Manter
+		chkBtnManutencao = new Button(grpTipoTarv, SWT.CHECK);
+		chkBtnManutencao.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		chkBtnManutencao.setBounds(new Rectangle(215, 20, 100, 20));
+		chkBtnManutencao.setText("Manutenção");
+		chkBtnManutencao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		chkBtnManutencao.setSelection(false);
+		//chk button Re-Inicio
+		chkBtnReinicio = new Button(grpTipoTarv, SWT.CHECK);
+		chkBtnReinicio.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		chkBtnReinicio.setBounds(new Rectangle(315, 20, 100, 20));
+		chkBtnReinicio.setText("Re-Inicio");
+		chkBtnReinicio.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		chkBtnReinicio.setSelection(false);
+
+		//chk button  Transfere de
+		chkBtnTransfereDe = new Button(grpTipoTarv, SWT.CHECK);
+		chkBtnTransfereDe.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+		chkBtnTransfereDe.setBounds(new Rectangle(415, 20, 100, 20));
+		chkBtnTransfereDe.setText("Transferido De");
+		chkBtnTransfereDe.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+		chkBtnTransfereDe.setSelection(false);
+
 		grpDateRange = new Group(getShell(), SWT.NONE);
 		grpDateRange.setText("Período:");
 		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -304,10 +332,7 @@ public class HistoricoLevantamentos extends GenericReportGui {
 		calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
 			@Override
 			public void dateChanged(SWTCalendarEvent calendarEvent) {
-				Date date = calendarEvent.getCalendar().getTime();
-				
-				
-			}
+				Date date = calendarEvent.getCalendar().getTime();	}
 		});
 	}
 	

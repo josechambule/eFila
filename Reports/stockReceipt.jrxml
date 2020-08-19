@@ -73,7 +73,7 @@ and s.drug=d.id]]>
 					<font fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA["Data de Entrada:      "
-+ (new SimpleDateFormat("dd/MM/yyyy")).format($P{p_startDate})]]></textFieldExpression>
++ (new SimpleDateFormat("dd/MM/yyyy")).format($F{datereceived})]]></textFieldExpression>
 			</textField>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Top" isUsingCache="false">
 				<reportElement key="image-1" mode="Opaque" x="228" y="1" width="50" height="39" forecolor="#000000" backcolor="#FFFFFF"/>

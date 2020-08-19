@@ -553,15 +553,7 @@ if(localUser.getPermission()!='A'){
 					String confirm = "ATENÇÃO:Vocé só deve executar esta acção se tiver certeza de que vocé deseja "
 						+ (isAddNotUpdate ? "adicionar" : "actualizar")
 						+ " este usuário. O usuário que realizou esta acção, bem como a hora atual, será gravado no log de transações.";
-					ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-							getShell(), "Por favor, insira sua senha", confirm,
-							getHSession());
-					// if password verified
-					String messg = passwordDialog.open();
-	
-					if (messg.equalsIgnoreCase("verified")) {
-						
-						
+
 						if (isAddNotUpdate){
 							
 							char tipoUser=tipo_user.getText().charAt(0);
@@ -617,19 +609,6 @@ if(localUser.getPermission()!='A'){
 									.concat("\n\nPor favor, escolhe outro nome do usuário."));
 							m.open();
 						}
-					}
-	
-					else {
-						MessageBox m = new MessageBox(getShell(), SWT.OK
-								| SWT.ICON_ERROR);
-						m.setText("Falha de autenticação");
-						m
-						.setMessage("Database update not allowed because you could not provide your password  "
-								+ "Atualização da base de dados não permitida porque vocé não forneceu sua senha.");
-						m.open();
-						clearForm();
-					}
-	
 				}
 	
 				catch (HibernateException he) {

@@ -1,33 +1,15 @@
 package model.manager.reports;
 
 
-
+import model.manager.excel.conversion.exceptions.ReportException;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.eclipse.swt.widgets.Shell;
 
 import java.text.SimpleDateFormat;
-
-
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import model.manager.excel.conversion.exceptions.ReportException;
-
-
-
-
-
-
-
-
-
-
-
-import org.celllife.idart.commonobjects.LocalObjects;
-
-
-import org.eclipse.swt.widgets.Shell;
-import org.quartz.Calendar;
 
 public class CCotrimoxazolReport extends AbstractJasperReport {
 	
@@ -80,12 +62,6 @@ public class CCotrimoxazolReport extends AbstractJasperReport {
 
 		map.put("facilityName", LocalObjects.currentClinic.getClinicName());
 
-
-
- 
-
-
-		
 		return map;
 	}
 

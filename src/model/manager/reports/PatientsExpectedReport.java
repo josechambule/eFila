@@ -1,18 +1,17 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.eclipse.swt.widgets.Shell;
+
+import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PatientsExpectedReport extends AbstractJasperReport {
 

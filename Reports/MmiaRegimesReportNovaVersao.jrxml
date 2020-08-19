@@ -23,20 +23,23 @@
 	<parameter name="totallinhas" class="java.lang.String"/>
 	<parameter name="pacientesEmTarv" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT  distinct rt.regimeesquema,rt.codigoregime, count(rt.regimeesquema)
-FROM (select max(pre.date) predate, pat.id
+		<![CDATA[SELECT  distinct rt.regimeesquema,rt.codigoregime, count(distinct p.patient)
+FROM (select max(pre.date) predate, max(pa.pickupdate) pickupdate, pat.id
 from package pa
 inner join packageddrugs pds on pds.parentpackage = pa.id
 inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id
 inner join prescription pre on pre.id = pa.prescription
 inner join patient pat ON pre.patient=pat.id
-where (pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd}) OR
-(pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dateEnd})
-GROUP BY 2 order by 2) pack
+where pds.amount <> 0 and ((pg_catalog.date(pa.pickupdate) >= $P{date} and pg_catalog.date(pa.pickupdate) <= $P{dateEnd})
+	OR (pg_catalog.date(pa.pickupdate) < $P{date} and pg_catalog.date(to_date(pdit.dateexpectedstring,'DD Mon YYYY')) > $P{dateEnd}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date >= $P{date}
+		and (pa.pickupdate + (INTERVAL '1 month'*(date_part('day', $P{dateEnd}::timestamp - pa.pickupdate::timestamp)/30)::integer))::date <= $P{dateEnd}))
+GROUP BY 3 order by 3) pack
 inner join prescription p on p.date = pack.predate and p.patient=pack.id
+inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate
 inner join regimeterapeutico rt on rt.regimeid = p.regimeid
 INNER JOIN (SELECT MAX (startdate),patient, episode.startreason
-			 from episode WHERE stopdate is null
+			 from episode WHERE stopdate is null and startdate <= $P{dateEnd}
 			 GROUP BY 2,3
 ) visit on visit.patient = pack.id
 where visit.startreason not like '%ansito%' and visit.startreason not like '%ternidade%'

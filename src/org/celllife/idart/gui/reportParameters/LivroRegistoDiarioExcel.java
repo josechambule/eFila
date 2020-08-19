@@ -1,11 +1,12 @@
 package org.celllife.idart.gui.reportParameters;
 
-import model.manager.reports.AbsenteeForSupportCall;
 import model.manager.reports.LivroRegistoDiarioXLS;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,13 +35,17 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
     private boolean inicio;
     private boolean manter;
     private boolean alterar;
+    private boolean transfereDe;
+    private boolean reInicio;
 
     SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 
-    public LivroRegistoDiarioExcel(boolean inicio,boolean manter, boolean alterar, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
+    public LivroRegistoDiarioExcel(boolean inicio, boolean manter, boolean alterar, boolean transfereDe, boolean reInicio, Shell parent, String reportFileName, Date theStartDate, Date theEndDate) {
         this.inicio = inicio;
         this.manter = manter;
         this.alterar = alterar;
+        this.transfereDe = transfereDe;
+        this.reInicio = reInicio;
         this.livroRegistoDiarios = livroRegistoDiarios;
         this.parent = parent;
         this.swtCal = swtCal;
@@ -53,13 +58,13 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
 
-            ConexaoJDBC con=new ConexaoJDBC();
+            ConexaoJDBC con = new ConexaoJDBC();
 
             monitor.beginTask("Por Favor, aguarde ... ", 1);
 
-            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(inicio, manter,alterar, sdf.format(theStartDate), sdf.format(theEndDate));
+            livroRegistoDiarios = con.getLivroRegistoDiarioXLS(this.inicio, this.manter, this.alterar, this.transfereDe, this.reInicio, sdf.format(theStartDate), sdf.format(theEndDate));
 
-            if(livroRegistoDiarios.size() > 0) {
+            if (livroRegistoDiarios.size() > 0) {
                 // Tell the user what you are doing
                 monitor.beginTask("Carregando a lista... ", livroRegistoDiarios.size());
 
@@ -75,6 +80,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 cellStyle.setBorderLeft(BorderStyle.THIN);
                 cellStyle.setBorderRight(BorderStyle.THIN);
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
 
                 HSSFRow healthFacility = sheet.getRow(10);
@@ -83,18 +89,24 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 healthFacilityCell.setCellStyle(cellStyle);
 
                 HSSFRow reportPeriod = sheet.getRow(10);
-                HSSFCell reportPeriodCell = reportPeriod.createCell(16);
+                HSSFCell reportPeriodCell = reportPeriod.createCell(15);
                 reportPeriodCell.setCellValue(sdf.format(theStartDate) + " à " + sdf.format(theEndDate));
                 reportPeriodCell.setCellStyle(cellStyle);
 
                 HSSFRow reportYear = sheet.getRow(11);
-                HSSFCell reportYearCell = reportYear.createCell(16);
+                HSSFCell reportYearCell = reportYear.createCell(15);
                 reportYearCell.setCellValue(sdfYear.format(theStartDate));
                 reportYearCell.setCellStyle(cellStyle);
 
                 for (int i = 15; i <= sheet.getLastRowNum(); i++) {
                     HSSFRow row = sheet.getRow(i);
                     deleteRow(sheet, row);
+
+                    for(int dm=0; dm < sheet.getNumMergedRegions(); dm++)
+                    {
+                        // Delete the region
+                        sheet.removeMergedRegion(dm);
+                    }
                 }
 
                 out = new FileOutputStream(new File(reportFileName));
@@ -102,9 +114,27 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
                 int rowNum = 15;
                 int i = 0;
+                LivroRegistoDiarioXLS xlsLivroTemp = null;
+
                 for (LivroRegistoDiarioXLS xls : livroRegistoDiarios) {
                     i++;
                     HSSFRow row = sheet.createRow(rowNum++);
+
+                    if (xlsLivroTemp != null)
+                        if (xlsLivroTemp.getPatientIdentifier().equalsIgnoreCase(xls.getPatientIdentifier()) &&
+                                xlsLivroTemp.getNome().equalsIgnoreCase(xls.getNome())) {
+
+                            for(int r = 1; r <= 18; r++){
+                                if(!(r == 10 || r==11)) {
+                                    sheet.addMergedRegion(new CellRangeAddress(
+                                            rowNum - 2,
+                                            rowNum - 1,
+                                            r,
+                                            r
+                                    ));
+                                }
+                            }
+                        }
 
                     HSSFCell createCellNid = row.createCell(1);
                     createCellNid.setCellValue(xls.getPatientIdentifier());
@@ -114,65 +144,71 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                     createCellNome.setCellValue(xls.getNome() + " " + xls.getApelido());
                     createCellNome.setCellStyle(cellStyle);
 
-                    HSSFCell zeroQuatro = row.createCell(3);
+                    HSSFCell tipoPaciente= row.createCell(3);
+                    tipoPaciente.setCellValue(xls.getTipoPaciente());
+                    tipoPaciente.setCellStyle(cellStyle);
+
+                    HSSFCell zeroQuatro = row.createCell(4);
                     zeroQuatro.setCellValue(xls.getZeroQuatro());
                     zeroQuatro.setCellStyle(cellStyle);
 
-                    HSSFCell cincoNove = row.createCell(4);
+                    HSSFCell cincoNove = row.createCell(5);
                     cincoNove.setCellValue(xls.getCincoNove());
                     cincoNove.setCellStyle(cellStyle);
 
-                    HSSFCell dezCatorze = row.createCell(5);
+                    HSSFCell dezCatorze = row.createCell(6);
                     dezCatorze.setCellValue(xls.getDezCatorze());
                     dezCatorze.setCellStyle(cellStyle);
 
-                    HSSFCell maiorQuinze = row.createCell(6);
+                    HSSFCell maiorQuinze = row.createCell(7);
                     maiorQuinze.setCellValue(xls.getMaiorQuinze());
                     maiorQuinze.setCellStyle(cellStyle);
 
-                    HSSFCell createCellTipoTarv = row.createCell(7);
+                    HSSFCell createCellTipoTarv = row.createCell(8);
                     createCellTipoTarv.setCellValue(xls.getTipoTarv());
                     createCellTipoTarv.setCellStyle(cellStyle);
 
-                    HSSFCell createCellRegimeTerapeutico = row.createCell(8);
+                    HSSFCell createCellRegimeTerapeutico = row.createCell(9);
                     createCellRegimeTerapeutico.setCellValue(xls.getRegimeTerapeutico());
                     createCellRegimeTerapeutico.setCellStyle(cellStyle);
 
-                    HSSFCell produtos = row.createCell(9);
+                    HSSFCell produtos = row.createCell(10);
                     produtos.setCellValue(xls.getProdutos());
                     produtos.setCellStyle(cellStyle);
 
-                    HSSFCell quantidade = row.createCell(10);
+                    HSSFCell quantidade = row.createCell(11);
                     quantidade.setCellValue(xls.getQuantidade());
                     quantidade.setCellStyle(cellStyle);
 
-                    HSSFCell createCellTipoDispensa = row.createCell(11);
+                    HSSFCell createCellTipoDispensa = row.createCell(12);
                     createCellTipoDispensa.setCellValue(xls.getTipoDispensa());
                     createCellTipoDispensa.setCellStyle(cellStyle);
 
-                    HSSFCell linhaNome = row.createCell(12);
+                    HSSFCell linhaNome = row.createCell(13);
                     linhaNome.setCellValue(xls.getLinha());
                     linhaNome.setCellStyle(cellStyle);
 
-                    HSSFCell createCellDataLevantamento = row.createCell(13);
+                    HSSFCell createCellDataLevantamento = row.createCell(14);
                     createCellDataLevantamento.setCellValue(xls.getDataLevantamento());
                     createCellDataLevantamento.setCellStyle(cellStyle);
 
-                    HSSFCell createCellDataProximoLevantamento = row.createCell(14);
+                    HSSFCell createCellDataProximoLevantamento = row.createCell(15);
                     createCellDataProximoLevantamento.setCellValue(xls.getDataProximoLevantamento());
                     createCellDataProximoLevantamento.setCellStyle(cellStyle);
 
-                    HSSFCell ppe = row.createCell(15);
+                    HSSFCell ppe = row.createCell(16);
                     ppe.setCellValue(xls.getPpe());
                     ppe.setCellStyle(cellStyle);
 
-                    HSSFCell prep = row.createCell(16);
+                    HSSFCell prep = row.createCell(17);
                     prep.setCellValue(xls.getPrep());
                     prep.setCellStyle(cellStyle);
 
-                    HSSFCell criancaExposta = row.createCell(17);
+                    HSSFCell criancaExposta = row.createCell(18);
                     criancaExposta.setCellValue("");
                     criancaExposta.setCellStyle(cellStyle);
+
+                    xlsLivroTemp = xls;
 
                     // Optionally add subtasks
                     monitor.subTask("Carregando : " + i + " de " + livroRegistoDiarios.size() + "...");
@@ -213,7 +249,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
 
     }
 
-    public List<LivroRegistoDiarioXLS> getList(){
+    public List<LivroRegistoDiarioXLS> getList() {
         return this.livroRegistoDiarios;
     }
 

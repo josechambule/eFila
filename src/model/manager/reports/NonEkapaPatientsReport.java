@@ -1,5 +1,16 @@
 package model.manager.reports;
 
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import model.manager.excel.conversion.exceptions.ReportException;
+import net.sf.jasperreports.engine.data.JRCsvDataSource;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.hibernate.Clinic;
+import org.celllife.idart.database.hibernate.Episode;
+import org.celllife.idart.database.hibernate.Patient;
+import org.celllife.idart.integration.eKapa.EKapa;
+import org.eclipse.swt.widgets.Shell;
+
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -7,18 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
-import model.manager.excel.conversion.exceptions.ReportException;
-import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.Patient;
-import org.celllife.idart.integration.eKapa.EKapa;
-import org.eclipse.swt.widgets.Shell;
 
 public class NonEkapaPatientsReport extends AbstractJasperReport {
 

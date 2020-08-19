@@ -5,17 +5,16 @@
  */
 package model.manager.reports;
 
+import model.manager.excel.conversion.exceptions.ReportException;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.dao.ConexaoJDBC;
+import org.eclipse.swt.widgets.Shell;
+
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.dao.ConexaoJDBC;
-import org.eclipse.swt.widgets.Shell;
-
-import model.manager.excel.conversion.exceptions.ReportException;
 
 
 public class DispensaSemestral extends AbstractJasperReport {

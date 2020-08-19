@@ -1,16 +1,15 @@
 package model.manager.reports;
 
+import model.manager.excel.conversion.exceptions.ReportException;
+import org.celllife.idart.commonobjects.LocalObjects;
+import org.celllife.idart.database.hibernate.StockCenter;
+import org.eclipse.swt.widgets.Shell;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import model.manager.excel.conversion.exceptions.ReportException;
-
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.StockCenter;
-import org.eclipse.swt.widgets.Shell;
 
 public class MonthlyStockOverviewReport extends AbstractJasperReport {
 
@@ -32,7 +31,7 @@ public class MonthlyStockOverviewReport extends AbstractJasperReport {
 	protected Map<String, Object> getParameterMap() throws ReportException {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(theDate);
-		cal.set(Calendar.DATE, 1);
+		cal.set(Calendar.DATE, 21);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -45,9 +44,10 @@ public class MonthlyStockOverviewReport extends AbstractJasperReport {
 		map.put("stockCenterId", new Integer(stockCenter.getId()));
 		map.put("date", cal.getTime());
 		map.put("dateFormat", dateFormat.format(cal.getTime()));
-		map.put("monthStart", dateFormat.format(cal.getTime()));
-		cal.add(Calendar.MONTH, 1);
 		map.put("monthEnd", dateFormat.format(cal.getTime()));
+		cal.add(Calendar.MONTH, -1);
+		map.put("monthStart", dateFormat.format(cal.getTime()));
+
 		map.put("stockCenterName", stockCenter.getStockCenterName());
 		map.put("path", getReportPath());
 

@@ -7,6 +7,8 @@ public class LivroRegistoDiarioXLS {
 	private String nome;
 	
 	private String apelido;
+
+	private String tipoPaciente;
 	
 	private String zeroQuatro;
 	
@@ -180,5 +182,13 @@ public class LivroRegistoDiarioXLS {
 
 	public void setCriancaExposta(String criancaExposta) {
 		this.criancaExposta = criancaExposta;
-	}	
+	}
+
+	public String getTipoPaciente() {
+		return tipoPaciente;
+	}
+
+	public void setTipoPaciente(String tipoPaciente) {
+		this.tipoPaciente = tipoPaciente;
+	}
 }

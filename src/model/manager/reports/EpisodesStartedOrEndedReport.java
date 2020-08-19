@@ -1,26 +1,10 @@
 package model.manager.reports;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import model.manager.PrescriptionManager;
 import model.manager.excel.conversion.exceptions.ReportException;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
-
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.database.hibernate.Clinic;
-import org.celllife.idart.database.hibernate.Episode;
-import org.celllife.idart.database.hibernate.PrescribedDrugs;
-import org.celllife.idart.database.hibernate.Prescription;
-import org.celllife.idart.database.hibernate.Regimen;
+import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.Criteria;
@@ -28,6 +12,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class EpisodesStartedOrEndedReport extends AbstractJasperReport {
 

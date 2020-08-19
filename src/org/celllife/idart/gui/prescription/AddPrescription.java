@@ -57,7 +57,6 @@ import org.celllife.idart.gui.misc.iDARTChangeListener;
 import org.celllife.idart.gui.packaging.NewPatientPackaging;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.search.PatientSearch;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -1119,15 +1118,7 @@ public class AddPrescription extends GenericFormGui implements
                     @Override
                     public void widgetSelected(
                             org.eclipse.swt.events.SelectionEvent e) {
-                        // before we try anything, lets ask the user for
-                        // their password
-                        ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
-                        passwordDialog.setMessage("Por favor insserir a Password");
-                        // if password verified
-                        String messg = passwordDialog.open();
-                        if (messg.equalsIgnoreCase("verified")) {
-                            cmdAddDrugWidgetSelected();
-                        }
+                        cmdAddDrugWidgetSelected();
                     }
                 });
         btnAddDrug.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -2496,16 +2487,9 @@ public class AddPrescription extends GenericFormGui implements
                                         + "e substituí-lo com o que você acabou de criar?");
                                 switch (box.open()) {
                                     case SWT.YES:
-                                        // before we try anything, lets ask the user for
-                                        // their password
-                                        ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
-                                        passwordDialog.setMessage("Por favor insserir a Password");
-                                        // if password verified
-                                        String messg = passwordDialog.open();
-                                        if (messg.equalsIgnoreCase("verified")) {
-                                            deleteScript(oldPrescription, tx);
-                                            deletedPrescription = true;
-                                        }
+
+                                        deleteScript(oldPrescription, tx);
+                                        deletedPrescription = true;
                                         break;
                                 }
                             }
@@ -2629,16 +2613,9 @@ public class AddPrescription extends GenericFormGui implements
                                         + "e substituí-lo com o que você acabou de criar?");
                                 switch (box.open()) {
                                     case SWT.YES:
-                                        // before we try anything, lets ask the user for
-                                        // their password
-                                        ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(getShell(), getHSession());
-                                        passwordDialog.setMessage("Por favor insserir a Password");
-                                        // if password verified
-                                        String messg = passwordDialog.open();
-                                        if (messg.equalsIgnoreCase("verified")) {
-                                            deleteScript(oldPrescription, tx);
-                                            deletedPrescription = true;
-                                        }
+
+                                        deleteScript(oldPrescription, tx);
+                                        deletedPrescription = true;
                                         break;
                                 }
                             }

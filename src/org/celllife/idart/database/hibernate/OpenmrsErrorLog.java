@@ -2,9 +2,7 @@ package org.celllife.idart.database.hibernate;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class OpenmrsErrorLog {
@@ -12,10 +10,13 @@ public class OpenmrsErrorLog {
 	@Id
 	@GeneratedValue
 	private Integer id;
-	
-	private Integer patient;
-	
-	private Integer prescription;
+
+	@ManyToOne
+	@JoinColumn(name = "patient")
+	private Patient patient;
+	@ManyToOne
+	@JoinColumn(name = "prescription")
+	private Prescription prescription;
 	
 	private Date pickupdate;
 	
@@ -33,19 +34,19 @@ public class OpenmrsErrorLog {
 		this.id = id;
 	}
 
-	public Integer getPatient() {
+	public Patient getPatient() {
 		return patient;
 	}
 
-	public void setPatient(Integer patient) {
+	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
 
-	public Integer getPrescription() {
+	public Prescription getPrescription() {
 		return prescription;
 	}
 
-	public void setPrescription(Integer prescription) {
+	public void setPrescription(Prescription prescription) {
 		this.prescription = prescription;
 	}
 

@@ -21,6 +21,7 @@ package org.celllife.idart.gui.reportParameters;
 
 import model.manager.AdministrationManager;
 import model.manager.DrugManager;
+import model.manager.excel.conversion.exceptions.ReportException;
 import model.manager.reports.ARVDrugUsageReport;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
@@ -31,13 +32,20 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
 import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.*;
 
@@ -433,6 +441,96 @@ public class ARVDrugUsage extends GenericReportGui {
 
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
+
+		StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
+				cmbPharmacy.getText());
+
+		if (cmbPharmacy.getText().equals("")) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("A US não foi seleccionada");
+			missing
+					.setMessage("Por favor, seleccione uma US apresentada na lista.");
+			missing.open();
+
+		} else if (pharm == null) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("A US seleccionada não foi localizada");
+			missing
+					.setMessage("Não existe nenhuma US: '"
+							+ cmbPharmacy.getText()
+							+ "' na base de dados.");
+			missing.open();
+
+		} else {
+
+			List<Drug> drugList = getCheckedDrugs(tblDrugs);
+			if (drugList.size() == 0) {
+				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
+				mb.setText("Nenhumm medicamento foi adicionado");
+				mb.setMessage("Por favor, seleccione no máximo 11 medicamentos. Use a caixa de selecção");
+				mb.open();
+
+			} else if (drugList.size() > 11) {
+				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
+				mb.setText("Seleccionou mais de 11 medicamentos.");
+				mb.setMessage("Por favor, seleccione no máximo 11 medicamentos. Use a caixa de selecção");
+				mb.open();
+
+			} else if (calendarStart.getCalendar().getTime().after(
+					calendarEnd.getCalendar()
+							.getTime())) {
+
+				MessageBox mb = new MessageBox(getShell(), SWT.ICON_ERROR);
+				mb.setText("Data Fim inválida");
+				mb.setMessage("A data Fim não pode ser menor que a data Inicio");
+				mb.open();
+			}
+			else {
+
+				String reportNameFile = "Reports/ARVDrugsUsage.xls";
+				try {
+					ARVDrugUsageExcel op = new ARVDrugUsageExcel(getShell(),cmbPharmacy.getText(),drugList,calendarStart.getCalendar().getTime(), calendarEnd.getCalendar().getTime(),reportNameFile);
+
+					new ProgressMonitorDialog(getShell()).run(true, true, op);
+
+					if (op.getList() == null ||
+							op.getList().size() <= 0) {
+						MessageBox mNoPages = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+						mNoPages.setText("O relatório não possui páginas");
+						mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+						mNoPages.open();
+					}
+
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+
+
+//
+//
+//				List<String[]> todosDrugs = report.getARVDrugUsagePerDay();
+//				List<Drug> drugsList = report.getTotalForDrugForDay()
+//				System.out.println(todosDrugs);
+//
+//				Iterator it2 = drugList.iterator();
+//				int count = 1;
+//				while (it2.hasNext()) {
+//					map.put("drug" + count + "Name", ((Drug) it2.next()).getName());
+//					map.put("drug" + count + "Count", totalString[count]);
+//					count++;
+//				}
+
+			}
+
+
+		}
+
 	}
 
 }

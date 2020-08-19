@@ -37,7 +37,6 @@ import org.celllife.idart.database.hibernate.StockLevel;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.search.Search;
-import org.celllife.idart.gui.user.ConfirmWithPasswordDialogAdapter;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
@@ -787,12 +786,7 @@ public class DestroyStock extends GenericFormGui {
 	protected boolean submitForm() {
 
 		if (fieldsOk()) {
-			ConfirmWithPasswordDialogAdapter passwordDialog = new ConfirmWithPasswordDialogAdapter(
-					getShell(), getHSession());
-			passwordDialog.setMessage("Please enter your Password");
-			// if password verified
-			String messg = passwordDialog.open();
-			if (messg.equalsIgnoreCase("verified")) {
+
 				Transaction tx = null;
 				try {
 					tx = getHSession().beginTransaction();
@@ -836,9 +830,6 @@ public class DestroyStock extends GenericFormGui {
 					getLog().error(he);
 
 				}
-
-			}
-
 		}
 		return false;
 

@@ -425,7 +425,7 @@ public class SearchManager {
             }
         });
 
-        search.getTableColumn2().setText("Codigo FNM?");
+        search.getTableColumn2().setText("Codigo Regime");
         search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {
@@ -477,7 +477,7 @@ public class SearchManager {
             }
         });
 
-        search.getTableColumn2().setText("Codigo FNM?");
+        search.getTableColumn2().setText("Codigo Regime");
         search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent event) {

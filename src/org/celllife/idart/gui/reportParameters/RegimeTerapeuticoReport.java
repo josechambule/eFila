@@ -28,6 +28,9 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.misc.iDARTUtil;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
@@ -35,6 +38,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.vafada.swtcalendar.SWTCalendar;
+import org.vafada.swtcalendar.SWTCalendarEvent;
+import org.vafada.swtcalendar.SWTCalendarListener;
+
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  */
@@ -45,6 +55,10 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
     private Group grpPharmacySelection;
 
     private CCombo cmbStockCenter;
+
+    private SWTCalendar calendarStart;
+
+    private SWTCalendar calendarEnd;
 
     /**
      * Constructor
@@ -108,6 +122,35 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
 
         CommonObjects.populateStockCenters(getHSession(), cmbStockCenter);
 
+        grpDateRange = new Group(getShell(), SWT.NONE);
+        grpDateRange.setText("Período:");
+        grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
+        grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
+        lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
+                180, 20));
+        lblStartDate.setText("Data Início:");
+        lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
+        lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
+                180, 20));
+        lblEndDate.setText("Data Fim:");
+        lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+        calendarStart = new SWTCalendar(grpDateRange);
+        calendarStart.setBounds(20, 55, 220, 140);
+
+        calendarEnd = new SWTCalendar(grpDateRange);
+        calendarEnd.setBounds(280, 55, 220, 140);
+        calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
+            @Override
+            public void dateChanged(SWTCalendarEvent calendarEvent) {
+                Date date = calendarEvent.getCalendar().getTime();	}
+        });
+
     }
 
 
@@ -126,32 +169,37 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
         StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
                 cmbStockCenter.getText());
 
-        if (cmbStockCenter.getText().equals("")) {
+        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+            showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
+            return;
+        }else if (cmbStockCenter.getText().equals("")) {
 
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
-            missing.setText("No Pharmacy Was Selected");
+            missing.setText("Nenhuma Farmacia foi seleccionada");
             missing
-                    .setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+                    .setMessage("Nenhuma Farmacia foi seleccionada. Por favor, seleccione uma farmacia.");
             missing.open();
 
         } else if (pharm == null) {
 
             MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
                     | SWT.OK);
-            missing.setText("Pharmacy not found");
+            missing.setText("Nenhuma Farmacia foi encontrada");
             missing
-                    .setMessage("There is no pharmacy called '"
+                    .setMessage("Nao existe nenhuma com nome '"
                             + cmbStockCenter.getText()
-                            + "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+                            + "' foi encontada.");
             missing.open();
 
         }else {
             try {
 
-                //theStartDate = sdf.parse(strTheDate);
-                LinhaTerapeutica report = new LinhaTerapeutica(
-                        getShell());
+                Date theStartDate = calendarStart.getCalendar().getTime();
+
+                Date theEndDate=  calendarEnd.getCalendar().getTime();
+
+                LinhaTerapeutica report = new LinhaTerapeutica(getShell(),theStartDate,theEndDate);
         
                 viewReport(report);
             } catch (Exception e) {
@@ -167,7 +215,56 @@ public class RegimeTerapeuticoReport extends GenericReportGui {
 
     @Override
     protected void cmdViewReportXlsWidgetSelected() {
+        StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
+                cmbStockCenter.getText());
 
+        if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
+            showMessage(MessageDialog.ERROR, "Data de término antes da data de início","Você selecionou uma data de término anterior à data de início.\nSelecione uma data de término após a data de início.");
+            return;
+        }else if (cmbStockCenter.getText().equals("")) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            missing.setText("Nenhuma Farmacia foi seleccionada");
+            missing
+                    .setMessage("Nenhuma Farmacia foi seleccionada. Por favor, seleccione uma farmacia.");
+            missing.open();
+
+        } else if (pharm == null) {
+
+            MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+                    | SWT.OK);
+            missing.setText("Nenhuma Farmacia foi encontrada");
+            missing
+                    .setMessage("Nao existe nenhuma com nome '"
+                            + cmbStockCenter.getText()
+                            + "' foi encontada.");
+            missing.open();
+
+        }else {
+                Date theStartDate = calendarStart.getCalendar().getTime();
+
+                Date theEndDate=  calendarEnd.getCalendar().getTime();
+
+                String reportNameFile = "Reports/NovasLinhasTerapeuticas.xls";
+                try {
+                    RegimeTerapeuticoExcel op = new RegimeTerapeuticoExcel(getShell(), reportNameFile, pharm, theStartDate, theEndDate);
+                    new ProgressMonitorDialog(getShell()).run(true, true, op);
+
+                    if (op.getList() == null ||
+                            op.getList().size() <= 0) {
+                        MessageBox mNoPages = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
+                        mNoPages.setText("O relatório não possui páginas");
+                        mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+                        mNoPages.open();
+                    }
+
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+        }
     }
 
     /**

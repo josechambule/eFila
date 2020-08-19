@@ -1,24 +1,15 @@
 package model.manager.reports;
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 import model.manager.excel.conversion.exceptions.ReportException;
-
 import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.StockCenter;
 import org.celllife.idart.database.hibernate.User;
 import org.eclipse.swt.widgets.Shell;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class MiaReportMISAU extends AbstractJasperReport {
 
@@ -99,7 +90,7 @@ public class MiaReportMISAU extends AbstractJasperReport {
             map.put("mesesdispensadosparaDM", String.valueOf(mesesdispensadosparaDM));
             map.put("mesesdispensadosparaDT", String.valueOf(mesesdispensadosparaDT));
             map.put("mesesdispensadosparaDS", String.valueOf(mesesdispensadosparaDS));
-            map.put("mesesdispensados", String.valueOf(mesesdispensados));
+            map.put("mesesdispensados", String.valueOf(mesesdispensadosparaDM+mesesdispensadosparaDT+mesesdispensadosparaDS));
 
             map.put("totalpacientesadulto", String.valueOf(adultosEmTarv));
             map.put("totalpacientes04", String.valueOf(pediatrico04EmTARV));
