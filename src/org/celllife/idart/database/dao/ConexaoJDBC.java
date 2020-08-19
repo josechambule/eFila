@@ -6709,4 +6709,70 @@ public class ConexaoJDBC {
 
     }
 
+    public List<PrescricoesDuplicadasXLS> getPrescricoesDuplicadas(String startDate, String endDate, StockCenter clinic) throws SQLException, ClassNotFoundException {
+
+        conecta(iDartProperties.hibernateUsername,
+                iDartProperties.hibernatePassword);
+
+        String query = "select distinct pt.id, " +
+                "pt.patientid as nid, " +
+                "pt.firstnames || ' '|| pt.lastname as nome, " +
+                "pe.date as dataPrescricao, " +
+                "pe.reasonforupdate, " +
+                "rt.regimeesquema, " +
+                "lt.linhanome, " +
+                "CASE " +
+                " WHEN pe.dispensatrimestral = 1 THEN 'DT' " +
+                " WHEN pe.dispensasemestral = 1 THEN 'DS' " +
+                " ELSE 'DM' " +
+                "END AS tipodispensa, " +
+                "pe.notes " +
+                "from prescription pe " +
+                "inner join regimeterapeutico rt on rt.regimeid = pe.regimeid " +
+                "inner join linhat lt on lt.linhaid = pe.linhaid " +
+                "inner join " +
+                "(select pat.id, pat.patientid from patient pat " +
+                "inner join ( " +
+                " select p.patient, p.date from prescription p " +
+                "  inner join package pack on p.id = pack.prescription " +
+                "  inner join packageddrugs pds on pds.parentpackage = pack.id " +
+                " where p.date between '"+startDate+"' and '"+endDate+"' and pds.amount <> 0 " +
+                " group by 1,2 " +
+                ") pr on pr.patient = pat.id " +
+                "group by 1 " +
+                "having count(pat.id) > 1 " +
+                "order by 1 " +
+                " )pp on pp.id = pe.patient " +
+                " inner join patient pt on pt.id = pe.patient " +
+                " where pe.date between '"+startDate+"' and '"+endDate+"' ";
+
+        List<PrescricoesDuplicadasXLS> prescricoesDuplicadasXLSList = new ArrayList<PrescricoesDuplicadasXLS>();
+        ResultSet rs = st.executeQuery(query);
+
+        if (rs != null) {
+
+            while (rs.next()) {
+
+                PrescricoesDuplicadasXLS prescricoesDuplicadasXLS = new PrescricoesDuplicadasXLS();
+                prescricoesDuplicadasXLS.setNid(rs.getString("nid"));
+                prescricoesDuplicadasXLS.setNome(rs.getString("nome"));
+                prescricoesDuplicadasXLS.setDataPrescricao(rs.getString("dataPrescricao"));
+                prescricoesDuplicadasXLS.setTipoPaciente(rs.getString("reasonforupdate"));
+                prescricoesDuplicadasXLS.setRegimeTerapeutico(rs.getString("regimeesquema"));
+                prescricoesDuplicadasXLS.setLinha(rs.getString("linhanome"));
+                prescricoesDuplicadasXLS.setTipoDispensa(rs.getString("tipodispensa"));
+                prescricoesDuplicadasXLS.setNotas(rs.getString("notes"));
+
+                prescricoesDuplicadasXLSList.add(prescricoesDuplicadasXLS);
+            }
+            rs.close();
+        }
+
+        st.close();
+        conn_db.close();
+
+        return prescricoesDuplicadasXLSList;
+
+    }
+
 }

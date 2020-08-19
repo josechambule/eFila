@@ -20,6 +20,7 @@ public interface GenericReportGuiInterface {
     static String REPORT_DAILY_DISPENSING_TOTALS = Messages.getString("reports.dailyDispensingTotals");  //$NON-NLS-1$
     static String REPORT_TRANSACTION_LOG = Messages.getString("reports.transactionLog");  //$NON-NLS-1$
     static String REPORT_OPENMRS_LOG = Messages.getString("reports.openmrserrorlog");  //$NON-NLS-1$
+    static String REPORT_PRESCRIPTION_DUPLICATION = Messages.getString("reports.doubleprescriptuons");  //$NON-NLS-1$
     static String REPORT_PRESCRIBING_DOCTORS = Messages.getString("reports.prescribingDoctors");  //$NON-NLS-1$
     static String REPORT_PACKAGE_TRACKING = Messages.getString("reports.pacakgeTracking"); //$NON-NLS-1$
     static String REPORT_MONTHLY_STOCK_RECEIPTS = Messages.getString("reports.monthlyStockReceipts");  //$NON-NLS-1$

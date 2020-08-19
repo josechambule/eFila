@@ -2,6 +2,7 @@ package org.celllife.idart.gui.reportParameters;
 
 import model.manager.AdministrationManager;
 import model.manager.reports.OpenmrsErrorLog;
+import model.manager.reports.PrescricoesDuplicadas;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.StockCenter;
@@ -27,7 +28,7 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
-public class OpenmrsErrorLogReport extends GenericReportGui {
+public class PrescricoesDuplicadasReport extends GenericReportGui {
 
     private Group grpDateRange;
 
@@ -45,7 +46,7 @@ public class OpenmrsErrorLogReport extends GenericReportGui {
      * @param parent Shell
      * @param activate boolean
      */
-    public OpenmrsErrorLogReport(Shell parent, boolean activate) {
+    public PrescricoesDuplicadasReport(Shell parent, boolean activate) {
         super(parent, REPORTTYPE_MONITORINGANDEVALUATION, activate);
     }
 
@@ -55,7 +56,7 @@ public class OpenmrsErrorLogReport extends GenericReportGui {
     @Override
     protected void createShell() {
         Rectangle bounds = new Rectangle(100, 50, 600, 510);
-        buildShell(REPORT_OPENMRS_LOG, bounds);
+        buildShell(REPORT_PRESCRIPTION_DUPLICATION, bounds);
         // create the composites
         createMyGroups();
     }
@@ -72,7 +73,7 @@ public class OpenmrsErrorLogReport extends GenericReportGui {
     @Override
     protected void createCompHeader() {
         iDartImage icoImage = iDartImage.REPORT_OUTGOINGPACKAGES;
-        buildCompdHeader(REPORT_OPENMRS_LOG, icoImage);
+        buildCompdHeader(REPORT_PRESCRIPTION_DUPLICATION, icoImage);
     }
 
     /**
@@ -178,7 +179,7 @@ public class OpenmrsErrorLogReport extends GenericReportGui {
 
                 Date theEndDate=  calendarEnd.getCalendar().getTime();
 
-                OpenmrsErrorLog report = new OpenmrsErrorLog(getShell(),theStartDate,theEndDate);
+                PrescricoesDuplicadas report = new PrescricoesDuplicadas(getShell(),theStartDate,theEndDate);
 
                 viewReport(report);
             } catch (Exception e) {
@@ -225,9 +226,9 @@ public class OpenmrsErrorLogReport extends GenericReportGui {
 
             Date theEndDate=  calendarEnd.getCalendar().getTime();
 
-            String reportNameFile = "Reports/OpenmrsErrorLog.xls";
+            String reportNameFile = "Reports/PrescricoesDuplicadas.xls";
             try {
-                OpenmrsErrorLogExcel op = new OpenmrsErrorLogExcel(getShell(), reportNameFile, pharm, theStartDate, theEndDate);
+                PrescricoesDuplicadasExcel op = new PrescricoesDuplicadasExcel(getShell(), reportNameFile, pharm, theStartDate, theEndDate);
                 new ProgressMonitorDialog(getShell()).run(true, true, op);
 
                 if (op.getList() == null ||

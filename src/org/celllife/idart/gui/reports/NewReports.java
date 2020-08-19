@@ -513,6 +513,8 @@ public class NewReports extends GenericAdminGui {
                 new DrugCombinations(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_EPISODES_STATS,
                 new EpisodeStats(getShell(), false));
+        reportGUIs.put(GenericReportGuiInterface.REPORT_PRESCRIPTION_DUPLICATION,
+                new PrescricoesDuplicadasReport(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_TRANSACTION_LOG,
                 new TransactionLog(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_OPENMRS_LOG,
