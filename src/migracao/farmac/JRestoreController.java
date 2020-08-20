@@ -33,7 +33,7 @@ public class JRestoreController {
 //     Runtime r = Runtime.getRuntime();
 //        try {
 //            Process p = r.exec("C:/Arquivos de programas/PostgreSQL/9.1/bin/pg_restore -d "+ tfDataBase.getText().trim() + " -F c -v -h localhost -p 5432 -U postgres " + tfBackup.getText());
-//            System.out.println(p);
+//           log.trace(p);
 //            if (p != null) {
 //                OutputStream outputStream = p.getOutputStream();
 //                outputStream.write("123\r\n".getBytes()); //Como vcs podem notar, já estou passando a senha no código, mas isso não está adiantando!
@@ -43,7 +43,7 @@ public class JRestoreController {
 //                BufferedReader reader = new BufferedReader(streamReader);
 //                String linha;
 //                while ((linha = reader.readLine()) != null) {
-//                    System.out.println(linha);
+//                   log.trace(linha);
 //                }
 //            }
 //            JOptionPane.showMessageDialog(null, "Estrutura do Banco de Dados Restaurada!");

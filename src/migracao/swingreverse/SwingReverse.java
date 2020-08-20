@@ -6,13 +6,14 @@
  */
 package migracao.swingreverse;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
 import migracao.entidades.*;
 import migracao.entidadesHibernate.importPatient.PatientAttributeImportService;
 import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
 import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.entidadesHibernate.servicos.*;
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.AttributeType;
 import org.celllife.idart.database.hibernate.Clinic;
 import org.celllife.idart.database.hibernate.IdentifierType;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.Vector;
 
 public class SwingReverse {
+
+    final static Logger log = Logger.getLogger(SwingReverse.class);
+
     public static void main(String[] args) {
         try {
             
@@ -43,8 +47,8 @@ public class SwingReverse {
             int lengthOfTask = obslist.size();
           
             if (lengthOfTask == 0) {
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                System.out.println("#### Sem Pacientes Listados para a Migracao ####");
+               log.trace("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+               log.trace("#### Sem Pacientes Listados para a Migracao ####");
             }
             
             for (Obs obj : obslist) {
@@ -60,11 +64,11 @@ public class SwingReverse {
                 ObsService obsServiceActualizacao = new ObsService();
                 obj.setComments("Imported");
                 obsServiceActualizacao.update(obj);
-                System.out.println(personName.getGivenName() + " " + personName.getFamilyName() + " Paciente Inserido/Actualizado com Sucesso com o NID " + patientIdentifier.getIdentifier());
+               log.trace(personName.getGivenName() + " " + personName.getFamilyName() + " Paciente Inserido/Actualizado com Sucesso com o NID " + patientIdentifier.getIdentifier());
             }
             
-            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            System.out.println("" + lengthOfTask + " Pacientes Importados do OpenMRS para o IDART com sucesso!!!!!!");
+           log.trace("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+           log.trace("" + lengthOfTask + " Pacientes Importados do OpenMRS para o IDART com sucesso!!!!!!");
         }
         catch (Exception e) {
             System.err.println("ACONTECEU UM ERRO INESPERADO, Ligue o Servidor OpenMRS e Tente Novamente ou Contacte o Administrador \n" + e);

@@ -46,8 +46,10 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.DocAttributeSet;
 import javax.print.attribute.HashDocAttributeSet;
 
+import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.PrinterProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.misc.MigrateJRXML;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
@@ -76,6 +78,7 @@ public class PrintLabel {
 
     public static void printLinuxZebraLabels(List<DefaultLabel> labelsToPrint,
                                              PrintService service) {
+        Logger log = Logger.getLogger(PrintLabel.class);
 
         try {
             for (int i = 0; i < labelsToPrint.size(); i++) {
@@ -84,7 +87,7 @@ public class PrintLabel {
 
                 Vector<String> commands = labelsToPrint.get(i)
                         .getEPL2Commands();
-                System.out.println(commands);
+               log.trace(commands);
                 for (int a = 0; a < commands.size(); a++) {
                     fWriter.write(commands.elementAt(a));
                 }

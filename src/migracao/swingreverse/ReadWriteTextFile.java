@@ -5,6 +5,9 @@
  */
 package migracao.swingreverse;
 
+import org.apache.log4j.Logger;
+import org.celllife.idart.rest.utils.RestFarmac;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.util.Scanner;
 public class ReadWriteTextFile {
 
     final static Charset ENCODING = StandardCharsets.UTF_8;
+    final static Logger log = Logger.getLogger(ReadWriteTextFile.class);
 
     //For smaller files
     /**
@@ -41,7 +45,7 @@ public class ReadWriteTextFile {
             Path path = Paths.get(aFileName);
             Files.write(path, aLines, ENCODING, StandardOpenOption.APPEND);
         } catch (IOException io) {
-            System.out.println("Error writing to file: " + io.getCause().toString());
+           log.trace("Error writing to file: " + io.getCause().toString());
         }
 
     }
@@ -90,7 +94,7 @@ public class ReadWriteTextFile {
     }
 
     private static void log(Object aMsg) {
-        System.out.println(String.valueOf(aMsg));
+       log.trace(String.valueOf(aMsg));
     }
 
 } 

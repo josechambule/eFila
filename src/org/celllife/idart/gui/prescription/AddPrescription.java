@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.celllife.function.AndRule;
 import org.celllife.function.DateRuleFactory;
 import org.celllife.function.IRule;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
@@ -1393,11 +1394,18 @@ public class AddPrescription extends GenericFormGui implements
     @Override
     protected boolean fieldsOk() {
 
+        boolean checkOpenmrs = true;
     	RestClient restClient = new RestClient();
         ConexaoJDBC conexao = new ConexaoJDBC();
         Prescription oldPrescription = localPrescription.getPatient().getCurrentPrescription();
         Patient patient = localPrescription.getPatient();
         String regimenomeespecificado = AdministrationManager.getRegimeTerapeutico(getHSession(), cmbRegime.getText()).getRegimenomeespecificado();
+
+        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
+            checkOpenmrs = true;
+        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+            checkOpenmrs = false;
 
         if (oldPrescription != null)
             if (Integer.parseInt(String.valueOf(cmbLinha.getText().charAt(0))) < Integer.parseInt(String.valueOf(oldPrescription.getLinha().getLinhanome().charAt(0)))) {
@@ -1409,16 +1417,21 @@ public class AddPrescription extends GenericFormGui implements
                 errorBox.open();
                 return false;
             }
-        
-		String strProvider = cmbDoctor.getText().split(",")[1].trim() + " " + cmbDoctor.getText().split(",")[0].trim(); 
 
-        String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
+        if(checkOpenmrs) {
+            String strProvider = cmbDoctor.getText().split(",")[1].trim() + " " + cmbDoctor.getText().split(",")[0].trim();
 
-        String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
-        
-        String facility = new ArrayList<Clinic>(LocalObjects.getUser(getHSession()).getClinics()).get(0).getClinicName().trim();
+            String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
 
-        Episode episode = PatientManager.getLastEpisode(getHSession(), patient.getPatientId());
+            String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+
+            Clinic clinic = AdministrationManager.getMainClinic(getHSession());
+
+//            String facility = new ArrayList<Clinic>(LocalObjects.getUser(getHSession()).getClinics()).get(0).getClinicName().trim();
+
+            String facility = clinic.getClinicName().trim();
+
+            Episode episode = PatientManager.getLastEpisode(getHSession(), patient.getPatientId());
 
         if (StringUtils.isEmpty(patient.getUuidopenmrs()) && !episode.getStartReason().contains("nsito")
                 && !episode.getStartReason().contains("aternidade") && !episode.getStartReason().contains("PrEP")
@@ -1438,39 +1451,39 @@ public class AddPrescription extends GenericFormGui implements
             m.setMessage("O uuid "+ regimenomeespecificado +" parametrizado para o regime " + cmbRegime.getText() + " não existe no OpenMRS.");
             m.open();
 
-            return false;
-		}
+                return false;
+            }
 
-        try {
-            response.substring(21, 57);
-        } catch (StringIndexOutOfBoundsException siobe) {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-            m.setText("Informação sobre estado do programa");
-            m.setMessage("Verifica se o nome do provedor " + cmbDoctor.getText().trim() + " existe no OpenMRS.");
-            m.open();
+            try {
+                response.substring(21, 57);
+            } catch (StringIndexOutOfBoundsException siobe) {
+                MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+                m.setText("Informação sobre estado do programa");
+                m.setMessage("Verifica se o nome do provedor " + cmbDoctor.getText().trim() + " existe no OpenMRS.");
+                m.open();
 
-            return false;
+                return false;
+            }
+
+            try {
+                strFacility.substring(21, 57);
+            } catch (StringIndexOutOfBoundsException siobe) {
+                MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+                m.setText("Informação sobre estado do programa");
+                m.setMessage("Verifica se o nome da Unidade Sanitaria " + facility + " existe no OpenMRS.");
+                m.open();
+                return false;
+            }
+
+            if (StringUtils.isEmpty(regimenomeespecificado)) {
+                MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+                m.setText("Informação sobre estado do programa");
+                m.setMessage("Verifica a parametrização do uuid do regime " + cmbRegime.getText() + " na base de dados do iDART.");
+                m.open();
+                return false;
+            }
+
         }
-        
-        try {
-            strFacility.substring(21, 57);
-        } catch (StringIndexOutOfBoundsException siobe) {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-            m.setText("Informação sobre estado do programa");
-            m.setMessage("Verifica se o nome da Unidade Sanitaria " + facility + " existe no OpenMRS.");
-            m.open();
-            return false;
-        }
-        
-		if (StringUtils.isEmpty(regimenomeespecificado)) { 
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
-            m.setText("Informação sobre estado do programa");
-            m.setMessage("Verifica a parametrização do uuid do regime "+ cmbRegime.getText() +" na base de dados do iDART.");
-            m.open();
-            return false;
-		}
-		
-		
 
         if ((cmbLinha.getText().trim().equals("")) || (cmbRegime.getText().trim().equals("")) || (cmbDoctor.getText().trim().equals(""))
                 || (lblNewPrescriptionId.getText().trim().equals(""))
@@ -1737,7 +1750,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String ppe = (AdministrationManager.loadPpe(localPrescription.getPatient().getId()));
 
-            System.out.println(" PPE actual " + ppe);
+//           log.trace(" PPE actual " + ppe);
 
             if (ppe.trim().equals("T")) {
                 chkBtnPPE.setSelection(true);
@@ -1755,7 +1768,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String tb = (AdministrationManager.loadTb(localPrescription.getPatient().getId()));
 
-            System.out.println(" TB actual " + tb);
+//           log.trace(" TB actual " + tb);
 
             if (tb.trim().equals("T")) {
                 chkBtnTB.setSelection(true);
@@ -1773,7 +1786,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String saaj = (AdministrationManager.loadSAAJ(localPrescription.getPatient().getId()));
 
-            System.out.println(" SAAJ actual " + saaj);
+//           log.trace(" SAAJ actual " + saaj);
 
             if (saaj.trim().equals("T")) {
                 chkBtnSAAJ.setSelection(true);
@@ -1791,7 +1804,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String prep = (AdministrationManager.loadPrEP(localPrescription.getPatient().getId()));
 
-            System.out.println(" PREP actual " + prep);
+//           log.trace(" PREP actual " + prep);
             if (prep.trim().equals("T")) {
                 chkBtnPrEP.setSelection(true);
             }
@@ -1808,7 +1821,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String ce = (AdministrationManager.loadCE(localPrescription.getPatient().getId()));
 
-            System.out.println(" CE actual " + ce);
+//           log.trace(" CE actual " + ce);
             if (ce.trim().equals("T")) {
                 chkBtnCE.setSelection(true);
             }
@@ -1826,7 +1839,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String ccr = (AdministrationManager.loadCcr(localPrescription.getPatient().getId()));
 
-            System.out.println(" CCR actual " + ccr);
+//           log.trace(" CCR actual " + ccr);
             if (ccr.trim().equals("T")) {
                 chkBtnCCR.setSelection(true);
             }
@@ -1843,7 +1856,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String cpn = (AdministrationManager.loadCpn(localPrescription.getPatient().getId()));
 
-            System.out.println(" CPN actual " + cpn);
+//           log.trace(" CPN actual " + cpn);
             if (cpn.trim().equals("T")) {
                 chkBtnCPN.setSelection(true);
             }
@@ -1860,7 +1873,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String af = (AdministrationManager.loadAf(localPrescription.getPatient().getId()));
 
-            System.out.println(" Abordagem Familiar actual " + af);
+//           log.trace(" Abordagem Familiar actual " + af);
             if (af.trim().equals("T")) {
                 chkBtnAF.setSelection(true);
             }
@@ -1877,7 +1890,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String ca = (AdministrationManager.loadCa(localPrescription.getPatient().getId()));
 
-            System.out.println(" CA actual " + ca);
+//           log.trace(" CA actual " + ca);
             if (ca.trim().equals("T")) {
                 chkBtnCA.setSelection(true);
             }
@@ -1894,7 +1907,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String fr = (AdministrationManager.loadFr(localPrescription.getPatient().getId()));
 
-            System.out.println(" FR actual " + fr);
+//           log.trace(" FR actual " + fr);
             if (fr.trim().equals("T")) {
                 chkBtnFR.setSelection(true);
             }
@@ -1911,7 +1924,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String gaac = (AdministrationManager.loadGaac(localPrescription.getPatient().getId()));
 
-            System.out.println(" GAAC actual " + gaac);
+//           log.trace(" GAAC actual " + gaac);
             if (gaac.trim().equals("T")) {
                 chkBtnGAAC.setSelection(true);
             }
@@ -1928,7 +1941,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String dc = (AdministrationManager.loadDc(localPrescription.getPatient().getId()));
 
-            System.out.println(" DC actual " + dc);
+//           log.trace(" DC actual " + dc);
             if (dc.trim().equals("T")) {
                 chkBtnDC.setSelection(true);
             }
@@ -1945,7 +1958,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String prescicaoespecial = (AdministrationManager.loadPrescricaoEspecial(localPrescription.getPatient().getId()));
 
-            System.out.println(" PrescicaoEspecial actual " + prescicaoespecial);
+//           log.trace(" PrescicaoEspecial actual " + prescicaoespecial);
             if (prescicaoespecial.trim().equals("T")) {
                 chkBtnPrescicaoEspecial.setSelection(true);
                 cmbMotivoCriacao.setEnabled(true);
@@ -1963,7 +1976,7 @@ public class AddPrescription extends GenericFormGui implements
 
             String motivocriacaoespecial = (AdministrationManager.loadMotivoEspecial(localPrescription.getPatient().getId()));
 
-            System.out.println(" Motivo Criacao " + motivocriacaoespecial);
+//           log.trace(" Motivo Criacao " + motivocriacaoespecial);
             cmbMotivoCriacao.setText(motivocriacaoespecial);
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block

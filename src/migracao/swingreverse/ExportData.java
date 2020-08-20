@@ -307,7 +307,6 @@ public class ExportData {
         cal.set(13, 0);
         cal.set(14, 0);
         date = cal.getTime();
-        System.out.println(date);
         return date;
     }
 

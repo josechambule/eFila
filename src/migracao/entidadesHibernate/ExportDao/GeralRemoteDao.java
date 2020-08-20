@@ -72,7 +72,7 @@ public class GeralRemoteDao implements GlobalPropertyDaoInterface<String, String
 		calFinal.add(Calendar.DATE,0);
                 
 	SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println(locationId+"Location ID");
+     //  log.trace(locationId+"Location ID");
         String queryOpenmrs = "select * from " +
                             "(select distinct identifier as NID " +
                             "from " +
@@ -115,7 +115,7 @@ public class GeralRemoteDao implements GlobalPropertyDaoInterface<String, String
     //    query.addEntity(List.class);
         List lostfollowupList = sqlquery.list();
         
-        System.out.println(lostfollowupList);
+   //    log.trace(lostfollowupList);
         return lostfollowupList;
     }
 

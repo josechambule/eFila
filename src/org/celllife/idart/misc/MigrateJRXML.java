@@ -8,6 +8,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
+import org.apache.log4j.Logger;
+import org.celllife.idart.gui.patient.AddPatient;
 
 /**
  * The purpose of this app is to convert report designs from a older jrxml format to a newer format.
@@ -20,9 +22,10 @@ import net.sf.jasperreports.engine.xml.JRXmlWriter;
 public class MigrateJRXML {
 
     private final static String JRXML_FILEENDING = ".jrxml";
+    private Logger log = Logger.getLogger(MigrateJRXML.class);
 
     private void run(File rootDirectory) throws Exception {
-        System.out.println("Processing all jrxml files under the root: " + rootDirectory.getCanonicalPath());
+//       log.trace("Processing all jrxml files under the root: " + rootDirectory.getCanonicalPath());
 
         if (rootDirectory.isDirectory()) {
             processFile(rootDirectory);
@@ -33,7 +36,7 @@ public class MigrateJRXML {
     }
 
     private void processFile(File file) throws Exception {
-        System.out.println("Searching directory: " + file.getCanonicalPath());
+//       log.trace("Searching directory: " + file.getCanonicalPath());
 
         // Find jrxml files
         File[] jrxmlFiles = file.listFiles(new FilenameFilter() {
@@ -47,7 +50,7 @@ public class MigrateJRXML {
         if (jrxmlFiles != null) {
             for (File jrxmlFile : jrxmlFiles) {
                 try {
-                    System.out.println("Compiling report file: " + jrxmlFile.getCanonicalPath());
+//                   log.trace("Compiling report file: " + jrxmlFile.getCanonicalPath());
                     convertReport(jrxmlFile);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -84,7 +87,7 @@ public class MigrateJRXML {
      */
     public static void main(String[] args) throws Exception {
         MigrateJRXML app = new MigrateJRXML();
-
+        Logger log = Logger.getLogger(MigrateJRXML.class);
         File rootDirectory;
         if (args.length == 0) {
             // using default directory
@@ -92,13 +95,13 @@ public class MigrateJRXML {
         } else if (args.length == 1) {
             rootDirectory = new File(args[0]);
         } else {
-            System.out.println("invalid path");
+           log.trace("invalid path");
             throw new RuntimeException("Invalid Path");
         }
 
         app.run(rootDirectory);
 
-        System.out.println("Finished successfully - Exiting");
+       log.trace("Finished successfully - Exiting");
     }
 
 }

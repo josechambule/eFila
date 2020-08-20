@@ -25,6 +25,7 @@ import java.util.Map;
 
 import model.manager.reports.OpenmrsErrorLog;
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.gui.dataExports.DataExport;
 import org.celllife.idart.gui.dataQuality.DataQuality;
 import org.celllife.idart.gui.platform.GenericAdminGui;
@@ -422,6 +423,9 @@ public class NewReports extends GenericAdminGui {
         reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_DISPENSA_TRIMESTRAL,
                 new CohortDispensaTrimestral(getShell(), false));
 
+        reportGUIs.put(GenericReportGuiInterface.REPORT_REFERIDOS_LEVANTAMENTOS_ARV,
+                new HistoricoLevantamentoReferidosDEouPARAReport(getShell(), false));
+
         // Patient Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_PATIENT_HISTORY,
                 new PatientHistory(getShell(), false));
@@ -431,8 +435,20 @@ public class NewReports extends GenericAdminGui {
         reportGUIs.put(GenericReportGuiInterface.REPORT_PACKAGE_TRACKING,
                 new PackageTracking(getShell(), false));
 
-        reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
-                new PacientesReferidos(getShell(), false));
+        if (!CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_REFERIDOS,
+                    new PacientesReferidos(getShell(), false));
+        }
+
+        if (!CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_PACIENTES_RECEBIDOS,
+                    new PacientesRecebidosDaReferencia(getShell(), false));
+        }
+
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+            reportGUIs.put(GenericReportGuiInterface.REPORT_FARMACIAS_REGISTADAS,
+                    new FarmaciasRegistadasReport(getShell(), false));
+        }
 
         // Stock Reports
         reportGUIs.put(GenericReportGuiInterface.REPORT_MONTHLY_STOCK_RECEIPTS,
@@ -442,7 +458,7 @@ public class NewReports extends GenericAdminGui {
                 new DailyDispensingTotals(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_STOCK_TAKE,
                 new StockTakeReportGUI(getShell(), false));
-        
+
         reportGUIs.put(GenericReportGuiInterface.REPORT_DRUGS_DISPENSED,
                 new DrugsDispensed(getShell(), false));
         reportGUIs.put(GenericReportGuiInterface.REPORT_COHORT_COLLECTIONS,

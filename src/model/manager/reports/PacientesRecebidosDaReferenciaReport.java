@@ -63,7 +63,7 @@ public class PacientesRecebidosDaReferenciaReport extends AbstractJasperReport {
 
 
         int mesint = calendar.get(Calendar.MONTH);
-        System.out.println(mesint);
+       log.trace(mesint);
         switch (mesint) {
             case 0:
                 mes = "Janeiro";

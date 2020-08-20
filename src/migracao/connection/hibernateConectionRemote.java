@@ -11,6 +11,7 @@
 package migracao.connection;
 
 import migracao.entidades.*;
+import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.JdbcProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.hibernate.Session;
@@ -21,6 +22,7 @@ import org.hibernate.cfg.Configuration;
 public class hibernateConectionRemote {
     private static SessionFactory sessionFactoryRemote;
     private static final ThreadLocal<Session> threadRemote;
+    final static Logger log = Logger.getLogger(hibernateConectionRemote.class);
 
 
     public static org.hibernate.Session getInstanceRemote() {
@@ -47,7 +49,7 @@ public class hibernateConectionRemote {
 
             sessionFactoryRemote = config.buildSessionFactory();
 
-            System.out.println("Reiniciando a configuracao do hibernate para OpenMRS");
+           log.trace("Reiniciando a configuracao do hibernate para OpenMRS");
 
         }
         catch (Throwable e) {
