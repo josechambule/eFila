@@ -1157,4 +1157,34 @@ public class PatientManager {
 		
 		return list;
 	}
+
+	// Devolve a lista de todos pacientes referidos pelo nid
+	public static SyncOpenmrsPatient getSyncOpenmrsPatienByNID(Session sess, String nid) throws HibernateException {
+		SyncOpenmrsPatient result;
+
+		List patient = sess.createQuery("from SyncOpenmrsPatient sync where sync.patientid = '" + nid+"'").list();
+
+		if (patient.isEmpty())
+			result = null;
+		else
+			result = (SyncOpenmrsPatient) patient.get(0);
+
+		return result;
+	}
+
+	public static void saveSyncOpenmrsPatien(Session s, SyncOpenmrsPatient syncOpenmrsPatient)
+			throws HibernateException {
+
+		s.saveOrUpdate(syncOpenmrsPatient);
+	}
+
+	// Devolve a lista de todos pacientes prontos para ser enviado (Estado do paciente P- Pronto, E- Exportado)
+	public static List<SyncOpenmrsPatient> getAllSyncOpenmrsPatientReadyToSave(Session sess) throws HibernateException {
+		List result;
+		result = sess.createQuery(
+				"from SyncOpenmrsPatient sync where sync.syncstatus = 'P')").list();
+
+		return result;
+	}
+
 }

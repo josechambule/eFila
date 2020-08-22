@@ -38,6 +38,7 @@ import org.celllife.idart.integration.eKapa.EkapaSubmitJob;
 import org.celllife.idart.integration.eKapa.JobScheduler;
 import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.task.TaskManager;
+import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestFarmac;
 import org.celllife.idart.sms.SmsRetrySchedulerJob;
 import org.celllife.idart.sms.SmsSchedulerJob;
@@ -52,6 +53,7 @@ import org.hibernate.Transaction;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -189,8 +191,14 @@ public class PharmacyApplication {
             if (loginScreen.isSuccessfulLogin()) {
                 startEkapaJob(scheduler);
                 startSmsJobs(scheduler);
+
                 if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
                     startRestFarmacThread(executorService);
+
+                if((CentralizationProperties.centralization.equalsIgnoreCase("on") && CentralizationProperties.pharmacy_type.equalsIgnoreCase("U"))
+                        || CentralizationProperties.centralization.equalsIgnoreCase("off"))
+                    startRestOpenMRSThread(executorService);
+
                 try {
                     String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
                     if (role != null && role.equalsIgnoreCase("StudyWorker")) {
@@ -294,7 +302,31 @@ public class PharmacyApplication {
                     assert tx != null;
                     tx.rollback();
                     sess.close();
-                    e.printStackTrace();
+                    log.trace(new Date() + " : [FARMAC REST] Erro " + e.getMessage());
+                }
+
+            }
+        }, 0, 30, TimeUnit.SECONDS);
+
+    }
+
+    public static void startRestOpenMRSThread(ScheduledExecutorService executorService) {
+
+        final String url = JdbcProperties.urlBase;
+
+        executorService.scheduleWithFixedDelay(new Runnable() {
+            public void run() {
+                Session sess = HibernateUtil.getNewSession();
+                try {
+                    if (getServerStatus(url).contains("Red"))
+                        log.trace(new Date()+" :Servidor OpenMRS offline, verifique a conexao com OpenMRS ou contacte o administrador");
+                    else {
+                        RestClient.setOpenmrsPatients(sess);
+                        RestClient.setOpenmrsPatientFila(sess);
+                    }
+                } catch (IOException e) {
+                    sess.close();
+                    log.trace(new Date() + " : Erro " + e.getMessage());
                 }
 
             }
@@ -473,12 +505,12 @@ public class PharmacyApplication {
                     LocalObjects.mainClinic.setUuid(JdbcProperties.location);
                     AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
                 }
-            }else {
-                if(CentralizationProperties.location != null && !CentralizationProperties.location.isEmpty() )
-                if (LocalObjects.mainClinic.getUuid() != CentralizationProperties.location) {
-                    LocalObjects.mainClinic.setUuid(CentralizationProperties.location);
-                    AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
-                }
+            } else {
+                if (CentralizationProperties.location != null && !CentralizationProperties.location.isEmpty())
+                    if (LocalObjects.mainClinic.getUuid() != CentralizationProperties.location) {
+                        LocalObjects.mainClinic.setUuid(CentralizationProperties.location);
+                        AdministrationManager.saveClinic(hSession, LocalObjects.mainClinic);
+                    }
             }
             LocalObjects.nationalIdentifierType = AdministrationManager
                     .getNationalIdentifierType(hSession);

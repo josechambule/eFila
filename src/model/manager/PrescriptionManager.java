@@ -189,4 +189,34 @@ public class PrescriptionManager {
 		return id;
 	}
 
+	// Devolve a lista de todos FILAS de pacientes prontos para enviar ao OpenMRS (Estado do paciente P- Pronto, E- Exportado)
+	public static List<SyncOpenmrsDispense> getAllSyncOpenmrsDispenseReadyToSave(Session sess) throws HibernateException {
+		List result;
+		result = sess.createQuery(
+				"from SyncOpenmrsDispense sync where sync.syncstatus = 'P'").list();
+
+		return result;
+	}
+
+	// Devolve a lista de receitas de pacientes por enviar
+	public static SyncOpenmrsDispense getSyncOpenmrsPatienByPrescription(Session sess, Prescription prescription) throws HibernateException {
+		SyncOpenmrsDispense result;
+
+		List patient = sess.createQuery("from SyncOpenmrsDispense sync where sync.prescription = '" + prescription+"'").list();
+
+		if (patient.isEmpty())
+			result = null;
+		else
+			result = (SyncOpenmrsDispense) patient.get(0);
+
+		return result;
+	}
+
+	public static void saveSyncOpenmrsPatienFila(Session s, SyncOpenmrsDispense SyncOpenmrsDispense)
+			throws HibernateException {
+
+		s.saveOrUpdate(SyncOpenmrsDispense);
+	}
+
+
 }

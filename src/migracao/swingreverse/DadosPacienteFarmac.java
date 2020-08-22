@@ -518,7 +518,7 @@ public class DadosPacienteFarmac {
 
         } catch (Exception e) {
             result = true;
-           log.trace("Criou o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus);
+           log.trace("Nao foi possivel Criar o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus+" erro - "+ e.getMessage());
         }
 
         return result;
