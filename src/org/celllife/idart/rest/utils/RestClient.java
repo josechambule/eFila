@@ -1,9 +1,6 @@
 package org.celllife.idart.rest.utils;
 
-import model.manager.OpenmrsErrorLogManager;
-import model.manager.PackageManager;
-import model.manager.PatientManager;
-import model.manager.PrescriptionManager;
+import model.manager.*;
 import model.nonPersistent.Autenticacao;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -101,20 +98,9 @@ public class RestClient {
                             + "\"value\":\"" + packSize + "\",\"comment\":\"IDART\"},{\"person\":\"" + nidUuid + "\",\"obsDatetime\":\"" + encounterDatetime + "\",\"concept\":"
                             + "\"" + dosageUuid + "\",\"value\":\"" + customizedDosage + "\",\"comment\":\"IDART\"},{\"person\":\"" + nidUuid + "\","
                             + "\"obsDatetime\":\"" + encounterDatetime + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + strNextPickUp + "\",\"comment\":\"IDART\"}]}"
-            );
+                    , "UTF-8");
 
             System.out.println(IOUtils.toString(inputAddPerson.getContent()));
-		 	
-		 	/*inputAddPerson = new StringEntity(
-		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
-		 			  + "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"provider\":\""+providerUuid+"\", "
-		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\"},{\"person\":"
-		 			  + "\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+packSize+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage+"\"},{\"person\":\""+nidUuid+"\","
-		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
-		 			);*/
         } else if (prescribedDrugs.size() > 1) {
 
             //Dosage
@@ -140,20 +126,7 @@ public class RestClient {
                             + "\"" + dosageUuid + "\",\"value\":\"" + customizedDosage_0 + "\",\"comment\":\"IDART\"},{\"person\":\"" + nidUuid + "\",\"obsDatetime\":\"" + encounterDatetime + "\",\"concept\":"
                             + "\"" + dosageUuid + "\",\"value\":\"" + customizedDosage_1 + "\",\"comment\":\"IDART\"},{\"person\":\"" + nidUuid + "\","
                             + "\"obsDatetime\":\"" + encounterDatetime + "\",\"concept\":\"" + returnVisitUuid + "\",\"value\":\"" + strNextPickUp + "\",\"comment\":\"IDART\"}]}"
-            );
-		 	
-		 	/*inputAddPerson = new StringEntity(
-		 			"{\"encounterDatetime\": \""+encounterDatetime+"\", \"patient\": \""+nidUuid+"\", \"encounterType\": \""+encounterType+"\", "
-		 			  + "\"location\":\""+strFacilityUuid+"\", \"form\":\""+filaUuid+"\", \"provider\":\""+providerUuid+"\", "
-		 			  + "\"obs\":[{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+regimeUuid+"\",\"value\":\""+strRegimenAnswerUuid+"\"},{\"person\":"
-		 			  + "\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+String.valueOf(prescribedDrugs.get(1).getDrug().getPackSize())+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+dispensedAmountUuid+"\","
-		 			  + "\"value\":\""+String.valueOf(prescribedDrugs.get(0).getDrug().getPackSize())+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_0+"\"},{\"person\":\""+nidUuid+"\",\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":"
-		 			  + "\""+dosageUuid+"\",\"value\":\""+customizedDosage_1+"\"},{\"person\":\""+nidUuid+"\","
-		 			  + "\"obsDatetime\":\""+encounterDatetime+"\",\"concept\":\""+returnVisitUuid+"\",\"value\":\""+strNextPickUp+"\"}]}"
-		 			);*/
+                    , "UTF-8");
         }
 
         inputAddPerson.setContentType("application/json");
@@ -165,44 +138,42 @@ public class RestClient {
 
         StringEntity inputAddPatient;
 
+        String openmrsJSON = "";
+
         if (birthDate.isEmpty()) {
 
-            inputAddPatient = new StringEntity(
-                    "{\"person\":"
-                            + "{"
-                            + "\"gender\": \"" + gender + "\","
-                            + "\"names\":"
-                            + "[{\"givenName\": \"" + firstName + "\", \"middleName\": \"" + middleName + "\", \"familyName\": \"" + lastName + "\"}]"
-                            + "},"
-                            + "\"identifiers\":"
-                            + "["
-                            + "{"
-                            + "\"identifier\": \"" + nid + "\", \"identifierType\": \"e2b966d0-1d5f-11e0-b929-000c29ad1d07\","
-                            + "\"location\": \"" + prop.getProperty("location") + "\", \"preferred\": \"true\""
-                            + "}"
-                            + "]"
-                            + "}"
-            );
+            openmrsJSON = "{\"person\":"
+                    + "{"
+                    + "\"gender\": \"" + gender + "\","
+                    + "\"names\":"
+                    + "[{\"givenName\": \"" + firstName + "\", \"middleName\": \"" + middleName + "\", \"familyName\": \"" + lastName + "\"}]"
+                    + "},"
+                    + "\"identifiers\":"
+                    + "["
+                    + "{"
+                    + "\"identifier\": \"" + nid + "\", \"identifierType\": \"e2b966d0-1d5f-11e0-b929-000c29ad1d07\","
+                    + "\"location\": \"" + prop.getProperty("location") + "\", \"preferred\": \"true\""
+                    + "}"
+                    + "]"
+                    + "}";
         } else {
-
-            inputAddPatient = new StringEntity(
-                    "{\"person\":"
-                            + "{"
-                            + "\"gender\": \"" + gender + "\","
-                            + "\"names\":"
-                            + "[{\"givenName\": \"" + firstName + "\", \"middleName\": \"" + middleName + "\", \"familyName\": \"" + lastName + "\"}], \"birthdate\": \"" + birthDate + "\""
-                            + "},"
-                            + "\"identifiers\":"
-                            + "["
-                            + "{"
-                            + "\"identifier\": \"" + nid + "\", \"identifierType\": \"e2b966d0-1d5f-11e0-b929-000c29ad1d07\","
-                            + "\"location\": \"" + prop.getProperty("location") + "\", \"preferred\": \"true\""
-                            + "}"
-                            + "]"
-                            + "}"
-            );
+            openmrsJSON = "{\"person\":"
+                    + "{"
+                    + "\"gender\": \"" + gender + "\","
+                    + "\"names\":"
+                    + "[{\"givenName\": \"" + firstName + "\", \"middleName\": \"" + middleName + "\", \"familyName\": \"" + lastName + "\"}], \"birthdate\": \"" + birthDate + "\""
+                    + "},"
+                    + "\"identifiers\":"
+                    + "["
+                    + "{"
+                    + "\"identifier\": \"" + nid + "\", \"identifierType\": \"e2b966d0-1d5f-11e0-b929-000c29ad1d07\","
+                    + "\"location\": \"" + prop.getProperty("location") + "\", \"preferred\": \"true\""
+                    + "}"
+                    + "]"
+                    + "}";
         }
 
+        inputAddPatient = new StringEntity(openmrsJSON, "UTF-8");
 
         inputAddPatient.setContentType("application/json");
         //log.info("AddPerson = " + ApiAuthRest.getRequestPost("encounter",inputAddPerson));
@@ -232,9 +203,14 @@ public class RestClient {
 
     public static void setOpenmrsPatients(Session sess) {
 
+        RestClient restClient = new RestClient();
+
+
+        boolean postOpenMrsEncounterStatus;
+
         List<SyncOpenmrsPatient> syncOpenmrsPatients = PatientManager.getAllSyncOpenmrsPatientReadyToSave(sess);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
         Session session = HibernateUtil.getNewSession();
         Transaction tx = session.beginTransaction();
         try {
@@ -243,18 +219,20 @@ public class RestClient {
                 for (SyncOpenmrsPatient patientToSave : syncOpenmrsPatients) {
                     try {
                         String uuid = null;
-                        Patient pacient = PatientManager.getPatient(sess, patientToSave.getPatientid());
+                        Patient pacient = PatientManager.getPatient(session, patientToSave.getPatientid());
 
                         if (pacient != null) {
                             uuid = getUUidFromOpenmrs(pacient.getPatientId());
 
                             if (uuid == null) {
-                                if (new RestClient().postOpenMRSPatient(pacient.getSex() + "", pacient.getFirstNames(), " ", pacient.getLastname(),
-                                        sdf.format(pacient.getDateOfBirth()), pacient.getPatientId())) {
+
+                                postOpenMrsEncounterStatus = restClient.postOpenMRSPatient(pacient.getSex() + "", pacient.getFirstNames(), ".", pacient.getLastname(),
+                                        RestUtils.castDateToString(pacient.getDateOfBirth()), pacient.getPatientId());
+
+                                if (postOpenMrsEncounterStatus) {
                                     uuid = getUUidFromOpenmrs(pacient.getPatientId());
                                 }
                             }
-
                             pacient.setUuidopenmrs(uuid);
                             PatientManager.savePatient(session, pacient);
                         } else
@@ -265,7 +243,7 @@ public class RestClient {
 
                         break;
                     } catch (Exception e) {
-                        log.trace(new Date() + ": Erro ao gravar informacao do Paciente [" + patientToSave.getFirstnames() + " " + patientToSave.getLastname() + " com NID: " + patientToSave.getPatientid() + "]");
+                        log.trace(new Date() + ": Erro ao gravar informacao do Paciente [" + patientToSave.getFirstnames() + " " + patientToSave.getLastname() + " com NID: " + patientToSave.getPatientid() + "] verifique o acesso do user ao openmrs ou contacte o administrador");
                     } finally {
                         continue;
                     }
@@ -285,13 +263,12 @@ public class RestClient {
         }
     }
 
-
     public static void setOpenmrsPatientFila(Session sess) {
-
-        List<SyncOpenmrsDispense> syncOpenmrsDispenses = PrescriptionManager.getAllSyncOpenmrsDispenseReadyToSave(sess);
 
         Session session = HibernateUtil.getNewSession();
         Transaction tx = session.beginTransaction();
+        List<SyncOpenmrsDispense> syncOpenmrsDispenses = PrescriptionManager.getAllSyncOpenmrsDispenseReadyToSave(session);
+
         try {
             if (!syncOpenmrsDispenses.isEmpty()) {
 
@@ -300,15 +277,15 @@ public class RestClient {
                         Prescription prescription = PackageManager.getPrescription(sess, dispense.getPrescription().getPrescriptionId());
 
                         if (prescription != null) {
-							restFilaToOpenMRS(session,dispense);
-                        } else
+                            restFilaToOpenMRS(session, dispense);
+                        } else {
                             log.trace(new Date() + ": INFO - A Receita com o codigo: [" + dispense.getPrescription().getPrescriptionId() + "] foi removido");
-
-                        dispense.setSyncstatus('E');
+                            dispense.setSyncstatus('E');
+                        }
                         PrescriptionManager.saveSyncOpenmrsPatienFila(session, dispense);
                         break;
                     } catch (Exception e) {
-                        log.trace(new Date() + ": INFO - Erro ao gravar levantamento do Paciente com NID: [" + dispense.getPrescription().getPatient().getPatientId() + "]");
+                        log.trace(new Date() + ": INFO - Erro ao gravar levantamento do Paciente com NID: [" + dispense.getPrescription().getPatient().getPatientId() + "], verifique o acesso do user ao openmrs ou contacte o administrador");
                     } finally {
                         continue;
                     }
@@ -327,7 +304,6 @@ public class RestClient {
             log.trace("Error :" + e);
         }
     }
-
 
     public static String getUUidFromOpenmrs(String patientId) {
 
@@ -366,6 +342,8 @@ public class RestClient {
             nidUuid = (String) results.get("uuid");
         }
 
+        if(dispense.getUuid() == null)
+            dispense.setUuid(nidUuid);
 
         String uuid = dispense.getUuid();
         if (uuid != null && !uuid.isEmpty()) {
@@ -412,8 +390,8 @@ public class RestClient {
             log.trace("Criou o fila no openmrs para o paciente " + dispense.getNid() + ": " + postOpenMrsEncounterStatus);
 
             if (postOpenMrsEncounterStatus) {
-                PackageManager.savePackage(session, newPack);
-
+                dispense.setSyncstatus('E');
+                dispense.setUuid(uuid);
                 OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(session, newPack.getPrescription());
                 if (errorLog != null)
                     OpenmrsErrorLogManager.removeErrorLog(session, errorLog);
@@ -421,14 +399,17 @@ public class RestClient {
 
         } catch (Exception e) {
             log.trace("Nao foi criado o fila no openmrs para o paciente " + dispense.getNid() + ": " + postOpenMrsEncounterStatus);
-            OpenmrsErrorLog errorLog = new OpenmrsErrorLog();
-            errorLog.setPatient(newPack.getPrescription().getPatient());
-            errorLog.setPrescription(newPack.getPrescription());
-            errorLog.setPickupdate(newPack.getPickupDate());
-            errorLog.setReturnpickupdate(RestUtils.castStringToDate(dispense.getStrNextPickUp()));
-            errorLog.setErrordescription(e.getMessage() + "\nHouve um problema ao salvar o pacote de medicamentos para o paciente " + dispense.getNid() + ". " + "Por favor contacte o SIS.");
-            errorLog.setDatacreated(new Date());
-            OpenmrsErrorLogManager.saveOpenmrsRestLog(session, errorLog);
+            OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(session, newPack.getPrescription());
+            if (errorLog == null) {
+                errorLog = new OpenmrsErrorLog();
+                errorLog.setPatient(newPack.getPrescription().getPatient());
+                errorLog.setPrescription(newPack.getPrescription());
+                errorLog.setPickupdate(newPack.getPickupDate());
+                errorLog.setReturnpickupdate(RestUtils.castStringToDate(dispense.getStrNextPickUp()));
+                errorLog.setErrordescription(e.getMessage() + "\nHouve um problema ao salvar o pacote de medicamentos para o paciente " + dispense.getNid() + ". " + "Por favor contacte o SIS.");
+                errorLog.setDatacreated(new Date());
+                OpenmrsErrorLogManager.saveOpenmrsRestLog(session, errorLog);
+            }
 
         }
     }

@@ -24,6 +24,7 @@ import model.manager.AdministrationManager;
 import model.nonPersistent.Autenticacao;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
+import org.celllife.idart.commonobjects.JdbcProperties;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -50,6 +51,8 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.*;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 
 /**
@@ -489,59 +492,77 @@ public class Login implements GenericGuiInterface {
                 txtPassword.setFocus();
                 txtPassword.setText(""); //$NON-NLS-1$
             } else if(checkOpenmrs) {
-                if (verificaLoginOpenMRS()) {
-                    File myFile = new File("jdbc_auto_generated.properties");
-                    Properties properties = new Properties();
+                try {
+                    if (!getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                        if (verificaLoginOpenMRS()) {
+                            File myFile = new File("jdbc_auto_generated.properties");
+                            Properties properties = new Properties();
+                            try {
+                                properties.load(new FileInputStream(myFile));
+                            } catch (FileNotFoundException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
 
-                    try {
+                            if (!properties.isEmpty()) {
+                                properties.remove("password");
+                                properties.remove("userName");
+                            }
+                            OutputStream out = null;
+                            try {
+                                //	properties.setProperty("password", txtPassword.getText());
+                                properties.setProperty("userName", cmbUsers.getText());
 
-                        properties.load(new FileInputStream(myFile));
-                    } catch (FileNotFoundException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+                                Autenticacao.senhaTemporaria = txtPassword.getText();
 
-                    if (!properties.isEmpty()) {
-                        properties.remove("password");
-                        properties.remove("userName");
-                    }
-                    OutputStream out = null;
-                    try {
-                        //	properties.setProperty("password", txtPassword.getText());
-                        properties.setProperty("userName", cmbUsers.getText());
+                                out = new FileOutputStream(myFile);
 
+                            } catch (FileNotFoundException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            try {
+                                properties.store(out, null);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            successfulLogin = true;
+                        } else {
+                            MessageDialog.openError(loginShell, Messages
+                                            .getString("login.dialog.error.title"), //$NON-NLS-1$
+                                    Messages.getString("login.error.openmrs")); //$NON-NLS-1$
+                            txtPassword.setFocus();
+                            txtPassword.setText("");
+                            successfulLogin = false;
+                        }
+                    }else{
+                        successfulLogin = true;
+                        ApiAuthRest.setUsername(cmbUsers.getText());
+                        ApiAuthRest.setPassword(txtPassword.getText());
                         Autenticacao.senhaTemporaria = txtPassword.getText();
-
-                        out = new FileOutputStream(myFile);
-
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        MessageDialog.openWarning(loginShell, Messages
+                                        .getString("login.dialog.error.title"), //$NON-NLS-1$
+                                Messages.getString("login.error.openmrsRest")); //$NON-NLS-1$
                     }
-                    try {
-                        properties.store(out, null);
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                } else {
-                    MessageDialog.openError(loginShell, Messages
-                                    .getString("login.dialog.error.title"), //$NON-NLS-1$
-                            Messages.getString("login.error.openmrs")); //$NON-NLS-1$
-                    txtPassword.setFocus();
-                    txtPassword.setText("");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                successfulLogin = true;
-                LocalObjects.setUser(theUser);
-                LocalObjects.currentClinic = theClinic.getClinicName()
-                        .equalsIgnoreCase(
-                                LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
-                        : theClinic;
-                log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
-                closeScreen();
+
+                if(successfulLogin){
+                    LocalObjects.setUser(theUser);
+                    LocalObjects.currentClinic = theClinic.getClinicName()
+                            .equalsIgnoreCase(
+                                    LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
+                            : theClinic;
+                    log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
+
+                    closeScreen();
+                }
+
             }
 
         } catch (HibernateException e) {

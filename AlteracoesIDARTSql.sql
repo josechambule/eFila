@@ -81,6 +81,48 @@ CREATE TABLE IF NOT EXISTS subdistrict (
 	uuid character varying(255) NOT NULL DEFAULT uuid_generate_v1()
 );
 
+CREATE TABLE IF NOT EXISTS sync_openmrs_patient (
+    id integer NOT NULL PRIMARY KEY,
+    cellphone character varying(255) COLLATE pg_catalog."default",
+    dateofbirth timestamp with time zone,
+    clinic integer NOT NULL,
+    firstnames character varying(255) COLLATE pg_catalog."default",
+    homephone character varying(255) COLLATE pg_catalog."default",
+    lastname character varying(255) COLLATE pg_catalog."default",
+    patientid character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    province character varying(255) COLLATE pg_catalog."default",
+    sex character(1) COLLATE pg_catalog."default",
+	syncstatus character(1) COLLATE pg_catalog."default",
+    workphone character varying(255) COLLATE pg_catalog."default",
+    address1 character varying(255) COLLATE pg_catalog."default",
+    address2 character varying(255) COLLATE pg_catalog."default",
+    address3 character varying(255) COLLATE pg_catalog."default",
+    nextofkinname character varying(255) COLLATE pg_catalog."default",
+    nextofkinphone character varying(255) COLLATE pg_catalog."default",
+    race character varying(255) COLLATE pg_catalog."default",
+    uuidopenmrs character varying(255) COLLATE pg_catalog."default",
+    syncuuid character varying(255) NOT NULL DEFAULT uuid_generate_v1()
+);
+
+CREATE TABLE IF NOT EXISTS sync_openmrs_dispense (
+    id integer NOT NULL PRIMARY KEY,
+    strpickup character varying(255) COLLATE pg_catalog."default",
+    nid character varying(255) COLLATE pg_catalog."default",
+    uuid character varying(255) COLLATE pg_catalog."default",
+    encountertype character varying(255) COLLATE pg_catalog."default",
+    strfacility character varying(255) COLLATE pg_catalog."default",
+    filauuid character varying(255) COLLATE pg_catalog."default",
+    provider character varying(255) COLLATE pg_catalog."default",
+    regimeuuid character varying(255) COLLATE pg_catalog."default",
+	syncstatus character(1) COLLATE pg_catalog."default",
+    regimenanswer character varying(255) COLLATE pg_catalog."default",
+    dispensedamountuuid character varying(255) COLLATE pg_catalog."default",
+    dosageuuid character varying(255) COLLATE pg_catalog."default",
+    returnvisituuid character varying(255) COLLATE pg_catalog."default",
+    strnextpickup character varying(255) COLLATE pg_catalog."default",
+    prescription integer NOT NULL
+);
+
 INSERT INTO country (id, code, name) VALUES (1, '01', 'Moçambique');
 INSERT INTO country (id, code, name) VALUES (2, '02', 'Angola');
 INSERT INTO country (id, code, name) VALUES (3, '03', 'Africa do Sul');

@@ -34,7 +34,6 @@ public class SyncOpenmrsPatient {
 
     public SyncOpenmrsPatient() {
         super();
-        this.id = -1;
         this.syncuuid = UUID.randomUUID().toString();
     }
 

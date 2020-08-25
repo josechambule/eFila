@@ -21,11 +21,9 @@ package org.celllife.idart.gui.patientAdmin;
 
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
+import org.celllife.idart.commonobjects.JdbcProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
-import org.celllife.idart.gui.patient.AddPatient;
-import org.celllife.idart.gui.patient.AddPatientIdart;
-import org.celllife.idart.gui.patient.AddPatientOpenMrs;
-import org.celllife.idart.gui.patient.MergePatients;
+import org.celllife.idart.gui.patient.*;
 import org.celllife.idart.gui.platform.GenericAdminGui;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.prescription.AddPrescription;
@@ -35,6 +33,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.messages.Messages;
 import org.celllife.idart.misc.Screens;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -46,15 +45,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import java.util.Date;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
+
 /**
  *
  */
 
 public class PatientAdmin extends GenericAdminGui {
 
+    private static Logger log = Logger.getLogger(PatientAdmin.class);
+
     private Button btnPatientAdd;
 
     private Button btnPatientAddOpenMRS;
+
+    private Button btnPatientFromOpenMRS;
 
     private Button btnPatientUpdate;
 
@@ -67,6 +74,8 @@ public class PatientAdmin extends GenericAdminGui {
     private Label lblPicPatientAdd;
 
     private Label lblPicPatientAddOpenMRS;
+
+    private Label lblPicPatientFromOpenMRS;
 
     private Label lblPicPatientUpdate;
 
@@ -199,6 +208,33 @@ public class PatientAdmin extends GenericAdminGui {
                         public void widgetSelected(
                                 org.eclipse.swt.events.SelectionEvent e) {
                             cmdAddPatientOpenMRSWidgetSelected();
+                        }
+                    });
+
+            // lblPicPatientFromOpenMRS
+            lblPicPatientFromOpenMRS = new Label(compOptionsInner, SWT.NONE);
+            lblPicPatientFromOpenMRS.setLayoutData(gdPic);
+            lblPicPatientFromOpenMRS.setImage(ResourceUtils.getImage(iDartImage.PATIENTNEW));
+            lblPicPatientFromOpenMRS.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseUp(MouseEvent mu) {
+                    cmdAddPatientFromOpenMRSWidgetSelected();
+                }
+            });
+
+            // btnPatientFromOpenMRS
+            btnPatientFromOpenMRS = new Button(compOptionsInner, SWT.NONE);
+            btnPatientFromOpenMRS.setData(iDartProperties.SWTBOT_KEY, Screens.ADD_PATIENT.getAccessButtonId());
+            btnPatientFromOpenMRS.setText(Messages.getString("PatientAdmin.button.addNewPatientFrom.openMRS")); //$NON-NLS-1$
+            btnPatientFromOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_10));
+            btnPatientFromOpenMRS.setToolTipText(Messages.getString("PatientAdmin.button.addNewPatientFromOpenmRS.tooltip")); //$NON-NLS-1$
+            btnPatientFromOpenMRS.setLayoutData(gdBtn);
+            btnPatientFromOpenMRS
+                    .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            cmdAddPatientFromOpenMRSWidgetSelected();
                         }
                     });
 
@@ -443,18 +479,34 @@ public class PatientAdmin extends GenericAdminGui {
 
     }
 
+    private void cmdAddPatientFromOpenMRSWidgetSelected() {
+        // AddPatientIdart(true) to ADD new Patient From OpenMRS
+        try {
+            if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                  showMessage(MessageDialog.ERROR, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS ou contacte o administrador.");
+                return;
+            } else {
+                AddPatientOpenMrs.addInitialisationOption(GenericFormGui.OPTION_isTransitNotNewPatient, false);
+                new AddPatientIdart(getShell(), true, false);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void cmdAddPatientOpenMRSWidgetSelected() {
 //       log.trace("cmdAddPatientOpenMRSWidgetSelected selected ...");
-        // AddPatient(true) to ADD new patient to OpenMRS
+        // AddPatient(true) to ADD new patient to OpenMRS and iDART
         AddPatientOpenMrs.addInitialisationOption(GenericFormGui.OPTION_isAddNotUpdate, true);
         new AddPatientOpenMrs(getShell(), true);
     }
 
     private void cmdAddPatientWidgetSelected() {
-        // AddPatient(true) to ADD new patient
+        // AddPatientIdart(true) to ADD non new Patient to iDART
         AddPatient.addInitialisationOption(
-                GenericFormGui.OPTION_isAddNotUpdate, true);
-        new AddPatientIdart(getShell(), true);
+                GenericFormGui.OPTION_isTransitNotNewPatient, true);
+        new AddPatientIdart(getShell(), true,true);
     }
 
     private void cmdUpdatePatientWidgetSelected() {

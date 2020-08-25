@@ -1,27 +1,40 @@
 package org.celllife.idart.database.hibernate;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "sync_openmrs_dispense")
 public class SyncOpenmrsDispense {
 
     @Id
     @GeneratedValue
     private Integer id;
+    @Column(name = "strpickup")
     private String strPickUp;
     private String nid;
     private String uuid;
+    @Column(name = "encountertype")
     private String encounterType;
+    @Column(name = "strfacility")
     private String strFacility;
+    @Column(name = "filauuid")
     private String filaUuid;
     private String provider;
+    @Column(name = "regimeuuid")
     private String regimeUuid;
+    @Column(name = "regimenanswer")
     private String regimenAnswer;
+    @Column(name = "dispensedamountuuid")
     private String dispensedAmountUuid;
+    @Column(name = "dosageuuid")
     private String dosageUuid;
+    @Column(name = "returnvisituuid")
     private String returnVisitUuid;
+    @Column(name = "strnextpickup")
     private String strNextPickUp;
+    @ManyToOne
+    @JoinColumn(name = "prescription", nullable = false)
     private Prescription prescription;
     private Character syncstatus;
 

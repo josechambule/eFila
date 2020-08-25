@@ -27,10 +27,7 @@ import model.manager.reports.PatientHistoryReport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.function.DateRuleFactory;
-import org.celllife.idart.commonobjects.CentralizationProperties;
-import org.celllife.idart.commonobjects.CommonObjects;
-import org.celllife.idart.commonobjects.LocalObjects;
-import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.commonobjects.*;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
@@ -68,6 +65,7 @@ import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormatSymbols;
 import java.text.MessageFormat;
@@ -75,6 +73,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
+
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
@@ -314,13 +314,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         lblPatientId
                 .setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.patientid")); //$NON-NLS-1$ //$NON-NLS-2$
         lblPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		/*if(iDartProperties.country.equalsIgnoreCase("Nigeria")){
-			txtPatientId = new CustomIdField(grpParticulars, SWT.BORDER);
-	 		txtPatientId.setBounds(new Rectangle(col2x, 25, 270, 20));
-		} else {
-			txtPatientId = new TextAdapter(grpParticulars, SWT.BORDER);
-			txtPatientId.setBounds(new Rectangle(col2x, 25, 150, 20));
-		}*/
+
         txtPatientId = new TextAdapter(grpParticulars, SWT.BORDER);
         txtPatientId.setBounds(new Rectangle(col2x, 25, 150, 20));
         txtPatientId.setData(iDartProperties.SWTBOT_KEY, "txtPatientId"); //$NON-NLS-1$
@@ -592,13 +586,13 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         lblPicChild.setVisible(false);
 
 
-        transito = new Button(grpParticulars, SWT.CHECK);
-        transito.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
-        transito.setBounds(new Rectangle(col2x, 150, 150,
-                18));
-        transito.setText("Paciente Em Transito");
-        transito.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        transito.setSelection(false);
+//        transito = new Button(grpParticulars, SWT.CHECK);
+//        transito.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+//        transito.setBounds(new Rectangle(col2x, 150, 150,
+//                18));
+//        transito.setText("Paciente Em Transito");
+//        transito.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+//        transito.setSelection(false);
 
         // Phone Cell
         Label lblPhoneCell = new Label(grpParticulars, SWT.NONE);
@@ -995,20 +989,35 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             currentPrescription = localPatient.getCurrentPrescription();
         }
 
-        if (checkOpenmrs) {
-            restClient = new RestClient();
-            String patientId = txtPatientId.getText().toUpperCase().trim();
+        if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
+            if (checkOpenmrs && isAddnotUpdate) {
+                try {
+                    if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                        log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                        showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
+                        result = false;
+                    } else {
+                        if (checkOpenmrs) {
+                            restClient = new RestClient();
+                            String patientId = txtPatientId.getText().toUpperCase().trim();
 
-            //Verificar se o NID existe no OpenMRS
-            String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(patientId, " ", "%20"));
+                            //Verificar se o NID existe no OpenMRS
+                            String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(patientId, " ", "%20"));
 
-            if (openMrsResource.length() == 14) {
-                title = Messages.getString("Informação não encontrada");
-                message = Messages.getString("NID inserido não existe no OpenMRS");
-                txtPatientId.setFocus();
-                result = false;
+                            if (openMrsResource.length() == 14) {
+                                title = Messages.getString("Informação não encontrada");
+                                message = Messages.getString("NID inserido não existe no OpenMRS");
+                                txtPatientId.setFocus();
+                                result = false;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
+
+
         if (txtPatientId.getText().trim().isEmpty()) {
             title = Messages.getString("patient.error.missingfield.title"); //$NON-NLS-1$
             message = Messages.getString("patient.error.patientid.blank"); //$NON-NLS-1$
@@ -1065,21 +1074,6 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             }
         }
 
-
-        //Validacao de nr telefone celular segundo o codigo sulafricano
-//		else if (!txtCellphone.getText().trim().isEmpty() && MobilisrManager.validateMsisdn(txtCellphone.getText().trim()) != null){
-//			title = Messages.getString("patient.error.invalidfield.title"); //$NON-NLS-1$
-//			ValidationError error = MobilisrManager.validateMsisdn(txtCellphone.getText().trim());
-//			if (MsisdnValidator.Code.COUNTRY_CODE.equals(error.code)){
-//				message = MessageFormat.format(Messages.getString("patient.error.incorrectCellphoneCode"), //$NON-NLS-1$
-//						PropertiesManager.sms().msisdnPrefix());
-//			} else {
-//				message = MessageFormat.format(Messages.getString("patient.error.incorrectCellphone"), //$NON-NLS-1$
-//						error.message);
-//			}
-//			txtCellphone.setFocus();
-//			result = false;
-//		} 
         else if (episodeStartDate != null && !iDARTUtil.isInPast(episodeStartDate)) {
             title = Messages.getString("patient.error.invalidfield.title"); //$NON-NLS-1$
             message = Messages.getString("patient.error.episodeStartInFuture"); //$NON-NLS-1$
@@ -1227,55 +1221,66 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
             txtPatientId.setText(localPatient.getPatientId());
 
-            if(checkOpenmrs) {
-                //Preparar Prim.Nomes, Apelido e Data de Nascimento apartir do NID usando REST WEB SERVICES
-                String nid = txtPatientId.getText().toUpperCase().trim();
+            if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
+                if (checkOpenmrs) {
+                    try {
+                        if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                            log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                          //  showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
+                            return;
+                        } else {
+                            //Preparar Prim.Nomes, Apelido e Data de Nascimento apartir do NID usando REST WEB SERVICES
+                            String nid = txtPatientId.getText().toUpperCase().trim();
 
-                String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+                            String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
 
-                String personUuid = resource.substring(21, 57);
+                            String personUuid = resource.substring(21, 57);
 
-                String personDemografics = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + personUuid);
+                            String personDemografics = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + personUuid);
 
-                JSONObject jsonObject = new org.json.JSONObject(personDemografics);
+                            JSONObject jsonObject = new org.json.JSONObject(personDemografics);
 
-                String fullName = jsonObject.getJSONObject("preferredName").getString("display");
+                            String fullName = jsonObject.getJSONObject("preferredName").getString("display");
 
-                String[] names = fullName.trim().split(" ");
+                            String[] names = fullName.trim().split(" ");
 
 //               log.trace(names[0]);
 //               log.trace(names[names.length - 1]);
 
-                txtFirstNames.setText(names[0]);//Primeiros nomes
-                localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
+                            txtFirstNames.setText(names[0]);//Primeiros nomes
+                            localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
 
-                txtSurname.setText(names[names.length - 1]);//Apelido
-                localPatient.setLastname(txtSurname.getText());//Apelido
+                            txtSurname.setText(names[names.length - 1]);//Apelido
+                            localPatient.setLastname(txtSurname.getText());//Apelido
 
-                String gender = jsonObject.getString("gender").trim();
+                            String gender = jsonObject.getString("gender").trim();
 
-                cmbSex.setText(gender);
-                localPatient.setSex(cmbSex.getText().charAt(0));
+                            cmbSex.setText(gender);
+                            localPatient.setSex(cmbSex.getText().charAt(0));
 
-                String birthDate = jsonObject.getString("birthdate").trim();
+                            String birthDate = jsonObject.getString("birthdate").trim();
 
-                String year = birthDate.substring(0, 4);
-                String month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(birthDate.substring(5, 7)) - 1];
-                Integer day = Integer.valueOf(birthDate.substring(8, 10));
+                            String year = birthDate.substring(0, 4);
+                            String month = new DateFormatSymbols(Locale.ENGLISH).getMonths()[Integer.valueOf(birthDate.substring(5, 7)) - 1];
+                            Integer day = Integer.valueOf(birthDate.substring(8, 10));
 
-                SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH);
-                theDate = null;//Data de Nascimento
-                try {
-                    theDate = sdf.parse(day.toString() + "-" + month + "-" + year);
-                } catch (ParseException e1) {
-                    getLog().error("Error parsing date: ", e1);
+                            SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy", Locale.ENGLISH);
+                            theDate = null;//Data de Nascimento
+                            try {
+                                theDate = sdf.parse(day.toString() + "-" + month + "-" + year);
+                            } catch (ParseException e1) {
+                                getLog().error("Error parsing date: ", e1);
+                            }
+
+                            cmbDOBDay.setText(day.toString());
+                            cmbDOBMonth.setText(month);
+                            cmbDOBYear.setText(year);
+                            localPatient.setDateOfBirth(theDate);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
-                cmbDOBDay.setText(day.toString());
-                cmbDOBMonth.setText(month);
-                cmbDOBYear.setText(year);
-                localPatient.setDateOfBirth(theDate);
-            }
         }
     }
 
@@ -1441,7 +1446,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
             PatientManager.savePatient(getHSession(), localPatient);
 
-           log.trace(" local patient " + localPatient.getPatientId() + "  " + localPatient.getFirstNames());
+            log.trace(" local patient " + localPatient.getPatientId() + "  " + localPatient.getFirstNames());
 
             //ConexaoODBC conn=new ConexaoODBC();
             ConexaoJDBC conn2 = new ConexaoJDBC();
@@ -1512,25 +1517,35 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         localPatient.setPatientId(txtPatientId.getText().toUpperCase());//NID
         localPatient.setCellphone(txtCellphone.getText().trim());
 
-        if (checkOpenmrs) {
-            if (localPatient.getUuidopenmrs() == null) {
-                String openMrsResource = new RestClient().getOpenMRSResource("patient?q=" + StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
 
-                JSONObject _jsonObject = new JSONObject(openMrsResource);
+        if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
+            if (checkOpenmrs && isAddnotUpdate) {
+                try {
+                    if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                        log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                        showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
+                        return;
+                    } else {
+                        if (localPatient.getUuidopenmrs() == null) {
+                            String openMrsResource = new RestClient().getOpenMRSResource("patient?q=" + StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
 
-                String personUuid = null;
+                            JSONObject _jsonObject = new JSONObject(openMrsResource);
 
-                JSONArray _jsonArray = (JSONArray) _jsonObject.get("results");
+                            String personUuid = null;
 
-                for (int i = 0; i < _jsonArray.length(); i++) {
-                    JSONObject results = (JSONObject) _jsonArray.get(i);
-                    personUuid = (String) results.get("uuid");
+                            JSONArray _jsonArray = (JSONArray) _jsonObject.get("results");
+
+                            for (int i = 0; i < _jsonArray.length(); i++) {
+                                JSONObject results = (JSONObject) _jsonArray.get(i);
+                                personUuid = (String) results.get("uuid");
+                            }
+                            localPatient.setUuidopenmrs(personUuid);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-
-                localPatient.setUuidopenmrs(personUuid);
             }
-        }
 		
 		/*if (cmbSex.getText().equals(Messages.getString("patient.sex.female"))) { //$NON-NLS-1$
 			localPatient.setSex('F');
@@ -2398,19 +2413,31 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         if (!isSaveRequired())
             return true;
 
-        if (checkOpenmrs) {
-            //Verificar se o NID existe no OpenMRS
-            String openMrsResource = new RestClient().getOpenMRSResource("patient?q=" + StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
+        if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
+            if (checkOpenmrs && isAddnotUpdate) {
+                //Verificar se o NID existe no OpenMRS
+                try {
+                    if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                        log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                        showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação ");
+                        return false;
+                    } else {
+                        String openMrsResource = new RestClient().getOpenMRSResource("patient?q=" + StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
 
-            if (openMrsResource.length() == 14) {
-                MessageBox mb = new MessageBox(getShell());
-                mb.setText("Informação não encontrada"); //$NON-NLS-1$
-                mb.setMessage("NID inserido não existe no OpenMRS"); //$NON-NLS-1$
-                mb.open();
-                txtPatientId.setFocus();
-                return false;
+                        if (openMrsResource.length() == 14) {
+                            MessageBox mb = new MessageBox(getShell());
+                            mb.setText("Informação não encontrada"); //$NON-NLS-1$
+                            mb.setMessage("NID inserido não existe no OpenMRS"); //$NON-NLS-1$
+                            mb.open();
+                            txtPatientId.setFocus();
+                            return false;
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
         //Check if the patient is on a study
         //yes - update patient details
         setLocalPatient();

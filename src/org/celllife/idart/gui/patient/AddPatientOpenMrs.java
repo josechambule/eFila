@@ -599,13 +599,13 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         lblPicChild.setVisible(false);
 
 
-        transito = new Button(grpParticulars, SWT.CHECK);
-        transito.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
-        transito.setBounds(new Rectangle(col2x, 150, 150,
-                18));
-        transito.setText("Paciente Em Transito");
-        transito.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        transito.setSelection(false);
+//        transito = new Button(grpParticulars, SWT.CHECK);
+//        transito.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
+//        transito.setBounds(new Rectangle(col2x, 150, 150,
+//                18));
+//        transito.setText("Paciente Em Transito");
+//        transito.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+//        transito.setSelection(false);
 
         // Phone Cell
         Label lblPhoneCell = new Label(grpParticulars, SWT.NONE);
@@ -1372,8 +1372,9 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
             cal.setTime(new SimpleDateFormat("MMM", Locale.ENGLISH).parse(cmbDOBMonth.getText().trim()));
 
             if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
-                log.trace("Servidor Rest offline, a informacao do paciente ["+ localPatient.getPatientId() +" - "+localPatient.getFirstNames()+" "+localPatient.getLastname()+" ] sera armazenada para envio ao Openrms a posterior");
+                PatientManager.savePatient(getHSession(), localPatient);
                 saveOpenmrsPatient(localPatient, getHSession());
+                log.trace("Servidor Rest offline, a informacao do paciente ["+ localPatient.getPatientId() +" - "+localPatient.getFirstNames()+" "+localPatient.getLastname()+" ] sera armazenada para envio ao Openrms a posterior");
             } else {
                 restClient.postOpenMRSPatient(cmbSex.getText().trim().equals(iDartProperties.MASCULINO) ? "M" : "F", lstFullName.get(0), lstFullName.get(1), lstFullName.get(2),
                         cmbDOBYear.getText().trim() + "-" + String.valueOf(cal.get(Calendar.MONTH) + 1) + "-" + cmbDOBDay.getText().trim(), txtPatientId.getText().toUpperCase().trim());
@@ -1394,10 +1395,8 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
                 localPatient.setUuidopenmrs(personUuid);
 
 				log.trace(" O patient " + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " "+ localPatient.getLastname()+" foi enviado ao Openmrs com Sucesso");
-
+                PatientManager.savePatient(getHSession(), localPatient);
             }
-
-            PatientManager.savePatient(getHSession(), localPatient);
 
             conn2.inserPacienteIdart(localPatient.getPatientId(), localPatient.getFirstNames(), localPatient.getLastname(), new Date());
 
@@ -1509,6 +1508,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         for (IPatientTab tab : groupTabs) {
             tab.setPatientDetails(localPatient);
         }
+
     }
 
     @Override
@@ -2298,18 +2298,6 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         if (!isSaveRequired())
             return true;
 
-        //Verificar se o NID existe no OpenMRS
-		/*String openMrsResource = new RestClient().getOpenMRSResource("patient?q="+StringUtils.replace(txtPatientId.getText().trim(), " ", "%20"));
-				
-		if (openMrsResource.length() == 14) {
-			MessageBox mb = new MessageBox(getShell());
-			mb.setText("Informa��o n�o encontrada"); //$NON-NLS-1$
-			mb.setMessage("NID inserido n�o existe no OpenMRS"); //$NON-NLS-1$
-			mb.open();
-			txtPatientId.setFocus();
-			return false;
-		}*/
-
         //Check if the patient is on a study
         //yes - update patient details
         setLocalPatient();
@@ -2557,10 +2545,11 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
 
         if (patient.getPatientId() != null)
             syncOpenmrsPatient = PatientManager.getSyncOpenmrsPatienByNID(getHSession(), patient.getPatientId());
-        else
+
+
+        if(syncOpenmrsPatient == null)
             syncOpenmrsPatient = new SyncOpenmrsPatient();
 
-        syncOpenmrsPatient.setId(patient.getId());
         syncOpenmrsPatient.setAddress1(patient.getAddress1());
         syncOpenmrsPatient.setAddress2(patient.getAddress2());
         syncOpenmrsPatient.setAddress3(patient.getAddress3());

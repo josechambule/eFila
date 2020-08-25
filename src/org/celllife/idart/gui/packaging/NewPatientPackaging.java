@@ -2743,6 +2743,8 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
             Date dtPickUp = newPack.getPickupDate();
 
+            Clinic clinic = AdministrationManager.getMainClinic(hSession);
+
             // EncounterDatetime
             String strPickUp = RestUtils.castDateToString(dtPickUp);
 
@@ -2766,10 +2768,13 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
             String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
 
-            String facility = newPack.getClinic().getClinicName().trim();
+            String facility =  clinic.getClinicName().trim();
 
             if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
-                log.trace("Servidor Rest offline, a informacao do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] sera armazenada para envio ao Openrms a posterior");
+
+                PackageManager.savePackage(getHSession(), newPack);
+
+                log.trace("Servidor Rest offline, o aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms a posterior");
                 saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                         facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
                         iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
@@ -2789,18 +2794,25 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     nidUuid = (String) results.get("uuid");
                 }
 
-
                 String uuid = localPatient.getUuidopenmrs();
                 if (uuid != null && !uuid.isEmpty()) {
                     uuid = localPatient.getUuidopenmrs();
                 } else {
+
+                    PackageManager.savePackage(getHSession(), newPack);
+                    log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
+                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog (newPack, dtNextPickUp, "O NID deste paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] foi alterado no OpenMRS ou não possui UUID."
+                            + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente.");
                     MessageBox m = new MessageBox(getShell(), SWT.OK |
                             SWT.ICON_ERROR);
                     m.setText("Problema dispensando o pacote de medicamentos");
                     m.
                             setMessage("O NID deste paciente foi alterado no OpenMRS ou não possui UUID."
-                                    + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."
-                            );
+                                    + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."+
+                                    "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
@@ -2814,9 +2826,17 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
 
                 if (jsonReportingRestArray.length() < 1) {
+
+                    PackageManager.savePackage(getHSession(), newPack);
+                    log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog (newPack, dtNextPickUp, "NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
                     m.setText("Informação sobre estado do programa");
-                    m.setMessage("NID inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
+                    m.setMessage("NID inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS." +
+                            "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
@@ -2852,15 +2872,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 } catch (Exception e) {
                     log.trace("Nao foi criado o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
                     getLog().info(e.getMessage());
-                    OpenmrsErrorLog errorLog = new OpenmrsErrorLog();
-                    errorLog.setPatient(newPack.getPrescription().getPatient());
-                    errorLog.setPrescription(newPack.getPrescription());
-                    errorLog.setPickupdate(newPack.getPickupDate());
-                    errorLog.setReturnpickupdate(dtNextPickUp);
-                    errorLog.setErrordescription(e.getMessage());
-                    errorLog.setDatacreated(new Date());
-                    OpenmrsErrorLogManager.saveOpenmrsRestLog(getHSession(), errorLog);
-
+                    saveErroLog (newPack, dtNextPickUp, "Nao foi criado o fila no openmrs para o paciente " + patientId + ": " +e.getMessage());
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
                     m.setText("Problema salvando o pacote de medicamentos");
                     m.setMessage("Houve um problema ao salvar o pacote de medicamentos para o paciente " + nid + ". " + "Por favor contacte o SIS.");
@@ -3190,47 +3202,26 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                                                 info.getDispensedQty(), false, true));
                                     }
                                     drugNames.put(info.getDrugName(), "test");
-                                    // set the String that will print out on the
-                                    // prescription summary label to indicate
-                                    // for each drug the (<total amount dispensed> +
-                                    // <total
-                                    // accumulated amount>)
 
-                                    // before printing the labels, save pdi List
-//                                  if(checkOpenmrs) {
-//                                      if (postOpenMrsEncounterStatus) {
                                     TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                                    getHSession().flush();
-                                    //                                      }
-                                    //                                   }else {
-//                                        TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-//                                        getHSession().flush();
-//                                    }
+
                                 }
                             }
-
+                            getHSession().flush();
                             tx.commit();
 
 
                             Vector<String> vMedicamentos = new Vector<String>();
 
                             // Inicializa as variaveis para a insercao n acess
-                            int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
-                            String notes = allPackagedDrugsList.get(0).getNotes();
-                            String patientId = allPackagedDrugsList.get(0).getPatientId();
-                            String specialInstructions1 = allPackagedDrugsList.get(0).getSpecialInstructions1();
-                            String specialInstructions2 = allPackagedDrugsList.get(0).getSpecialInstructions2();
+
                             Date dispenseDate = allPackagedDrugsList.get(0).getDispenseDate();
-                            int weeksSupply = allPackagedDrugsList.get(0).getWeeksSupply();
-                            int prescriptionDuration = allPackagedDrugsList.get(0).getPrescriptionDuration();
+
                             String dateExpectedString = allPackagedDrugsList.get(0).getDateExpectedString();
 
                             List<PrescriptionToPatient> lp = conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
-                            String reasonforupdate = lp.get(0).getReasonforupdate();
-                            String regime = lp.get(0).getRegimeesquema();
-                            int idade = lp.get(0).getIdade();
+
                             Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
-                            String motivomudanca = lp.get(0).getMotivomudanca();
 
                             for (int i = 0; i < allPackagedDrugsList.size(); i++) {
                                 // adiciona os medicantos no vector
@@ -3241,23 +3232,6 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                             if (vMedicamentos != null)
                                 for (int i = 0; i < vMedicamentos.size(); i++)
                                    log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
-
-                           log.trace(" Quantidade: " + allPackagedDrugsList.get(0).getDispensedQty());
-                           log.trace(" Notes: " + allPackagedDrugsList.get(0).getNotes());
-                           log.trace(" NID: " + allPackagedDrugsList.get(0).getPatientId());
-                           log.trace(" Instucaao1: " + allPackagedDrugsList.get(0).getSpecialInstructions1());
-                           log.trace(" Instruncao2: " + allPackagedDrugsList.get(0).getSpecialInstructions2());
-                           log.trace(" Data de dispensa: " + allPackagedDrugsList.get(0).getDispenseDate());
-                           log.trace(" Semanas: " + allPackagedDrugsList.get(0).getWeeksSupply());
-                           log.trace(
-                                    " duracao da prescricao semanas: " + allPackagedDrugsList.get(0).getPrescriptionDuration());
-                           log.trace(" data proxima visita: " + allPackagedDrugsList.get(0).getDateExpectedString());
-                           log.trace(" tipotarv: " + lp.get(0).getReasonforupdate());
-                           log.trace(" Regime: " + lp.get(0).getRegimeesquema());
-                           log.trace(" Idade: " + lp.get(0).getIdade());
-
-                           log.trace(" DAta inicio noutro servico: " + dataInicioNoutroServico);
-                           log.trace(" Motivo da mudanca: " + motivomudanca);
 
                             // convertendo a data para adequar com a coluna datatarv do
                             // ms access - t_tarv
@@ -3338,46 +3312,23 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                                         info.getDispensedQty(), false, true));
                             }
                             drugNames.put(info.getDrugName(), "test");
-                            // set the String that will print out on the
-                            // prescription summary label to indicate
-                            // for each drug the (<total amount dispensed> +
-                            // <total
-                            // accumulated amount>)
 
-                            // before printing the labels, save pdi List
-//                           if(checkOpenmrs) {
-//                               if (postOpenMrsEncounterStatus) {
                             TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-                            getHSession().flush();
-//                        }
-//                            }else{
-//                                TemporaryRecordsManager.savePackageDrugInfosToDB(getHSession(), allPackagedDrugsList);
-//                                getHSession().flush();
-//                            }
+
                         }
                     }
+                    getHSession().flush();
                     tx.commit();
                 }
 
 
                 Vector<String> vMedicamentos = new Vector<String>();
 
-                int dispensedQty = allPackagedDrugsList.get(0).getDispensedQty();
-                String notes = allPackagedDrugsList.get(0).getNotes();
-                String patientId = allPackagedDrugsList.get(0).getPatientId();
-                String specialInstructions1 = allPackagedDrugsList.get(0).getSpecialInstructions1();
-                String specialInstructions2 = allPackagedDrugsList.get(0).getSpecialInstructions2();
-                Date dispenseDate = allPackagedDrugsList.get(0).getDispenseDate();
-                int weeksSupply = allPackagedDrugsList.get(0).getWeeksSupply();
-                int prescriptionDuration = allPackagedDrugsList.get(0).getPrescriptionDuration();
-                String dateExpectedString = allPackagedDrugsList.get(0).getDateExpectedString();
 
+                Date dispenseDate = allPackagedDrugsList.get(0).getDispenseDate();
+                String dateExpectedString = allPackagedDrugsList.get(0).getDateExpectedString();
                 List<PrescriptionToPatient> lp = conn.listPtP(allPackagedDrugsList.get(0).getPatientId());
-                String reasonforupdate = lp.get(0).getReasonforupdate();
-                String regime = lp.get(0).getRegimeesquema();
-                int idade = lp.get(0).getIdade();
                 Date dataInicioNoutroServico = lp.get(0).getDataInicionoutroservico();
-                String motivomudanca = lp.get(0).getMotivomudanca();
 
                 for (int i = 0; i < allPackagedDrugsList.size(); i++) {
                     // adiciona os medicantos no vector
@@ -3388,26 +3339,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 if (vMedicamentos != null)
                     for (int i = 0; i < vMedicamentos.size(); i++)
                        log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
-//
-//               log.trace(" Quantidade: " + allPackagedDrugsList.get(0).getDispensedQty());
-//               log.trace(" Notes: " + allPackagedDrugsList.get(0).getNotes());
-//               log.trace(" NID: " + allPackagedDrugsList.get(0).getPatientId());
-//               log.trace(" Instucaao1: " + allPackagedDrugsList.get(0).getSpecialInstructions1());
-//               log.trace(" Instruncao2: " + allPackagedDrugsList.get(0).getSpecialInstructions2());
-//               log.trace(" Data de dispensa: " + allPackagedDrugsList.get(0).getDispenseDate());
-//               log.trace(" Semanas: " + allPackagedDrugsList.get(0).getWeeksSupply());
-//               log.trace(
-//                        " duracao da prescricao semanas: " + allPackagedDrugsList.get(0).getPrescriptionDuration());
-//               log.trace(" data proxima visita: " + allPackagedDrugsList.get(0).getDateExpectedString());
-//               log.trace(" tipotarv: " + lp.get(0).getReasonforupdate());
-//               log.trace(" Regime: " + lp.get(0).getRegimeesquema());
-//               log.trace(" Idade: " + lp.get(0).getIdade());
-//
-//               log.trace(" DAta inicio noutro servico: " + dataInicioNoutroServico);
-//               log.trace(" Motivo da mudanca: " + motivomudanca);
 
-                // convertendo a data para adequar com a coluna datatarv do ms
-                // access - t_tarv
                 SimpleDateFormat parseFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                 Date datatarv = parseFormat.parse(dispenseDate.toString());
                 SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
@@ -3499,7 +3431,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
         if(prescription != null){
 
-            syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(session,prescription);
+            syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(session,prescription,encounterDatetime);
 
             if (syncOpenmrsDispense == null)
                 syncOpenmrsDispense = new SyncOpenmrsDispense();
@@ -3525,6 +3457,23 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
         }
 
+    }
+
+
+    public void saveErroLog (Packages newPack, Date dtNextPickUp, String error) {
+
+        OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(getHSession(), newPack.getPrescription());
+        if (errorLog == null) {
+            errorLog = new OpenmrsErrorLog();
+            errorLog.setPatient(newPack.getPrescription().getPatient());
+            errorLog.setPrescription(newPack.getPrescription());
+            errorLog.setPickupdate(newPack.getPickupDate());
+            errorLog.setReturnpickupdate(dtNextPickUp);
+            errorLog.setErrordescription(error);
+            errorLog.setDatacreated(new Date());
+            OpenmrsErrorLogManager.saveOpenmrsRestLog(getHSession(), errorLog);
+
+        }
     }
 
 }

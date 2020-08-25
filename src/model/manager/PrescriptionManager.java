@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.rest.utils.RestUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -199,10 +200,10 @@ public class PrescriptionManager {
 	}
 
 	// Devolve a lista de receitas de pacientes por enviar
-	public static SyncOpenmrsDispense getSyncOpenmrsPatienByPrescription(Session sess, Prescription prescription) throws HibernateException {
+	public static SyncOpenmrsDispense getSyncOpenmrsPatienByPrescription(Session sess, Prescription prescription, String pickupDate) throws HibernateException {
 		SyncOpenmrsDispense result;
 
-		List patient = sess.createQuery("from SyncOpenmrsDispense sync where sync.prescription = '" + prescription+"'").list();
+		List patient = sess.createQuery("from SyncOpenmrsDispense sync where sync.prescription = '" + prescription.getId()+"' and strPickUp = '"+pickupDate+"' ").list();
 
 		if (patient.isEmpty())
 			result = null;

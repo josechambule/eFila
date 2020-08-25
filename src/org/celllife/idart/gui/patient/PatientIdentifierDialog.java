@@ -19,6 +19,7 @@
 
 package org.celllife.idart.gui.patient;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,7 @@ import model.manager.PatientManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.JdbcProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.AlternatePatientIdentifier;
 import org.celllife.idart.database.hibernate.IdentifierType;
@@ -58,8 +60,11 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.hibernate.Session;
 
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
+
 public class PatientIdentifierDialog extends GenericOthersGui {
-	
+
+	private static Logger log = Logger.getLogger(PatientIdentifierDialog.class);
 	private RestClient restClient;
 
 	class PatientIdentifierEditingSupport extends EditingSupport {
@@ -306,32 +311,33 @@ public class PatientIdentifierDialog extends GenericOthersGui {
 				showMessage(MessageDialog.ERROR, "Formato de NID incorrecto", "O valor introduzido não obedece a estrutura de um NID");
 				return false;
 			}
-						
-			restClient = new RestClient();
-			
-			//Verificar se o NID existe no OpenMRS
-			String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT+
-					StringUtils.replace(newId.getValueEdit(), " ", "%20"));
-			
-			/*if (openMrsResource.length() == 14) {
-				showMessage(MessageDialog.ERROR, "Informa��o n�o encontrada", "NID inserido n�o existe no OpenMRS");
-				return false;
-			}*/
-			
-			if (openMrsResource.length() == 14) {
-				showMessage(MessageDialog.ERROR, "Informação não encontrada", "NID inserido não existe no OpenMRS");
-				
-				MessageDialog dialog = new MessageDialog(getShell(), "Paciente em Transito", null, 
-						"Trata-se de um paciente em trânsito?", MessageDialog.QUESTION, new String[] { "Sim","Não"}, 0);
-				
-				switch (dialog.open()) {
-				case 1:
-					return false;
-				case 0:
-					 localPatient.setIsPatientEmTransito(Boolean.TRUE); 
+
+			try {
+				if(!localPatient.getIsPatientEmTransito()) {
+					if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+						log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+						showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
+						return false;
+					} else {
+						restClient = new RestClient();
+
+						//Verificar se o NID existe no OpenMRS
+						String openMrsResource = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT +
+								StringUtils.replace(newId.getValueEdit(), " ", "%20"));
+
+						if (openMrsResource.length() == 14) {
+							showMessage(MessageDialog.ERROR, "Informação não encontrada", "NID inserido não existe no OpenMRS");
+							localPatient.setPatientId(null);
+							return false;
+						}
+					}
 				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			
+
+
 			List<Patient> altPatients = PatientManager.getPatientsByAltId(
 					getHSession(), newId.getType(), newId.getValueEdit());
 			if (!altPatients.isEmpty()){
