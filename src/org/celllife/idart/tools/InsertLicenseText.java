@@ -28,7 +28,7 @@ public class InsertLicenseText {
 
 	InsertLicenseText it = new InsertLicenseText();
 	String path = args[0];
-	// System.out.println("path: " + path);
+	//log.trace("path: " + path);
 	// String path = "D://development//workspace//TestGPL//FilesToChange";
 
 	File folder = new File(path);

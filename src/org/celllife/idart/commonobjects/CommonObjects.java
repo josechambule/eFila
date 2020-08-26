@@ -224,7 +224,50 @@ public class CommonObjects {
 		combo.add("");
 		if (combo.getItemCount() > 0) {
 			// Set the default to the property
-			combo.setText("Select a Province");
+			combo.setText("Seleccione a Província");
+		}
+
+	}
+
+
+	public static void populateFacilityTypes(Session sess, CCombo combo) {
+
+		List<String> sdList = AdministrationManager.getAllFacilityType(sess);
+
+		if (sdList != null) {
+			for (String s : sdList) {
+				if(s != null){
+					combo.add(s);
+				}
+
+			}
+		}
+
+		combo.add("");
+		if (combo.getItemCount() > 0) {
+			// Set the default to the property
+			combo.setText("Selecione ...");
+		}
+
+	}
+
+	public static void populateDeseases(Session sess, CCombo combo) {
+
+		List<String> sdList = AdministrationManager.getDeseases(sess);
+
+		if (sdList != null) {
+			for (String s : sdList) {
+				if(s != null){
+					combo.add(s);
+				}
+
+			}
+		}
+
+		combo.add("");
+		if (combo.getItemCount() > 0) {
+			// Set the default to the property
+			combo.setText("Seleccione a Doença");
 		}
 
 	}

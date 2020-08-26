@@ -5,6 +5,7 @@
  */
 package migracao.swingreverse;
 
+import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.farmac.JBackupController;
 import migracao.farmac.JRestoreController;
 import migracao.farmac.PasswordProtectedZip;
@@ -12,7 +13,6 @@ import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.gui.platform.GenericGui;
@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 public class Task4 extends SwingWorker<String, Void> {
 
     private final Random rnd = new Random();
+    final static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Task4.class);
       GenericGui conn;
       
     Task4() {
@@ -65,7 +66,7 @@ public class Task4 extends SwingWorker<String, Void> {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 if (jfc.getSelectedFile().isDirectory()) {
-                    System.out.println("You selected the directory: " + jfc.getSelectedFile());
+                   log.trace("You selected the directory: " + jfc.getSelectedFile());
                 }
             }
 
@@ -98,15 +99,12 @@ public class Task4 extends SwingWorker<String, Void> {
                             for (SyncTempPatient patientSync : patientList) {
                                 ++current;
                                 
-                                if (clinic.getClinicName().equalsIgnoreCase(patientSync.getClinicName())){
+                                if (clinic.getClinicName().equalsIgnoreCase(patientSync.getClinicname())){
                                     ++npacientesDaFarmac;
                                 }
                                 
-                                Patient paciente = DadosPacienteFarmac.InserePaciente(patientSync, clinic);
-                                if (paciente != null) {
-                                    DadosPacienteFarmac.InserePatientIdentifier(paciente, identifierType);
-                                    DadosPacienteFarmac.InserePatientAttribute(paciente, patientSync.getDataInicioTarv(), attributeType);
-                                }
+                                Patient paciente = null ; //DadosPacienteFarmac.InserePaciente(patientSync, clinic);
+
                             }
 
                         } catch (IOException ex) {

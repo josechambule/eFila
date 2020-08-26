@@ -10,9 +10,11 @@ package migracao.entidadesHibernate.ImportDao;
 
 import migracao.connection.hibernateConection;
 import migracao.entidadesHibernate.Interfaces.PatientDaoInterface;
+import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.SyncTempDispense;
 import org.celllife.idart.database.hibernate.SyncTempPatient;
+import org.celllife.idart.rest.utils.RestFarmac;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -27,6 +29,8 @@ public class PatientImportDao
 
     public Session currentSession;
     public Transaction currentTransaction;
+
+    public final static Logger log = Logger.getLogger(PatientImportDao.class);
 
     public Session openCurrentSession() {
         this.currentSession = hibernateConection.getInstanceLocal();
@@ -76,7 +80,7 @@ public class PatientImportDao
 
     public Patient findByPatientId(String id) {
         Patient patient = (Patient) this.getCurrentSession().createQuery("from Patient p where p.patientId = '" + id + "'").uniqueResult();
-        System.out.println(patient);
+//       log.trace(patient);
         return patient;
     }
 
@@ -100,14 +104,14 @@ public class PatientImportDao
     public List<SyncTempPatient> findAllImport() {
 //        SQLQuery query = this.getCurrentSession().createSQLQuery("select * from sync_temp_patients ");
 //        query.addEntity(SyncTempPatient.class);
-//        System.out.println(query.list());
+//       log.trace(query.list());
 //        List<SyncTempPatient> syncPatientImport = query.list();
 //
         List syncPatientImport = null;
         try {
             syncPatientImport = this.getCurrentSession().createQuery("from SyncTempPatient").list();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+           log.trace(e.getMessage());
         }
 
         return syncPatientImport;
@@ -133,7 +137,7 @@ public class PatientImportDao
             syncDispenseExport = this.getCurrentSession().createQuery("from SyncTempDispense where syncTempDispenseid = '" + clinicName + "'"
                     + " AND patientid = '" + patient.getPatientId() + "' AND dispensedate = '"+datadispensa+"'").list();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+           log.trace(e.getMessage());
         }
 
         return syncDispenseExport;
@@ -149,7 +153,7 @@ public class PatientImportDao
         try {
             patients = query.list();
         } catch (HibernateException e) {
-            System.out.println(e.getMessage());
+           log.trace(e.getMessage());
         }
 
         return patients;

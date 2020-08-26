@@ -20,6 +20,7 @@ import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
 import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.entidadesHibernate.servicos.PatientIdentifierService;
 import migracao.entidadesHibernate.servicos.PersonService;
+import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Patient;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
 
@@ -34,6 +35,7 @@ class Task2
         extends SwingWorker<String, Void> {
 
     private final Random rnd = new Random();
+    final static Logger log = Logger.getLogger(Task2.class);
 
     // Esta classe vai ler e escrever um logFile  com os detalhe das excecpiotns que podem ocorrer 
     // durante o processo de uniao de nids. O ficheiro deve ser criado na pasta de instalacao do idart que pode ser
@@ -212,7 +214,7 @@ class Task2
                         fileLocation = logFile.getPath();
                         break;
                     } catch (IOException e) {
-                           System.out.println("cannot create log file" +e.getMessage());
+                          log.trace("cannot create log file" +e.getMessage());
                     }
                 } //create new file
                 else {
@@ -220,11 +222,11 @@ class Task2
 
                         logFile.createNewFile();
                         fileLocation = logFile.getPath();
-                        System.out.println(fileLocation + ":  Criado");
+                       log.trace(fileLocation + ":  Criado");
                         break;
 
                     } catch (IOException e) {
-                        System.out.println("cannot create log file" +e.getMessage());
+                       log.trace("cannot create log file" +e.getMessage());
                     }
 
                 }

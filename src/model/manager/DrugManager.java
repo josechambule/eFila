@@ -3,18 +3,15 @@
  */
 package model.manager;
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.TableItem;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+
+import java.util.*;
 
 /**
  */
@@ -233,6 +230,23 @@ public class DrugManager {
         return theDrug;
     }
 
+    public static Drug getDrugyAtccode(Session sess, String drugAtccode)
+            throws HibernateException {
+        Drug theDrug = null;
+        theDrug = (Drug) sess.createQuery(
+                "from Drug as d where d.atccode_id = :drugAtccode").setString(
+                "drugAtccode", drugAtccode).setMaxResults(1).uniqueResult();
+        return theDrug;
+    }
+
+    public static Drug getDrugFromString(Session sess, String drugName)
+            throws HibernateException {
+        Drug theDrug = null;
+        theDrug = (Drug) sess.createQuery(
+                "from Drug as d where d.name like '%"+drugName+"%'").setMaxResults(1).uniqueResult();
+        return theDrug;
+    }
+
     public static String getDrugNameForPackagedDrug(Session session,
                                                     int packageDrugId) {
         return (String) session.createQuery(
@@ -287,6 +301,11 @@ public class DrugManager {
             throws HibernateException {
         s.save(theDrug);
 
+    }
+
+    public static void updateDrug(Session s, Drug theDrug)
+            throws HibernateException {
+        s.update(theDrug);
     }
 
     // ---------- METHODS FOR CHEMICAL DRUG STRENGTH MANAGER ---------------
@@ -631,7 +650,7 @@ public class DrugManager {
 
     public static void saveRegimeTerapeutico(Session sess, RegimeTerapeutico theRegToSave)
             throws HibernateException {
-        sess.save(theRegToSave);
+        sess.saveOrUpdate(theRegToSave);
 
     }
 

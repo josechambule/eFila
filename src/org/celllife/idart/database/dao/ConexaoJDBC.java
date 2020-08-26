@@ -55,7 +55,7 @@ public class ConexaoJDBC {
         // String url = "jdbc:postgresql://192.168.0.105/pharm?charSet=LATIN1";
         String url = iDartProperties.hibernateConnectionUrl;
 
-        // System.out.println(" url "+iDartProperties.hibernateConnectionUrl);
+        //log.trace(" url "+iDartProperties.hibernateConnectionUrl);
         log.info("Conectando ao banco de dados  URL = " + url);
 
         // Carregar o driver
@@ -1632,7 +1632,7 @@ public class ConexaoJDBC {
                                 - rs.getInt("saldos"));
 
                 riscos.add(rr);
-                System.out.println("   ");
+               log.trace("   ");
 
             }
             rs.close(); // � necess�rio fechar o resultado ao terminar
@@ -4539,7 +4539,7 @@ public class ConexaoJDBC {
          e.printStackTrace();
          }
          } else
-         System.out.println("NULL NULL NULL NULL");*/
+        log.trace("NULL NULL NULL NULL");*/
     }
 
     public int total_rows() {
@@ -4633,7 +4633,7 @@ public class ConexaoJDBC {
 
             ResultSet linhas = st.executeQuery(query);
 
-            // System.out.println(" Query: "+query );
+            //log.trace(" Query: "+query );
             while (linhas.next()) {
 
                 SyncLinha synclinha = new SyncLinha(linhas.getString("a"),
@@ -4641,7 +4641,7 @@ public class ConexaoJDBC {
                         linhas.getString("d"), linhas.getString("e"),
                         linhas.getString("f"), linhas.getString("g"));
 
-                System.out.println(linhas.getString("a") + " "
+               log.trace(linhas.getString("a") + " "
                         + linhas.getString("b") + " " + linhas.getString("c")
                         + " " + linhas.getString("d") + " "
                         + linhas.getString("e") + " " + linhas.getString("f"));
@@ -4654,7 +4654,7 @@ public class ConexaoJDBC {
 
         }
 
-        System.out.println(" Vector size " + linha.size());
+       log.trace(" Vector size " + linha.size());
 
         return linha;
 
@@ -4692,7 +4692,7 @@ public class ConexaoJDBC {
                         linhas.getString("e"), linhas.getString("f"));
 
                 /*
-                 * System.out.println
+                 *log.trace
                  * (linhas.getString("a")+" "+linhas.getString("b") +" "+
                  * linhas.getString("c") +" "+linhas.getString("d")+" "+
                  * linhas.getString("e")+" "+ linhas.getString("f"));
@@ -4780,7 +4780,7 @@ public class ConexaoJDBC {
          + "\',"
          + "\'"
          + dataabertura + "\')" + "";
-         System.out.println(query);
+        log.trace(query);
 
          st.executeUpdate(query);
 
@@ -4938,7 +4938,7 @@ public class ConexaoJDBC {
                     jatemFilaInicio = true;
                     break;
                 }
-                System.out.println("/*/*//*///*/*//*/*/" + rs.getString("nid"));
+               log.trace("/*/*//*///*/*//*/*/" + rs.getString("nid"));
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -5975,11 +5975,11 @@ public class ConexaoJDBC {
                 try {
                     if (!inst[i].trim().equals("")) {
                         st.executeUpdate(inst[i]);
-                        System.out.println(">>" + inst[i]);
+                       log.trace(">>" + inst[i]);
                     }
                     break;
                 } catch (SQLException e) {
-                    System.out.println("### - SQL Error " + e.getMessage());
+                   log.trace("### - SQL Error " + e.getMessage());
                 } finally {
 
                     continue;
@@ -5988,12 +5988,12 @@ public class ConexaoJDBC {
             }
 
         } catch (Exception e) {
-            System.out.println("*** Error : " + e.toString());
-            System.out.println("*** ");
-            System.out.println("*** Error : ");
+           log.trace("*** Error : " + e.toString());
+           log.trace("*** ");
+           log.trace("*** Error : ");
             e.printStackTrace();
-            System.out.println("################################################");
-            System.out.println(sb.toString());
+           log.trace("################################################");
+           log.trace(sb.toString());
         }
 
     }

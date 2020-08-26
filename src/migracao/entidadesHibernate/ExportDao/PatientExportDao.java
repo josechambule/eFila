@@ -12,6 +12,8 @@ import migracao.connection.hibernateConectionRemote;
 import migracao.entidades.Patient;
 import migracao.entidades.PatientIdentifier;
 import migracao.entidadesHibernate.Interfaces.PatientDaoInterface;
+import migracao.swingreverse.TestePBE;
+import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.SyncTempDispense;
 import org.celllife.idart.database.hibernate.SyncTempPatient;
 import org.hibernate.Session;
@@ -25,6 +27,7 @@ public class PatientExportDao
 implements PatientDaoInterface<Patient, String> {
     public Session currentSession;
     public Transaction currentTransaction;
+    final static Logger log = Logger.getLogger(PatientExportDao.class);
 
     public Session openCurrentSession() {
         this.currentSession = hibernateConectionRemote.getInstanceRemote();
@@ -86,7 +89,7 @@ implements PatientDaoInterface<Patient, String> {
             System.err.println("Este NID " + id + " nao foi encontrado no OpenMRS. Verifique o NID no OpenMRS ou Contacte o Administrador");
             System.err.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         }
-        System.out.println(patient);
+       log.trace(patient);
         return patient;
     }
 

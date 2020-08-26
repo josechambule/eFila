@@ -5,6 +5,8 @@
  */
 package migracao.swingreverse;
 
+import org.apache.log4j.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -20,12 +22,14 @@ public final class SecretKeyUtil {
     public static String SECRET_KEY_TYPE = "AES";
     public static int KEYSIZE = 256;
     public static String UTF_8 = "UTF8";
+
+    final static Logger log = Logger.getLogger(SecretKeyUtil.class);
      
     public static void main(String args[]) {
         try {
             SecretKeyUtil.generateSecretKey();
           
-            System.out.println("Key file created! "+ SecretKeyUtil.encrypter("!farmac@ccs.mz")+" - " +SecretKeyUtil.decrypter(SecretKeyUtil.encrypter("!farmac@ccs.mz")));
+           log.trace("Key file created! "+ SecretKeyUtil.encrypter("!farmac@ccs.mz")+" - " +SecretKeyUtil.decrypter(SecretKeyUtil.encrypter("!farmac@ccs.mz")));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

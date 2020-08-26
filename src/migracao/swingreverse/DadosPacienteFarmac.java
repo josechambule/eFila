@@ -5,92 +5,523 @@
  */
 package migracao.swingreverse;
 
-import migracao.entidadesHibernate.importPatient.PatientAttributeImportService;
-import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
+import model.manager.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.CentralizationProperties;
+import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
+import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
+import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.rest.utils.RestClient;
+import org.celllife.idart.rest.utils.RestFarmac;
+import org.celllife.idart.rest.utils.RestUtils;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
- *
  * @author colaco
  */
 public class DadosPacienteFarmac {
 
-    public static Patient InserePaciente(SyncTempPatient patientSync, Clinic clinic) {
+    public final static Logger log = Logger.getLogger(DadosPacienteFarmac.class);
+
+    public static Patient InserePaciente(Session sess, SyncTempPatient patientSync) {
 
         Patient patient = null;
-        PatientIdentifierImportService patientIdentifierImportService = new PatientIdentifierImportService();
-        PatientImportService patientImportService = new PatientImportService();
-        PatientIdentifier importedPatientIdentifier = patientIdentifierImportService.findByIdentifier(patientSync.getPatientId());
+        PatientIdentifier patientIdentifier = null;
+        PatientAttribute patientAttribute = null;
+        Set<PatientIdentifier> oldIdentifiers = new HashSet<>();
 
-        if (clinic.getClinicName().equalsIgnoreCase(patientSync.getClinicName())) {
+        Clinic clinic = null;
+        Session session = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
 
-            if (importedPatientIdentifier == null) {
-                patient = new Patient();
-            } else {
-                patient = importedPatientIdentifier.getPatient();
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+            clinic = AdministrationManager.getClinicbyUuid(sess, patientSync.getMainclinicuuid());
+
+            if (clinic == null) {
+                try {
+                    clinic = new Clinic();
+                    clinic.setUuid(patientSync.getMainclinicuuid());
+                    clinic.setClinicName(patientSync.getMainclinicname());
+                    clinic.setMainClinic(false);
+                    clinic.setDistrict("");
+                    clinic.setProvince("");
+                    clinic.setSubDistrict("");
+                    clinic.setNotes("");
+                    clinic.setTelephone("");
+                    clinic.setFacilityType("Unidade Sanitária");
+                    clinic.setCode(patientSync.getPatientid().substring(0, 9));
+                    AdministrationManager.saveClinic(sess, clinic);
+                    tx.commit();
+                    session.flush();
+                    session.close();
+                } catch (Exception e) {
+                    if (tx != null) {
+                        tx.rollback();
+                        session.close();
+                    }
+                   log.trace("Error :" + e);
+                }
             }
+        } else
+            clinic = AdministrationManager.getMainClinic(sess);
 
-            patient.setFirstNames(patientSync.getFirstNames());
-            patient.setAccountStatus(Boolean.FALSE);
-            patient.setAddress1(patientSync.getAddress1());
-            patient.setAddress2(patientSync.getAddress2());
-            patient.setAddress3(patientSync.getAddress3());
-            patient.setCellphone(patientSync.getCellphone());
-            patient.setDateOfBirth(patientSync.getDateOfBirth());
-            patient.setClinic(clinic);
-            patient.setNextOfKinName(patientSync.getNextOfKinName());
-            patient.setNextOfKinPhone(patientSync.getNextOfKinPhone());
-            patient.setHomePhone(patientSync.getHomePhone());
-            patient.setLastname(patientSync.getLastname());
-            patient.setModified(patientSync.getModified());
-            patient.setPatientId(patientSync.getPatientId());
-            patient.setProvince(patientSync.getProvince());
-            patient.setSex(patientSync.getSex());
-            patient.setWorkPhone(null);
-            patient.setRace(patientSync.getMainClinicName());
-            patient.setUuidopenmrs(patientSync.getUuid());
+        IdentifierType identifierType = AdministrationManager.getNationalIdentifierType(sess);
+        AttributeType attributeType = PatientManager.getAttributeTypeObject(sess, "ARV Start Date");
 
-            if (importedPatientIdentifier == null) {
-                patientImportService.persist(patient);
-            } else {
-                patientImportService.update(patient);
-            }
-            return patient;
+        if (patientSync.getUuid() != null)
+            patient = PatientManager.getPatientfromUuid(sess, patientSync.getUuid());
+        else
+            patient = PatientManager.getPatient(sess, patientSync.getPatientid());
+
+        if (patient == null) {
+            patient = new Patient();
+            patientIdentifier = new PatientIdentifier();
+            patientAttribute = new PatientAttribute();
         } else {
-            return null;
+            patientIdentifier = patient.getIdentifier(identifierType);
+            if (patientIdentifier == null)
+                patientIdentifier = new PatientIdentifier();
+            patientAttribute = patient.getAttributeByName(attributeType.getName());
+            oldIdentifiers = patient.getPatientIdentifiers();
         }
-    }
 
-    public static void InserePatientIdentifier(Patient p, IdentifierType identifierType) {
-        PatientIdentifierImportService identifierImportService = new PatientIdentifierImportService();
-        PatientIdentifier importedPatientIdentifier = identifierImportService.findByIdentifier(p.getPatientId());
-        if (importedPatientIdentifier == null) {
-            PatientIdentifier patientIdentifierLocal = new PatientIdentifier();
-            patientIdentifierLocal.setPatient(p);
-            patientIdentifierLocal.setType(identifierType);
-            patientIdentifierLocal.setValue(p.getPatientId());
-            identifierImportService.persist(patientIdentifierLocal);
-        } else {
-            importedPatientIdentifier.setValue(p.getPatientId());
-            importedPatientIdentifier.setValueEdit(importedPatientIdentifier.getValue());
-            identifierImportService.update(importedPatientIdentifier);
-        }
-    }
+        patientIdentifier.setPatient(patient);
+        patientIdentifier.setType(identifierType);
+        patientIdentifier.setValue(patientSync.getPatientid());
 
-    public static void InserePatientAttribute(Patient patient, String dataInicioTarv, AttributeType attributeType) {
-        String pacienteId = "" + patient.getId();
-        PatientAttributeImportService patientAttributeImportService = new PatientAttributeImportService();
-        PatientAttribute importpatientAttribute = patientAttributeImportService.findByPatientId(pacienteId);
-        PatientAttribute patientAttribute = importpatientAttribute == null ? new PatientAttribute() : importpatientAttribute;
+        oldIdentifiers.add(patientIdentifier);
+
         patientAttribute.setPatient(patient);
-        patientAttribute.setValue(dataInicioTarv);
+        patientAttribute.setValue(patientSync.getDatainiciotarv());
         patientAttribute.setType(attributeType);
-        if (importpatientAttribute == null) {
-            patientAttributeImportService.persist(patientAttribute);
-        } else {
-            patientAttributeImportService.update(patientAttribute);
+
+        patient.setFirstNames(patientSync.getFirstnames());
+        patient.setAccountStatus(Boolean.FALSE);
+        patient.setAddress1(patientSync.getAddress1());
+        patient.setAddress2(patientSync.getAddress2());
+        patient.setAddress3(patientSync.getAddress3());
+        patient.setCellphone(patientSync.getCellphone());
+        patient.setDateOfBirth(patientSync.getDateofbirth());
+        patient.setClinic(clinic);
+        patient.setNextOfKinName(patientSync.getNextofkinname());
+        patient.setNextOfKinPhone(patientSync.getNextofkinphone());
+        patient.setHomePhone(patientSync.getHomephone());
+        patient.setLastname(patientSync.getLastname());
+        patient.setModified(patientSync.getModified());
+        patient.setPatientId(patientSync.getPatientid());
+        patient.setProvince(patientSync.getProvince());
+        patient.setSex(patientSync.getSex());
+        patient.setWorkPhone(null);
+        patient.setRace(patientSync.getRace());
+        patient.setUuidopenmrs(patientSync.getUuid());
+
+        patient.setPatientIdentifiers(oldIdentifiers);
+        patient.setPatientAttribute(patientAttribute);
+
+        PatientManager.savePatient(sess, patient);
+
+        return patient;
+
+    }
+
+    public static Prescription getPatientPrescritionFarmac(SyncTempDispense syncTempDispense) {
+
+        Session sess = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
+
+        Prescription prescription = null;
+        Patient patient = null;
+        try {
+
+            if (syncTempDispense.getUuidopenmrs() != null)
+                patient = PatientManager.getPatientfromUuid(sess, syncTempDispense.getUuidopenmrs());
+            else
+                patient = PatientManager.getPatient(sess, syncTempDispense.getPatientid());
+
+            prescription = PackageManager.getPrescriptionFromPatient(sess, patient, syncTempDispense.getDate());
+
+            if (prescription == null) {
+                prescription = new Prescription();
+
+                SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
+                Doctor doctorProvider = PrescriptionManager.getProvider(sess);
+                LinhaT linhat = AdministrationManager.getLinha(sess, syncTempDispense.getLinhanome());
+                RegimeTerapeutico regimeTerapeutico = AdministrationManager.getRegimeTerapeutico(sess, syncTempDispense.getRegimenome());
+
+                if (!regimeTerapeutico.getRegimeesquema().equalsIgnoreCase(syncTempDispense.getRegimenome()))
+                    regimeTerapeutico = AdministrationManager.getRegimeTerapeuticoRest(sess, syncTempDispense.getRegimenome());
+
+                prescription.setClinicalStage(0);
+                prescription.setCurrent('T');
+                prescription.setDate(syncTempDispense.getDate());
+                prescription.setEndDate(syncTempDispense.getEnddate());
+                prescription.setDoctor(doctorProvider);
+                prescription.setDuration(syncTempDispense.getDuration());
+                prescription.setModified(syncTempDispense.getModified());
+                prescription.setPatient(patient);
+                prescription.setPrescriptionId(patient.getPatientId() + "-" + df.format(syncTempDispense.getDate()) + " - Farmac ");
+                prescription.setReasonForUpdate(syncTempDispense.getReasonforupdate());
+                prescription.setNotes("FARMAC: " + syncTempDispense.getNotes());
+                prescription.setRegimeTerapeutico(regimeTerapeutico);
+                prescription.setLinha(linhat);
+                prescription.setDatainicionoutroservico(syncTempDispense.getDatainicionoutroservico());
+                prescription.setMotivoMudanca(syncTempDispense.getMotivomudanca());
+                prescription.setPpe(syncTempDispense.getPpe());
+                prescription.setPtv(syncTempDispense.getPtv());
+                prescription.setTb(syncTempDispense.getTb());
+                prescription.setGaac(syncTempDispense.getGaac());
+                prescription.setAf(syncTempDispense.getAf());
+                prescription.setFr(syncTempDispense.getFr());
+                prescription.setCa(syncTempDispense.getCa());
+                prescription.setSaaj(syncTempDispense.getSaaj());
+                prescription.setCcr(syncTempDispense.getCcr());
+                prescription.setDc(syncTempDispense.getDc());
+                prescription.setPrep(syncTempDispense.getPrep());
+                prescription.setCe(syncTempDispense.getCe());
+                prescription.setCpn(syncTempDispense.getCpn());
+                prescription.setPrescricaoespecial(syncTempDispense.getPrescricaoespecial());
+                prescription.setMotivocriacaoespecial(syncTempDispense.getMotivocriacaoespecial());
+                prescription.setTpc(syncTempDispense.getTpc());
+                prescription.setTpi(syncTempDispense.getTpi());
+                prescription.setDrugTypes(syncTempDispense.getDrugtypes());
+                prescription.setTipoDS(syncTempDispense.getTipods());
+                prescription.setDispensaSemestral(syncTempDispense.getDispensasemestral());
+                prescription.setTipoDT(syncTempDispense.getTipodt());
+                prescription.setDispensaTrimestral(syncTempDispense.getDispensatrimestral());
+                prescription.setDurationSentence(syncTempDispense.getDurationsentence());
+
+                List<PrescribedDrugs> prescribedDrugsList = new ArrayList<PrescribedDrugs>();
+
+                // Save the Prescription Drugs
+
+                Drug drug = DrugManager.getDrug(sess, syncTempDispense.getDrugname());
+
+                if (drug == null)
+                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10));
+
+                if (drug == null)
+                    drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10).replace("/", "+"));
+
+                if (drug != null) {
+                    PrescribedDrugs newPD = new PrescribedDrugs();
+
+                    if (drug.getPackSize() > 30) {
+                        newPD.setAmtPerTime(2);
+                    } else {
+                        newPD.setAmtPerTime(1);
+                    }
+                    newPD.setDrug(drug);
+                    newPD.setModified(syncTempDispense.getModified());
+                    newPD.setPrescription(prescription);
+                    newPD.setTimesPerDay(syncTempDispense.getTimesperday());
+                    prescribedDrugsList.add(newPD);
+
+                    prescription.setPrescribedDrugs(prescribedDrugsList);
+
+                    PackageManager.saveNewPrescription(sess, prescription, true);
+                    tx.commit();
+                    sess.flush();
+                } else
+                   log.trace("O medicamento prescrito para o paciente " + syncTempDispense.getPatientid() + " nao foi encontrado: " + syncTempDispense.getDrugname());
+                sess.close();
+            }
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+                sess.close();
+            }
+           log.trace("Error :" + e);
+
         }
+        return prescription;
+    }
+
+    public static void saveDispenseFarmacQty0(Prescription prescription, SyncTempDispense syncTempDispense) {
+
+        Session sess = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
+
+        Clinic clinic = null;
+
+        if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+            clinic = AdministrationManager.getClinicbyUuid(sess, syncTempDispense.getMainclinicuuid());
+
+        if (clinic == null)
+            clinic = AdministrationManager.getMainClinic(sess);
+
+        User user = AdministrationManager.getUserByName(sess, "admin");
+
+        try {
+            // Prescriotion Duration
+            tx = sess.beginTransaction();
+            java.util.List<PackageDrugInfo> allPackagedDrugsListTemp = new ArrayList<PackageDrugInfo>();
+
+            Drug drug = DrugManager.getDrug(sess, syncTempDispense.getDrugname());
+            List<Stock> stockList = null;
+            Stock stock = null;
+
+            if (drug == null)
+                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10));
+
+            if (drug == null)
+                drug = DrugManager.getDrugFromString(sess, syncTempDispense.getDrugname().replace("[", "").substring(0, 10).replace("/", "+"));
+
+            if (drug != null) {
+                stockList = StockManager.getAllStockForDrug(sess, drug);
+            }
+
+            if (stockList == null) {
+                stock = StockManager.getAllCurrentStock(sess).get(0);
+            } else {
+                if (stockList.size() == 0) {
+                    stock = StockManager.getAllCurrentStock(sess).get(0);
+                } else {
+                    stock = stockList.get(0);
+                }
+            }
+
+            PackageDrugInfo pditemp = new PackageDrugInfo();
+            pditemp.setAmountPerTime(0);
+            pditemp.setClinic(clinic.getClinicName());
+            pditemp.setDispensedQty(0);
+            pditemp.setBatchNumber("");
+            pditemp.setFormLanguage1("");
+            pditemp.setFormLanguage2("");
+            pditemp.setFormLanguage3("");
+            pditemp.setDrugName(syncTempDispense.getDrugname());
+            pditemp.setExpiryDate(syncTempDispense.getExpirydate());
+            pditemp.setPatientId(syncTempDispense.getPatientid());
+            pditemp.setPatientFirstName(syncTempDispense.getPatientfirstname());
+            pditemp.setPatientLastName(syncTempDispense.getPatientlastname());
+            pditemp.setSpecialInstructions1("");
+            pditemp.setSpecialInstructions2("");
+            pditemp.setStockId(stock.getId());
+            pditemp.setTimesPerDay(syncTempDispense.getTimesperday());
+            pditemp.setNumberOfLabels(0);
+            pditemp.setCluser(user);
+            pditemp.setDispenseDate(syncTempDispense.getDispensedate());
+            pditemp.setWeeksSupply(syncTempDispense.getWeekssupply());
+            pditemp.setQtyInHand(syncTempDispense.getQtyinhand());
+            pditemp.setSummaryQtyInHand(syncTempDispense.getSummaryqtyinhand());
+            pditemp.setQtyInLastBatch(syncTempDispense.getQtyinlastbatch());
+            pditemp.setPrescriptionDuration(syncTempDispense.getDuration());
+            pditemp.setDateExpectedString(syncTempDispense.getDateexpectedstring());
+            pditemp.setPickupDate(syncTempDispense.getPickupdate());
+            pditemp.setNotes("");
+            allPackagedDrugsListTemp.add(pditemp);
+
+            savePackageAndPackagedDrugsWhithFarmacQty0(true, allPackagedDrugsListTemp, prescription, clinic, sess);
+            TemporaryRecordsManager.savePackageDrugInfosToDB(sess, allPackagedDrugsListTemp);
+            sess.flush();
+            tx.commit();
+            sess.close();
+
+        } catch (HibernateException he) {
+
+            MessageBox errorBox = new MessageBox(null, SWT.OK | SWT.ICON_ERROR);
+            errorBox.setText("Não pode salvar: Verificar Prescricao");
+            errorBox.setMessage("Houve um problema ao salvar a Prescricao. Por favor, tente novamente.");
+            if (tx != null) {
+                tx.rollback();
+                sess.close();
+            }
+//            getLog().error(he);
+        }
+    }
+
+    public static void savePackageAndPackagedDrugsWhithFarmacQty0(boolean dispenseNow,
+                                                                  java.util.List<PackageDrugInfo> allPackageDrugsList, Prescription prescription, Clinic clinic, Session sess) {
+
+        // if pack date is today, store the time too, else store 12am
+        PackageDrugInfo packageDrugInfo = allPackageDrugsList.get(0);
+        Set<Packages> packageses = new HashSet();
+        packageses.clear();
+        Date packDate = new Date();
+
+        Packages newPack = PackageManager.getLastPackageOnScript(prescription);
+
+        if (newPack != null) {
+            if (newPack.getPickupDate() != packageDrugInfo.getPickupDate())
+                newPack = new Packages();
+        } else
+            newPack = new Packages();
+
+        packDate.setTime(packageDrugInfo.getDispenseDate().getTime());
+        newPack.setPickupDate(packageDrugInfo.getPickupDate());
+        newPack.setPackDate(packageDrugInfo.getPickupDate());
+        newPack.setPackageId(packageDrugInfo.getPackageId());
+        newPack.setModified('T');
+        newPack.setPrescription(prescription);
+        newPack.getPrescription().setPackages(packageses);
+        newPack.setPackageId(newPack.getPrescription().getPrescriptionId() + "- Farmac");
+        newPack.setModified('T');
+        newPack.setClinic(clinic);
+
+        //int numPeriods = getSelectedWeekSupply();
+        //getLog().info("getSelectedWeekSupply() called");
+        // 1 mes tem 4 semanas
+        newPack.setWeekssupply(4);
+        /*
+         * If the pharmacist is giving the drugs to the patient now, set the
+         * dateLeft, dateReceived and pickupDate to today. Else ... set these
+         * attributes to null (they will be set when the packages have left the
+         * pharmacy, arrived at the remote clinic, and when the patient has
+         * picked up their medications
+         */
+        if (dispenseNow) {
+            newPack.setDateLeft(packageDrugInfo.getPickupDate());
+            newPack.setDateReceived(packageDrugInfo.getPickupDate());
+            newPack.setPickupDate(packageDrugInfo.getPickupDate());
+        } else {
+            if (iDartProperties.downReferralMode
+                    .equalsIgnoreCase(iDartProperties.OFFLINE_DOWNREFERRAL_MODE)) {
+                newPack.setDateLeft(packageDrugInfo.getPickupDate());
+                newPack.setDateReceived(packageDrugInfo.getPickupDate());
+                newPack.setPickupDate(null);
+            } else {
+                newPack.setDateLeft(null);
+                newPack.setDateReceived(null);
+                newPack.setPickupDate(null);
+            }
+        }
+
+        // Make up a set of package drugs for this particular package
+        java.util.List<PackagedDrugs> packagedDrugsList = new ArrayList<PackagedDrugs>();
+
+        for (int ib = 0; ib < allPackageDrugsList.size(); ib++) {
+
+            PackageDrugInfo pdi = allPackageDrugsList.get(ib);
+            PackagedDrugs pd = new PackagedDrugs();
+            pd.setAmount(pdi.getDispensedQty());
+            pd.setParentPackage(newPack);
+            pd.setStock(StockManager.getStock(sess, pdi.getStockId()));
+            pd.setModified('T');
+            packagedDrugsList.add(pd);
+            pdi.setPackagedDrug(pd);
+            pdi.setNotes(packageDrugInfo.getNotes());
+            pdi.setPackageId(newPack.getPackageId());
+
+        }
+
+        newPack.setPackagedDrugs(packagedDrugsList);
+        newPack.setDrugTypes("TARV");
+
+        PackageManager.savePackageQty0(sess, newPack);
+    }
+
+    public static boolean setDispenseRestOpenmrs(Session sess, Prescription prescription, SyncTempDispense syncTempDispense) {
+
+        // Add interoperability with OpenMRS through Rest Web Services
+        RestClient restClient = new RestClient();
+
+        boolean result = true;
+
+        Packages newPack = PackageManager.getLastPackageOnScript(prescription);
+
+        List<PackagedDrugs> packagedDrugs = newPack.getPackagedDrugs();
+
+        Clinic clinic = AdministrationManager.getMainClinic(sess);
+
+        Date dtPickUp = syncTempDispense.getPickupdate();
+
+        // EncounterDatetime
+        String strPickUp = RestUtils.castDateToString(dtPickUp);
+
+        // Patient NID
+        String nid = prescription.getPatient().getPatientId().trim();
+
+        String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+
+        JSONObject jsonObject = new JSONObject(nidRest);
+        JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
+        String nidUuid = null;
+
+        for (int i = 0; i < _jsonArray.length(); i++) {
+            JSONObject results = (JSONObject) _jsonArray.get(i);
+            nidUuid = (String) results.get("uuid");
+        }
+
+
+        String uuid = prescription.getPatient().getUuidopenmrs();
+        if (uuid != null && !uuid.isEmpty()) {
+            uuid = prescription.getPatient().getUuidopenmrs();
+        } else {
+
+           log.trace("Problema dispensando o pacote de medicamentos \n" +
+                    "O NID deste paciente foi alterado no OpenMRS ou não possui UUID. " +
+                    "Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."
+            );
+            return false;
+        }
+
+
+        String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST + uuid);
+
+        JSONObject jsonReportingRest = new JSONObject(openrsMrsReportingRest);
+        JSONArray jsonReportingRestArray = (JSONArray) jsonReportingRest.get("members");
+
+
+        if (jsonReportingRestArray.length() < 1) {
+           log.trace("Informação sobre estado do programa NID inserido não se encontra no " +
+                    "estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
+
+            return false;
+        }
+
+        String strProvider = prescription.getDoctor().getFirstname().trim() + " "
+                + prescription.getDoctor().getLastname().trim();
+
+        String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
+
+        String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+
+        String providerUuid = response.substring(21, 57);
+
+        String facility = clinic.getClinicName().trim();
+
+        // Location
+        String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
+
+        // Health Facility
+        String strFacilityUuid = strFacility.substring(21, 57);
+
+        // Regimen
+        String regimenAnswer = prescription.getRegimeTerapeutico().getRegimenomeespecificado().trim();
+
+        List<PrescribedDrugs> prescribedDrugs = prescription.getPrescribedDrugs();
+
+        // Next pick up date
+        Date dtNextPickUp = RestUtils.castStringToDate(syncTempDispense.getDateexpectedstring());
+
+        boolean postOpenMrsEncounterStatus = false;
+        String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
+
+        try {
+            postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, uuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                    strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
+                    iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
+                    iDartProperties.VISIT_UUID, strNextPickUp);
+
+            result = true;
+           log.trace("Criou o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus);
+
+        } catch (Exception e) {
+            result = true;
+           log.trace("Nao foi possivel Criar o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus+" erro - "+ e.getMessage());
+        }
+
+        return result;
     }
 
 }

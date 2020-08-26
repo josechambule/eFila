@@ -1,8 +1,10 @@
 package org.celllife.idart.start;
 
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.rest.utils.RestFarmac;
 
 import java.io.BufferedReader;
 
@@ -18,14 +20,17 @@ public class UpdateDatabase {
 
     private static final String DRIVER_NAME = "org.postgresql.Driver";
 
+    private final static Logger log = Logger.getLogger(UpdateDatabase.class);
+
+
     static {
         try {
             Class.forName(DRIVER_NAME).newInstance();
-            System.out.println("*** Driver loaded");
+           log.trace("*** Driver loaded");
         } catch (Exception e) {
-            System.out.println("*** Error : " + e.toString());
-            System.out.println("*** ");
-            System.out.println("*** Error : ");
+           log.trace("*** Error : " + e.toString());
+           log.trace("*** ");
+           log.trace("*** Error : ");
             e.printStackTrace();
         }
 
@@ -68,11 +73,11 @@ public class UpdateDatabase {
                 try {
                     if (!inst[i].trim().equals("")) {
                         st.executeUpdate(inst[i]);
-                        System.out.println(">>" + inst[i]);
+                       log.trace(">>" + inst[i]);
                     }
                     break;
                 }catch (SQLException e){
-                    System.out.println("### - SQL Error "+e.getMessage());
+                   log.trace("### - SQL Error "+e.getMessage());
                 }finally {
 
                    continue;
@@ -81,12 +86,12 @@ public class UpdateDatabase {
             }
 
         } catch (Exception e) {
-            System.out.println("*** Error : " + e.toString());
-            System.out.println("*** ");
-            System.out.println("*** Error : ");
+           log.trace("*** Error : " + e.toString());
+           log.trace("*** ");
+           log.trace("*** Error : ");
             e.printStackTrace();
-            System.out.println("################################################");
-            System.out.println(sb.toString());
+           log.trace("################################################");
+           log.trace(sb.toString());
         }
 
     }

@@ -69,7 +69,12 @@ public class Prescription {
 	@OneToMany(mappedBy = "prescription")
 	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
 		org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-		private Set<Packages> packages;
+		private Set<SyncOpenmrsDispense> syncOpenmrsDispenses;
+
+	@OneToMany(mappedBy = "prescription")
+	@Cascade( { org.hibernate.annotations.CascadeType.ALL,
+			org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	private Set<Packages> packages;
 
 	@ManyToOne
 	@JoinColumn(name = "patient", nullable = false)
@@ -733,5 +738,13 @@ public class Prescription {
 
 	public void setDurationSentence(String durationSentence) {
 		this.durationSentence = durationSentence;
+	}
+
+	public Set<SyncOpenmrsDispense> getSyncOpenmrsDispenses() {
+		return syncOpenmrsDispenses;
+	}
+
+	public void setSyncOpenmrsDispenses(Set<SyncOpenmrsDispense> syncOpenmrsDispenses) {
+		this.syncOpenmrsDispenses = syncOpenmrsDispenses;
 	}
 }

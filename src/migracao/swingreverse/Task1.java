@@ -3,8 +3,6 @@
  */
 package migracao.swingreverse;
 
-import model.manager.AdministrationManager;
-import model.manager.PatientManager;
 import migracao.connection.hibernateConection;
 import migracao.connection.hibernateConectionRemote;
 import migracao.entidades.*;
@@ -13,6 +11,9 @@ import migracao.entidadesHibernate.ExportDispense.PatientExportService;
 import migracao.entidadesHibernate.importPatient.PatientIdentifierImportService;
 import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.entidadesHibernate.servicos.*;
+import model.manager.AdministrationManager;
+import model.manager.PatientManager;
+import org.apache.log4j.Logger;
 import org.celllife.idart.database.hibernate.Episode;
 import org.celllife.idart.database.hibernate.IdentifierType;
 import org.celllife.idart.database.hibernate.PatientIdentifier;
@@ -33,6 +34,7 @@ class Task1
     //Lista dos possiveis Localizacao do logFile
     final static List<String> logFileLocations = new ArrayList<>();
     final static String logFileName = "EnvioDispensasLogFile.txt";
+    final static Logger log = Logger.getLogger(Task1.class);
     private final Random rnd = new Random();
     // Esta classe vai ler e escrever um logFile  com os detalhe das excecpiotns que podem ocorrer
     // durante o processo de uniao de nids. O ficheiro deve ser criado na pasta de instalacao do idart que pode ser
@@ -43,7 +45,7 @@ class Task1
     Task1() {
 
         logFileLocations.add(System.getProperty("user.dir"));
-        System.out.println(System.getProperty("user.dir"));
+//       log.trace(System.getProperty("user.dir"));
     }
 
     @Override
@@ -107,7 +109,7 @@ class Task1
                             try {
                                 patientIdentifierCRAMService.update(patientIdentifier);
                             } catch (Exception e) {
-                                System.out.println("Paciente com dois NIDS - " + packageDrugInfo.getPatientId());
+                               log.trace("Paciente com dois NIDS - " + packageDrugInfo.getPatientId());
                             }
                         }
                     } else {
@@ -232,7 +234,7 @@ class Task1
                             }
 
                         } catch (NullPointerException nl) {
-                            System.out.println("Null pointer exception: " + nl.getCause().toString());
+                           log.trace("Null pointer exception: " + nl.getCause().toString());
                         } catch (Exception e) {
                             // Podem ocorrer diferentes tipos de exceptions, coomo nao podemos prever todas vamos escreve-las
                             //num logfile e continuar com a execucao ciclo   
@@ -288,7 +290,7 @@ class Task1
                         fileLocation = logFile.getPath();
                         break;
                     } catch (IOException e) {
-                        System.out.println("cannot create log file" + e.getMessage());
+                       log.trace("cannot create log file" + e.getMessage());
                     }
                 } //create new file
                 else {
@@ -296,11 +298,11 @@ class Task1
 
                         logFile.createNewFile();
                         fileLocation = logFile.getPath();
-                        System.out.println(fileLocation + ":  Criado");
+                       log.trace(fileLocation + ":  Criado");
                         break;
 
                     } catch (IOException e) {
-                        System.out.println("cannot create log file" + e.getMessage());
+                       log.trace("cannot create log file" + e.getMessage());
                     }
 
                 }

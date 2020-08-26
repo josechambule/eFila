@@ -5,6 +5,8 @@
  */
 package migracao.swingreverse;
 
+import org.apache.log4j.Logger;
+
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,6 +22,7 @@ import java.util.Random;
 public final class TestePBE {
 	private static SecretKey skey;
 	private static final String algorithm = "Blowfish";
+	final static Logger log = Logger.getLogger(TestePBE.class);
         
         
 	public static final void encrypt(String password, File arq)
@@ -79,7 +82,7 @@ public final class TestePBE {
 	   // r.next(bytes);
 	    byte[] readBytes = new byte[tamArquivoTeste];
 	    if (arq.length() != tamArquivoTeste) {
-	        System.out.println ("Arquivo de tamanho diferente do esperado");
+	       log.trace ("Arquivo de tamanho diferente do esperado");
 	        return false;
             }
             
@@ -87,7 +90,7 @@ public final class TestePBE {
 	    int nBytes = is.read (readBytes);
 	    is.close();
 	    if (nBytes != tamArquivoTeste) {
-	        System.out.println ("Arquivo de tamanho diferente do esperado");
+	       log.trace ("Arquivo de tamanho diferente do esperado");
 	        return false;
             }
             return Arrays.equals (readBytes, bytes);
@@ -106,12 +109,12 @@ public final class TestePBE {
             //TestePBE.decrypt (password, arqCifrado, arqDecifrado);
              TestePBE.decrypt (password, arqDecifrado);
             if (confereArquivoTeste (arqEntrada)) {
-                System.out.println ("Os arquivos bateram");
+               log.trace ("Os arquivos bateram");
             }
             //-- Checando com a senha errada
             TestePBE.decrypt ("senhaErrada", arqEntrada);
             if (confereArquivoTeste (arqDecifrado)) {
-                System.out.println ("Os arquivos bateram");
+               log.trace ("Os arquivos bateram");
             }
 	}
 }

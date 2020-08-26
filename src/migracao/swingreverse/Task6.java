@@ -5,14 +5,15 @@
  */
 package migracao.swingreverse;
 
+import migracao.connection.hibernateConection;
+import migracao.entidadesHibernate.ExportDispense.PackageDrugInfoExportService;
+import migracao.entidadesHibernate.importPatient.PatientImportService;
 import migracao.farmac.JRestoreController;
 import migracao.farmac.PasswordProtectedZip;
 import model.manager.*;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import migracao.connection.hibernateConection;
-import migracao.entidadesHibernate.ExportDispense.PackageDrugInfoExportService;
-import migracao.entidadesHibernate.importPatient.PatientImportService;
+import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
@@ -41,6 +42,7 @@ public class Task6 extends SwingWorker<String, Void> {
     final static List<String> logFileLocations = new ArrayList<>();
     final static String logFileName = "EnvioDispensasFarmacLogFile.txt";
     private final Random rnd = new Random();
+    final static Logger log = Logger.getLogger(Task6.class);
     // Esta classe vai ler e escrever um logFile  com os detalhe das excecpiotns que podem ocorrer
     // durante o processo de uniao de nids. O ficheiro deve ser criado na pasta de instalacao do idart que pode ser
     // C:\\idart ou C:\\Program Files\\idart ou C:\\Program Files (x86)\\idart.
@@ -57,7 +59,7 @@ public class Task6 extends SwingWorker<String, Void> {
 //        logFileLocations.add("C:\\idart");
 //        logFileLocations.add("C:\\Idart");
         logFileLocations.add(System.getProperty("user.dir"));
-        System.out.println(System.getProperty("user.dir"));
+       log.trace(System.getProperty("user.dir"));
     }
 
     @Override
@@ -75,7 +77,7 @@ public class Task6 extends SwingWorker<String, Void> {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 if (jfc.getSelectedFile().isDirectory()) {
-                    System.out.println("You selected the directory: " + jfc.getSelectedFile());
+                   log.trace("You selected the directory: " + jfc.getSelectedFile());
                 }
             }
 
@@ -155,7 +157,7 @@ public class Task6 extends SwingWorker<String, Void> {
                         }
 
                     } catch (NullPointerException nl) {
-                        System.out.println("Null pointer exception: " + nl.getCause().toString());
+                       log.trace("Null pointer exception: " + nl.getCause().toString());
                     } catch (Exception e) {
                         // Podem ocorrer diferentes tipos de exceptions, coomo nao podemos prever todas vamos escreve-las
                         //num logfile e continuar com a execucao ciclo   
@@ -209,7 +211,7 @@ public class Task6 extends SwingWorker<String, Void> {
                         fileLocation = logFile.getPath();
                         break;
                     } catch (IOException e) {
-                        System.out.println("cannot create log file" + e.getMessage());
+                       log.trace("cannot create log file" + e.getMessage());
                     }
                 } //create new file
                 else {
@@ -217,11 +219,11 @@ public class Task6 extends SwingWorker<String, Void> {
 
                         logFile.createNewFile();
                         fileLocation = logFile.getPath();
-                        System.out.println(fileLocation + ":  Criado");
+                       log.trace(fileLocation + ":  Criado");
                         break;
 
                     } catch (IOException e) {
-                        System.out.println("cannot create log file" + e.getMessage());
+                       log.trace("cannot create log file" + e.getMessage());
                     }
 
                 }
@@ -321,7 +323,7 @@ public class Task6 extends SwingWorker<String, Void> {
 
         Prescription prescription = null;
 
-        prescription = PackageManager.getPrescriptionFromPatient(sess, patient, syncTempDispense.get(0).getDispensedate());
+        prescription = PackageManager.getPrescriptionFromPatient(sess, patient, (java.sql.Date) syncTempDispense.get(0).getDispensedate());
 
         if (prescription == null) {
             prescription = new Prescription();
@@ -329,8 +331,8 @@ public class Task6 extends SwingWorker<String, Void> {
             //   String prescriptionId = PackageManager.getNewPrescriptionId(sess, patient, syncTempDispense.getDate());
             SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
             Doctor doctorProvider = PrescriptionManager.getProvider(sess);
-            LinhaT linhat = AdministrationManager.getLinha(sess, syncTempDispense.get(0).getLinhaid());
-            RegimeTerapeutico regimeTerapeutico = AdministrationManager.getRegimeTerapeutico(sess, syncTempDispense.get(0).getRegimeid());
+            LinhaT linhat = null;
+            RegimeTerapeutico regimeTerapeutico = null;
 
             prescription.setClinicalStage(0);
             prescription.setCurrent('T');
