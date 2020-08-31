@@ -1,6 +1,9 @@
 package org.celllife.idart.gui.clinic;
 
 import model.manager.AdministrationManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.Clinic;
@@ -354,12 +357,15 @@ public class DownloadClinic extends GenericFormGui {
     }
 
     private void populateRestClinics() {
-
+        PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
+        pool.setDefaultMaxPerRoute(1);
+        pool.setMaxTotal(1);
+        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
         String url = CentralizationProperties.centralized_server_url;
         String province = cmbProvince.getText().replace(" ", "%20");
         String district = cmbDistrict.getText().replace(" ", "%20");
         String facilitytype = cmbFacilityType.getText().replace(" ", "%20");
-        restClinics = RestFarmac.restGeAllClinicByProvinceAndDistrictAndFacilityType(url, province, district, facilitytype, hSession);
+        restClinics = RestFarmac.restGeAllClinicByProvinceAndDistrictAndFacilityType(url, province, district, facilitytype, hSession,httpclient);
         tblColumns.setInput(restClinics);
 
         if(restClinics.isEmpty()){
