@@ -23,6 +23,9 @@ package org.celllife.idart.start;
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.celllife.idart.commonobjects.*;
@@ -268,6 +271,11 @@ public class PharmacyApplication {
     public static void startRestFarmacThread(ScheduledExecutorService executorService) {
 
         final String url = CentralizationProperties.centralized_server_url;
+        PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
+        pool.setDefaultMaxPerRoute(1);
+        pool.setMaxTotal(1);
+
+        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
@@ -284,13 +292,13 @@ public class PharmacyApplication {
                         else {
                             Clinic mainClinic = AdministrationManager.getMainClinic(sess);
                             if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
-                                RestFarmac.restPostPatients(sess, url);
-                                RestFarmac.restGeAllDispenses(url, mainClinic);
+                                RestFarmac.restPostPatients(sess, url,httpclient);
+                                RestFarmac.restGeAllDispenses(url, mainClinic,httpclient);
                                 RestFarmac.setDispensesFromRest(sess);
                             } else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
-                                RestFarmac.restGeAllPatients(url, mainClinic);
+                                RestFarmac.restGeAllPatients(url, mainClinic,httpclient);
                                 RestFarmac.setPatientsFromRest(sess);
-                                RestFarmac.restPostDispenses(sess, url);
+                                RestFarmac.restPostDispenses(sess, url,httpclient);
                             }
                         }
                     }
@@ -316,16 +324,14 @@ public class PharmacyApplication {
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
-                Session sess = HibernateUtil.getNewSession();
                 try {
                     if (getServerStatus(url).contains("Red"))
                         log.trace(new Date()+" :Servidor OpenMRS offline, verifique a conexao com OpenMRS ou contacte o administrador");
                     else {
-                        RestClient.setOpenmrsPatients(sess);
-                        RestClient.setOpenmrsPatientFila(sess);
+                        RestClient.setOpenmrsPatients();
+                        RestClient.setOpenmrsPatientFila();
                     }
                 } catch (IOException e) {
-                    sess.close();
                     log.trace(new Date() + " : Erro " + e.getMessage());
                 }
 
