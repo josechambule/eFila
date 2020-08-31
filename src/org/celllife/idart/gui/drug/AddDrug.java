@@ -264,6 +264,7 @@ public class AddDrug extends GenericFormGui {
         cmbForm.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbForm.setText("");
         cmbForm.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbForm.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbForm.setVisibleItemCount(cmbForm.getItemCount());
 
         cmbForm.addSelectionListener(new SelectionAdapter() {
@@ -360,6 +361,7 @@ public class AddDrug extends GenericFormGui {
         cmbtipoDoenca.setEditable(false);
         cmbtipoDoenca.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbtipoDoenca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbtipoDoenca.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         CommonObjects.populateDiseases(getHSession(), cmbtipoDoenca);
         cmbtipoDoenca.setText(cmbtipoDoenca.getItem(0));
 

@@ -492,6 +492,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbUpdateReason.setEditable(false);
         cmbUpdateReason.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbUpdateReason.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbUpdateReason.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
 
         cmbUpdateReason.addSelectionListener(new SelectionListener() {
 
@@ -506,6 +507,7 @@ public class AddPrescription extends GenericFormGui implements
                 } else if (cmbUpdateReason.getText().equals("Alterar")) {
                     cmbMotivoMudanca.setEnabled(true);
                     cmbMotivoMudanca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+
                 } else {
                     btnDataInicioNoutroServico.setDate(null);
                     btnDataInicioNoutroServico.setText("Seleccione a data");
@@ -531,6 +533,7 @@ public class AddPrescription extends GenericFormGui implements
                 } else if (cmbUpdateReason.getText().equals("Alterar")) {
                     cmbMotivoMudanca.setEnabled(true);
                     cmbMotivoMudanca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+                    cmbMotivoMudanca.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
                 } else {
                     btnDataInicioNoutroServico.setDate(null);
                     btnDataInicioNoutroServico.setText("Seleccione a data");
@@ -568,7 +571,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         //POPULA combo dispensa trimestral
-        cmbDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDispensaTrimestral.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         CommonObjects.populateDispensaTrimestral(getHSession(), cmbDispensaTrimestral);
 
         lblDispensaSemestral = new Label(grpPatientID, SWT.NONE);
@@ -580,8 +583,8 @@ public class AddPrescription extends GenericFormGui implements
         cmbDispensaSemestral.setBounds(new Rectangle(160, 124, 150, 20));
         cmbDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDispensaTrimestral.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         //POPULA combo dispensa semestral
-        cmbDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         CommonObjects.populateDispensaSemestral(getHSession(), cmbDispensaSemestral);
 
         lblTipoDispensaTrimestral = new Label(grpPatientID, SWT.NONE);
@@ -594,10 +597,10 @@ public class AddPrescription extends GenericFormGui implements
         cmbTipoDispensaTrimestral.setEditable(true);
         cmbTipoDispensaTrimestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbTipoDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbTipoDispensaTrimestral.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbTipoDispensaTrimestral.setEnabled(true);
 
         //POPULA combo tipo dispensa trimestral
-        cmbTipoDispensaTrimestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         CommonObjects.populateTipoDispensaTrimestral(getHSession(), cmbTipoDispensaTrimestral);
 
         lblTipoDispensaSemestral = new Label(grpPatientID, SWT.NONE);
@@ -610,6 +613,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbTipoDispensaSemestral.setEditable(true);
         cmbTipoDispensaSemestral.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbTipoDispensaSemestral.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbTipoDispensaSemestral.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbTipoDispensaSemestral.setEnabled(true);
 
         //POPULA combo dispensa semestral
@@ -621,6 +625,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbMotivoMudanca.setEditable(false);
         cmbMotivoMudanca.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbMotivoMudanca.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbMotivoMudanca.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbMotivoMudanca.setEnabled(false);
 
         cmbDispensaTrimestral.addSelectionListener(new SelectionListener() {
@@ -904,6 +909,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbDoctor.setBounds(new Rectangle(450, 20, 130, 20));
         cmbDoctor.setEditable(false);
         cmbDoctor.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        cmbDoctor.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbDoctor.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         CommonObjects.populateDoctors(getHSession(), cmbDoctor, false);
         cmbDoctor.addFocusListener(new FocusAdapter() {
@@ -941,6 +947,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbDuration.setEditable(false);
         cmbDuration.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDuration.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDuration.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         CommonObjects.populatePrescriptionDuration(getHSession(), cmbDuration);
         cmbDuration.setVisibleItemCount(cmbDuration.getItemCount());
 
@@ -970,6 +977,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbRegime.setVisibleItemCount(10);
         cmbRegime.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbRegime.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbRegime.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
 //			   POPULA OS REGIMES
         CommonObjects.populateRegimesTerapeuticosCombo(getHSession(), cmbRegime, false);
         cmbRegime.addFocusListener(new FocusAdapter() {
@@ -994,6 +1002,7 @@ public class AddPrescription extends GenericFormGui implements
         cmbLinha.setVisibleItemCount(10);
         cmbLinha.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbLinha.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbLinha.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         //popula o ccombo de linhas
         CommonObjects.populateLinha(getHSession(), cmbLinha, false);
         cmbLinha.setFocus();
@@ -1039,6 +1048,8 @@ public class AddPrescription extends GenericFormGui implements
         cmbMotivoCriacao.setVisibleItemCount(10);
         cmbMotivoCriacao.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbMotivoCriacao.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbMotivoCriacao.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
+
         //popula o ccombo motivos de criacao da prescricao
         CommonObjects.populateMotivosPrescricao(getHSession(), cmbMotivoCriacao);
         cmbMotivoCriacao.setEnabled(false);

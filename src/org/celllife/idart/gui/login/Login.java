@@ -448,8 +448,11 @@ public class Login implements GenericGuiInterface {
             if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
                 checkOpenmrs = true;
             else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
-                    || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
+                    || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")){
+                successfulLogin = true;
                 checkOpenmrs = false;
+            }
+
 
             Clinic theClinic = AdministrationManager.getClinicbyName(hSession,
                     cmbClinics.getText());
@@ -491,7 +494,7 @@ public class Login implements GenericGuiInterface {
                         Messages.getString("login.error.password")); //$NON-NLS-1$
                 txtPassword.setFocus();
                 txtPassword.setText(""); //$NON-NLS-1$
-            } else if(checkOpenmrs) {
+            } else if (checkOpenmrs) {
                 try {
                     if (!getServerStatus(JdbcProperties.urlBase).contains("Red")) {
                         if (verificaLoginOpenMRS()) {
@@ -539,7 +542,7 @@ public class Login implements GenericGuiInterface {
                             txtPassword.setText("");
                             successfulLogin = false;
                         }
-                    }else{
+                    } else {
                         successfulLogin = true;
                         ApiAuthRest.setUsername(cmbUsers.getText());
                         ApiAuthRest.setPassword(txtPassword.getText());
@@ -551,19 +554,19 @@ public class Login implements GenericGuiInterface {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                if(successfulLogin){
-                    LocalObjects.setUser(theUser);
-                    LocalObjects.currentClinic = theClinic.getClinicName()
-                            .equalsIgnoreCase(
-                                    LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
-                            : theClinic;
-                    log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
-
-                    closeScreen();
-                }
-
             }
+
+            if (successfulLogin) {
+                LocalObjects.setUser(theUser);
+                LocalObjects.currentClinic = theClinic.getClinicName()
+                        .equalsIgnoreCase(
+                                LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
+                        : theClinic;
+                log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
+
+                closeScreen();
+            }
+
 
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -587,7 +590,7 @@ public class Login implements GenericGuiInterface {
 
             resultado = json.getBoolean("authenticated");
         } catch (Exception e) {
-            log.error("Nao foi possivel conectar ao OpenMRS",e);
+            log.error("Nao foi possivel conectar ao OpenMRS", e);
         }
 
         return resultado;

@@ -2,6 +2,9 @@ package org.celllife.idart.gui.regimeTerapeutico;
 
 import model.manager.DeletionsManager;
 import model.manager.DrugManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.CommonObjects;
 import org.celllife.idart.database.hibernate.Drug;
@@ -324,13 +327,16 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
     }
 
     private void populateRestRegimen() {
-
+        PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
+        pool.setDefaultMaxPerRoute(1);
+        pool.setMaxTotal(1);
+        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
         String url = CentralizationProperties.centralized_server_url;
         boolean status = rdBtnActive.getSelection();
-        List<RegimeTerapeutico> restRegimeTerapeuticoRest = RestFarmac.restGeAllRegimenByStatus(url, status, hSession);
+        List<RegimeTerapeutico> restRegimeTerapeuticoRest = RestFarmac.restGeAllRegimenByStatus(url, status, hSession,httpclient);
 
         for (RegimeTerapeutico regimeTerapeutico : restRegimeTerapeuticoRest) {
-            List<RegimenDrugs> regimenDrugs = RestFarmac.restGeAllRegimenDrugsByRegimen(url, regimeTerapeutico, hSession);
+            List<RegimenDrugs> regimenDrugs = RestFarmac.restGeAllRegimenDrugsByRegimen(url, regimeTerapeutico, hSession,httpclient);
             if (!regimenDrugs.isEmpty())
                 regimeTerapeutico.setRegimenDrugs(regimenDrugs);
             restRegimeTerapeutico.add(regimeTerapeutico);

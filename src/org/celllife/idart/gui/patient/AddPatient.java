@@ -434,6 +434,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbDOBDay.setBounds(new Rectangle(col2x, 112, 50, 18));
         cmbDOBDay.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBDay.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDOBDay.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbDOBDay.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -448,6 +449,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbDOBMonth.setBounds(new Rectangle(col2x + 50, 112, 97, 18));
         cmbDOBMonth.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBMonth.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDOBMonth.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbDOBMonth.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -471,6 +473,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbDOBYear.setBounds(new Rectangle(col2x + 148, 112, 60, 18));
         cmbDOBYear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBYear.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbDOBYear.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbDOBYear.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -519,6 +522,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
                 18));
         cmbSex.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbSex.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+        cmbSex.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         // cmbSex.setEditable(false);
         //cmbSex.add(Messages.getString("common.unknown")); //$NON-NLS-1$
         cmbSex.add(Messages.getString("patient.sex.female")); //$NON-NLS-1$
@@ -703,6 +707,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbEpisodeStartReason.setEnabled(true);
         cmbEpisodeStartReason.setEditable(false);
         cmbEpisodeStartReason.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
+        cmbEpisodeStartReason.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         CommonObjects.populateActivationReasons(getHSession(), cmbEpisodeStartReason);
         cmbEpisodeStartReason.setText(EMPTY);
         cmbEpisodeStartReason.addModifyListener(new ModifyListener() {
@@ -779,6 +784,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         lblDistrib.setText(Messages.getString("patient.label.clinic")); //$NON-NLS-1$
         cmbClinic = new CCombo(grpEpisodes, SWT.BORDER);
         cmbClinic.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
+        cmbClinic.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbClinic.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbClinic.setBounds(new Rectangle(110, 87 + spacer, 135, 20));
         CommonObjects.populateClinics(getHSession(), cmbClinic);
@@ -792,6 +798,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         cmbEpisodeStopReason = new CCombo(grpEpisodes, SWT.BORDER);
         cmbEpisodeStopReason.setBackground(ResourceUtils.getColor(iDartColor.WIDGET_BACKGROUND));
+        cmbEpisodeStopReason.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
         cmbEpisodeStopReason.setBounds(new Rectangle(110, 113 + spacer, 135, 20));
         cmbEpisodeStopReason.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbEpisodeStopReason.setEnabled(true);

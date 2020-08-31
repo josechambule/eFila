@@ -201,19 +201,18 @@ public class RestClient {
         return resource;
     }
 
-    public static void setOpenmrsPatients(Session sess) {
+    public static void setOpenmrsPatients() {
 
         RestClient restClient = new RestClient();
 
-
         boolean postOpenMrsEncounterStatus;
 
-        List<SyncOpenmrsPatient> syncOpenmrsPatients = PatientManager.getAllSyncOpenmrsPatientReadyToSave(sess);
-
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
         Session session = HibernateUtil.getNewSession();
         Transaction tx = session.beginTransaction();
+
         try {
+
+            List<SyncOpenmrsPatient> syncOpenmrsPatients = PatientManager.getAllSyncOpenmrsPatientReadyToSave(session);
             if (!syncOpenmrsPatients.isEmpty()) {
 
                 for (SyncOpenmrsPatient patientToSave : syncOpenmrsPatients) {
@@ -263,18 +262,18 @@ public class RestClient {
         }
     }
 
-    public static void setOpenmrsPatientFila(Session sess) {
+    public static void setOpenmrsPatientFila() {
 
         Session session = HibernateUtil.getNewSession();
         Transaction tx = session.beginTransaction();
-        List<SyncOpenmrsDispense> syncOpenmrsDispenses = PrescriptionManager.getAllSyncOpenmrsDispenseReadyToSave(session);
 
         try {
+            List<SyncOpenmrsDispense> syncOpenmrsDispenses = PrescriptionManager.getAllSyncOpenmrsDispenseReadyToSave(session);
             if (!syncOpenmrsDispenses.isEmpty()) {
 
                 for (SyncOpenmrsDispense dispense : syncOpenmrsDispenses) {
                     try {
-                        Prescription prescription = PackageManager.getPrescription(sess, dispense.getPrescription().getPrescriptionId());
+                        Prescription prescription = PackageManager.getPrescription(session, dispense.getPrescription().getPrescriptionId());
 
                         if (prescription != null) {
                             restFilaToOpenMRS(session, dispense);
