@@ -36,6 +36,7 @@ import org.celllife.idart.gui.regimeTerapeutico.AddRegimeTerapeutico;
 import org.celllife.idart.gui.regimeTerapeutico.DownLoadRegimeTerapeutico;
 import org.celllife.idart.gui.stockCenter.StockCenterInfo;
 import org.celllife.idart.gui.user.ManagePharmUsers;
+import org.celllife.idart.gui.user.UserStatePasswordManage;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
@@ -400,7 +401,7 @@ public class GeneralAdmin extends GenericAdminGui {
     private void createGrpImport() {
 
         Group grpImport = new Group(getCompOptions(), SWT.NONE);
-        grpImport.setBounds(new Rectangle(50, 171, 305, 150));
+        grpImport.setBounds(new Rectangle(50, 215, 305, 100));
         grpImport.setText(Messages.getString("GeneralAdmin.group.import.title")); //$NON-NLS-1$
         grpImport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -436,7 +437,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // grpPharmacy
         Group grpPharmacy = new Group(getCompOptions(), SWT.NONE);
-        grpPharmacy.setBounds(new Rectangle(50, 13, 305, 150));
+        grpPharmacy.setBounds(new Rectangle(50, 13, 305, 190));
         grpPharmacy.setText(Messages.getString("GeneralAdmin.group.pharmacy.title")); //$NON-NLS-1$
         grpPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -471,6 +472,20 @@ public class GeneralAdmin extends GenericAdminGui {
             public void widgetSelected(
                     org.eclipse.swt.events.SelectionEvent e) {
                 cmd_pharmStockCenter();
+            }
+        });
+        
+     // btnUserPasswordStateManage
+        Button btnUserPasswordStateManage = new Button(grpPharmacy, SWT.NONE);
+        btnUserPasswordStateManage.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 145, 235, 30));
+        btnUserPasswordStateManage.setToolTipText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.tooltip")); //$NON-NLS-1$
+        btnUserPasswordStateManage.setText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.title")); //$NON-NLS-1$
+        btnUserPasswordStateManage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnUserPasswordStateManage.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+            	cmd_passStateReset();
             }
         });
     }
@@ -567,6 +582,9 @@ public class GeneralAdmin extends GenericAdminGui {
         new StockCenterInfo(getShell());
     }
 
+    public void cmd_passStateReset() {
+        new UserStatePasswordManage(getShell());
+    }
 
     public void cmd_regimenAdd() {
 

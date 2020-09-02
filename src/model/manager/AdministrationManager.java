@@ -747,6 +747,27 @@ public class AdministrationManager {
     /**
      * @param s
      * @param u
+     * @throws HibernateException
+     */
+    public static void updateUserState(Session s, User u) throws HibernateException {
+        log.info("Updating state for user " + u.getUsername());
+
+        u.setModified('T');
+
+        // log the transaction
+        Logging logging = new Logging();
+        logging.setIDart_User(LocalObjects.getUser(s));
+        logging.setItemId(String.valueOf(u.getId()));
+        logging.setModified('Y');
+        logging.setTransactionDate(new Date());
+        logging.setTransactionType("Updated User");
+        logging.setMessage("Updated User " + u.getUsername() + ": State changed.");
+        s.save(logging);
+    }
+
+    /**
+     * @param s
+     * @param u
      * @param clinicsSet
      * @throws HibernateException
      */

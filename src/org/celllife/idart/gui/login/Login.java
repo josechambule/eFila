@@ -556,7 +556,7 @@ public class Login implements GenericGuiInterface {
                 }
             }
 
-            if (successfulLogin) {
+            if (successfulLogin && theUser.isActive()) {
                 LocalObjects.setUser(theUser);
                 LocalObjects.currentClinic = theClinic.getClinicName()
                         .equalsIgnoreCase(
@@ -565,6 +565,11 @@ public class Login implements GenericGuiInterface {
                 log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
 
                 closeScreen();
+            }else {
+                MessageDialog.openError(loginShell, Messages.getString("login.dialog.user.notActive"), Messages.getString("login.error.user.notActive")); //$NON-NLS-1$
+                txtPassword.setFocus();
+                txtPassword.setText("");
+                successfulLogin = false;
             }
 
 

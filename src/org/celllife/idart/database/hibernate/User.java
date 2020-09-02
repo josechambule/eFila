@@ -43,6 +43,9 @@ import model.nonPersistent.Autenticacao;
 @Table(name = "users")
 public class User {
 
+	private static final int ACTIVO = 1;
+	private static final int NOT_ACTIVO = -1;
+
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -60,6 +63,9 @@ public class User {
 	
 	@Column(name = "permission")
 	private char permission;
+
+	@Column(name = "state")
+	private int state;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "ClinicUser", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "clinicId") })
@@ -84,7 +90,6 @@ public class User {
 		this.modified = modified;
 		this.clinics=clinics;
 		this.permission=permission;
-
 	}
 
 	/**
@@ -199,6 +204,24 @@ public class User {
 	public void setPermission(char permission) {
 		this.permission = permission;
 	}
-	
 
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+    public boolean isActive() {
+		return this.state == User.ACTIVO;
+    }
+
+	public void changeStateToActive() {
+		this.state = ACTIVO;
+	}
+
+	public void changeStateToNotActive() {
+		this.state = NOT_ACTIVO;
+	}
 }
