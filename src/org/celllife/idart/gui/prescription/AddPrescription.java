@@ -1440,8 +1440,6 @@ public class AddPrescription extends GenericFormGui implements
 
                     Clinic clinic = AdministrationManager.getMainClinic(getHSession());
 
-    //            String facility = new ArrayList<Clinic>(LocalObjects.getUser(getHSession()).getClinics()).get(0).getClinicName().trim();
-
                     String facility = clinic.getClinicName().trim();
 
                     Episode episode = PatientManager.getLastEpisode(getHSession(), patient.getPatientId());

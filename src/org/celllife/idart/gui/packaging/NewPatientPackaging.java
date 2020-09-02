@@ -2794,6 +2794,10 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     nidUuid = (String) results.get("uuid");
                 }
 
+                String nidvoided = restClient.getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + nidUuid);
+                JSONObject jsonObjectPerson = new JSONObject(nidvoided);
+                Boolean voided = (Boolean) jsonObjectPerson.get("voided");
+
                 String uuid = localPatient.getUuidopenmrs();
                 if (uuid != null && !uuid.isEmpty()) {
                     uuid = localPatient.getUuidopenmrs();
@@ -2809,14 +2813,36 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                     MessageBox m = new MessageBox(getShell(), SWT.OK |
                             SWT.ICON_ERROR);
                     m.setText("Problema dispensando o pacote de medicamentos");
-                    m.
-                            setMessage("O NID deste paciente foi alterado no OpenMRS ou não possui UUID."
+                    m.setMessage("O NID deste paciente foi alterado no OpenMRS ou não possui UUID."
                                     + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."+
                                     "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
 
+                }
+
+                if (nidUuid != null && !nidUuid.isEmpty()) {
+                  if( nidUuid != uuid || voided) {
+
+                      PackageManager.savePackage(getHSession(), newPack);
+                      log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
+                      saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                              facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                              iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                      saveErroLog(newPack, dtNextPickUp, "O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "
+                              + " Tem um UUID ["+uuid+"] diferente ou inactivo no OpenMRS "+nidUuid+"]. Por favor actualize o UUID correspondente .");
+                      MessageBox m = new MessageBox(getShell(), SWT.OK |
+                              SWT.ICON_ERROR);
+                      m.setText("Problema dispensando o pacote de medicamentos");
+                      m.setMessage("O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "+
+                              " Tem um UUID ["+uuid+"] diferente ou inactivo no OpenMRS "+nidUuid+"]. Por favor actualize o UUID correspondente no bloco de Administração" +
+                              " do Paciente usando a opção Atualizar um Paciente Existente." +
+                              "\nEste aviamento será enviado ao Openrms após a verificação do erro.");
+                      m.open();
+
+                      return;
+                  }
                 }
 
                 String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST + uuid);
@@ -2843,14 +2869,44 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
 
                 String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
-
-                String providerUuid = response.substring(21, 57);
+                String providerUuid = "";
 
                 // Location
                 String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
-
+                String strFacilityUuid = "";
                 // Health Facility
-                String strFacilityUuid = strFacility.substring(21, 57);
+
+                if (strFacility.length() < 50) {
+
+                    PackageManager.savePackage(getHSession(), newPack);
+                    log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog (newPack, dtNextPickUp, " O UUID DA UNIDADE SANITARIA NAO CONTEM O PADRAO RECOMENDADO PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
+                    MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+                    m.setText("Informação sobre estado da Unidade Sanitaria");
+                    m.setMessage("O UUID da Unidade Sanitaria nao contem o pradrao recomendado." + "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
+                    m.open();
+
+                    return;
+                }else  strFacilityUuid = strFacility.substring(21, 57);
+
+                if (response.length() < 50) {
+
+                    PackageManager.savePackage(getHSession(), newPack);
+                    log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog (newPack, dtNextPickUp, " O UUID DO PROVEDOR NAO CONTEM O PADRAO RECOMENDADO OU NAO EXISTE NO OPENMRS PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
+                    MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
+                    m.setText("Informação sobre estado do Provedor");
+                    m.setMessage("O UUID do PRovedor nao contem o pradrao recomendado ou nao existe no OpenMRS." + "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
+                    m.open();
+
+                    return;
+                }else  providerUuid = response.substring(21, 57);
 
                 try {
 

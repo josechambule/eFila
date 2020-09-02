@@ -39,7 +39,9 @@ public class AddressTab extends GenericTab implements IPatientTab {
 	private Text txtAddress3;
 
 	private Text txtPhoneHome;
+
 	private Text txtPhoneWork;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -207,7 +209,6 @@ public class AddressTab extends GenericTab implements IPatientTab {
 		cmbProvince.setEnabled(enable);
 		txtPhoneHome.setEnabled(enable);
 		txtPhoneWork.setEnabled(enable);
-
 		cmbProvince.setBackground(color);
 	}
 
@@ -219,10 +220,9 @@ public class AddressTab extends GenericTab implements IPatientTab {
 	 */
 	/**
 	 * Method loadPatientDetails.
-	 * @param sess Session
 	 * @param patient Patient
 	 * @param isPatientActive boolean
-	 * @see org.celllife.idart.gui.patient.tabs.IPatientTab#loadPatientDetails(Session, Patient, boolean)
+	 * @see org.celllife.idart.gui.patient.tabs.IPatientTab(Session, Patient, boolean)
 	 */
 	@Override
 	public void loadPatientDetails(Patient patient, boolean isPatientActive) {
@@ -315,7 +315,7 @@ public class AddressTab extends GenericTab implements IPatientTab {
 		String title = EMPTY;
 		String message = EMPTY;
 		boolean result = true;
-		
+
 		// Check if user selected a province
 		if(!"select a province".equalsIgnoreCase(cmbProvince.getText())) { //$NON-NLS-1$
 			title = Messages.getString("AddressTab.error.invalid-province.title"); //$NON-NLS-1$

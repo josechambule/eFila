@@ -207,6 +207,9 @@ public class RestClient {
 
         boolean postOpenMrsEncounterStatus;
 
+        String name = "";
+        String middleName = "";
+
         Session session = HibernateUtil.getNewSession();
         Transaction tx = session.beginTransaction();
 
@@ -218,22 +221,28 @@ public class RestClient {
                 for (SyncOpenmrsPatient patientToSave : syncOpenmrsPatients) {
                     try {
                         String uuid = null;
-                        Patient pacient = PatientManager.getPatient(session, patientToSave.getPatientid());
+                        Patient patient = PatientManager.getPatient(session, patientToSave.getPatientid());
 
-                        if (pacient != null) {
-                            uuid = getUUidFromOpenmrs(pacient.getPatientId());
+                        if (patient != null) {
+                            uuid = getUUidFromOpenmrs(patient.getPatientId());
 
                             if (uuid == null) {
+                                name = patient.getFirstNames();
 
-                                postOpenMrsEncounterStatus = restClient.postOpenMRSPatient(pacient.getSex() + "", pacient.getFirstNames(), ".", pacient.getLastname(),
-                                        RestUtils.castDateToString(pacient.getDateOfBirth()), pacient.getPatientId());
+                                if(name.contains(" ")){
+                                    middleName = name.substring(name.indexOf(" "), name.length() -1 );
+                                    name = name.substring(0,name.indexOf(" ") -1 );
+                                }
+
+                                postOpenMrsEncounterStatus = restClient.postOpenMRSPatient(patient.getSex() + "", name , middleName, patient.getLastname(),
+                                        RestUtils.castDateToString(patient.getDateOfBirth()), patient.getPatientId());
 
                                 if (postOpenMrsEncounterStatus) {
-                                    uuid = getUUidFromOpenmrs(pacient.getPatientId());
+                                    uuid = getUUidFromOpenmrs(patient.getPatientId());
                                 }
                             }
-                            pacient.setUuidopenmrs(uuid);
-                            PatientManager.savePatient(session, pacient);
+                            patient.setUuidopenmrs(uuid);
+                            PatientManager.savePatient(session, patient);
                         } else
                             log.trace(new Date() + ": O Paciente [" + patientToSave.getFirstnames() + " " + patientToSave.getLastname() + " com NID: " + patientToSave.getPatientid() + "] foi removido");
 

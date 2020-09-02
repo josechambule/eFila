@@ -22,6 +22,7 @@ package org.celllife.idart.commonobjects;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 
 import model.manager.AdministrationManager;
 
@@ -888,6 +889,15 @@ public class CommonObjects {
 		KeyStroke instance = KeyStroke.getInstance(
 				new Integer(SWT.CTRL).intValue(), new Integer(' ').intValue());
 		return instance;
+	}
+
+	public static boolean isUUID(String string) {
+		try {
+			UUID.fromString(string);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
 	}
 
 

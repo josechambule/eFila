@@ -1166,7 +1166,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
             System.out.println(names[0]);
             System.out.println(names[names.length - 1]);
 
-            txtFirstNames.setText(names[0]);//Primeiros nomes
+            txtFirstNames.setText(fullName.replace(names[names.length - 1],""));//Primeiros nomes
             localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
 
             txtSurname.setText(names[names.length - 1]);//Apelido

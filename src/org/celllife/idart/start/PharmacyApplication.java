@@ -43,6 +43,7 @@ import org.celllife.idart.misc.MessageUtil;
 import org.celllife.idart.misc.task.TaskManager;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestFarmac;
+import org.celllife.idart.rest.utils.RestUtils;
 import org.celllife.idart.sms.SmsRetrySchedulerJob;
 import org.celllife.idart.sms.SmsSchedulerJob;
 import org.eclipse.jface.window.Window;
@@ -271,11 +272,17 @@ public class PharmacyApplication {
     public static void startRestFarmacThread(ScheduledExecutorService executorService) {
 
         final String url = CentralizationProperties.centralized_server_url;
+
         PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
         pool.setDefaultMaxPerRoute(1);
         pool.setMaxTotal(1);
 
         final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
+
+        int synctime = 30;
+
+        if(RestUtils.isNumeric(CentralizationProperties.syncFarmacTimerInSeconds))
+            synctime = Integer.parseInt(CentralizationProperties.syncFarmacTimerInSeconds);
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
@@ -314,13 +321,17 @@ public class PharmacyApplication {
                 }
 
             }
-        }, 0, 30, TimeUnit.SECONDS);
+        }, 0,synctime , TimeUnit.SECONDS);
 
     }
 
     public static void startRestOpenMRSThread(ScheduledExecutorService executorService) {
 
         final String url = JdbcProperties.urlBase;
+         int synctime = 30;
+
+        if(RestUtils.isNumeric(JdbcProperties.syncOpenmrsTimerInSeconds))
+            synctime = Integer.parseInt(JdbcProperties.syncOpenmrsTimerInSeconds);
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
@@ -336,7 +347,7 @@ public class PharmacyApplication {
                 }
 
             }
-        }, 0, 30, TimeUnit.SECONDS);
+        }, 0, synctime, TimeUnit.SECONDS);
 
     }
 

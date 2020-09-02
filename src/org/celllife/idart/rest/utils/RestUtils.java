@@ -84,4 +84,18 @@ public abstract class RestUtils {
 		return calendar;
 	}
 
+	public static boolean isNumeric(String stringNumber){
+
+		if (stringNumber == null) {
+			return false;
+		}
+		try {
+			int d = Integer.parseInt(stringNumber);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+
+	}
+
 }
