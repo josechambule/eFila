@@ -33,6 +33,8 @@ ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS ce character(1) COLLATE 
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS cpn character(1) COLLATE pg_catalog."default" DEFAULT 'F'::bpchar;
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS prescricaoespecial character(1) COLLATE pg_catalog."default" DEFAULT 'F'::bpchar;
 ALTER TABLE sync_temp_dispense ADD COLUMN IF NOT EXISTS motivocriacaoespecial character varying(255) COLLATE pg_catalog."default" DEFAULT ''::character varying;
+ALTER TABLE packagedruginfotmp ADD COLUMN IF NOT EXISTS ctzpickup boolean DEFAULT False;
+ALTER TABLE packagedruginfotmp ADD COLUMN IF NOT EXISTS inhpickup boolean DEFAULT False;
 UPDATE simpledomain set value = 'Voltou da Referencia' where name = 'activation_reason' and value = 'Desconhecido';
 UPDATE clinic set uuid = uuid_generate_v1() where mainclinic = true and (uuid is null or uuid = '');
 UPDATE regimeterapeutico set regimeesquema = regimeesquema || '_' where active = false;

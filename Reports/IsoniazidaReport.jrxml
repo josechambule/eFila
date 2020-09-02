@@ -56,90 +56,56 @@
         dispensas_e_prescricoes.pickupdate
        FROM
  (SELECT
-
- 	 dispensa_packege.patientid ,
-
+ 		dispensa_packege.patientid ,
         dispensa_packege.pickupdate
-
 	 	FROM
-
-	 	(
-	 	  SELECT
-
+	 	(SELECT
 	 		prescription.id, package.packageid
-
  		 FROM
-
-	 	 prescription,
- 	 	package
-
+	 	 	prescription,package
 	 	 WHERE
-
-	 	 prescription.id = package.prescription
-
+	 	 	prescription.id = package.prescription
 	 	 AND
-	  	 prescription.ppe='F'
-
-
-	  	AND
-
-      	prescription.tpi='T'
+	  	 	prescription.ppe='F'
 
 	 	 )as prescription_package,
-
-	 	 (
-	 	 SELECT
-
-
-	 	 packagedruginfotmp.patientid ,
-	 	 packagedruginfotmp.packageid,
-	 	 packagedruginfotmp.dispensedate as pickupdate
-
+	 	 (SELECT
+			 packagedruginfotmp.patientid ,
+			 packagedruginfotmp.packageid,
+			 packagedruginfotmp.dispensedate as pickupdate
 	 	 FROM
-	 	 package, packagedruginfotmp
-
+	 	 	package, packagedruginfotmp
 	  	 WHERE
-
  		 package.packageid=packagedruginfotmp.packageid
  		 AND
-
-	 					 packagedruginfotmp.dispensedate::timestamp::date >=
-	 $P{monthStart}::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=
-	  $P{monthEnd}::timestamp::date
+		 	packagedruginfotmp.dispensedate::timestamp::date >= $P{monthStart}::timestamp::date
+		 AND
+		 	packagedruginfotmp.dispensedate::timestamp::date <= $P{monthEnd}::timestamp::date
+		 AND
+			packagedruginfotmp.inhpickup = true
 	  	) as dispensa_packege,
-          (
-          select packagedruginfotmp.patientid,
-
-	 	  max(packagedruginfotmp.dispensedate) as lastdispense
-
-
+        (SELECT
+			packagedruginfotmp.patientid,
+	 	  	max(packagedruginfotmp.dispensedate) as lastdispense
 	 	 FROM
-	 	 package, packagedruginfotmp
-
+		 	package, packagedruginfotmp
 	  	 WHERE
-
  		 package.packageid=packagedruginfotmp.packageid
  		 AND
-
-	 					 packagedruginfotmp.dispensedate::timestamp::date >=
-	 $P{monthStart}::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=
-	  $P{monthEnd}::timestamp::date
-
-	  group by packagedruginfotmp.patientid
-
+		 	packagedruginfotmp.dispensedate::timestamp::date >= $P{monthStart}::timestamp::date
+		 AND
+		 	packagedruginfotmp.dispensedate::timestamp::date <= $P{monthEnd}::timestamp::date
+		 AND
+			packagedruginfotmp.inhpickup = true
+	  	 group by packagedruginfotmp.patientid
           ) as ultimadatahora
-
 	 	 WHERE
 	 	 dispensa_packege.packageid=prescription_package.packageid
-
 	 	 and
        dispensa_packege.pickupdate=ultimadatahora.lastdispense
        ) as dispensas_e_prescricoes
-       ,
-       patient
-
+       ,patient
        where
-
        dispensas_e_prescricoes.patientid=patient.patientid]]>
 	</queryString>
 	<field name="patientid" class="java.lang.String"/>

@@ -117,6 +117,10 @@ public class PackageDrugInfo {
 
 	private boolean firstBatchInPrintJob = true;
 
+	private boolean ctzpickup = false;
+
+	private boolean inhpickup = false;
+
 	/**
 	 * Default Constructor
 	 */
@@ -919,4 +923,19 @@ public class PackageDrugInfo {
 		return pickupDate;
 	}
 
+	public boolean isCtzPickup() {
+		return ctzpickup;
+	}
+
+	public void setCtzPickup(boolean ctzPickup) {
+		this.ctzpickup = ctzPickup;
+	}
+
+	public boolean isInhPickup() {
+		return inhpickup;
+	}
+
+	public void setInhPickup(boolean inhPickup) {
+		this.inhpickup = inhPickup;
+	}
 }

@@ -655,6 +655,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                         pdi.setWeeksSupply(getSelectedWeekSupply());
                         pdi.setDispensedForLaterPickup(!dispenseNow);
                         pdi.setPickupDate(dispenseNow ? new Date() : null);
+                        if (rdBtnNoAppointmentDate.getSelection())
+                            pdi.setInhPickup(false);
+                        else
+                            pdi.setInhPickup(true);
+
+                        if(rdBtnPrintSummaryLabelNo.getSelection())
+                            pdi.setCtzPickup(false);
+                        else
+                            pdi.setCtzPickup(true);
                         allPackagedDrugsList.add(pdi);
                     }
                 }
@@ -2621,6 +2630,16 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             pdi.setNotes(packageDrugInfo.getNotes());
             pdi.setPackageId(newPack.getPackageId());
 
+            if (rdBtnNoAppointmentDate.getSelection())
+                pdi.setInhPickup(false);
+            else
+                pdi.setInhPickup(true);
+
+            if(rdBtnPrintSummaryLabelNo.getSelection())
+                pdi.setCtzPickup(false);
+            else
+                pdi.setCtzPickup(true);
+
         }
 
         newPack.setPackagedDrugs(packagedDrugsList);
@@ -2710,6 +2729,15 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
             pdi.setNotes(localPatient.getCurrentClinic().getNotes());
             pdi.setPackageId(newPack.getPackageId());
 
+            if (rdBtnNoAppointmentDate.getSelection())
+                pdi.setInhPickup(false);
+            else
+                pdi.setInhPickup(true);
+
+            if(rdBtnPrintSummaryLabelNo.getSelection())
+                pdi.setCtzPickup(false);
+            else
+                pdi.setCtzPickup(true);
         }
 
         newPack.setPackagedDrugs(packagedDrugsList);
@@ -2768,16 +2796,16 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
             String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
 
-            String facility =  clinic.getClinicName().trim();
+            String facility = clinic.getClinicName().trim();
 
             if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
 
                 PackageManager.savePackage(getHSession(), newPack);
 
                 log.trace("Servidor Rest offline, o aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms a posterior");
-                saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                        facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
-                        iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
+                saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                        facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                        iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
             } else {
 
                 // Add interoperability with OpenMRS through Rest Web Services
@@ -2805,17 +2833,17 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
-                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
-                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
-                    saveErroLog (newPack, dtNextPickUp, "O NID deste paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] foi alterado no OpenMRS ou não possui UUID."
+                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, "O NID deste paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] foi alterado no OpenMRS ou não possui UUID."
                             + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente.");
                     MessageBox m = new MessageBox(getShell(), SWT.OK |
                             SWT.ICON_ERROR);
                     m.setText("Problema dispensando o pacote de medicamentos");
                     m.setMessage("O NID deste paciente foi alterado no OpenMRS ou não possui UUID."
-                                    + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."+
-                                    "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
+                            + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente." +
+                            "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
@@ -2823,26 +2851,26 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 }
 
                 if (nidUuid != null && !nidUuid.isEmpty()) {
-                  if( nidUuid != uuid || voided) {
+                    if (nidUuid != uuid || voided) {
 
-                      PackageManager.savePackage(getHSession(), newPack);
-                      log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
-                      saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                              facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
-                              iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
-                      saveErroLog(newPack, dtNextPickUp, "O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "
-                              + " Tem um UUID ["+uuid+"] diferente ou inactivo no OpenMRS "+nidUuid+"]. Por favor actualize o UUID correspondente .");
-                      MessageBox m = new MessageBox(getShell(), SWT.OK |
-                              SWT.ICON_ERROR);
-                      m.setText("Problema dispensando o pacote de medicamentos");
-                      m.setMessage("O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "+
-                              " Tem um UUID ["+uuid+"] diferente ou inactivo no OpenMRS "+nidUuid+"]. Por favor actualize o UUID correspondente no bloco de Administração" +
-                              " do Paciente usando a opção Atualizar um Paciente Existente." +
-                              "\nEste aviamento será enviado ao Openrms após a verificação do erro.");
-                      m.open();
+                        PackageManager.savePackage(getHSession(), newPack);
+                        log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
+                        saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                                facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                                iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                        saveErroLog(newPack, dtNextPickUp, "O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "
+                                + " Tem um UUID [" + uuid + "] diferente ou inactivo no OpenMRS " + nidUuid + "]. Por favor actualize o UUID correspondente .");
+                        MessageBox m = new MessageBox(getShell(), SWT.OK |
+                                SWT.ICON_ERROR);
+                        m.setText("Problema dispensando o pacote de medicamentos");
+                        m.setMessage("O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] " +
+                                " Tem um UUID [" + uuid + "] diferente ou inactivo no OpenMRS " + nidUuid + "]. Por favor actualize o UUID correspondente no bloco de Administração" +
+                                " do Paciente usando a opção Atualizar um Paciente Existente." +
+                                "\nEste aviamento será enviado ao Openrms após a verificação do erro.");
+                        m.open();
 
-                      return;
-                  }
+                        return;
+                    }
                 }
 
                 String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST + uuid);
@@ -2855,10 +2883,10 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
-                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
-                    saveErroLog (newPack, dtNextPickUp, "NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
+                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, "NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
                     m.setText("Informação sobre estado do programa");
                     m.setMessage("NID inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS." +
@@ -2880,33 +2908,33 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
-                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
-                    saveErroLog (newPack, dtNextPickUp, " O UUID DA UNIDADE SANITARIA NAO CONTEM O PADRAO RECOMENDADO PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
+                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, " O UUID DA UNIDADE SANITARIA NAO CONTEM O PADRAO RECOMENDADO PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
                     m.setText("Informação sobre estado da Unidade Sanitaria");
                     m.setMessage("O UUID da Unidade Sanitaria nao contem o pradrao recomendado." + "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
-                }else  strFacilityUuid = strFacility.substring(21, 57);
+                } else strFacilityUuid = strFacility.substring(21, 57);
 
                 if (response.length() < 50) {
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(),newPack.getPrescription(), nid,strPickUp,localPatient.getUuidopenmrs(),iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                            facility, iDartProperties.FORM_FILA,providerWithNoAccents,iDartProperties.REGIME,regimenAnswer,
-                            iDartProperties.DISPENSED_AMOUNT,iDartProperties.DOSAGE,iDartProperties.VISIT_UUID, strNextPickUp);
-                    saveErroLog (newPack, dtNextPickUp, " O UUID DO PROVEDOR NAO CONTEM O PADRAO RECOMENDADO OU NAO EXISTE NO OPENMRS PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
+                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, " O UUID DO PROVEDOR NAO CONTEM O PADRAO RECOMENDADO OU NAO EXISTE NO OPENMRS PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_ERROR);
                     m.setText("Informação sobre estado do Provedor");
                     m.setMessage("O UUID do PRovedor nao contem o pradrao recomendado ou nao existe no OpenMRS." + "\nEste aviamento será enviado ao Openrms após a verificacao do erro.");
                     m.open();
 
                     return;
-                }else  providerUuid = response.substring(21, 57);
+                } else providerUuid = response.substring(21, 57);
 
                 try {
 
@@ -2928,7 +2956,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 } catch (Exception e) {
                     log.trace("Nao foi criado o fila no openmrs para o paciente " + patientId + ": " + postOpenMrsEncounterStatus);
                     getLog().info(e.getMessage());
-                    saveErroLog (newPack, dtNextPickUp, "Nao foi criado o fila no openmrs para o paciente " + patientId + ": " +e.getMessage());
+                    saveErroLog(newPack, dtNextPickUp, "Nao foi criado o fila no openmrs para o paciente " + patientId + ": " + e.getMessage());
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
                     m.setText("Problema salvando o pacote de medicamentos");
                     m.setMessage("Houve um problema ao salvar o pacote de medicamentos para o paciente " + nid + ". " + "Por favor contacte o SIS.");
@@ -3177,20 +3205,12 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
     private void submitForm(boolean dispenseNow, java.util.List<PackageDrugInfo> allPackagedDrugsList)
             throws Exception {
 
-        boolean checkOpenmrs = true;
-
-        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
-            checkOpenmrs = true;
-        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
-                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
-            checkOpenmrs = false;
-
         Transaction tx = null;
         Map<Object, Integer> labelQuantities = new HashMap<Object, Integer>();
         try {
             ConexaoJDBC conn = new ConexaoJDBC();
             if (conn.dispensadonoperiodo(allPackagedDrugsList.get(0).getPatientId())) {
-               log.trace("Num of Days: " + dias);
+                log.trace("Num of Days: " + dias);
                 MessageBox mbox = new MessageBox(new Shell(), SWT.YES | SWT.NO | SWT.ICON_WARNING);
                 mbox.setText("Levantamento de ARVs");
 
@@ -3287,7 +3307,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                             if (vMedicamentos != null)
                                 for (int i = 0; i < vMedicamentos.size(); i++)
-                                   log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
+                                    log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
 
                             // convertendo a data para adequar com a coluna datatarv do
                             // ms access - t_tarv
@@ -3298,7 +3318,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                             // Convertendo a data de String para Date. proxima visita
                             Date dateproximavisita = conn.converteData(dateExpectedString);
-                           log.trace(" Date proxima: " + dateproximavisita);
+                            log.trace(" Date proxima: " + dateproximavisita);
 
                             SimpleDateFormat parseFormat2 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                             Date dateproxima = parseFormat2.parse(dateproximavisita.toString());
@@ -3394,7 +3414,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                 if (vMedicamentos != null)
                     for (int i = 0; i < vMedicamentos.size(); i++)
-                       log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
+                        log.trace("Medicamento " + i + " " + vMedicamentos.get(i));
 
                 SimpleDateFormat parseFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                 Date datatarv = parseFormat.parse(dispenseDate.toString());
@@ -3477,17 +3497,17 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
     }
 
 
-    public void saveOpenmrsPatientFila(Session session, Prescription prescribed,String nid, String encounterDatetime, String nidUuid, String encounterType, String strFacility,
+    public void saveOpenmrsPatientFila(Session session, Prescription prescribed, String nid, String encounterDatetime, String nidUuid, String encounterType, String strFacility,
                                        String filaUuid, String provider, String regimeUuid,
                                        String strRegimenAnswerUuid, String dispensedAmountUuid, String dosageUuid, String returnVisitUuid, String strNextPickUp) {
         // Adiciona FILA para a sincronizacao.
 
         SyncOpenmrsDispense syncOpenmrsDispense = null;
-        Prescription prescription = PackageManager.getPrescription(session,prescribed.getPrescriptionId());
+        Prescription prescription = PackageManager.getPrescription(session, prescribed.getPrescriptionId());
 
-        if(prescription != null){
+        if (prescription != null) {
 
-            syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(session,prescription,encounterDatetime);
+            syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(session, prescription, encounterDatetime);
 
             if (syncOpenmrsDispense == null)
                 syncOpenmrsDispense = new SyncOpenmrsDispense();
@@ -3516,7 +3536,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
     }
 
 
-    public void saveErroLog (Packages newPack, Date dtNextPickUp, String error) {
+    public void saveErroLog(Packages newPack, Date dtNextPickUp, String error) {
 
         OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(getHSession(), newPack.getPrescription());
         if (errorLog == null) {
