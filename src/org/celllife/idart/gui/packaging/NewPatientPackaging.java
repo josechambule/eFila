@@ -2803,7 +2803,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
                 PackageManager.savePackage(getHSession(), newPack);
 
                 log.trace("Servidor Rest offline, o aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms a posterior");
-                saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                saveOpenmrsPatientFila(newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                         facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                         iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
             } else {
@@ -2833,7 +2833,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
-                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                    saveOpenmrsPatientFila(newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                             facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                             iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
                     saveErroLog(newPack, dtNextPickUp, "O NID deste paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] foi alterado no OpenMRS ou não possui UUID."
@@ -2855,7 +2855,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                         PackageManager.savePackage(getHSession(), newPack);
                         log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificação do erro");
-                        saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                        saveOpenmrsPatientFila(newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                                 facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                                 iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
                         saveErroLog(newPack, dtNextPickUp, "O paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] "
@@ -2883,7 +2883,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                    saveOpenmrsPatientFila( newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                             facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                             iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
                     saveErroLog(newPack, dtNextPickUp, "NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
@@ -2908,7 +2908,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                    saveOpenmrsPatientFila(newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                             facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                             iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
                     saveErroLog(newPack, dtNextPickUp, " O UUID DA UNIDADE SANITARIA NAO CONTEM O PADRAO RECOMENDADO PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
@@ -2924,7 +2924,7 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
 
                     PackageManager.savePackage(getHSession(), newPack);
                     log.trace(" O aviamento do paciente [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
-                    saveOpenmrsPatientFila(getHSession(), newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                    saveOpenmrsPatientFila(newPack.getPrescription(), nid, strPickUp, localPatient.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
                             facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
                             iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
                     saveErroLog(newPack, dtNextPickUp, " O UUID DO PROVEDOR NAO CONTEM O PADRAO RECOMENDADO OU NAO EXISTE NO OPENMRS PARA O NID [" + localPatient.getPatientId() + " - " + localPatient.getFirstNames() + " " + localPatient.getLastname() + " ].");
@@ -3497,58 +3497,79 @@ public class NewPatientPackaging extends GenericFormGui implements iDARTChangeLi
     }
 
 
-    public void saveOpenmrsPatientFila(Session session, Prescription prescribed, String nid, String encounterDatetime, String nidUuid, String encounterType, String strFacility,
-                                       String filaUuid, String provider, String regimeUuid,
-                                       String strRegimenAnswerUuid, String dispensedAmountUuid, String dosageUuid, String returnVisitUuid, String strNextPickUp) {
+    public static void saveOpenmrsPatientFila(Prescription prescribed, String nid, String encounterDatetime, String nidUuid, String encounterType, String strFacility,
+                                              String filaUuid, String provider, String regimeUuid,
+                                              String strRegimenAnswerUuid, String dispensedAmountUuid, String dosageUuid, String returnVisitUuid, String strNextPickUp) {
         // Adiciona FILA para a sincronizacao.
+        Session sess = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
 
         SyncOpenmrsDispense syncOpenmrsDispense = null;
-        Prescription prescription = PackageManager.getPrescription(session, prescribed.getPrescriptionId());
 
-        if (prescription != null) {
+        try {
+            Prescription prescription = PackageManager.getPrescription(sess, prescribed.getPrescriptionId());
 
-            syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(session, prescription, encounterDatetime);
+            if (prescription != null) {
 
-            if (syncOpenmrsDispense == null)
-                syncOpenmrsDispense = new SyncOpenmrsDispense();
+                syncOpenmrsDispense = PrescriptionManager.getSyncOpenmrsPatienByPrescription(sess, prescription, encounterDatetime);
 
-            syncOpenmrsDispense.setStrPickUp(encounterDatetime);
-            syncOpenmrsDispense.setNid(nid);
-            syncOpenmrsDispense.setUuid(nidUuid);
-            syncOpenmrsDispense.setEncounterType(encounterType);
-            syncOpenmrsDispense.setStrFacility(strFacility);
-            syncOpenmrsDispense.setFilaUuid(filaUuid);
-            syncOpenmrsDispense.setProvider(provider);
-            syncOpenmrsDispense.setRegimeUuid(regimeUuid);
-            syncOpenmrsDispense.setRegimenAnswer(strRegimenAnswerUuid);
-            syncOpenmrsDispense.setDispensedAmountUuid(dispensedAmountUuid);
-            syncOpenmrsDispense.setDosageUuid(dosageUuid);
-            syncOpenmrsDispense.setReturnVisitUuid(returnVisitUuid);
-            syncOpenmrsDispense.setStrNextPickUp(strNextPickUp);
-            syncOpenmrsDispense.setPrescription(prescription);
+                if (syncOpenmrsDispense == null)
+                    syncOpenmrsDispense = new SyncOpenmrsDispense();
 
-            syncOpenmrsDispense.setSyncstatus('P');
+                syncOpenmrsDispense.setStrPickUp(encounterDatetime);
+                syncOpenmrsDispense.setNid(nid);
+                syncOpenmrsDispense.setUuid(nidUuid);
+                syncOpenmrsDispense.setEncounterType(encounterType);
+                syncOpenmrsDispense.setStrFacility(strFacility);
+                syncOpenmrsDispense.setFilaUuid(filaUuid);
+                syncOpenmrsDispense.setProvider(provider);
+                syncOpenmrsDispense.setRegimeUuid(regimeUuid);
+                syncOpenmrsDispense.setRegimenAnswer(strRegimenAnswerUuid);
+                syncOpenmrsDispense.setDispensedAmountUuid(dispensedAmountUuid);
+                syncOpenmrsDispense.setDosageUuid(dosageUuid);
+                syncOpenmrsDispense.setReturnVisitUuid(returnVisitUuid);
+                syncOpenmrsDispense.setStrNextPickUp(strNextPickUp);
+                syncOpenmrsDispense.setPrescription(prescription);
 
-            PrescriptionManager.saveSyncOpenmrsPatienFila(session, syncOpenmrsDispense);
+                syncOpenmrsDispense.setSyncstatus('P');
 
+                PrescriptionManager.saveSyncOpenmrsPatienFila(sess, syncOpenmrsDispense);
+            }
+            sess.flush();
+            tx.commit();
+            sess.close();
+        }catch (Exception e){
+            if (tx != null) {
+                tx.rollback();
+                sess.close();
+            }
         }
 
     }
 
-
-    public void saveErroLog(Packages newPack, Date dtNextPickUp, String error) {
-
-        OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(getHSession(), newPack.getPrescription());
-        if (errorLog == null) {
-            errorLog = new OpenmrsErrorLog();
-            errorLog.setPatient(newPack.getPrescription().getPatient());
-            errorLog.setPrescription(newPack.getPrescription());
-            errorLog.setPickupdate(newPack.getPickupDate());
-            errorLog.setReturnpickupdate(dtNextPickUp);
-            errorLog.setErrordescription(error);
-            errorLog.setDatacreated(new Date());
-            OpenmrsErrorLogManager.saveOpenmrsRestLog(getHSession(), errorLog);
-
+    public static void saveErroLog(Packages newPack, Date dtNextPickUp, String error) {
+        Session sess = HibernateUtil.getNewSession();
+        Transaction tx = sess.beginTransaction();
+        try {
+            OpenmrsErrorLog errorLog = OpenmrsErrorLogManager.getErrorLog(sess, newPack.getPrescription());
+            if (errorLog == null) {
+                errorLog = new OpenmrsErrorLog();
+                errorLog.setPatient(newPack.getPrescription().getPatient());
+                errorLog.setPrescription(newPack.getPrescription());
+                errorLog.setPickupdate(newPack.getPickupDate());
+                errorLog.setReturnpickupdate(dtNextPickUp);
+                errorLog.setErrordescription(error);
+                errorLog.setDatacreated(new Date());
+                OpenmrsErrorLogManager.saveOpenmrsRestLog(sess, errorLog);
+            }
+            sess.flush();
+            tx.commit();
+            sess.close();
+        }catch (Exception e){
+            if (tx != null) {
+                tx.rollback();
+                sess.close();
+            }
         }
     }
 

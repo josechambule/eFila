@@ -199,7 +199,7 @@ public class PharmacyApplication {
                 if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
                     startRestFarmacThread(executorService);
 
-                if((CentralizationProperties.centralization.equalsIgnoreCase("on") && CentralizationProperties.pharmacy_type.equalsIgnoreCase("U"))
+                if ((CentralizationProperties.centralization.equalsIgnoreCase("on") && CentralizationProperties.pharmacy_type.equalsIgnoreCase("U"))
                         || CentralizationProperties.centralization.equalsIgnoreCase("off"))
                     startRestOpenMRSThread(executorService);
 
@@ -273,16 +273,15 @@ public class PharmacyApplication {
 
         final String url = CentralizationProperties.centralized_server_url;
 
-        PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
-        pool.setDefaultMaxPerRoute(1);
-        pool.setMaxTotal(1);
-
-        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
+        final PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
 
         int synctime = 30;
 
-        if(RestUtils.isNumeric(CentralizationProperties.syncFarmacTimerInSeconds))
+        if (RestUtils.isNumeric(CentralizationProperties.syncFarmacTimerInSeconds))
             synctime = Integer.parseInt(CentralizationProperties.syncFarmacTimerInSeconds);
+
+        if (synctime < 30)
+            synctime = 30;
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
@@ -299,13 +298,13 @@ public class PharmacyApplication {
                         else {
                             Clinic mainClinic = AdministrationManager.getMainClinic(sess);
                             if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
-                                RestFarmac.restPostPatients(sess, url,httpclient);
-                                RestFarmac.restGeAllDispenses(url, mainClinic,httpclient);
+                                RestFarmac.restPostPatients(sess, url, pool);
+                                RestFarmac.restGeAllDispenses(url, mainClinic, pool);
                                 RestFarmac.setDispensesFromRest(sess);
                             } else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")) {
-                                RestFarmac.restGeAllPatients(url, mainClinic,httpclient);
+                                RestFarmac.restGeAllPatients(url, mainClinic, pool);
                                 RestFarmac.setPatientsFromRest(sess);
-                                RestFarmac.restPostDispenses(sess, url,httpclient);
+                                RestFarmac.restPostDispenses(sess, url, pool);
                             }
                         }
                     }
@@ -321,23 +320,26 @@ public class PharmacyApplication {
                 }
 
             }
-        }, 0,synctime , TimeUnit.SECONDS);
+        }, 0, synctime, TimeUnit.SECONDS);
 
     }
 
     public static void startRestOpenMRSThread(ScheduledExecutorService executorService) {
 
         final String url = JdbcProperties.urlBase;
-         int synctime = 30;
+        int synctime = 30;
 
-        if(RestUtils.isNumeric(JdbcProperties.syncOpenmrsTimerInSeconds))
+        if (RestUtils.isNumeric(JdbcProperties.syncOpenmrsTimerInSeconds))
             synctime = Integer.parseInt(JdbcProperties.syncOpenmrsTimerInSeconds);
+
+        if (synctime < 30)
+            synctime = 30;
 
         executorService.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 try {
                     if (getServerStatus(url).contains("Red"))
-                        log.trace(new Date()+" :Servidor OpenMRS offline, verifique a conexao com OpenMRS ou contacte o administrador");
+                        log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexao com OpenMRS ou contacte o administrador");
                     else {
                         RestClient.setOpenmrsPatients();
                         RestClient.setOpenmrsPatientFila();

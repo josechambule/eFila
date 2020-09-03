@@ -311,13 +311,11 @@ public class DownloadDrugs extends GenericFormGui {
 
     private void populateRestDrugs() {
         PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
-        pool.setDefaultMaxPerRoute(1);
-        pool.setMaxTotal(1);
-        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
+
         String url = CentralizationProperties.centralized_server_url;
         String deseaseType = cmbDeseaseType.getText().replace(" ", "%20");
         boolean status = rdBtnActive.getSelection();
-        restDrugs = RestFarmac.restGeAllDrugsByDeseaseTypeAndStatus(url,deseaseType,status, hSession,httpclient);
+        restDrugs = RestFarmac.restGeAllDrugsByDeseaseTypeAndStatus(url,deseaseType,status, hSession,pool);
         tblColumns.setInput(restDrugs);
 
         if(restDrugs.isEmpty()){
