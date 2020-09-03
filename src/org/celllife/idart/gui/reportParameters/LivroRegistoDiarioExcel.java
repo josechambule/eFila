@@ -289,7 +289,7 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
     public void totalRow(HSSFRow row, HSSFCellStyle cellStyle,int total04,int total59,int total1014,int total15,int totalppe,int totalprep){
 
         HSSFCell createCellNid = row.createCell(1);
-        createCellNid.setCellValue("");
+        createCellNid.setCellValue("Totais");
         createCellNid.setCellStyle(cellStyle);
 
         HSSFCell createCellNome = row.createCell(2);
