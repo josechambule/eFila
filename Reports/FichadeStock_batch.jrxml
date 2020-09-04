@@ -84,7 +84,10 @@ UNION
 
 select sa.captureDate as datamovimento,
 ' - ' as cliente,
-' Ajuste ' as tipomovimento,
+CASE
+	WHEN sa.stockTake IS NULL THEN ' Ajuste '
+	ELSE ' Inventario '
+END  as tipomovimento,
 CASE
 	WHEN MOD(sum(sa.adjustedvalue),$P{packsize}) > 0 THEN
 		COALESCE(round(floor(sum(sa.adjustedvalue::real)/$P{packsize})::numeric,0) + 1,0)
@@ -97,8 +100,9 @@ from drug as d
 inner join stock s on s.drug = d.id
 inner join stockAdjustment sa on sa.stock = s.id
 where(pg_catalog.date(sa.captureDate)) = $P{monthStart}::date
-group by 1,6
+group by 1,6,3
 order by 1 asc
+
 ) as g on g.id = drug.id
 
 left join
@@ -232,7 +236,7 @@ $F{openingpills}.longValue()
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
 	</variable>
 	<variable name="UnidadesAjustadas" class="java.lang.Long" resetType="None">
-		<variableExpression><![CDATA[$F{tipomovimento}.contains( "Ajuste" ) ?
+		<variableExpression><![CDATA[$F{tipomovimento}.contains( "Ajuste" ) || $F{tipomovimento}.contains( "Inventario" ) ?
     $F{quantidade}.longValue()
 : 0]]></variableExpression>
 		<initialValueExpression><![CDATA[new Long(0)]]></initialValueExpression>
@@ -325,7 +329,7 @@ $F{openingpills}.longValue()
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{tipomovimento}.contains(  "Ajuste" ) ?
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{tipomovimento}.contains(  "Ajuste" ) || $F{tipomovimento}.contains(  "Inventario" ) ?
     $F{quantidade}.longValue()%$P{packsize} == 0 ?
         $F{quantidade}.longValue()/$P{packsize}
         :  $F{quantidade}.longValue()/$P{packsize}

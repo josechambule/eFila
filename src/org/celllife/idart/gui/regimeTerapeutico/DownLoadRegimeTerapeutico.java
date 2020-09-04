@@ -328,15 +328,13 @@ public class DownLoadRegimeTerapeutico extends GenericFormGui {
 
     private void populateRestRegimen() {
         PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
-        pool.setDefaultMaxPerRoute(1);
-        pool.setMaxTotal(1);
-        final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(pool).build();
+
         String url = CentralizationProperties.centralized_server_url;
         boolean status = rdBtnActive.getSelection();
-        List<RegimeTerapeutico> restRegimeTerapeuticoRest = RestFarmac.restGeAllRegimenByStatus(url, status, hSession,httpclient);
+        List<RegimeTerapeutico> restRegimeTerapeuticoRest = RestFarmac.restGeAllRegimenByStatus(url, status, hSession,pool);
 
         for (RegimeTerapeutico regimeTerapeutico : restRegimeTerapeuticoRest) {
-            List<RegimenDrugs> regimenDrugs = RestFarmac.restGeAllRegimenDrugsByRegimen(url, regimeTerapeutico, hSession,httpclient);
+            List<RegimenDrugs> regimenDrugs = RestFarmac.restGeAllRegimenDrugsByRegimen(url, regimeTerapeutico, hSession,pool);
             if (!regimenDrugs.isEmpty())
                 regimeTerapeutico.setRegimenDrugs(regimenDrugs);
             restRegimeTerapeutico.add(regimeTerapeutico);

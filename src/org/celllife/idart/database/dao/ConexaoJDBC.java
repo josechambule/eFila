@@ -6216,7 +6216,10 @@ public class ConexaoJDBC {
                 "UNION " +
                 "select sa.captureDate as datamovimento, " +
                 "' - ' as cliente, " +
-                "' Ajuste ' as tipomovimento, " +
+                " CASE " +
+                "   WHEN sa.stocktake IS NULL THEN ' Ajuste '" +
+                "   ELSE ' Inventario ' " +
+                " END as tipomovimento, " +
                 "COALESCE(sa.stockcount, 0) as quantidade, " +
                 "' - ' as numeroguia, " +
                 "d.id " +
@@ -6327,7 +6330,7 @@ public class ConexaoJDBC {
                     dispensados = rs.getInt("quantidade");
                 }
 
-                if (rs.getString("tipomovimento").contains("Ajuste")) {
+                if (rs.getString("tipomovimento").contains("Ajuste") || rs.getString("tipomovimento").contains("Inventario")) {
                     ajustados = rs.getInt("quantidade") / drug.getPackSize();
                 }
 
@@ -6348,7 +6351,7 @@ public class ConexaoJDBC {
                     somaUnidadesDispensadas = somaUnidadesDispensadas + rs.getInt("quantidade");
                 }
 
-                if (rs.getString("tipomovimento").contains("Ajuste")) {
+                if (rs.getString("tipomovimento").contains("Ajuste") || rs.getString("tipomovimento").contains("Inventario")) {
                     somaUnidadesAjustadas = somaUnidadesAjustadas + rs.getInt("quantidade");
                 }
                 somaUnidadesDevolvidas = somaUnidadesDevolvidas + rs.getInt("returned") * drug.getPackSize() + rs.getInt("returnedpills");
@@ -6363,7 +6366,7 @@ public class ConexaoJDBC {
                 FichaStockXLS fichaStockXLS = new FichaStockXLS();
                 fichaStockXLS.setDataMovimento(rs.getString("datamovimento"));
                 fichaStockXLS.setTipoMovimento(rs.getString("tipomovimento"));
-                if (rs.getString("tipomovimento").contains("Ajuste"))
+                if (rs.getString("tipomovimento").contains("Ajuste") || rs.getString("tipomovimento").contains("Inventario"))
                     fichaStockXLS.setQuantidade(String.valueOf(ajustados));
                 else
                     fichaStockXLS.setQuantidade(rs.getString("quantidade"));

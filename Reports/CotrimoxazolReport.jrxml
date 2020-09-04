@@ -80,11 +80,6 @@
 	 	 AND
 	  	 prescription.ppe='F'
 
-
-	  	AND
-
-      	prescription.tpc='T'
-
 	 	 )as prescription_package,
 
 	 	 (
@@ -105,7 +100,7 @@
 
 	 					 packagedruginfotmp.dispensedate::timestamp::date >=
 	 $P{monthStart}::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=
-	  $P{monthEnd}::timestamp::date
+	  $P{monthEnd}::timestamp::date AND packagedruginfotmp.ctzpickup = true
 	  	) as dispensa_packege,
           (
           select packagedruginfotmp.patientid,
@@ -123,7 +118,7 @@
 
 	 					 packagedruginfotmp.dispensedate::timestamp::date >=
 	 $P{monthStart}::timestamp::date  AND  packagedruginfotmp.dispensedate::timestamp::date <=
-	  $P{monthEnd}::timestamp::date
+	  $P{monthEnd}::timestamp::date AND packagedruginfotmp.ctzpickup = true
 
 	  group by packagedruginfotmp.patientid
 

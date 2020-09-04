@@ -6,6 +6,8 @@ import model.manager.AdministrationManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.database.hibernate.*;
@@ -46,7 +48,7 @@ public class RestFarmac {
         ApiAuthRest.setPassword(prop.getProperty("rest_access_password"));
     }
 
-    public static String restGeAllPatients(String url, Clinic refClinic, CloseableHttpClient httpClient) {
+    public static String restGeAllPatients(String url, Clinic refClinic, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
 
         Session sess = HibernateUtil.getNewSession();
@@ -54,9 +56,9 @@ public class RestFarmac {
 
         String path = url + "/sync_temp_patients?syncstatus=eq.P&clinicuuid=eq." + refClinic.getUuid();
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);;
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);;
 
-            response = ApiAuthRest.postgrestRequestGetAll(path,token,httpClient);
+            response = ApiAuthRest.postgrestRequestGetAll(path,token,pool);
 
             InputStream in = response.getEntity().getContent();
 
@@ -87,7 +89,7 @@ public class RestFarmac {
                         String updateStatus = "{\"syncstatus\":\"I\"}";
                         AdministrationManager.saveSyncTempPatient(sess, syncTempPatient);
 
-                        restPatchPatient(url, syncTempPatient, updateStatus,httpClient);
+                        restPatchPatient(url, syncTempPatient, updateStatus,pool);
                        log.trace(" Paciente [" + syncTempPatient + "] Refrido de " + syncTempPatient.getMainclinicname() + " carregado com sucesso");
                         break;
                     } catch (Exception e) {
@@ -112,7 +114,7 @@ public class RestFarmac {
         return response.getStatusLine().toString();
     }
 
-    public static String restGetPatient(SyncTempPatient syncTempPatient, String url,CloseableHttpClient httpClient) throws Exception {
+    public static String restGetPatient(SyncTempPatient syncTempPatient, String url,PoolingHttpClientConnectionManager pool) throws Exception {
 
         String pathuuid = url + "/sync_temp_patients?uuid=eq." + syncTempPatient.getUuid();
         String pathnidandclinic = url + "/sync_temp_patients?patientid=eq." + syncTempPatient.getPatientid() + "&mainclinic=eq." + syncTempPatient.getMainclinic();
@@ -120,13 +122,13 @@ public class RestFarmac {
         String response = null;
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestGet(pathuuid,token,httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestGet(pathuuid,token,pool);
 
             if (httpResponse != null) {
                 if (httpResponse.getStatusLine().getStatusCode() != 200)
-                    httpResponse = ApiAuthRest.postgrestRequestGet(pathnidandclinic,token,httpClient);
+                    httpResponse = ApiAuthRest.postgrestRequestGet(pathnidandclinic,token,pool);
             }
 
             if (httpResponse.getStatusLine().getStatusCode() != 200)
@@ -140,7 +142,7 @@ public class RestFarmac {
         return response;
     }
 
-    public static String restPostPatient(String url, SyncTempPatient syncTempPatient,CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static String restPostPatient(String url, SyncTempPatient syncTempPatient,PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         String path = url + "/sync_temp_patients";
         HttpResponse httpResponse = null;
@@ -151,9 +153,9 @@ public class RestFarmac {
         StringEntity inputAddPatient = new StringEntity(restObject, "UTF-8");
         inputAddPatient.setContentType("application/json");
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestPost(path, inputAddPatient,token,httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestPost(path, inputAddPatient,token,pool);
 
             if (httpResponse != null) {
                 if (((float) httpResponse.getStatusLine().getStatusCode() / 200) >= 1.5)
@@ -168,7 +170,7 @@ public class RestFarmac {
         return response;
     }
 
-    public static String restPutPatient(String url, SyncTempPatient syncTempPatient, CloseableHttpClient httpClient) throws Exception {
+    public static String restPutPatient(String url, SyncTempPatient syncTempPatient, PoolingHttpClientConnectionManager pool) throws Exception {
 
         String path = url + "/sync_temp_patients?id=eq." + syncTempPatient.getId() + "&mainclinic=eq." + syncTempPatient.getMainclinic();
         HttpResponse httpResponse = null;
@@ -180,9 +182,9 @@ public class RestFarmac {
         inputAddPatient.setContentType("application/json");
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestPut(path, inputAddPatient,token,httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestPut(path, inputAddPatient,token,pool);
 
             if (httpResponse != null) {
                 if (((float) httpResponse.getStatusLine().getStatusCode() / 200) >= 1.5)
@@ -198,7 +200,7 @@ public class RestFarmac {
 
     }
 
-    public static String restPatchPatient(String url, SyncTempPatient syncTempPatient, String restObject, CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static String restPatchPatient(String url, SyncTempPatient syncTempPatient, String restObject, PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         String path = url + "/sync_temp_patients?id=eq." + syncTempPatient.getId() + "&mainclinic=eq." + syncTempPatient.getMainclinic();
         HttpResponse httpResponse = null;
@@ -208,9 +210,9 @@ public class RestFarmac {
         inputAddPatient.setContentType("application/json");
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestPatch(path, inputAddPatient,token, httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestPatch(path, inputAddPatient,token, pool);
 
             if (httpResponse != null) {
                 if (httpResponse.getStatusLine().getStatusCode() != 200)
@@ -228,7 +230,7 @@ public class RestFarmac {
 
     }
 
-    public static String restPatchDispense(String url, SyncTempDispense syncTempDispense, String restObject, CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static String restPatchDispense(String url, SyncTempDispense syncTempDispense, String restObject, PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         String path = url + "/sync_temp_dispense?id=eq." + syncTempDispense.getId() + "&mainclinic=eq." + syncTempDispense.getMainclinic();
         HttpResponse httpResponse = null;
@@ -240,9 +242,9 @@ public class RestFarmac {
         inputAddDispense.setContentType("application/json");
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestPatch(path, inputAddDispense,token, httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestPatch(path, inputAddDispense,token, pool);
 
             if (httpResponse != null) {
                 if (httpResponse.getStatusLine().getStatusCode() != 200)
@@ -260,7 +262,7 @@ public class RestFarmac {
 
     }
 
-    public String restDeletePatient(String url, SyncTempPatient syncTempPatient, CloseableHttpClient httpClient) {
+    public String restDeletePatient(String url, SyncTempPatient syncTempPatient, PoolingHttpClientConnectionManager pool) {
 
         String pathuuid = url + "/sync_temp_patients?uuid=eq." + syncTempPatient.getUuid();
         String pathnidandclinic = url + "/sync_temp_patients?patientid=eq." + syncTempPatient.getPatientid() + "&mainclinic=eq." + syncTempPatient.getMainclinic();
@@ -268,13 +270,13 @@ public class RestFarmac {
         String response = null;
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestDelete(pathuuid,token, httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestDelete(pathuuid,token, pool);
 
             if (httpResponse != null) {
                 if (httpResponse.getStatusLine().getStatusCode() != 200)
-                    httpResponse = ApiAuthRest.postgrestRequestDelete(pathnidandclinic,token, httpClient);
+                    httpResponse = ApiAuthRest.postgrestRequestDelete(pathnidandclinic,token, pool);
             }
 
             if (httpResponse.getStatusLine().getStatusCode() != 200)
@@ -288,15 +290,15 @@ public class RestFarmac {
         return response;
     }
 
-    public static String restGeAllDispenses(String url, Clinic mainClinic, CloseableHttpClient httpClient) {
+    public static String restGeAllDispenses(String url, Clinic mainClinic, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
         Session sess = HibernateUtil.getNewSession();
         Transaction tx = sess.beginTransaction();
         String path = url + "/sync_temp_dispense?syncstatus=eq.P&mainclinicuuid=eq." + mainClinic.getUuid();
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            response = ApiAuthRest.postgrestRequestGetAll(path,token,httpClient);
+            response = ApiAuthRest.postgrestRequestGetAll(path,token,pool);
             InputStream in = response.getEntity().getContent();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder str = new StringBuilder();
@@ -322,7 +324,7 @@ public class RestFarmac {
                         String updateStatus = "{\"syncstatus\":\"I\"}";
 
                         AdministrationManager.saveSyncTempDispense(sess, syncTempDispense);
-                        restPatchDispense(url, syncTempDispense, updateStatus,httpClient);
+                        restPatchDispense(url, syncTempDispense, updateStatus,pool);
                        log.trace(" Informacao de Levantamento do Paciente [" + syncTempDispense.getPatientid() + "] referido de " + syncTempDispense.getMainclinicname() + " carregada/actualizado com sucesso");
                         break;
                     } catch (Exception e) {
@@ -349,7 +351,7 @@ public class RestFarmac {
         return response.getStatusLine().toString();
     }
 
-    public static String restPostDispense(String url, SyncTempDispense syncTempDispense,  CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static String restPostDispense(String url, SyncTempDispense syncTempDispense,  PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         String path = url + "/sync_temp_dispense";
         HttpResponse httpResponse = null;
@@ -362,9 +364,9 @@ public class RestFarmac {
         inputAddDispense.setContentType("application/json");
 
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            httpResponse = ApiAuthRest.postgrestRequestPost(path, inputAddDispense,token,httpClient);
+            httpResponse = ApiAuthRest.postgrestRequestPost(path, inputAddDispense,token,pool);
 
             if (httpResponse != null) {
                 if (((float) httpResponse.getStatusLine().getStatusCode() / 200) >= 1.5)
@@ -379,7 +381,7 @@ public class RestFarmac {
         return response;
     }
 
-    public static void restPostPatients(Session sess, String url, CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static void restPostPatients(Session sess, String url, PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         List<SyncTempPatient> syncTempPatients = AdministrationManager.getAllSyncTempPatientReadyToSend(sess);
         String result = "";
@@ -388,7 +390,7 @@ public class RestFarmac {
         else
             for (SyncTempPatient patientSync : syncTempPatients) {
                 try {
-                    result = restPostPatient(url, patientSync,httpClient);
+                    result = restPostPatient(url, patientSync,pool);
                     if (result.contains("Falha") && !result.contains("409")) {
                        log.trace(new Date() + ": Ocorreu um erro ao gravar o paciente com nid " + patientSync.getPatientid() + " Erro: " + result);
                     } else {
@@ -406,7 +408,7 @@ public class RestFarmac {
             }
     }
 
-    public static void restPostDispenses(Session sess, String url, CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static void restPostDispenses(Session sess, String url, PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
 
         List<SyncTempDispense> syncTempDispenses = AdministrationManager.getAllSyncTempDispenseReadyToSend(sess);
 
@@ -418,7 +420,7 @@ public class RestFarmac {
             for (SyncTempDispense dispenseSync : syncTempDispenses) {
 
                 try {
-                    result = restPostDispense(url, dispenseSync,httpClient);
+                    result = restPostDispense(url, dispenseSync,pool);
                     if (result.contains("Falha")) {
                        log.trace(new Date() + ": Ocorreu um erro ao enviar o Levantamento do paciente com nid " + dispenseSync.getPatientid() + " Erro: " + result);
                     } else {
@@ -471,10 +473,10 @@ public class RestFarmac {
                     Prescription prescription = DadosPacienteFarmac.getPatientPrescritionFarmac(dispense);
 
                     DadosPacienteFarmac.saveDispenseFarmacQty0(prescription, dispense);
-                    if (DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense)) {
+                    DadosPacienteFarmac.setDispenseRestOpenmrs(sess, prescription, dispense);
                         dispense.setSyncstatus('I');
                         AdministrationManager.saveSyncTempDispense(sess, dispense);
-                    }
+
                     break;
                 } catch (Exception e) {
                    log.trace("Erro ao gravar levantamento do Paciente com NID: [" + dispense.getPatientid() + "]");
@@ -487,15 +489,15 @@ public class RestFarmac {
         }
     }
 
-    public static List<Clinic> restGeAllClinicByProvinceAndDistrictAndFacilityType(String url, String province, String district, String facilitytype, Session session, CloseableHttpClient httpClient) {
+    public static List<Clinic> restGeAllClinicByProvinceAndDistrictAndFacilityType(String url, String province, String district, String facilitytype, Session session, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
         List<Clinic> clinicList = new ArrayList<>();
         List<Clinic> localClinics = AdministrationManager.getClinics(session);
         String path = url + "/clinic?province=eq." + province + "&district=eq." + district + "&facilitytype=eq." + facilitytype;
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, pool);
 
-            response = ApiAuthRest.postgrestRequestGetAll(path,token,httpClient);
+            response = ApiAuthRest.postgrestRequestGetAll(path,token,pool);
             InputStream in = response.getEntity().getContent();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder str = new StringBuilder();
@@ -551,15 +553,15 @@ public class RestFarmac {
         return clinicList;
     }
 
-    public static List<Drug> restGeAllDrugsByDeseaseTypeAndStatus(String url, String deseaseType, boolean status, Session session, CloseableHttpClient httpClient) {
+    public static List<Drug> restGeAllDrugsByDeseaseTypeAndStatus(String url, String deseaseType, boolean status, Session session, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
         List<Drug> drugList = new ArrayList<>();
         List<Drug> localDrugs = AdministrationManager.getDrugs(session);
         String path = url + "/drug?select=*,form(*)&tipodoenca=eq." + deseaseType + "&active=eq." + status;
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token,httpClient);
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token,pool);
             Drug drug = new Drug();
             String objectString = null;
             JSONObject jsonObj = null;
@@ -612,15 +614,15 @@ public class RestFarmac {
         return drugList;
     }
 
-    public static List<RegimeTerapeutico> restGeAllRegimenByStatus(String url, boolean status, Session session, CloseableHttpClient httpClient) {
+    public static List<RegimeTerapeutico> restGeAllRegimenByStatus(String url, boolean status, Session session, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
         List<RegimeTerapeutico> regimeTerapeuticoList = new ArrayList<>();
         List<RegimeTerapeutico> localRegimeTerapeutico = AdministrationManager.getRegimeTerapeutico(session);
         String path = url + "/regimeterapeutico?active=eq." + status;
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password,pool);
 
-            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token, httpClient);
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token, pool);
             RegimeTerapeutico regimeTerapeutico = new RegimeTerapeutico();
             String objectString = null;
             JSONObject jsonObj = null;
@@ -669,14 +671,14 @@ public class RestFarmac {
         return regimeTerapeuticoList;
     }
 
-    public static List<RegimenDrugs> restGeAllRegimenDrugsByRegimen(String url, RegimeTerapeutico regimeTerapeutico, Session session, CloseableHttpClient httpClient) {
+    public static List<RegimenDrugs> restGeAllRegimenDrugsByRegimen(String url, RegimeTerapeutico regimeTerapeutico, Session session, PoolingHttpClientConnectionManager pool) {
         HttpResponse response = null;
         List<RegimenDrugs> regimenDrugsList = new ArrayList<>();
         String path = url + "/regimendrugs?select=*,drug(*,form(*))&regimen=eq."+regimeTerapeutico.getRegimeid();
         try {
-            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, httpClient);
+            String token = restGetpermission(url, CentralizationProperties.rest_access_username,CentralizationProperties.rest_access_password, pool);
 
-            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token, httpClient);
+            StringBuilder str = ApiAuthRest.postgrestRequestGetBuffer(path,token, pool);
             RegimenDrugs regimenDrugs = new RegimenDrugs();
             String objectString = null;
             JSONObject jsonObj = null;
@@ -774,7 +776,7 @@ public class RestFarmac {
         }
     }
 
-    public static String restGetpermission(String url, String username, String pass, CloseableHttpClient httpClient) throws UnsupportedEncodingException {
+    public static String restGetpermission(String url, String username, String pass, PoolingHttpClientConnectionManager pool) throws UnsupportedEncodingException {
         String path = url + "/rpc/login";
         StringBuilder httpResponse = null;
         JSONObject jsonObj = null;
@@ -786,9 +788,7 @@ public class RestFarmac {
         inputCheckAccess.setContentType("application/json");
 
         try {
-            httpResponse = ApiAuthRest.postgrestRequestPostBuffer(path, inputCheckAccess,httpClient);
-
-
+            httpResponse = ApiAuthRest.postgrestRequestPostBuffer(path, inputCheckAccess,pool);
 
             String[] lines = httpResponse.toString().split("\\n");
 

@@ -31,6 +31,8 @@ public class JdbcProperties {
 
     public static String hibernateOpenMRSDialect = "org.hibernate.dialect.MySQLDialect";
 
+    public static String syncOpenmrsTimerInSeconds = "30";
+
     public static final String FILE = "jdbc.properties";
 
     private static Logger log = null;
@@ -65,6 +67,7 @@ public class JdbcProperties {
         hibernateOpenMRSDatabase = setStringProperty("hibernateOpenMRSDatabase");
         hibernateOpenMRSDriver = setStringProperty("hibernateOpenMRSDriver");
         hibernateOpenMRSDialect = setStringProperty("hibernateOpenMRSDialect");
+        syncOpenmrsTimerInSeconds = setStringProperty("syncOpenmrsTimerInSeconds");
 
     }
 
@@ -89,6 +92,8 @@ public class JdbcProperties {
         sb.append("hibernateOpenMRSDriver=" + hibernateOpenMRSDriver);
         sb.append("\n");
         sb.append("hibernateOpenMRSDialect=" + hibernateOpenMRSDialect);
+        sb.append("\n");
+        sb.append("syncOpenmrsTimerInSeconds=" + syncOpenmrsTimerInSeconds);
         sb.append("\n");
 
         return sb.toString();

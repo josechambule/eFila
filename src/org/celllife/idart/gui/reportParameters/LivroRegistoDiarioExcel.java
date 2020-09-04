@@ -115,9 +115,29 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 int rowNum = 15;
                 int i = 0;
                 LivroRegistoDiarioXLS xlsLivroTemp = null;
+                int total04 = 0;
+                int total59 = 0;
+                int total1014 = 0;
+                int total15 = 0;
+                int totalppe = 0;
+                int totalprep= 0;
 
                 for (LivroRegistoDiarioXLS xls : livroRegistoDiarios) {
                     i++;
+
+                    if(xls.getZeroQuatro().equalsIgnoreCase("Sim"))
+                        total04++;
+                    if(xls.getCincoNove().equalsIgnoreCase("Sim"))
+                        total59++;
+                    if(xls.getDezCatorze().equalsIgnoreCase("Sim"))
+                        total1014++;
+                    if(xls.getMaiorQuinze().equalsIgnoreCase("Sim"))
+                        total15++;
+                    if(xls.getPpe().equalsIgnoreCase("Sim"))
+                        totalppe++;
+                    if(xls.getPrep().equalsIgnoreCase("Sim"))
+                        totalprep++;
+
                     HSSFRow row = sheet.createRow(rowNum++);
 
                     if (xlsLivroTemp != null)
@@ -224,6 +244,8 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                     }
                 }
 
+                totalRow(sheet.createRow(rowNum++), cellStyle, total04, total59, total1014, total15, totalppe, totalprep);
+
                 for (int i0 = 1; i0 < LivroRegistoDiarioXLS.class.getClass().getDeclaredFields().length; i0++) {
                     sheet.autoSizeColumn(i0);
                 }
@@ -262,6 +284,83 @@ public class LivroRegistoDiarioExcel implements IRunnableWithProgress {
                 sheet.removeRow(removingRow);
             }
         }
+    }
+
+    public void totalRow(HSSFRow row, HSSFCellStyle cellStyle,int total04,int total59,int total1014,int total15,int totalppe,int totalprep){
+
+        HSSFCell createCellNid = row.createCell(1);
+        createCellNid.setCellValue("Totais");
+        createCellNid.setCellStyle(cellStyle);
+
+        HSSFCell createCellNome = row.createCell(2);
+        createCellNome.setCellValue("");
+        createCellNome.setCellStyle(cellStyle);
+
+        HSSFCell tipoPaciente= row.createCell(3);
+        tipoPaciente.setCellValue("");
+        tipoPaciente.setCellStyle(cellStyle);
+
+        HSSFCell zeroQuatro = row.createCell(4);
+        zeroQuatro.setCellValue(total04);
+        zeroQuatro.setCellStyle(cellStyle);
+
+        HSSFCell cincoNove = row.createCell(5);
+        cincoNove.setCellValue(total59);
+        cincoNove.setCellStyle(cellStyle);
+
+        HSSFCell dezCatorze = row.createCell(6);
+        dezCatorze.setCellValue(total1014);
+        dezCatorze.setCellStyle(cellStyle);
+
+        HSSFCell maiorQuinze = row.createCell(7);
+        maiorQuinze.setCellValue(total15);
+        maiorQuinze.setCellStyle(cellStyle);
+
+        HSSFCell createCellTipoTarv = row.createCell(8);
+        createCellTipoTarv.setCellValue("");
+        createCellTipoTarv.setCellStyle(cellStyle);
+
+        HSSFCell createCellRegimeTerapeutico = row.createCell(9);
+        createCellRegimeTerapeutico.setCellValue("");
+        createCellRegimeTerapeutico.setCellStyle(cellStyle);
+
+        HSSFCell produtos = row.createCell(10);
+        produtos.setCellValue("");
+        produtos.setCellStyle(cellStyle);
+
+        HSSFCell quantidade = row.createCell(11);
+        quantidade.setCellValue("");
+        quantidade.setCellStyle(cellStyle);
+
+        HSSFCell createCellTipoDispensa = row.createCell(12);
+        createCellTipoDispensa.setCellValue("");
+        createCellTipoDispensa.setCellStyle(cellStyle);
+
+        HSSFCell linhaNome = row.createCell(13);
+        linhaNome.setCellValue("");
+        linhaNome.setCellStyle(cellStyle);
+
+        HSSFCell createCellDataLevantamento = row.createCell(14);
+        createCellDataLevantamento.setCellValue("");
+        createCellDataLevantamento.setCellStyle(cellStyle);
+
+        HSSFCell createCellDataProximoLevantamento = row.createCell(15);
+        createCellDataProximoLevantamento.setCellValue("");
+        createCellDataProximoLevantamento.setCellStyle(cellStyle);
+
+        HSSFCell ppe = row.createCell(16);
+        ppe.setCellValue(totalppe);
+        ppe.setCellStyle(cellStyle);
+
+        HSSFCell prep = row.createCell(17);
+        prep.setCellValue(totalprep);
+        prep.setCellStyle(cellStyle);
+
+        HSSFCell criancaExposta = row.createCell(18);
+        criancaExposta.setCellValue("");
+        criancaExposta.setCellStyle(cellStyle);
+
+
     }
 
 }

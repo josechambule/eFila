@@ -106,6 +106,10 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
     private Text txtSurname;
 
+    private Label lblOpenmrsuuid;
+
+    private Text txtOpenmrsuuid;
+
     private Combo cmbDOBDay;
 
     private Combo cmbDOBMonth;
@@ -310,13 +314,12 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         // Patient ID
         Label lblPatientId = new Label(grpParticulars, SWT.NONE);
-        lblPatientId.setBounds(new Rectangle(7, 25, 84, 20));
-        lblPatientId
-                .setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.patientid")); //$NON-NLS-1$ //$NON-NLS-2$
+        lblPatientId.setBounds(new Rectangle(7, 20, 84, 20));
+        lblPatientId.setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.patientid")); //$NON-NLS-1$ //$NON-NLS-2$
         lblPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         txtPatientId = new TextAdapter(grpParticulars, SWT.BORDER);
-        txtPatientId.setBounds(new Rectangle(col2x, 25, 150, 20));
+        txtPatientId.setBounds(new Rectangle(col2x, 20, 150, 20));
         txtPatientId.setData(iDartProperties.SWTBOT_KEY, "txtPatientId"); //$NON-NLS-1$
         txtPatientId.setFocus();
         txtPatientId.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -345,7 +348,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 		}*/
 
         btnSearchByName = new Button(grpParticulars, SWT.NONE);
-        btnSearchByName.setBounds(new Rectangle(270, 50, 119, 28));
+        btnSearchByName.setBounds(new Rectangle(270, 20, 119, 28));
 
         if (!isAddnotUpdate) {
             btnSearchByName.setVisible(false);
@@ -380,15 +383,14 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         });
 
         btnEkapaSearch = new Button(grpParticulars, SWT.NONE);
-        btnEkapaSearch.setBounds(new Rectangle(270, 47, 110, 28));
+        btnEkapaSearch.setBounds(new Rectangle(270, 50, 110, 28));
         btnEkapaSearch.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnEkapaSearch.setText(Messages.getString("patient.button.ekapasearch")); //$NON-NLS-1$
         if (!iDartProperties.isEkapaVersion || isAddnotUpdate) {
             btnEkapaSearch.setVisible(false);
         }
 
-        btnEkapaSearch
-                .setToolTipText(Messages.getString("patient.button.ekapasearch.tooltip")); //$NON-NLS-1$
+        btnEkapaSearch.setToolTipText(Messages.getString("patient.button.ekapasearch.tooltip")); //$NON-NLS-1$
         btnEkapaSearch.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -399,22 +401,21 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         // FirstNames
         Label lblFirstNames = new Label(grpParticulars, SWT.NONE);
-        lblFirstNames.setBounds(new Rectangle(7, 55, 84, 20));
+        lblFirstNames.setBounds(new Rectangle(7, 45, 84, 20));
         lblFirstNames.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         lblFirstNames
                 .setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.firstname")); //$NON-NLS-1$ //$NON-NLS-2$
         txtFirstNames = new Text(grpParticulars, SWT.BORDER);
-        txtFirstNames.setBounds(new Rectangle(col2x, 55, 150, 20));
+        txtFirstNames.setBounds(new Rectangle(col2x, 45, 150, 20));
         txtFirstNames.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         // Surname
         Label lblSurname = new Label(grpParticulars, SWT.NONE);
-        lblSurname.setBounds(new Rectangle(7, 85, 84, 20));
+        lblSurname.setBounds(new Rectangle(7, 70, 84, 20));
         lblSurname.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        lblSurname
-                .setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.surname")); //$NON-NLS-1$ //$NON-NLS-2$
+        lblSurname.setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.surname")); //$NON-NLS-1$ //$NON-NLS-2$
         txtSurname = new Text(grpParticulars, SWT.BORDER);
-        txtSurname.setBounds(new Rectangle(col2x, 85, 150, 20));
+        txtSurname.setBounds(new Rectangle(col2x, 70, 150, 20));
         txtSurname.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         lblOtherPatientsWithThisID = new Label(grpParticulars, SWT.NONE);
@@ -425,13 +426,12 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         // Date of Birth
         Label lbldob = new Label(grpParticulars, SWT.NONE);
-        lbldob.setBounds(new Rectangle(7, 115, 84, 20));
+        lbldob.setBounds(new Rectangle(7, 95, 84, 20));
         lbldob.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        lbldob
-                .setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.dob")); //$NON-NLS-1$ //$NON-NLS-2$
+        lbldob.setText(Messages.getString("common.compulsory.marker") + Messages.getString("patient.label.dob")); //$NON-NLS-1$ //$NON-NLS-2$
 
         cmbDOBDay = new Combo(grpParticulars, SWT.BORDER);
-        cmbDOBDay.setBounds(new Rectangle(col2x, 112, 50, 18));
+        cmbDOBDay.setBounds(new Rectangle(col2x, 95, 50, 18));
         cmbDOBDay.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBDay.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbDOBDay.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
@@ -446,7 +446,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         });
 
         cmbDOBMonth = new Combo(grpParticulars, SWT.BORDER);
-        cmbDOBMonth.setBounds(new Rectangle(col2x + 50, 112, 97, 18));
+        cmbDOBMonth.setBounds(new Rectangle(col2x + 50, 95, 97, 18));
         cmbDOBMonth.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBMonth.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbDOBMonth.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
@@ -470,7 +470,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         });
 
         cmbDOBYear = new Combo(grpParticulars, SWT.BORDER);
-        cmbDOBYear.setBounds(new Rectangle(col2x + 148, 112, 60, 18));
+        cmbDOBYear.setBounds(new Rectangle(col2x + 148, 95, 60, 18));
         cmbDOBYear.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbDOBYear.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
         cmbDOBYear.setForeground(ResourceUtils.getColor(iDartColor.BLACK));
@@ -511,14 +511,26 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbDOBMonth.setVisibleItemCount(cmbDOBMonth.getItemCount());
         cmbDOBYear.setVisibleItemCount(31);
 
+        // Age
+        Label lblAge = new Label(grpParticulars, SWT.NONE);
+        lblAge.setBounds(new Rectangle(col2x + 212, 95, 33, 20));
+        lblAge.setText(Messages.getString("patient.label.age")); //$NON-NLS-1$
+        lblAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        txtAge = new Text(grpParticulars, SWT.BORDER);
+        txtAge.setBounds(new Rectangle(col2x + 249, 95, 35, 20));
+        txtAge.setEditable(false);
+        txtAge.setEnabled(false);
+        txtAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+
+
         // Sex
         Label lblSex = new Label(grpParticulars, SWT.NONE);
-        lblSex.setBounds(new Rectangle(7, 152, 84, 20));
+        lblSex.setBounds(new Rectangle(7, 120, 84, 20));
         lblSex.setText(Messages.getString("patient.label.sex")); //$NON-NLS-1$
         lblSex.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
         cmbSex = new Combo(grpParticulars, SWT.BORDER);
-        cmbSex.setBounds(new Rectangle(col2x, 145, 150,
+        cmbSex.setBounds(new Rectangle(col2x, 120, 150,
                 18));
         cmbSex.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         cmbSex.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
@@ -572,58 +584,47 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             }
         });
 
-        // Age
-        Label lblAge = new Label(grpParticulars, SWT.NONE);
-        lblAge.setBounds(new Rectangle(col2x + 212, 117, 33, 20));
-        lblAge.setText(Messages.getString("patient.label.age")); //$NON-NLS-1$
-        lblAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        txtAge = new Text(grpParticulars, SWT.BORDER);
-        txtAge.setBounds(new Rectangle(col2x + 249, 114, 35, 20));
-        txtAge.setEditable(false);
-        txtAge.setEnabled(false);
-        txtAge.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
         // Child Icon
         lblPicChild = new Label(grpParticulars, SWT.NONE);
-        lblPicChild.setBounds(new Rectangle(255, 140, 50, 43));
+        lblPicChild.setBounds(new Rectangle(255, 110, 50, 43));
         lblPicChild.setImage(ResourceUtils.getImage(iDartImage.CHILD_50X43));
         lblPicChild.setVisible(false);
 
-
-//        transito = new Button(grpParticulars, SWT.CHECK);
-//        transito.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 1, 1));
-//        transito.setBounds(new Rectangle(col2x, 150, 150,
-//                18));
-//        transito.setText("Paciente Em Transito");
-//        transito.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-//        transito.setSelection(false);
-
         // Phone Cell
         Label lblPhoneCell = new Label(grpParticulars, SWT.NONE);
-        lblPhoneCell.setBounds(new Rectangle(7, 207, 85, 20));
+        lblPhoneCell.setBounds(new Rectangle(7, 145, 85, 20));
         lblPhoneCell.setText(Messages.getString("patient.label.cellphone")); //$NON-NLS-1$
         lblPhoneCell.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         txtCellphone = new Text(grpParticulars, SWT.BORDER);
-        txtCellphone.setBounds(new Rectangle(col2x, 205, 150, 20));
+        txtCellphone.setBounds(new Rectangle(col2x, 145, 150, 20));
         txtCellphone.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         txtCellphone.setEnabled(false);
 
         Label lblARVStartDate = new Label(grpParticulars, SWT.NONE);
-        lblARVStartDate.setBounds(new Rectangle(7, 233, 90, 20));
+        lblARVStartDate.setBounds(new Rectangle(7, 170, 90, 20));
         lblARVStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        lblARVStartDate.setText(Messages
-                .getString("patient.label.arvstartdate")); //$NON-NLS-1$
+        lblARVStartDate.setText(Messages.getString("patient.label.arvstartdate")); //$NON-NLS-1$
 
-        btnARVStart = new DateButton(
-                grpParticulars,
-                DateButton.ZERO_TIMESTAMP,
-                new DateInputValidator(DateRuleFactory.beforeNowInclusive(true)));
-        btnARVStart.setBounds(new Rectangle(col2x, 230, 150, 20));
+        btnARVStart = new DateButton(grpParticulars, DateButton.ZERO_TIMESTAMP, new DateInputValidator(DateRuleFactory.beforeNowInclusive(true)));
+        btnARVStart.setBounds(new Rectangle(col2x, 170, 150, 20));
         btnARVStart.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
         btnARVStart.setText(Messages.getString("common.unknown")); //$NON-NLS-1$
 
+        // Openmrs UUID
+        lblOpenmrsuuid = new Label(grpParticulars, SWT.NONE);
+        lblOpenmrsuuid.setBounds(new org.eclipse.swt.graphics.Rectangle(7, 200,
+                105, 20));
+        lblOpenmrsuuid.setText(Messages.getString("AddressTab.openmrs.uuid.label")); //$NON-NLS-1$
+        lblOpenmrsuuid.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        lblOpenmrsuuid.setVisible(false);
+        txtOpenmrsuuid = new Text(grpParticulars, SWT.BORDER);
+        txtOpenmrsuuid.setBounds(new org.eclipse.swt.graphics.Rectangle(col2x, 200, 220, 20));
+        txtOpenmrsuuid.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        txtOpenmrsuuid.setEnabled(false);
+        txtOpenmrsuuid.setVisible(false);
+
         btnPatientHistoryReport = new Button(grpParticulars, SWT.NONE);
-        btnPatientHistoryReport.setBounds(new Rectangle(310, 140, 40, 40));
+        btnPatientHistoryReport.setBounds(new Rectangle(260, 115, 40, 40));
         btnPatientHistoryReport
                 .setToolTipText(Messages.getString("patient.button.report.tooltip")); //$NON-NLS-1$
         btnPatientHistoryReport.setImage(ResourceUtils
@@ -930,7 +931,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         cmbSex.setText(EMPTY);
         txtAge.setText(EMPTY);
         txtCellphone.setText(EMPTY);
-
+        txtOpenmrsuuid.setText(EMPTY);
         txtPatientId.setText(EMPTY);
         txtPatientId.setFocus();
 //		txtPatientId.setEditable(true);
@@ -1040,7 +1041,15 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             result = false;
         }
 
-        if (result && txtFirstNames.getText().trim().isEmpty()) {
+        // Check if openmrs uuid is valid
+        if (result && !txtOpenmrsuuid.getText().isEmpty()) {
+            if (!CommonObjects.isUUID(txtOpenmrsuuid.getText())) { //$NON-NLS-1$
+                title = Messages.getString("AddressTab.error.invalid-uuid.title"); //$NON-NLS-1$
+                message = Messages.getString("AddressTab.error.invalid-uuid.msg"); //$NON-NLS-1$
+                txtOpenmrsuuid.setFocus();
+                result = false;
+            }
+        } else if (result && txtFirstNames.getText().trim().isEmpty()) {
             title = Messages.getString("patient.error.missingfield.title"); //$NON-NLS-1$
             message = Messages.getString("patient.error.firstname.blank"); //$NON-NLS-1$
             txtFirstNames.setFocus();
@@ -1079,9 +1088,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
                 btnEpisodeStopDate.setFocus();
                 result = false;
             }
-        }
-
-        else if (episodeStartDate != null && !iDARTUtil.isInPast(episodeStartDate)) {
+        } else if (episodeStartDate != null && !iDARTUtil.isInPast(episodeStartDate)) {
             title = Messages.getString("patient.error.invalidfield.title"); //$NON-NLS-1$
             message = Messages.getString("patient.error.episodeStartInFuture"); //$NON-NLS-1$
             btnEpisodeStopDate.setFocus();
@@ -1169,6 +1176,40 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         }
 
         if (result) {
+            if (checkOpenmrs) {
+                try {
+                    if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
+                        log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
+                        title = Messages.getString("Servidor OpenMRS offline"); //$NON-NLS-1$
+                        message = Messages.getString("Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador"); //$NON-NLS-1$
+                        result = false;
+                    } else {
+                        restClient = new RestClient();
+                        String nidvoided = restClient.getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + txtOpenmrsuuid.getText());
+                        if (nidvoided != null) {
+
+                            JSONObject jsonObjectPerson = new JSONObject(nidvoided);
+                            Boolean voided = (Boolean) jsonObjectPerson.get("voided");
+
+                            if (voided) {
+                                title = Messages.getString("UUID Inanctivo no OpenMRS"); //$NON-NLS-1$
+                                message = Messages.getString("O UUID introduzido esta no estado incativo no openmrs, por favor contacte o administrador."); //$NON-NLS-1$
+                                result = false;
+                            }
+                        } else {
+                            title = Messages.getString("UUID não existe no OpenMRS"); //$NON-NLS-1$
+                            message = Messages.getString("O UUID introduzido não existe no openmrs, por favor introduza um UUID válido ou contacte o administrador."); //$NON-NLS-1$
+                            result = false;
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    result = false;
+                }
+            }
+        }
+
+        if (result) {
             // ARV Start Date test ----------------------------------
             int tabNo = 0;
             // submit data from the tabs
@@ -1202,6 +1243,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             }
         }
 
+
         return result;
     }
 
@@ -1227,16 +1269,18 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         } else {
 
             txtPatientId.setText(localPatient.getPatientId());
+            txtOpenmrsuuid.setText(localPatient.getUuidopenmrs());
 
             if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
                 if (checkOpenmrs) {
                     try {
                         if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
                             log.trace(new Date() + " :Servidor OpenMRS offline, verifique a conexão com OpenMRS ou contacte o administrador");
-                          //  showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
+                            //  showMessage(MessageDialog.WARNING, "Servidor OpenMRS Offline", "Por favor, verifique a conexão com OpenMRS para efectuar esta operação.");
                             return;
                         } else {
                             //Preparar Prim.Nomes, Apelido e Data de Nascimento apartir do NID usando REST WEB SERVICES
+
                             String nid = txtPatientId.getText().toUpperCase().trim();
 
                             String resource = new RestClient().getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
@@ -1247,14 +1291,14 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
                             JSONObject jsonObject = new org.json.JSONObject(personDemografics);
 
-                            String fullName = jsonObject.getJSONObject("preferredName").getString("display");
+                            String fullName = jsonObject.getJSONObject("preferredName").getString("display").replace("\r", "").replace("\n","");
 
                             String[] names = fullName.trim().split(" ");
 
 //               log.trace(names[0]);
 //               log.trace(names[names.length - 1]);
 
-                            txtFirstNames.setText(names[0]);//Primeiros nomes
+                            txtFirstNames.setText(fullName.replace(names[names.length - 1],""));//Primeiros nomes
                             localPatient.setFirstNames(txtFirstNames.getText());//Primeiros nomes
 
                             txtSurname.setText(names[names.length - 1]);//Apelido
@@ -1262,7 +1306,12 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
                             String gender = jsonObject.getString("gender").trim();
 
-                            cmbSex.setText(gender);
+                            if (gender.toUpperCase().startsWith("F")) {
+                                cmbSex.setText(Messages.getString("patient.sex.female")); //$NON-NLS-1$
+                            } else if (gender.toUpperCase().startsWith("M")) {
+                                cmbSex.setText(Messages.getString("patient.sex.male")); //$NON-NLS-1$
+                            }
+
                             localPatient.setSex(cmbSex.getText().charAt(0));
 
                             String birthDate = jsonObject.getString("birthdate").trim();
@@ -1383,6 +1432,11 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
     }
 
     private void updateGUIforNewLocalPatient() {
+        boolean checkOpenmrs = true;
+        if (CentralizationProperties.centralization.equalsIgnoreCase("on") && (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
+                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")))
+            checkOpenmrs = false;
+
         loadPatientDetails();
         txtPatientId.setEnabled(false);
         txtFirstNames.setFocus();
@@ -1398,6 +1452,15 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             alternativePatientIds = false;
         }
         enableFields(true);
+
+        if(localPatient.getMostRecentEpisode() != null)
+        if (checkOpenmrs && !(localPatient.getMostRecentEpisode().getStartReason().contains("nsito") ||
+                localPatient.getMostRecentEpisode().getStartReason().contains("nidade"))) {
+            txtOpenmrsuuid.setVisible(true);
+            lblOpenmrsuuid.setVisible(true);
+        }
+
+
     }
 
     /**
@@ -1553,14 +1616,12 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
                     e.printStackTrace();
                 }
             }
-		
-		/*if (cmbSex.getText().equals(Messages.getString("patient.sex.female"))) { //$NON-NLS-1$
-			localPatient.setSex('F');
-		} else if (cmbSex.getText().equals(Messages.getString("patient.sex.male"))) { //$NON-NLS-1$
-			localPatient.setSex('M');
-		} else {
-			localPatient.setSex('U');
-		}*/
+
+        if (cmbSex.getText().toUpperCase().startsWith("F")) {
+            localPatient.setSex(Messages.getString("patient.sex.female").charAt(0)); //$NON-NLS-1$
+        } else if (cmbSex.getText().toUpperCase().startsWith("M")) {
+            localPatient.setSex(Messages.getString("patient.sex.male").charAt(0)); //$NON-NLS-1$
+        }
 
         // Set the date of birth  Bug iDART-86
         SimpleDateFormat sdf = new SimpleDateFormat("d-MMMM-yyyy"); //$NON-NLS-1$
@@ -1613,7 +1674,10 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         }
 
         localPatient.updateClinic();
+
         if (checkOpenmrs) {
+            if (!isAddnotUpdate)
+                localPatient.setUuidopenmrs(txtOpenmrsuuid.getText());
             // update the patient with details from the tabs
             for (IPatientTab tab : groupTabs) {
                 tab.setPatientDetails(localPatient);
@@ -1691,6 +1755,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
             // populate the GUI
             txtFirstNames.setText(localPatient.getFirstNames());
             txtSurname.setText(localPatient.getLastname());
+            txtOpenmrsuuid.setText(localPatient.getUuidopenmrs());
             char sex = localPatient.getSex();
             if (Character.toUpperCase(sex) == 'F') {
                 cmbSex.setText(Messages.getString("patient.sex.female")); //$NON-NLS-1$
@@ -1934,6 +1999,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (!isAddnotUpdate) {
             btnPrintPatientLabel.setEnabled(enable);
+            txtOpenmrsuuid.setEnabled(enable);
         }
         lblPicPrintPatientLabel.setEnabled(enable);
 
@@ -2135,18 +2201,15 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
 
         if (!theNewDate.equals(iDARTUtil.format(localPatient.getDateOfBirth())))
             return true;
-
-        if (!(localPatient.getPatientId().trim().toUpperCase()
-                .equals(txtPatientId.getText().trim().toUpperCase())))
+        if (!(localPatient.getPatientId().trim().toUpperCase().equals(txtPatientId.getText().trim().toUpperCase())))
             return true;
-        if (!(localPatient.getFirstNames().trim().toUpperCase().equals(txtFirstNames
-                .getText().trim().toUpperCase())))
+        if (!(localPatient.getFirstNames().trim().toUpperCase().equals(txtFirstNames.getText().trim().toUpperCase())))
             return true;
-        if (!(localPatient.getLastname().trim().toUpperCase().equals(txtSurname
-                .getText().trim().toUpperCase())))
+        if (!(localPatient.getLastname().trim().toUpperCase().equals(txtSurname.getText().trim().toUpperCase())))
             return true;
-        if (!(Character.toUpperCase(localPatient.getSex()) == Character
-                .toUpperCase(cmbSex.getText().charAt(0))))
+        if (!(localPatient.getUuidopenmrs().trim().equals(txtOpenmrsuuid.getText().trim())))
+            return true;
+        if (!(Character.toUpperCase(localPatient.getSex()) == Character.toUpperCase(cmbSex.getText().charAt(0))))
             return true;
 
         return false;

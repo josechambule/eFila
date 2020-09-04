@@ -9,10 +9,12 @@ import model.manager.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.CentralizationProperties;
+import org.celllife.idart.commonobjects.JdbcProperties;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.database.hibernate.tmp.PackageDrugInfo;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.gui.packaging.NewPatientPackaging;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestFarmac;
 import org.celllife.idart.rest.utils.RestUtils;
@@ -24,8 +26,13 @@ import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.celllife.idart.gui.packaging.NewPatientPackaging.saveErroLog;
+import static org.celllife.idart.gui.packaging.NewPatientPackaging.saveOpenmrsPatientFila;
+import static org.celllife.idart.rest.ApiAuthRest.getServerStatus;
 
 /**
  * @author colaco
@@ -423,15 +430,13 @@ public class DadosPacienteFarmac {
     public static boolean setDispenseRestOpenmrs(Session sess, Prescription prescription, SyncTempDispense syncTempDispense) {
 
         // Add interoperability with OpenMRS through Rest Web Services
-        RestClient restClient = new RestClient();
-
+        Clinic clinic = AdministrationManager.getMainClinic(sess);
         boolean result = true;
+        boolean postOpenMrsEncounterStatus = false;
 
         Packages newPack = PackageManager.getLastPackageOnScript(prescription);
 
         List<PackagedDrugs> packagedDrugs = newPack.getPackagedDrugs();
-
-        Clinic clinic = AdministrationManager.getMainClinic(sess);
 
         Date dtPickUp = syncTempDispense.getPickupdate();
 
@@ -441,60 +446,17 @@ public class DadosPacienteFarmac {
         // Patient NID
         String nid = prescription.getPatient().getPatientId().trim();
 
-        String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
-
-        JSONObject jsonObject = new JSONObject(nidRest);
-        JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
-        String nidUuid = null;
-
-        for (int i = 0; i < _jsonArray.length(); i++) {
-            JSONObject results = (JSONObject) _jsonArray.get(i);
-            nidUuid = (String) results.get("uuid");
-        }
-
-
-        String uuid = prescription.getPatient().getUuidopenmrs();
-        if (uuid != null && !uuid.isEmpty()) {
-            uuid = prescription.getPatient().getUuidopenmrs();
-        } else {
-
-           log.trace("Problema dispensando o pacote de medicamentos \n" +
-                    "O NID deste paciente foi alterado no OpenMRS ou não possui UUID. " +
-                    "Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente."
-            );
-            return false;
-        }
-
-
-        String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST + uuid);
-
-        JSONObject jsonReportingRest = new JSONObject(openrsMrsReportingRest);
-        JSONArray jsonReportingRestArray = (JSONArray) jsonReportingRest.get("members");
-
-
-        if (jsonReportingRestArray.length() < 1) {
-           log.trace("Informação sobre estado do programa NID inserido não se encontra no " +
-                    "estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
-
-            return false;
-        }
-
         String strProvider = prescription.getDoctor().getFirstname().trim() + " "
                 + prescription.getDoctor().getLastname().trim();
 
         String providerWithNoAccents = org.apache.commons.lang3.StringUtils.stripAccents(strProvider);
 
-        String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
-
-        String providerUuid = response.substring(21, 57);
+        //provider
+        String providerUuid = "";
+        // Health Facility
+        String strFacilityUuid = "";
 
         String facility = clinic.getClinicName().trim();
-
-        // Location
-        String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
-
-        // Health Facility
-        String strFacilityUuid = strFacility.substring(21, 57);
 
         // Regimen
         String regimenAnswer = prescription.getRegimeTerapeutico().getRegimenomeespecificado().trim();
@@ -504,21 +466,121 @@ public class DadosPacienteFarmac {
         // Next pick up date
         Date dtNextPickUp = RestUtils.castStringToDate(syncTempDispense.getDateexpectedstring());
 
-        boolean postOpenMrsEncounterStatus = false;
         String strNextPickUp = RestUtils.castDateToString(dtNextPickUp);
 
         try {
-            postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, uuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
-                    strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
-                    iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
-                    iDartProperties.VISIT_UUID, strNextPickUp);
+            if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
 
-            result = true;
-           log.trace("Criou o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus);
+                log.trace("Servidor Rest offline, o aviamento do paciente [" + syncTempDispense.getPatientid() + " ] será armazenada para envio ao Openrms a posterior");
+                saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                        facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                        iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
 
-        } catch (Exception e) {
-            result = true;
-           log.trace("Nao foi possivel Criar o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus+" erro - "+ e.getMessage());
+                return  false;
+            } else {
+
+                RestClient restClient = new RestClient();
+
+                String nidRest = restClient.getOpenMRSResource(iDartProperties.REST_GET_PATIENT + StringUtils.replace(nid, " ", "%20"));
+
+                JSONObject jsonObject = new JSONObject(nidRest);
+                JSONArray _jsonArray = (JSONArray) jsonObject.get("results");
+                String nidUuid = null;
+
+                for (int i = 0; i < _jsonArray.length(); i++) {
+                    JSONObject results = (JSONObject) _jsonArray.get(i);
+                    nidUuid = (String) results.get("uuid");
+                }
+
+                String nidvoided = restClient.getOpenMRSResource(iDartProperties.REST_GET_PERSON_GENERIC + nidUuid);
+                JSONObject jsonObjectPerson = new JSONObject(nidvoided);
+                Boolean voided = (Boolean) jsonObjectPerson.get("voided");
+
+                String uuid = prescription.getPatient().getUuidopenmrs();
+                if (uuid != null && !uuid.isEmpty()) {
+                    uuid = prescription.getPatient().getUuidopenmrs();
+                } else {
+                    saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, "O NID deste paciente [" + nid + " ] foi alterado no OpenMRS ou não possui UUID."
+                            + " Por favor actualize o NID na Administração do Paciente usando a opção Atualizar um Paciente Existente.");
+                    return false;
+                }
+
+
+                if (nidUuid != null && !nidUuid.isEmpty()) {
+                    if (nidUuid != uuid || voided) {
+
+                        log.trace(" O aviamento do paciente [" + nid + " ] será armazenada para envio ao Openrms apos a verificação do erro");
+                        saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                                facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                                iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                        saveErroLog(newPack, dtNextPickUp, "O paciente [" + nid + " ] "
+                                + " Tem um UUID [" + uuid + "] diferente ou inactivo no OpenMRS " + nidUuid + "]. Por favor actualize o UUID correspondente .");
+
+                        return false;
+                    }
+                }
+
+                String openrsMrsReportingRest = restClient.getOpenMRSReportingRest(iDartProperties.REST_GET_REPORTING_REST + uuid);
+
+                JSONObject jsonReportingRest = new JSONObject(openrsMrsReportingRest);
+                JSONArray jsonReportingRestArray = (JSONArray) jsonReportingRest.get("members");
+
+                if (jsonReportingRestArray.length() < 1) {
+                    log.trace(" O aviamento do paciente [" + nid + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, "NID [" + nid + " ] inserido não se encontra no estado ACTIVO NO PROGRAMA/TRANSFERIDO DE. Actualize primeiro o estado do paciente no OpenMRS.");
+
+                    return false;
+                }
+
+                String response = restClient.getOpenMRSResource(iDartProperties.REST_GET_PROVIDER + StringUtils.replace(providerWithNoAccents, " ", "%20"));
+
+                // Location
+                String strFacility = restClient.getOpenMRSResource(iDartProperties.REST_GET_LOCATION + StringUtils.replace(facility, " ", "%20"));
+
+                if (strFacility.length() < 50) {
+
+                    log.trace(" O aviamento do paciente [" + nid + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, " O UUID DA UNIDADE SANITARIA NAO CONTEM O PADRAO RECOMENDADO PARA O NID [" + nid + " ].");
+                    return false;
+                } else strFacilityUuid = strFacility.substring(21, 57);
+
+                if (response.length() < 50) {
+
+                    log.trace(" O aviamento do paciente [" + nid + " ] será armazenada para envio ao Openrms apos a verificacao do erro");
+                    saveOpenmrsPatientFila(prescription, nid, strPickUp, syncTempDispense.getUuidopenmrs(), iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            facility, iDartProperties.FORM_FILA, providerWithNoAccents, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, iDartProperties.DOSAGE, iDartProperties.VISIT_UUID, strNextPickUp);
+                    saveErroLog(newPack, dtNextPickUp, " O UUID DO PROVEDOR NAO CONTEM O PADRAO RECOMENDADO OU NAO EXISTE NO OPENMRS PARA O NID [" + nid + " ].");
+
+                    return false;
+                } else providerUuid = response.substring(21, 57);
+
+                try {
+                    postOpenMrsEncounterStatus = restClient.postOpenMRSEncounter(strPickUp, uuid, iDartProperties.ENCOUNTER_TYPE_PHARMACY,
+                            strFacilityUuid, iDartProperties.FORM_FILA, providerUuid, iDartProperties.REGIME, regimenAnswer,
+                            iDartProperties.DISPENSED_AMOUNT, prescribedDrugs, packagedDrugs, iDartProperties.DOSAGE,
+                            iDartProperties.VISIT_UUID, strNextPickUp);
+
+                    result = true;
+                    log.trace("Criou o fila no openmrs para o paciente " + prescription.getPatient().getPatientId() + ": " + postOpenMrsEncounterStatus);
+
+                } catch (Exception e) {
+                    result = true;
+                    log.trace("Nao foi criado o fila no openmrs para o paciente " + nid + ": " + postOpenMrsEncounterStatus);
+                    saveErroLog(newPack, dtNextPickUp, "Nao foi criado o fila no openmrs para o paciente " + nid + ": " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return result;
