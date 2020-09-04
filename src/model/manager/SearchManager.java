@@ -18,6 +18,7 @@
  */
 package model.manager;
 
+import migracao.entidadesHibernate.dao.UsersDao;
 import model.nonPersistent.PatientIdAndName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +44,7 @@ import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.jws.soap.SOAPBinding;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1317,5 +1319,146 @@ public class SearchManager {
                 "select st from StockTake st where st.open = false").list();
 
         return result;
+    }
+
+    public static List<User> loadUsers(Session hSession, Search search) {
+
+        listTableEntries = new ArrayList<SearchEntry>();
+        comparator = new TableComparator();
+
+        List<User> userList = null;
+        String itemText[];
+        search.getTableColumn1().setText("Nome do usuário");
+        search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColOneSelected();
+            }
+        });
+        search.getTableColumn2().setText("Perfíl");
+        search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColTwoSelected();
+            }
+        });
+
+        search.getShell().setText("Seleccione um Código FNM...");
+
+        userList = AdministrationManager.getUsers(hSession);
+
+        //Collections.sort(userList);
+
+        Iterator<User> iter = new ArrayList<User>(userList).iterator();
+        TableItem[] t = new TableItem[userList.size()];
+
+        int i = 0;
+        while (iter.hasNext()) {
+            User atc = iter.next();
+            t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
+            itemText = new String[2];
+            itemText[0] = atc.getUsername();
+            itemText[1] = atc.getRole();
+            t[i].setText(itemText);
+            listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
+            i++;
+        }
+        comparator.setColumn(TableComparator.COL1_NAME);
+        redrawTable();
+        return userList;
+    }
+
+    public static List<Role> getRoleList(Session hSession, Search search) {
+
+        listTableEntries = new ArrayList<SearchEntry>();
+        comparator = new TableComparator();
+
+        List<Role> roleList = null;
+        String itemText[];
+        search.getTableColumn1().setText("Descrição");
+        search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColOneSelected();
+            }
+        });
+        search.getTableColumn2().setText("Código");
+        search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColTwoSelected();
+            }
+        });
+
+        search.getShell().setText("Seleccione um perfil");
+
+        roleList = AdministrationManager.getRoles(hSession);
+
+        Collections.sort(roleList);
+
+        Iterator<Role> iter = new ArrayList<Role>(roleList).iterator();
+        TableItem[] t = new TableItem[roleList.size()];
+
+        int i = 0;
+        while (iter.hasNext()) {
+            Role atc = iter.next();
+            t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
+            itemText = new String[2];
+            itemText[0] = atc.getDescription();
+            itemText[1] = atc.getCode();
+            t[i].setText(itemText);
+            listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
+            i++;
+        }
+        comparator.setColumn(TableComparator.COL1_NAME);
+        redrawTable();
+        return roleList;
+    }
+
+    public static List<SystemFunctionality> getSystemFuntionalityList(Session hSession, Search search) {
+
+        listTableEntries = new ArrayList<SearchEntry>();
+        comparator = new TableComparator();
+
+        List<SystemFunctionality> functionalities = null;
+        String itemText[];
+        search.getTableColumn1().setText("Descrição");
+        search.getTableColumn1().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColOneSelected();
+            }
+        });
+        search.getTableColumn2().setText("Código");
+        search.getTableColumn2().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                cmdColTwoSelected();
+            }
+        });
+
+        search.getShell().setText("Seleccione uma funcionalidade");
+
+        functionalities = AdministrationManager.getSysFunctionalities(hSession);
+
+        Collections.sort(functionalities);
+
+        Iterator<SystemFunctionality> iter = new ArrayList<SystemFunctionality>(functionalities).iterator();
+        TableItem[] t = new TableItem[functionalities.size()];
+
+        int i = 0;
+        while (iter.hasNext()) {
+            SystemFunctionality atc = iter.next();
+            t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
+            itemText = new String[2];
+            itemText[0] = atc.getDescription();
+            itemText[1] = atc.getCode();
+            t[i].setText(itemText);
+            listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
+            i++;
+        }
+        comparator.setColumn(TableComparator.COL1_NAME);
+        redrawTable();
+        return functionalities;
     }
 }

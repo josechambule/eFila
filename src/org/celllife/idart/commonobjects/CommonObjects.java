@@ -80,6 +80,10 @@ public class CommonObjects {
 
 	public static final int ASSOCIATEDDRUGS = 13;
 
+	public static final int ROLE = 14;
+
+	public static final int FUNCTIONALITY = 15;
+
 	public static String timesPerDayLanguage1 = "times per day";
 
 	public static String timesPerDayLanguage2 = "ngemini";
