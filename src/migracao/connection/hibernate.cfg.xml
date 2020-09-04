@@ -37,5 +37,7 @@
     <mapping class="org.celllife.idart.database.hibernate.AlternatePatientIdentifier"/>
     <mapping class="org.celllife.idart.database.hibernate.SyncTempPatient"/>
     <mapping class="org.celllife.idart.database.hibernate.SyncTempDispense"/>
+    <mapping class="org.celllife.idart.database.hibernate.SystemFunctionality"/>
+    <mapping class="org.celllife.idart.database.hibernate.Role"/>
   </session-factory>
 </hibernate-configuration>

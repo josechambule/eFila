@@ -25,6 +25,7 @@ import org.celllife.idart.commonobjects.CentralizationProperties;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
+import org.celllife.idart.gui.SystemFunctionalityManager;
 import org.celllife.idart.gui.clinic.AddClinic;
 import org.celllife.idart.gui.clinic.DownloadClinic;
 import org.celllife.idart.gui.doctor.AddDoctor;
@@ -34,6 +35,7 @@ import org.celllife.idart.gui.platform.GenericAdminGui;
 import org.celllife.idart.gui.platform.GenericFormGui;
 import org.celllife.idart.gui.regimeTerapeutico.AddRegimeTerapeutico;
 import org.celllife.idart.gui.regimeTerapeutico.DownLoadRegimeTerapeutico;
+import org.celllife.idart.gui.role.RoleManager;
 import org.celllife.idart.gui.stockCenter.StockCenterInfo;
 import org.celllife.idart.gui.user.ManagePharmUsers;
 import org.celllife.idart.gui.user.UserStatePasswordManage;
@@ -121,6 +123,7 @@ public class GeneralAdmin extends GenericAdminGui {
             createGrpClinic();
         createGrpDoctor();
         createGrpDrugGroup();
+        createGrpRoles();
     }
 
     @Override
@@ -428,6 +431,62 @@ public class GeneralAdmin extends GenericAdminGui {
                 });
         btnImportPatientsOpenMRS.setEnabled(true);
 
+    }
+
+    /**
+     * This method initializes grpRoles
+     */
+    private void createGrpRoles() {
+
+
+        Group grpPharmacy = new Group(getCompOptions(), SWT.NONE);
+        grpPharmacy.setBounds(new Rectangle(495, 13, 305, 150));
+        grpPharmacy.setText(Messages.getString("GeneralAdmin.group.pharmacy.roles")); //$NON-NLS-1$
+        grpPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+
+        // lblPicPharmacy
+        Label lblPicPharmacy = new Label(grpPharmacy, SWT.NONE);
+        lblPicPharmacy.setBounds(new org.eclipse.swt.graphics.Rectangle(10, 0, 50, 43));
+        lblPicPharmacy.setText(EMPTY);
+        lblPicPharmacy.setImage(ResourceUtils.getImage(iDartImage.PHARMACYUSER));
+
+        // btnManagePharmUsers
+        Button btnManagePharmUsers = new Button(grpPharmacy, SWT.NONE);
+        btnManagePharmUsers.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
+        btnManagePharmUsers.setToolTipText(Messages.getString("GeneralAdmin.button.pharmacy.tooltip")); //$NON-NLS-1$
+        btnManagePharmUsers.setText("Gerir perfies"); //$NON-NLS-1$
+        btnManagePharmUsers.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnManagePharmUsers.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_manageRoles();
+            }
+        });
+
+        // btnPharmDetailsUpdate
+        Button btnPharmDetailsUpdate = new Button(grpPharmacy, SWT.NONE);
+        btnPharmDetailsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+        btnPharmDetailsUpdate.setToolTipText(Messages.getString("GeneralAdmin.button.pharmdetails.tooltip")); //$NON-NLS-1$
+        btnPharmDetailsUpdate.setText("Gerir funcionalidades"); //$NON-NLS-1$
+        btnPharmDetailsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnPharmDetailsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_manageSysFunctionalities();
+            }
+        });
+
+
+    }
+
+    private void cmd_manageSysFunctionalities() {
+        new SystemFunctionalityManager(getShell());
+    }
+
+    private void cmd_manageRoles() {
+        new RoleManager(getShell());
     }
 
     /**

@@ -436,6 +436,23 @@ public class AdministrationManager {
         return clinicList;
     }
 
+    /**
+     * Return all Clinics
+     *
+     * @param sess
+     * @return List<Clinic>
+     * @throws HibernateException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<SystemFunctionality> getSystemFunctionalities(Session sess)
+            throws HibernateException {
+        List<SystemFunctionality> clinicList = sess.createQuery(
+                "select c from SystemFunctionality as c order by c.description")
+                .list();
+
+        return clinicList;
+    }
+
     public static List<NationalClinics> getClinicsDetails(Session sess)
             throws HibernateException {
         @SuppressWarnings("unchecked")
@@ -648,6 +665,25 @@ public class AdministrationManager {
         return false;
     }
 
+    public static boolean functionalityExists(Session session, SystemFunctionality functionality) {
+        List<SystemFunctionality> userList = session.createQuery(
+                "from SystemFunctionality u where upper(u.description) = :description").setString(
+                "description", functionality.getDescription().toUpperCase()).list();
+        if (userList.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean roleExists(Session session, Role role) {
+        List<Role> userList = session.createQuery(
+                "from Role u where upper(u.description) = :description").setString(
+                "description", role.getDescription().toUpperCase()).list();
+        if (userList.size() > 0) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Returns a string list of the Usernames for the StockCenter
      *
@@ -1552,6 +1588,91 @@ public class AdministrationManager {
             result = (SyncTempPatient) patientIdentifiers.get(0);
 
         return result;
+
+    }
+
+    public static Role getRoleByDescription(Session sess, String description) throws HibernateException {
+        Role role = (Role) sess
+                    .createQuery("select role from Role as role where role.description = :description")
+                    .setString("description", description).setMaxResults(1)
+                    .uniqueResult();
+        return role;
+    }
+
+    public static SystemFunctionality getFunctionalityByDescription(Session sess, String description) throws HibernateException {
+        SystemFunctionality functionality = (SystemFunctionality) sess
+                .createQuery("select sf from SystemFunctionality as sf where sf.description = :description")
+                .setString("description", description).setMaxResults(1)
+                .uniqueResult();
+        return functionality;
+    }
+
+    public static List<Role> getRoles(Session sess) {
+        String query = "from Role";
+        List<Role> result = sess.createQuery(query).list();
+        return result;
+    }
+
+    public static List<SystemFunctionality> getSysFunctionalities(Session sess) {
+        String query = "from SystemFunctionality";
+        List<SystemFunctionality> result = sess.createQuery(query).list();
+        return result;
+    }
+
+    public static void saveSystemFuntionality(Session session, SystemFunctionality functionality) {
+        if (functionality.getId()  == null ||  functionality.getId() <= 0) {
+
+            session.save(functionality);
+
+            Logging logging = new Logging();
+            logging.setIDart_User(LocalObjects.getUser(session));
+            logging.setItemId(String.valueOf(functionality.getId()));
+            logging.setModified('Y');
+            logging.setTransactionDate(new Date());
+            logging.setTransactionType("Added New Functionality");
+            logging.setMessage("Added New Functionality: " + functionality.getId()+" -> " + functionality.getDescription());
+            session.save(logging);
+
+        }else {
+            session.update(functionality);
+            Logging logging = new Logging();
+            logging.setIDart_User(LocalObjects.getUser(session));
+            logging.setItemId(String.valueOf(functionality.getId()));
+            logging.setModified('Y');
+            logging.setTransactionDate(new Date());
+            logging.setTransactionType("Updated Functionality");
+            logging.setMessage("Updated Functionality: " + functionality.getId()+" -> "+ functionality.getDescription());
+            session.save(logging);
+
+        }
+    }
+
+    public static void saveRole(Session session, Role role) {
+        if (role.getId()  == null || role.getId() <= 0) {
+
+            session.save(role);
+
+            Logging logging = new Logging();
+            logging.setIDart_User(LocalObjects.getUser(session));
+            logging.setItemId(String.valueOf(role.getId()));
+            logging.setModified('Y');
+            logging.setTransactionDate(new Date());
+            logging.setTransactionType("Added New role");
+            logging.setMessage("Added New role " + role.getDescription());
+            session.save(logging);
+
+        }else {
+            session.update(role);
+
+            Logging logging = new Logging();
+            logging.setIDart_User(LocalObjects.getUser(session));
+            logging.setItemId(String.valueOf(role.getId()));
+            logging.setModified('Y');
+            logging.setTransactionDate(new Date());
+            logging.setTransactionType("Updated a role");
+            logging.setMessage("Updated role: " +role.getId()+" -> "+ role.getDescription());
+            session.save(logging);
+        }
 
     }
 

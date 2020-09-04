@@ -135,6 +135,8 @@ public class HibernateUtil {
 		ac.addAnnotatedClass(SyncOpenmrsPatient.class);
 		ac.addAnnotatedClass(SyncTempDispense.class);
 		ac.addAnnotatedClass(SyncTempPatient.class);
+		ac.addAnnotatedClass(Role.class);
+		ac.addAnnotatedClass(SystemFunctionality.class);
 		sessionFactory = ac.buildSessionFactory();
 	}
 
