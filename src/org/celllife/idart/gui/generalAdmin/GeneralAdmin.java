@@ -107,20 +107,10 @@ public class GeneralAdmin extends GenericAdminGui {
 
     private void createMyGroups() {
 
-        boolean checkOpenmrs = true;
-
-        if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
-            checkOpenmrs = true;
-        else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
-                || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P"))
-            checkOpenmrs = false;
         // create the 4 groups
         createGrpPharmacy();
-        if (checkOpenmrs)
-            createGrpImport();
         createGrpDrug();
-        if (CentralizationProperties.centralization.equalsIgnoreCase("on"))
-            createGrpClinic();
+        createGrpClinic();
         createGrpDoctor();
         createGrpDrugGroup();
         createGrpRoles();
@@ -138,7 +128,8 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // grpClinics
         Group grpClinics = new Group(getCompOptions(), SWT.NONE);
-        grpClinics.setBounds(new Rectangle(495, 13, 305, 150));
+        grpClinics.setBounds(new Rectangle(50, 165, 305, 150));
+        //   grpClinics.setBounds(new Rectangle(495, 13, 305, 150));
         grpClinics.setText(Messages.getString("GeneralAdmin.group.title")); //$NON-NLS-1$
         grpClinics.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -148,52 +139,86 @@ public class GeneralAdmin extends GenericAdminGui {
         lblPicClinics.setText(EMPTY);
         lblPicClinics.setImage(ResourceUtils.getImage(iDartImage.CLINIC));
 
-        if (CentralizationProperties.centralization.equalsIgnoreCase("on")
-                && CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+        if (CentralizationProperties.centralization.equalsIgnoreCase("on")) {
+            if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
+                // btnClinicsAdd
+                Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
+                btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+                btnClinicsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.tooltip")); //$NON-NLS-1$
+                btnClinicsAdd.setText(Messages.getString("GeneralAdmin.button.title")); //$NON-NLS-1$
+                btnClinicsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+                btnClinicsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                        cmd_clinicsAdd();
+                    }
+                });
 
-            // btnClinicsAdd
-            Button btnClinicsAdd = new Button(grpClinics, SWT.NONE);
-            btnClinicsAdd.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
-            btnClinicsAdd.setToolTipText(Messages.getString("GeneralAdmin.button.tooltip")); //$NON-NLS-1$
-            btnClinicsAdd.setText(Messages.getString("GeneralAdmin.button.title")); //$NON-NLS-1$
-            btnClinicsAdd.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-            btnClinicsAdd.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                @Override
-                public void widgetSelected(
-                        org.eclipse.swt.events.SelectionEvent e) {
-                    cmd_clinicsAdd();
+                // btnClinicsUpdate
+                Button btnClinicsUpdate = new Button(grpClinics, SWT.NONE);
+                btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
+                btnClinicsUpdate.setToolTipText(Messages.getString("GeneralAdmin.clinic.button.tooltip")); //$NON-NLS-1$
+
+                btnClinicsUpdate.setText(Messages.getString("GeneralAdmin.clinic.button.title")); //$NON-NLS-1$
+                btnClinicsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+                btnClinicsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                        cmd_clinicsUpdate();
+                    }
+                });
+            } else {
+
+                if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("U")) {
+                    Button btnImportPatientsOpenMRS = new Button(grpClinics, SWT.NONE);
+                    btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+                    btnImportPatientsOpenMRS.setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+                    btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 27));
+                    btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+                    btnImportPatientsOpenMRS.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(
+                                org.eclipse.swt.events.SelectionEvent e) {
+                            MainPanel importPatients = new MainPanel();
+                            MainPanel.createAndShowGUI();
+                        }
+                    });
+                    btnImportPatientsOpenMRS.setEnabled(true);
                 }
-            });
 
-            // btnClinicsUpdate
-            Button btnClinicsUpdate = new Button(grpClinics, SWT.NONE);
-            btnClinicsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
-            btnClinicsUpdate.setToolTipText(Messages.getString("GeneralAdmin.clinic.button.tooltip")); //$NON-NLS-1$
+                // btnClinicsUpdate
+                Button btnClinicsDownload = new Button(grpClinics, SWT.NONE);
+                btnClinicsDownload.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+                btnClinicsDownload.setToolTipText(Messages.getString("GeneralAdmin.download.clinic.button.tooltip")); //$NON-NLS-1$
 
-            btnClinicsUpdate.setText(Messages.getString("GeneralAdmin.clinic.button.title")); //$NON-NLS-1$
-            btnClinicsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-            btnClinicsUpdate.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                @Override
-                public void widgetSelected(
-                        org.eclipse.swt.events.SelectionEvent e) {
-                    cmd_clinicsUpdate();
-                }
-            });
+                btnClinicsDownload.setText(Messages.getString("GeneralAdmin.download.clinic.button.title")); //$NON-NLS-1$
+                btnClinicsDownload.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+                btnClinicsDownload.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(
+                            org.eclipse.swt.events.SelectionEvent e) {
+                        cmd_clinicsImport();
+                    }
+                });
+
+            }
         } else {
-            // btnClinicsUpdate
-            Button btnClinicsDownload = new Button(grpClinics, SWT.NONE);
-            btnClinicsDownload.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 65, 235, 30));
-            btnClinicsDownload.setToolTipText(Messages.getString("GeneralAdmin.download.clinic.button.tooltip")); //$NON-NLS-1$
-
-            btnClinicsDownload.setText(Messages.getString("GeneralAdmin.download.clinic.button.title")); //$NON-NLS-1$
-            btnClinicsDownload.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-            btnClinicsDownload.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+            Button btnImportPatientsOpenMRS = new Button(grpClinics, SWT.NONE);
+            btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
+            btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 27));
+            btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+            btnImportPatientsOpenMRS.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
                 @Override
                 public void widgetSelected(
                         org.eclipse.swt.events.SelectionEvent e) {
-                    cmd_clinicsImport();
+                    MainPanel importPatients = new MainPanel();
+                    MainPanel.createAndShowGUI();
                 }
             });
+            btnImportPatientsOpenMRS.setEnabled(true);
         }
     }
 
@@ -267,10 +292,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // grpDrugs
         Group grpDrugs = new Group(getCompOptions(), SWT.NONE);
-        if (checkOpenmrs)
-            grpDrugs.setBounds(new Rectangle(50, 329, 305, 150));
-        else
-            grpDrugs.setBounds(new Rectangle(50, 171, 305, 150));
+        grpDrugs.setBounds(new Rectangle(50, 329, 305, 150));
         grpDrugs.setText(Messages.getString("GeneralAdmin.group.drug.title")); //$NON-NLS-1$
         grpDrugs.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -401,37 +423,18 @@ public class GeneralAdmin extends GenericAdminGui {
     /**
      * This method initializes grpDoctors
      */
-    private void createGrpImport() {
-
-        Group grpImport = new Group(getCompOptions(), SWT.NONE);
-        grpImport.setBounds(new Rectangle(50, 215, 305, 100));
-        grpImport.setText(Messages.getString("GeneralAdmin.group.import.title")); //$NON-NLS-1$
-        grpImport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
-
-        Label lblPicImport = new Label(grpImport, SWT.NONE);
-        lblPicImport.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
-        lblPicImport.setText(EMPTY);
-        lblPicImport.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
-
-        Button btnImportPatientsOpenMRS = new Button(grpImport, SWT.NONE);
-        btnImportPatientsOpenMRS.setText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.title")); //$NON-NLS-1$
-        btnImportPatientsOpenMRS
-                .setToolTipText(Messages.getString("GeneralAdmin.button.openmrs.importPatients.tooltip")); //$NON-NLS-1$
-        btnImportPatientsOpenMRS.setBounds(new org.eclipse.swt.graphics.Rectangle(35,
-                55, 235, 27));
-        btnImportPatientsOpenMRS.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnImportPatientsOpenMRS
-                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(
-                            org.eclipse.swt.events.SelectionEvent e) {
-                        MainPanel importPatients = new MainPanel();
-                        MainPanel.createAndShowGUI();
-                    }
-                });
-        btnImportPatientsOpenMRS.setEnabled(true);
-
-    }
+//    private void createGrpImport() {
+//
+//        Group grpImport = new Group(getCompOptions(), SWT.NONE);
+//        grpImport.setBounds(new Rectangle(50, 215, 305, 100));
+//        grpImport.setText(Messages.getString("GeneralAdmin.group.import.title")); //$NON-NLS-1$
+//        grpImport.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
+//
+//        Label lblPicImport = new Label(grpImport, SWT.NONE);
+//        lblPicImport.setBounds(new org.eclipse.swt.graphics.Rectangle(6, 0, 50, 43));
+//        lblPicImport.setText(EMPTY);
+//        lblPicImport.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
+//    }
 
     /**
      * This method initializes grpRoles
@@ -496,7 +499,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // grpPharmacy
         Group grpPharmacy = new Group(getCompOptions(), SWT.NONE);
-        grpPharmacy.setBounds(new Rectangle(50, 13, 305, 190));
+        grpPharmacy.setBounds(new Rectangle(50, 13, 305, 150));
         grpPharmacy.setText(Messages.getString("GeneralAdmin.group.pharmacy.title")); //$NON-NLS-1$
         grpPharmacy.setFont(ResourceUtils.getFont(iDartFont.VERASANS_12));
 
@@ -508,7 +511,7 @@ public class GeneralAdmin extends GenericAdminGui {
 
         // btnManagePharmUsers
         Button btnManagePharmUsers = new Button(grpPharmacy, SWT.NONE);
-        btnManagePharmUsers.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
+        btnManagePharmUsers.setBounds(new org.eclipse.swt.graphics.Rectangle(65, 10, 205, 30));
         btnManagePharmUsers.setToolTipText(Messages.getString("GeneralAdmin.button.pharmacy.tooltip")); //$NON-NLS-1$
         btnManagePharmUsers.setText(Messages.getString("GeneralAdmin.button.pharmacy.title")); //$NON-NLS-1$
         btnManagePharmUsers.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -520,9 +523,23 @@ public class GeneralAdmin extends GenericAdminGui {
             }
         });
 
+        // btnUserPasswordStateManage
+        Button btnUserPasswordStateManage = new Button(grpPharmacy, SWT.NONE);
+        btnUserPasswordStateManage.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+        btnUserPasswordStateManage.setToolTipText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.tooltip")); //$NON-NLS-1$
+        btnUserPasswordStateManage.setText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.title")); //$NON-NLS-1$
+        btnUserPasswordStateManage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+        btnUserPasswordStateManage.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+            @Override
+            public void widgetSelected(
+                    org.eclipse.swt.events.SelectionEvent e) {
+                cmd_passStateReset();
+            }
+        });
+
         // btnPharmDetailsUpdate
         Button btnPharmDetailsUpdate = new Button(grpPharmacy, SWT.NONE);
-        btnPharmDetailsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 55, 235, 30));
+        btnPharmDetailsUpdate.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 100, 235, 30));
         btnPharmDetailsUpdate.setToolTipText(Messages.getString("GeneralAdmin.button.pharmdetails.tooltip")); //$NON-NLS-1$
         btnPharmDetailsUpdate.setText(Messages.getString("GeneralAdmin.button.pharmdetails.title")); //$NON-NLS-1$
         btnPharmDetailsUpdate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
@@ -533,20 +550,7 @@ public class GeneralAdmin extends GenericAdminGui {
                 cmd_pharmStockCenter();
             }
         });
-        
-     // btnUserPasswordStateManage
-        Button btnUserPasswordStateManage = new Button(grpPharmacy, SWT.NONE);
-        btnUserPasswordStateManage.setBounds(new org.eclipse.swt.graphics.Rectangle(35, 145, 235, 30));
-        btnUserPasswordStateManage.setToolTipText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.tooltip")); //$NON-NLS-1$
-        btnUserPasswordStateManage.setText(Messages.getString("GeneralAdmin.button.UserPasswordStateManage.title")); //$NON-NLS-1$
-        btnUserPasswordStateManage.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-        btnUserPasswordStateManage.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-            @Override
-            public void widgetSelected(
-                    org.eclipse.swt.events.SelectionEvent e) {
-            	cmd_passStateReset();
-            }
-        });
+
     }
 
     public void cmd_clinicsAdd() {
