@@ -1819,9 +1819,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         cmbClinic.setEnabled(e != null && e.isOpen());
         cmbClinic.setBackground(myColour);
 
-        if (LocalObjects.getUser(getHSession()).getRole() == null
-                || LocalObjects.getUser(getHSession()).getRole().isEmpty()
-                || LocalObjects.getUser(getHSession()).getRole().equalsIgnoreCase("Pharmacist")) {
+        if (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoles()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST)) {
             btnUpdatePrescription.setEnabled(enable);
             lblPicUpdatePrescription.setEnabled(enable);
         }
@@ -2049,9 +2047,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         compUpdatePrescription = new Composite(getShell(), SWT.NONE);
         compUpdatePrescription.setBounds(new Rectangle(151, 560, 605, 50));
 
-        boolean enableUpdatePrescrition = LocalObjects.getUser(getHSession()).getRole().equalsIgnoreCase("Pharmacist")
-                || LocalObjects.getUser(getHSession()).getRole().isEmpty()
-                || LocalObjects.getUser(getHSession()).getRole() == null;
+        boolean enableUpdatePrescrition = (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoles()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST));
 
         lblPicUpdatePrescription = new Label(compUpdatePrescription, SWT.NONE);
         lblPicUpdatePrescription.setBounds(new Rectangle(16, 3, 50, 43));

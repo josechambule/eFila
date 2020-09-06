@@ -8,6 +8,11 @@ import java.util.Set;
 @Table(name = "role")
 public class Role implements Comparable<Role>{
 
+    public static final String PHARMACIST = "PHARMACIST";
+    public static final String STUDYWORKER = "STUDYWORKER";
+    public static final String REPORTSWORKER = "REPORTSWORKER";
+    public static final String ADMINISTRATOR = "ADMINISTRATOR";
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -25,6 +30,10 @@ public class Role implements Comparable<Role>{
             inverseJoinColumns = { @JoinColumn(name = "functionid") }
     )
     private Set<SystemFunctionality> sysFunctions;
+
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public Role() {
         super();
@@ -54,6 +63,14 @@ public class Role implements Comparable<Role>{
 
     public void setSysFunctions(Set<SystemFunctionality> sysFunctions) {
         this.sysFunctions = sysFunctions;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override
@@ -86,5 +103,21 @@ public class Role implements Comparable<Role>{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public boolean isAdmin(){
+        return this.code.equals(ADMINISTRATOR);
+    }
+
+    public boolean isPharmacist(){
+        return this.code.equals(PHARMACIST);
+    }
+
+    public boolean isStudyWorker(){
+        return this.code.equals(STUDYWORKER);
+    }
+
+    public boolean isReportWorker(){
+        return this.code.equals(REPORTSWORKER);
     }
 }

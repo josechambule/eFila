@@ -23,19 +23,13 @@
  */
 package org.celllife.idart.database.hibernate;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import model.nonPersistent.Autenticacao;
+import org.hibernate.annotations.Cascade;
 
 /**
  */
@@ -55,8 +49,7 @@ public class User {
 	@Column(name = "cl_password")
 	private String password;
 
-	@Column(name = "role", nullable = true)
-	private String role;
+
 
 	@Column(name = "cl_username")
 	private String username;
@@ -69,7 +62,17 @@ public class User {
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "ClinicUser", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "clinicId") })
-	private Set<Clinic> clinics; 
+	private Set<Clinic> clinics;
+
+	@ManyToMany(cascade = { CascadeType.PERSIST })
+	@JoinTable(
+			name = "user_role",
+			joinColumns = { @JoinColumn(name = "userid") },
+			inverseJoinColumns = { @JoinColumn(name = "roleid") }
+	)
+	private Set<Role> roles;
+
+
 	public User() {
 		super();
 	}
@@ -77,21 +80,25 @@ public class User {
 	/**
 	 * @param username
 	 * @param password
-	 * @param role
 	 * @param modified
 	 * @param clinics Set<Clinic>
 	 * @param permission
 	 */
-	public User(String username, String password, String role, char modified, Set<Clinic> clinics, char permission) {
+	public User(String username, String password, char modified, Set<Role> roles, Set<Clinic> clinics, char permission) {
 		super();
 		this.username = username;
 		this.password = Autenticacao.converteMD5(password);
-		this.role = role;
 		this.modified = modified;
+		this.roles = roles;
 		this.clinics=clinics;
 		this.permission=permission;
 	}
 
+	public void addRole(Role role){
+		if (this.roles == null) this.roles = new HashSet<>();
+
+		this.roles.add(role);
+	}
 	/**
 	 * Method getId.
 	 * @return int
@@ -116,13 +123,6 @@ public class User {
 		return password;
 	}
 
-	/**
-	 * Method getRole.
-	 * @return String
-	 */
-	public String getRole() {
-		return role;
-	}
 
 	/**
 	 * Method getUsername.
@@ -157,13 +157,6 @@ public class User {
 		this.password = Autenticacao.converteMD5(password);
 	}
 
-	/**
-	 * Method setRole.
-	 * @param role String
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	/**
 	 * Method setUsername.
@@ -196,6 +189,37 @@ public class User {
 	public char getPermission() {
 		return permission;
 	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public boolean isPermitedTo(String functionalityCode){
+		if (this.roles == null || this.roles.isEmpty()) return false;
+
+		for (Role role : this.roles) {
+			if (role.getSysFunctions() == null || role.getSysFunctions().isEmpty()) return false;
+
+			for (SystemFunctionality functionality : role.getSysFunctions()) {
+				if (functionality.getCode().equalsIgnoreCase(functionalityCode)) return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasRole(String roleCode){
+		if (this.roles == null || this.roles.isEmpty()) return false;
+
+		for (Role role : this.roles) {
+			if (role.getCode().equalsIgnoreCase(roleCode)) return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Metodo setPermission
 	 * @param permission char

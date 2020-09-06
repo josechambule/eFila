@@ -28,6 +28,7 @@ import org.celllife.idart.database.hibernate.*;
 import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.search.SearchEntry;
 import org.celllife.idart.gui.search.TableComparator;
+import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.rest.utils.JsonHelper;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestUtils;
@@ -1358,7 +1359,7 @@ public class SearchManager {
             t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
             itemText = new String[2];
             itemText[0] = atc.getUsername();
-            itemText[1] = atc.getRole();
+            itemText[1] = iDARTUtil.arrayHasElements(atc.getRoles()) ? atc.getRoles().iterator().next().getDescription(): "";
             t[i].setText(itemText);
             listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
             i++;

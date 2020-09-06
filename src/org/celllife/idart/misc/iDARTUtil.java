@@ -5,10 +5,7 @@ package org.celllife.idart.misc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,9 +31,9 @@ public class iDARTUtil {
 	/**
 	 * Calculates the number of days between two dates.
 	 * 
-	 * @param d1
+	 * @param dateOne
 	 *            The first date.
-	 * @param d2
+	 * @param dateTwo
 	 *            The second date.
 	 * 
 	 * @return The number of days between the two dates. Zero is returned if the
@@ -320,7 +317,7 @@ public class iDARTUtil {
 	/**
 	 * Method to check if a character is alpha.
 	 * 
-	 * @param str
+	 * @param chr
 	 * @return
 	 */
 	public static boolean isAlpha(Character chr) {
@@ -354,7 +351,7 @@ public class iDARTUtil {
 	/**
 	 * Method to check if a string contains numeric values only
 	 * 
-	 * @param str
+	 * @param chr
 	 * @return
 	 */
 	public static boolean isNumeric(Character chr) {
@@ -415,7 +412,7 @@ public class iDARTUtil {
 	 * 
 	 * this method replaces methods from IntegerValidator.java (deleted).
 	 * 
-	 * @param String
+	 * @param str
 	 *            str
 	 * @return Object containing the int if str is an integer, returns null if
 	 *         not an integer .
@@ -437,7 +434,7 @@ public class iDARTUtil {
 	 * 
 	 * this method replaces methods from IntegerValidator.java (deleted).
 	 * 
-	 * @param String
+	 * @param str
 	 *            str
 	 * @return boolean containing true if str is a positive integer, false if
 	 *         not
@@ -459,7 +456,7 @@ public class iDARTUtil {
 	 * 
 	 * this method replaces methods from IntegerValidator.java (deleted).
 	 * 
-	 * @param String
+	 * @param str
 	 *            str
 	 * @return boolean containing true if str is a negative integer, false if
 	 *         not
@@ -582,6 +579,9 @@ public class iDARTUtil {
 		cal.add(Calendar.DATE, days);
 		return cal.getTime();
 	}
-	
+
+	public static boolean arrayHasElements(Set array){
+		return array != null && array.size() > 0;
+	}
 
 }

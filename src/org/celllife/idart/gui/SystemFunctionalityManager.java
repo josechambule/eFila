@@ -50,8 +50,21 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
     @Override
     protected boolean fieldsOk() {
-        return (txtFuncionality.getText() != null && txtFuncionality.getText().length() > 2) &&
-                (txtCodigo.getText() != null && txtCodigo.getText().length() > 2);
+        if (txtFuncionality.getText() == null){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Funcionalidade] deve estar preenchido.");
+            m.open();
+            return false;
+
+        }else if (txtCodigo.getText() == null ){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Código] deve estar preenchido.");
+            m.open();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -114,11 +127,6 @@ public class SystemFunctionalityManager extends GenericFormGui {
                     getLog().error(he);
                 }
             }
-        }else {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-            m.setText("Preenchimento dos campos");
-            m.setMessage("Os campos [Perfil] e [Codigo] devem estar preenchidos.");
-            m.open();
         }
 
     }

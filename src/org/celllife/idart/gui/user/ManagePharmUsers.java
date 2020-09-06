@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.hibernate.Clinic;
+import org.celllife.idart.database.hibernate.Role;
 import org.celllife.idart.database.hibernate.User;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.platform.GenericFormGui;
@@ -711,14 +712,20 @@ if(localUser.getPermission()!='A'){
 			return false;
 	}
 	
-	private String getSelectedRole(){
+	private Set<Role> getSelectedRole(){
+		Set<Role> roles = new HashSet<>();
+
 		if(rdBtnStudy != null && rdBtnStudy.getSelection()) {
-			return "StudyWorker";
+			roles.clear();
+			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.STUDYWORKER));
 		}else if(rdBtnReports !=null && rdBtnReports.getSelection()){
-			return "ReportsWorker";
+			roles.clear();
+			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.REPORTSWORKER));
 		}else {
-			return "Pharmacist";
+			roles.clear();
+			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.PHARMACIST));
 		}
+		return roles;
 		
 	}
 

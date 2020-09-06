@@ -83,6 +83,21 @@ public class RoleManager extends GenericFormGui {
     @Override
     protected boolean fieldsOk() {
 
+        if (txtRole.getText() == null){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Perfil] deve estar preenchido.");
+            m.open();
+            return false;
+
+        }else if (txtCodigo.getText() == null ){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Código] deve estar preenchido.");
+            m.open();
+            return false;
+        }
+
         boolean checkedClinic = false;
         for (TableItem ti : tblFunctionalities.getItems()) {
             if (ti.getChecked()) {
@@ -93,7 +108,7 @@ public class RoleManager extends GenericFormGui {
 
         if (!checkedClinic) {
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-            b.setMessage("Todos os perfies precisam ter acesso a pelo menos uma funcionalidade associada. \n\n"
+            b.setMessage("Todos os perfies precisam ter pelo menos uma funcionalidade associada. \n\n"
                     + "Por favor, selecione pelo menos uma funcionalidade e tente salvar novamente.");
             b.setText("Nenhuma funcionalidade selecionada");
 
@@ -101,8 +116,7 @@ public class RoleManager extends GenericFormGui {
             return false;
         }
 
-        return (txtRole.getText() != null && txtRole.getText().length() > 2) &&
-                (txtCodigo.getText() != null && txtCodigo.getText().length() > 2);
+        return true;
     }
 
     @Override
@@ -167,11 +181,6 @@ public class RoleManager extends GenericFormGui {
                     getLog().error(he);
                 }
             }
-        }else {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-            m.setText("Preenchimento dos campos");
-            m.setMessage("Os campos [Perfil] e [Codigo] devem estar preenchidos.");
-            m.open();
         }
     }
 

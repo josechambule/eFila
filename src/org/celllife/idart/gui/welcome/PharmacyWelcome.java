@@ -2,6 +2,8 @@ package org.celllife.idart.gui.welcome;
 
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.SystemFunctionality;
+import org.celllife.idart.database.hibernate.User;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.generalAdmin.GeneralAdmin;
 import org.celllife.idart.gui.patientAdmin.PatientAdmin;
@@ -25,9 +27,12 @@ import org.eclipse.swt.widgets.Label;
 /**
  */
 public class PharmacyWelcome extends GenericWelcome {
-	
+
+	private User currentUser;
+
 	public PharmacyWelcome() {
 		super();
+		this.currentUser = LocalObjects.getUser(HibernateUtil.getNewSession());
 	}
 
 	@Override
@@ -65,9 +70,9 @@ public class PharmacyWelcome extends GenericWelcome {
 			}
 		});
 		
-		if (getUserPermission() == 'A') {
-			lblPicGeneralAdmin.setEnabled(true); 
-			btnGeneralAdmin.setEnabled(true); 
+		if (currentUser.isPermitedTo(SystemFunctionality.ADMINISTRATION)) {
+			lblPicGeneralAdmin.setEnabled(true);
+			btnGeneralAdmin.setEnabled(true);
 		}
 		
 		// patientAdmin
@@ -81,8 +86,6 @@ public class PharmacyWelcome extends GenericWelcome {
 				new PatientAdmin(shell);
 			}
 		});
-		
-		
 
 		Button btnPatientAdmin = new Button(compOptions, SWT.NONE);
 		btnPatientAdmin.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_ADMIN.getAccessButtonId());
@@ -98,6 +101,11 @@ public class PharmacyWelcome extends GenericWelcome {
 				new PatientAdmin(shell);
 			}
 		});
+
+		if (currentUser.isPermitedTo(SystemFunctionality.PACIENT_ADMINISTRATION)) {
+			lblPicPatientAdmin.setEnabled(true);
+			btnPatientAdmin.setEnabled(true);
+		}
 
 		// stockControl
 		Label lblPicStockControl = new Label(compOptions, SWT.NONE);
@@ -125,6 +133,11 @@ public class PharmacyWelcome extends GenericWelcome {
 			}
 		});
 
+		if (currentUser.isPermitedTo(SystemFunctionality.STOCK_ADMINISTRATION)) {
+			lblPicStockControl.setEnabled(true);
+			btnStockControl.setEnabled(true);
+		}
+
 		// reports
 		Label lblPicReports = new Label(compOptions, SWT.NONE);
 		lblPicReports.setBounds(new Rectangle(520, 0, 50, 43));
@@ -151,9 +164,14 @@ public class PharmacyWelcome extends GenericWelcome {
 				new NewReports(shell);
 			}
 		});
+
+		if (currentUser.isPermitedTo(SystemFunctionality.REPORTS)) {
+			lblPicReports.setEnabled(true);
+			btnReports.setEnabled(true);
+		}
 	}
 	
-    public char getUserPermission() {
+    public char getUserPermission(String sysFunctionalityCode) {
         return LocalObjects.getUser(HibernateUtil.getNewSession()).getPermission();
     }
 }
