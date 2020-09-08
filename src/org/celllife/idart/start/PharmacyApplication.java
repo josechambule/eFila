@@ -23,8 +23,6 @@ package org.celllife.idart.start;
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -167,7 +165,7 @@ public class PharmacyApplication {
         }
 
         try {
-            HibernateUtil.setValidation(true);
+            HibernateUtil.setValidation(false);
         } catch (Exception e) {
             String msg = "Error while checking database consistency: ";
             log.error(msg, e);
@@ -205,7 +203,7 @@ public class PharmacyApplication {
                     startRestOpenMRSThread(executorService);
 
                 try {
-                    Role role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRoles().iterator().next();
+                    Role role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRoleSet().iterator().next();
                     if (role != null && role.isStudyWorker()) {
                         welcome = new StudyWorkerWelcome();
                     } else if (role != null && role.isReportWorker()) {

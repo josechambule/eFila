@@ -42,6 +42,10 @@ public class PharmacyWelcome extends GenericWelcome {
 
 	@Override
 	protected void createCompOptions(Composite compOptions) {
+
+		if (currentUser == null) {
+			this.currentUser = LocalObjects.getUser(HibernateUtil.getNewSession());
+		}
 		// generalAdmin
 		Label lblPicGeneralAdmin = new Label(compOptions, SWT.NONE);
 		lblPicGeneralAdmin.setBounds(new Rectangle(40, 0, 50, 43));
@@ -170,8 +174,5 @@ public class PharmacyWelcome extends GenericWelcome {
 			btnReports.setEnabled(true);
 		}
 	}
-	
-    public char getUserPermission(String sysFunctionalityCode) {
-        return LocalObjects.getUser(HibernateUtil.getNewSession()).getPermission();
-    }
+
 }

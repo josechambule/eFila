@@ -32,7 +32,7 @@ public class Role implements Comparable<Role>{
     private Set<SystemFunctionality> sysFunctions;
 
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roleSet")
     private Set<User> users;
 
     public Role() {

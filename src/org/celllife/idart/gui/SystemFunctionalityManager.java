@@ -88,8 +88,15 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
 
             MessageBox msg = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-            msg.setText("Adicção de nova funcionalidade");
-            msg.setMessage("Tem certeza de que deseja adicionar a funcionalidade ["+txtFuncionality.getText()+"] ao sistema?");
+            if (this.currFunctionality == null || this.currFunctionality.getId() <= 0) {
+                msg.setText("Adicção de nova funcionalidade do sistema");
+                msg.setMessage("Tem certeza de que deseja adicionar a funcionalidade ["+txtFuncionality.getText()+"] ao sistema?");
+            }else {
+                msg.setText("Edição de funcionalidade do sistema");
+                msg.setMessage("Tem certeza de que deseja guardar as alterações efectuadas à funcionalidade ["+txtFuncionality.getText()+"] no sistema?");
+            }
+
+
             option = msg.open();
 
             if(option == SWT.YES)
@@ -109,8 +116,8 @@ public class SystemFunctionalityManager extends GenericFormGui {
                     getHSession().flush();
                     tx.commit();
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
-                    m.setText("Nova funcionalidade gravada");
-                    m.setMessage("A funcionalidade '".concat(currFunctionality.getDescription()).concat( "' foi gravada com sucesso."));
+                    m.setText("Registo gravdo");
+                    m.setMessage("Os dados da funcionalidade '".concat(currFunctionality.getDescription()).concat( "' foram gravados com sucesso."));
                     m.open();
                     cmdCancelWidgetSelected();
 

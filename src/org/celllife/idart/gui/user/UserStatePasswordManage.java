@@ -305,7 +305,7 @@ public class UserStatePasswordManage extends GenericFormGui {
 		rdBtnActive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		rdBtnActive.setText("Activo");
 		
-		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
+		if(!LocalObjects.getUser(getHSession()).isAdmin())
 		rdBtnActive.setSelection(false);
 		else
 			rdBtnActive.setSelection(true);
@@ -326,7 +326,7 @@ public class UserStatePasswordManage extends GenericFormGui {
 		rdBtnInactive.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		rdBtnInactive.setText("Não activo");
 		
-		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
+		if(!LocalObjects.getUser(getHSession()).isAdmin())
 			rdBtnActive.setSelection(true);
 			else
 				rdBtnActive.setSelection(false);

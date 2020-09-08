@@ -103,7 +103,7 @@ public class HibernateUtil {
 		ac.addAnnotatedClass(Stock.class);
 		ac.addAnnotatedClass(StockLevel.class);
 		ac.addAnnotatedClass(StockTake.class);
-		ac.addAnnotatedClass(User.class);
+
 		ac.addAnnotatedClass(AdherenceRecord.class);
 		ac.addAnnotatedClass(DeletedItem.class);
 		ac.addAnnotatedClass(PackageDrugInfo.class);
@@ -137,6 +137,7 @@ public class HibernateUtil {
 		ac.addAnnotatedClass(SyncTempPatient.class);
 		ac.addAnnotatedClass(Role.class);
 		ac.addAnnotatedClass(SystemFunctionality.class);
+		ac.addAnnotatedClass(User.class);
 		sessionFactory = ac.buildSessionFactory();
 	}
 

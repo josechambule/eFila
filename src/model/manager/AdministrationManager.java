@@ -604,11 +604,9 @@ public class AdministrationManager {
      * @param clinics  Set<Clinics>
      * @return boolean
      */
-    public static boolean saveUser(Session session, String userName,
-                                   String password, Set<Role> roles, Set<Clinic> clinics, char tipo_user) {
+    public static boolean saveUser(Session session, String userName, String password, Set<Role> roles, Set<Clinic> clinics) {
         if (!userExists(session, userName)) {
-            User user = new User(userName, password, 'T', roles,
-                    clinics, tipo_user);
+            User user = new User(userName, password, 'T', roles, clinics);
             session.save(user);
 
             // log the transaction

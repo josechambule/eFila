@@ -20,6 +20,7 @@
 package org.celllife.idart.gui.user;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import model.manager.AdministrationManager;
@@ -104,7 +105,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		isAddNotUpdate = ((Boolean) getInitialisationOption(OPTION_isAddNotUpdate))
 				.booleanValue();
 		
-		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
+		if(!LocalObjects.getUser(getHSession()).isAdmin())
 			isAddNotUpdate=false;
 			else
 				isAddNotUpdate=true;
@@ -180,7 +181,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		rdBtnAddUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		rdBtnAddUser.setText("Adicionar novo usuário");
 		
-		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
+		if(!LocalObjects.getUser(getHSession()).isAdmin())
 		rdBtnAddUser.setSelection(false);
 		else
 			rdBtnAddUser.setSelection(true);
@@ -201,7 +202,7 @@ public class ManagePharmUsers extends GenericFormGui {
 		rdBtnUpdateUser.setBounds(new Rectangle(195, 12, 180, 30));
 		rdBtnUpdateUser.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 		rdBtnUpdateUser.setText("Actualizar usuário actual");
-		if(LocalObjects.getUser(getHSession()).getPermission()=='N')
+		if(!LocalObjects.getUser(getHSession()).isAdmin())
 			rdBtnAddUser.setSelection(true);
 			else
 				rdBtnAddUser.setSelection(false);
@@ -217,7 +218,7 @@ public class ManagePharmUsers extends GenericFormGui {
 				});
 		
 		
-if(localUser.getPermission()!='A'){
+if(!localUser.isAdmin()){
 	rdBtnAddUser.setSelection(false);
 	rdBtnAddUser.setEnabled(false);
 	isAddNotUpdate=false;
@@ -271,22 +272,27 @@ if(localUser.getPermission()!='A'){
 			txtPassConfirm.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 			
 			// lblTipoUSER & txtTipoUSER
-						Label lblTipoUser= new Label(grpUserInfo, SWT.NONE);
-						lblTipoUser.setBounds(new Rectangle(30, 110, 125, 20));
-						lblTipoUser.setFont(ResourceUtils
-								.getFont(iDartFont.VERASANS_8));
-						lblTipoUser.setText("* Tipo do Usuário:");
-						tipo_user = new Combo(grpUserInfo, SWT.BORDER);
-						tipo_user.setBounds(new Rectangle(185, 110, 125,
-								20));
-						tipo_user.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-						tipo_user.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
-						// cmbSex.setEditable(false);
-						//cmbSex.add(Messages.getString("common.unknown")); //$NON-NLS-1$
-						tipo_user.add("Administrador"); //$NON-NLS-1$
-						tipo_user.add("Normal"); //$NON-NLS-1$
-						//cmbSex.setText(Messages.getString("common.unknown")); //$NON-NLS-1$
-						tipo_user.select(1);
+			List<Role> roles = AdministrationManager.getRoles(getHSession());
+			Label lblTipoUser= new Label(grpUserInfo, SWT.NONE);
+			lblTipoUser.setBounds(new Rectangle(30, 110, 125, 20));
+			lblTipoUser.setFont(ResourceUtils
+					.getFont(iDartFont.VERASANS_8));
+			lblTipoUser.setText("* Perfil do Usuário:");
+			tipo_user = new Combo(grpUserInfo, SWT.BORDER);
+			tipo_user.setBounds(new Rectangle(185, 110, 125,
+					20));
+			tipo_user.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
+			tipo_user.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
+			// cmbSex.setEditable(false);
+			//cmbSex.add(Messages.getString("common.unknown")); //$NON-NLS-1$
+			for (Role role : roles){
+				tipo_user.add(role.getDescription());
+
+				tipo_user.setData(role);
+			}
+
+			//cmbSex.setText(Messages.getString("common.unknown")); //$NON-NLS-1$
+			tipo_user.select(1);
 					
 						
 						
@@ -429,10 +435,10 @@ if(localUser.getPermission()!='A'){
 
 		}
 		
-		if((isAddNotUpdate) && !tipo_user.getText().equals("Normal") && !tipo_user.getText().equals("Administrador")) {
+		if((isAddNotUpdate) && (tipo_user.getText() == null || tipo_user.getText().isEmpty())) {
 			MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-			b.setMessage("Seleccione o tipo do usuário. ");
-			b.setText("Seleccione o tipo do usuário");
+			b.setMessage("Seleccione o Perfil do usuário. ");
+			b.setText("Seleccione o perfil do usuário");
 
 			b.open();
 			return false;
@@ -557,12 +563,11 @@ if(localUser.getPermission()!='A'){
 
 						if (isAddNotUpdate){
 							
-							char tipoUser=tipo_user.getText().charAt(0);
-							
+							Set<Role> roles = new HashSet<>();
+							roles.add(AdministrationManager.getRoleByDescription(getHSession(),tipo_user.getText()));
+
 							if (isAddNotUpdate
-								&& AdministrationManager.saveUser(getHSession(),
-										txtUser.getText(), txtPassword.getText(), getSelectedRole(),
-										sitesSet, tipoUser)) {
+								&& AdministrationManager.saveUser(getHSession(), txtUser.getText(), txtPassword.getText(), roles, sitesSet)) {
 							getHSession().flush();
 							tx.commit();
 	
@@ -729,11 +734,6 @@ if(localUser.getPermission()!='A'){
 		
 	}
 
-	@Override
-	public char getUserPermission() {
-		// TODO Auto-generated method stub
-		return super.getUserPermission();
-	}
 	
 	
 }

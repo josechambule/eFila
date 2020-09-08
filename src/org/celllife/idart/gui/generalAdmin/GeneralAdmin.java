@@ -229,7 +229,7 @@ public class GeneralAdmin extends GenericAdminGui {
         });
 
         //Desactivar add clinico para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnDoctorsAdd.setEnabled(false);
         }
 
@@ -247,7 +247,7 @@ public class GeneralAdmin extends GenericAdminGui {
             }
         });
         //Desactivar UPDATE clinico para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnDoctorsUpdate.setEnabled(false);
         }
     }
@@ -307,7 +307,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnDrugsAdd.setEnabled(true);
 
         //Desactivar add Medicamento para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnDrugsAdd.setEnabled(false);
         }
 
@@ -329,7 +329,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnDrugsUpdate.setEnabled(true);
 
         //Desactivar add Medicamento para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnDrugsUpdate.setEnabled(false);
         }
     }
@@ -372,7 +372,7 @@ public class GeneralAdmin extends GenericAdminGui {
         });
         btnRegimenAdd.setEnabled(true);
         //Desactivar add Regime Terapeutico para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnRegimenAdd.setEnabled(false);
         }
 
@@ -393,7 +393,7 @@ public class GeneralAdmin extends GenericAdminGui {
         btnRegimenUpdate.setEnabled(true);
 
         //Desactivar add Regime Terapeutico para user normal
-        if (getUserPermission() != 'A') {
+        if (!LocalObjects.getUser(getHSession()).isAdmin()) {
             btnRegimenAdd.setEnabled(false);
         }
     }
@@ -757,11 +757,6 @@ public class GeneralAdmin extends GenericAdminGui {
         cmdCloseSelected();
     }
 
-    @Override
-    public char getUserPermission() {
-
-        return LocalObjects.getUser(getHSession()).getPermission();
-    }
 
     //sync sesp patients
     protected void cmd_importPatientsSESP() {

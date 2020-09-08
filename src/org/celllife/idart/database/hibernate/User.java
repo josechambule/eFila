@@ -29,7 +29,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 import model.nonPersistent.Autenticacao;
-import org.hibernate.annotations.Cascade;
+import org.celllife.idart.misc.iDARTUtil;
 
 /**
  */
@@ -54,9 +54,9 @@ public class User {
 	@Column(name = "cl_username")
 	private String username;
 	
-	@Column(name = "permission")
+	/*@Column(name = "permission")
 	private char permission;
-
+*/
 	@Column(name = "state")
 	private int state;
 
@@ -70,7 +70,7 @@ public class User {
 			joinColumns = { @JoinColumn(name = "userid") },
 			inverseJoinColumns = { @JoinColumn(name = "roleid") }
 	)
-	private Set<Role> roles;
+	private Set<Role> roleSet;
 
 
 	public User() {
@@ -82,22 +82,20 @@ public class User {
 	 * @param password
 	 * @param modified
 	 * @param clinics Set<Clinic>
-	 * @param permission
 	 */
-	public User(String username, String password, char modified, Set<Role> roles, Set<Clinic> clinics, char permission) {
+	public User(String username, String password, char modified, Set<Role> roleSet, Set<Clinic> clinics) {
 		super();
 		this.username = username;
 		this.password = Autenticacao.converteMD5(password);
 		this.modified = modified;
-		this.roles = roles;
+		this.roleSet = roleSet;
 		this.clinics=clinics;
-		this.permission=permission;
 	}
 
 	public void addRole(Role role){
-		if (this.roles == null) this.roles = new HashSet<>();
+		if (this.roleSet == null) this.roleSet = new HashSet<>();
 
-		this.roles.add(role);
+		this.roleSet.add(role);
 	}
 	/**
 	 * Method getId.
@@ -182,26 +180,20 @@ public class User {
 		this.clinics = clinics;
 	}
 
-	/**
-	 * Metodo getPermission 
-	 * @return char permission
-	 */
-	public char getPermission() {
-		return permission;
+
+
+	public Set<Role> getRoleSet() {
+		return roleSet;
 	}
 
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setRoleSet(Set<Role> roleSet) {
+		this.roleSet = roleSet;
 	}
 
 	public boolean isPermitedTo(String functionalityCode){
-		if (this.roles == null || this.roles.isEmpty()) return false;
+		if (this.roleSet == null || this.roleSet.isEmpty()) return false;
 
-		for (Role role : this.roles) {
+		for (Role role : this.roleSet) {
 			if (role.getSysFunctions() == null || role.getSysFunctions().isEmpty()) return false;
 
 			for (SystemFunctionality functionality : role.getSysFunctions()) {
@@ -212,21 +204,16 @@ public class User {
 	}
 
 	public boolean hasRole(String roleCode){
-		if (this.roles == null || this.roles.isEmpty()) return false;
+		if (this.roleSet == null || this.roleSet.isEmpty()) return false;
 
-		for (Role role : this.roles) {
+		for (Role role : this.roleSet) {
 			if (role.getCode().equalsIgnoreCase(roleCode)) return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Metodo setPermission
-	 * @param permission char
-	 */
-
-	public void setPermission(char permission) {
-		this.permission = permission;
+	public boolean isAdmin(){
+		return this.hasRole(Role.ADMINISTRATOR);
 	}
 
 	public int getState() {
@@ -247,5 +234,9 @@ public class User {
 
 	public void changeStateToNotActive() {
 		this.state = NOT_ACTIVO;
+	}
+
+	public boolean hasAssociatedRoles() {
+		return iDARTUtil.arrayHasElements(this.roleSet);
 	}
 }

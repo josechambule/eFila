@@ -61,7 +61,6 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -1876,7 +1875,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
         cmbClinic.setEnabled(e != null && e.isOpen());
         cmbClinic.setBackground(myColour);
 
-        if (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoles()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST)) {
+        if (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoleSet()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST)) {
             btnUpdatePrescription.setEnabled(enable);
             lblPicUpdatePrescription.setEnabled(enable);
         }
@@ -2106,7 +2105,7 @@ public class AddPatientIdart extends GenericFormGui implements iDARTChangeListen
         compUpdatePrescription = new Composite(getShell(), SWT.NONE);
         compUpdatePrescription.setBounds(new Rectangle(151, 560, 605, 50));
 
-        boolean enableUpdatePrescrition =  (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoles()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST));
+        boolean enableUpdatePrescrition =  (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoleSet()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST));
 
         lblPicUpdatePrescription = new Label(compUpdatePrescription, SWT.NONE);
         lblPicUpdatePrescription.setBounds(new Rectangle(16, 3, 50, 43));

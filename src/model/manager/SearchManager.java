@@ -18,7 +18,6 @@
  */
 package model.manager;
 
-import migracao.entidadesHibernate.dao.UsersDao;
 import model.nonPersistent.PatientIdAndName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -32,7 +31,6 @@ import org.celllife.idart.misc.iDARTUtil;
 import org.celllife.idart.rest.utils.JsonHelper;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestUtils;
-import org.celllife.idart.start.PharmacyApplication;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,7 +43,6 @@ import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.jws.soap.SOAPBinding;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1359,7 +1356,7 @@ public class SearchManager {
             t[i] = new TableItem(search.getTblSearch(), SWT.NONE);
             itemText = new String[2];
             itemText[0] = atc.getUsername();
-            itemText[1] = iDARTUtil.arrayHasElements(atc.getRoles()) ? atc.getRoles().iterator().next().getDescription(): "";
+            itemText[1] = iDARTUtil.arrayHasElements(atc.getRoleSet()) ? atc.getRoleSet().iterator().next().getDescription(): "";
             t[i].setText(itemText);
             listTableEntries.add(new SearchEntry(itemText[0], itemText[1]));
             i++;
