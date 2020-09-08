@@ -31,6 +31,7 @@ import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
 import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Rectangle;
@@ -42,10 +43,12 @@ import org.vafada.swtcalendar.SWTCalendar;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  */
@@ -53,13 +56,19 @@ public class MmiaReport extends GenericReportGui {
 	
 	private Group grpDateRange;
 
-	private SWTCalendar calendarStart;
-
-	private SWTCalendar calendarEnd;
-
 	private Group grpPharmacySelection;
 
 	private CCombo cmbStockCenter;
+
+	private CCombo cmbMonth;
+
+	private CCombo cmbYear;
+
+	private Group grpDateInfo;
+
+	private Label lblInstructions;
+
+	private Shell parent;
 
 	/**
 	 * Constructor
@@ -71,6 +80,7 @@ public class MmiaReport extends GenericReportGui {
 	 */
 	public MmiaReport(Shell parent, boolean activate) {
 		super(parent, REPORTTYPE_MIA, activate);
+		this.parent = parent;
 	}
 
 	/**
@@ -96,7 +106,7 @@ public class MmiaReport extends GenericReportGui {
 	@Override
 	protected void createCompHeader() {
 		iDartImage icoImage = iDartImage.REPORT_STOCKCONTROLPERCLINIC;
-		buildCompdHeader("MMIA PERSONALIZADO", icoImage);
+		buildCompdHeader("NOVO MMIA (ACTUALIZADO)", icoImage);
 	}
 
 	/**
@@ -133,7 +143,7 @@ public class MmiaReport extends GenericReportGui {
 	 */
 	private void createGrpDateInfo() {
 
-	/*	grpDateInfo = new Group(getShell(), SWT.NONE);
+		grpDateInfo = new Group(getShell(), SWT.NONE);
 		grpDateInfo.setBounds(new org.eclipse.swt.graphics.Rectangle(160, 180,
 				280, 100));
 
@@ -148,15 +158,15 @@ public class MmiaReport extends GenericReportGui {
 				20));
 		cmbMonth.setEditable(false);
 		cmbMonth.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		String months[] = { "January", "February", "March", "April", "May",
-				"June", "July", "August", "September", "October", "November",
-		"December" };
+		String months[] = { "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+				"Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro",
+		"Dezembro" };
 		for (int i = 0; i < 12; i++) {
 			this.cmbMonth.add(months[i]);
 		}
 
-		int intMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-		cmbMonth.setText(getMonthName(intMonth));
+		int intMonth = Calendar.getInstance().get(Calendar.MONTH);
+		cmbMonth.setText(mesPortugues(intMonth));
 		cmbMonth.setEditable(false);
 		cmbMonth.setBackground(ResourceUtils.getColor(iDartColor.WHITE));
 		cmbMonth.setVisibleItemCount(12);
@@ -176,11 +186,7 @@ public class MmiaReport extends GenericReportGui {
 			this.cmbYear.add(Integer.toString(i));
 		}
 		cmbYear.setText(String.valueOf(Calendar.getInstance()
-				.get(Calendar.YEAR)));*/
-		
-		
-		createGrpDateRange();
-
+				.get(Calendar.YEAR)));
 	}
 
 	/**
@@ -202,63 +208,26 @@ public class MmiaReport extends GenericReportGui {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("No Pharmacy Was Selected");
+			missing.setText("A Farmacia não foi seleccionada");
 			missing
-			.setMessage("No pharmacy was selected. Please select a pharmacy by looking through the list of available pharmacies.");
+			.setMessage("Por favor, seleccione uma US apresentada na lista.");
 			missing.open();
 
 		} else if (pharm == null) {
 
 			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
 					| SWT.OK);
-			missing.setText("Pharmacy not found");
+			missing.setText("A Farmacia seleccionada não foi localizada");
 			missing
-			.setMessage("There is no pharmacy called '"
-					+ cmbStockCenter.getText()
-					+ "' in the database. Please select a pharmacy by looking through the list of available pharmacies.");
+					.setMessage("Não existe nenhuma US: '"
+							+ cmbStockCenter.getText()
+							+ "' na base de dados.");
 			missing.open();
 
-		}
-		
-		else
-			
-		if (iDARTUtil.before(calendarEnd.getCalendar().getTime(), calendarStart.getCalendar().getTime())){
-			showMessage(MessageDialog.ERROR, "End date before start date",
-					"You have selected an end date that is before the start date.\nPlease select an end date after the start date.");
-			return;
-		}
-
-		else {
+		} else {
 			try {
-				
-			
-				
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
-				 
-//				String strTheDate = "" + cmbYear.getText() + "-"
-//				+ cmbMonth.getText() + "-01";
-				
-				
-				
-				Date theStartDate = calendarStart.getCalendar().getTime(); 
-			
-				Date theEndDate=  calendarEnd.getCalendar().getTime(); 
-				
-			
-				
-				
-
-				
-				//theStartDate = sdf.parse(strTheDate);
-				
-				 
-				
-			
-
-	
-				
 				MiaReport report = new MiaReport(
-						getShell(), pharm, theStartDate, theEndDate);
+						getShell(), pharm, cmbMonth.getText(), cmbYear.getText());
 				viewReport(report);
 			} catch (Exception e) {
 				getLog()
@@ -304,111 +273,107 @@ public class MmiaReport extends GenericReportGui {
 
 	}
 
+	private String mesPortugues(int intMonth) {
+
+		String mes = "";
+
+		switch (intMonth) {
+			case 0:
+				mes = "Janeiro";
+				break;
+			case 1:
+				mes = "Fevereiro";
+				break;
+			case 2:
+				mes = "Março";
+				break;
+			case 3:
+				mes = "Abril";
+				break;
+			case 4:
+				mes = "Maio";
+				break;
+			case 5:
+				mes = "Junho";
+				break;
+			case 6:
+				mes = "Julho";
+				break;
+			case 7:
+				mes = "Agosto";
+				break;
+			case 8:
+				mes = "Setembro";
+				break;
+			case 9:
+				mes = "Outubro";
+				break;
+			case 10:
+				mes = "Novembro";
+				break;
+			case 11:
+				mes = "Dezembro";
+				break;
+			default:
+				mes = "";
+				break;
+		}
+
+		return mes;
+	}
+
 	@Override
 	protected void setLogger() {
 		setLog(Logger.getLogger(this.getClass()));
 	}
 
-	
-	private void createGrpDateRange() {
-		grpDateRange = new Group(getShell(), SWT.NONE);
-		grpDateRange.setText("Período:");
-		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-		grpDateRange.setBounds(new Rectangle(55, 160, 520, 201));
-		grpDateRange.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		Label lblStartDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-		lblStartDate.setBounds(new org.eclipse.swt.graphics.Rectangle(40, 30,
-				180, 20));
-		lblStartDate.setText("Data In�cio:");
-		lblStartDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		Label lblEndDate = new Label(grpDateRange, SWT.CENTER | SWT.BORDER);
-		lblEndDate.setBounds(new org.eclipse.swt.graphics.Rectangle(300, 30,
-				180, 20));
-		lblEndDate.setText("Data Fim:");
-		lblEndDate.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
-
-		calendarStart = new SWTCalendar(grpDateRange);
-		calendarStart.setBounds(20, 55, 220, 140);
-
-		calendarEnd = new SWTCalendar(grpDateRange);
-		calendarEnd.setBounds(280, 55, 220, 140);
-		calendarEnd.addSWTCalendarListener(new SWTCalendarListener() {
-			@Override
-			public void dateChanged(SWTCalendarEvent calendarEvent) {
-				Date date = calendarEvent.getCalendar().getTime();
-				
-				
-			}
-		});
-	}
-	
-	/**
-	 * Method getCalendarEnd.
-	 * 
-	 * @return Calendar
-	 */
-	public Calendar getCalendarEnd() {
-		return calendarEnd.getCalendar();
-	}
-	
-	/**
-	 * Method setEndDate.
-	 * 
-	 * @param date
-	 *            Date
-	 */
-	public void setEndtDate(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendarEnd.setCalendar(calendar);
-	}
-	
-	/**
-	 * Method addEndDateChangedListener.
-	 * 
-	 * @param listener
-	 *            SWTCalendarListener
-	 */
-	public void addEndDateChangedListener(SWTCalendarListener listener) {
-
-		calendarEnd.addSWTCalendarListener(listener);
-	}
-	
-	/**
-	 * Method getCalendarStart.
-	 * 
-	 * @return Calendar
-	 */
-	public Calendar getCalendarStart() {
-		return calendarStart.getCalendar();
-	}
-	
-	/**
-	 * Method setStartDate.
-	 * 
-	 * @param date
-	 *            Date
-	 */
-	public void setStartDate(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendarStart.setCalendar(calendar);
-	}
-	
-	/**
-	 * Method addStartDateChangedListener.
-	 * 
-	 * @param listener
-	 *            SWTCalendarListener
-	 */
-	public void addStartDateChangedListener(SWTCalendarListener listener) {
-
-		calendarStart.addSWTCalendarListener(listener);
-	}
-
 	@Override
 	protected void cmdViewReportXlsWidgetSelected() {
+
+		StockCenter pharm = AdministrationManager.getStockCenter(getHSession(),
+				cmbStockCenter.getText());
+
+		if (cmbStockCenter.getText().equals("")) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("A Farmacia não foi seleccionada");
+			missing
+					.setMessage("Por favor, seleccione uma US apresentada na lista.");
+			missing.open();
+
+		} else if (pharm == null) {
+
+			MessageBox missing = new MessageBox(getShell(), SWT.ICON_ERROR
+					| SWT.OK);
+			missing.setText("A Farmacia seleccionada não foi localizada");
+			missing
+					.setMessage("Não existe nenhuma US: '"
+							+ cmbStockCenter.getText()
+							+ "' na base de dados.");
+			missing.open();
+
+		} else {
+
+			String reportNameFile = "Reports/MmiaReportMISAUActualizado.xls";
+			try {
+				MmiaReportExcel op = new MmiaReportExcel(parent, reportNameFile, cmbMonth.getText(), cmbYear.getText(),pharm);
+				new ProgressMonitorDialog(parent).run(true, true, op);
+
+				if (op.getList() == null ||
+						op.getList().size() <= 0) {
+					MessageBox mNoPages = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+					mNoPages.setText("O relatório não possui páginas");
+					mNoPages.setMessage("O relatório que estás a gerar não contém nenhum dado.Verifique os valores de entrada que inseriu (como datas) para este relatório e tente novamente.");
+					mNoPages.open();
+				}
+
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+		}
+
 	}
 }

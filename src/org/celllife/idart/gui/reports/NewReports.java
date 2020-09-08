@@ -380,6 +380,9 @@ public class NewReports extends GenericAdminGui {
          * reportGUIs.put(GenericReportGuiInterface.REPORT_MIA, new
          * MmiaReport(getShell(), false));
          */
+        reportGUIs.put(GenericReportGuiInterface.REPORT_MIA,
+                new MmiaReport(getShell(), false));
+
         reportGUIs.put(GenericReportGuiInterface.REPORT_MIAMISAU,
                 new MmiaReportMISAU(getShell(), false));
       
