@@ -278,6 +278,229 @@ public class ConexaoJDBC {
     }
 
 
+    public Map MMIAACTUALIZADO(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = " SELECT  distinct p.patient, "
+                + " 		p.reasonforupdate,  "
+                + " 		p.dispensatrimestral, "
+                + " 		p.dispensasemestral,  "
+                + " 		p.prep, "
+                + " 		p.ptv, "
+                + " 		p.dc, "
+                + " 		p.ppe, "
+                + " 		p.ce, "
+                + " 		l.linhanome, "
+                + " 		EXTRACT(year FROM age('" + endDate + "',pack.dateofbirth)) :: int dateofbirth,  "
+                + " 		ep.startreason,  "
+                + " 		COALESCE(pack.weekssupply,0) weekssupply  "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where pds.amount <> 0 and pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "'   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode ";
+
+        int totalpacientestransito = 0;
+        int totalpacientesinicio = 0;
+        int totalpacientesmanter = 0;
+        int totalpacientesalterar = 0;
+        int totalpacientestransferidoDe = 0;
+
+        int pacientesdispensadosparaDM = 0;
+        int pacientesdispensadosparaDT = 0;
+        int pacientesdispensadosparaDS = 0;
+        int mesesdispennsados = 0;
+
+        int totalpacientesppe = 0;
+        int totalpacientesprep = 0;
+        int totalpacientesCE = 0;
+        int totalpacienteptv = 0;
+        int totalpacientedc = 0;
+
+        int totallinhas1 = 0;
+        int totallinhas2 = 0;
+        int totallinhas3 = 0;
+
+        int pacientesEmTarv = 0;
+        int adultosEmTarv = 0;
+        int pediatrico04EmTARV = 0;
+        int pediatrico59EmTARV = 0;
+        int pediatrico1014EmTARV = 0;
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                boolean nonuspatient = rs.getString("startreason").contains("nsito") || rs.getString("startreason").contains("ternidade");
+
+                // Paciente Transito ou Inicio na Maternidade
+                if (nonuspatient) {
+                    totalpacientestransito++;
+                } else {
+                    pacientesEmTarv++;
+                    //Total de semanas de dispensa
+                    mesesdispennsados = mesesdispennsados + rs.getInt("weekssupply");
+                }
+
+                // Tipo de Pacinte
+                if (!nonuspatient && rs.getString("reasonforupdate").contains("Inicia")) {
+                    totalpacientesinicio++;
+                } else if (!nonuspatient && (rs.getString("reasonforupdate").contains("Manter") || rs.getString("reasonforupdate").contains("Reiniciar"))) {
+                    totalpacientesmanter++;
+                } else if (!nonuspatient && rs.getString("reasonforupdate").contains("Alterar")) {
+                    totalpacientesalterar++;
+                } else if (!nonuspatient && rs.getString("reasonforupdate").contains("ransfer")) {
+                    totalpacientestransferidoDe++;
+                }
+
+
+                // Dispensa Trimenstral ou Semestral
+                if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 0) {
+                    pacientesdispensadosparaDM++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 1 && rs.getInt("dispensasemestral") == 0) {
+                    pacientesdispensadosparaDT++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 1) {
+                    pacientesdispensadosparaDS++;
+                }
+
+                // Sector de Levantamento
+                if (!nonuspatient && !rs.getString("prep").equalsIgnoreCase("F")) {
+                    totalpacientesprep++;
+                }
+                if (!nonuspatient && !rs.getString("ptv").equalsIgnoreCase("F")) {
+                    totalpacienteptv++;
+                }
+                if (!nonuspatient && !rs.getString("dc").equalsIgnoreCase("F")) {
+                    totalpacientedc++;
+                }
+                if (!nonuspatient && !rs.getString("ppe").equalsIgnoreCase("F")) {
+                    totalpacientesppe++;
+                }
+                if (!nonuspatient && !rs.getString("ce").equalsIgnoreCase("F")) {
+                    totalpacientesCE++;
+                }
+                // linha Terapeutica
+                if (!nonuspatient && rs.getString("linhanome").contains("1")) {
+                    totallinhas1++;
+                } else if (!nonuspatient && rs.getString("linhanome").contains("2")) {
+                    totallinhas2++;
+                } else if (!nonuspatient && rs.getString("linhanome").contains("3")) {
+                    totallinhas3++;
+                }
+
+                // idade
+                if (!nonuspatient && rs.getInt("dateofbirth") >= 15) {
+                    adultosEmTarv++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 0 && rs.getInt("dateofbirth") <= 4) {
+                    pediatrico04EmTARV++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 5 && rs.getInt("dateofbirth") <= 9) {
+                    pediatrico59EmTARV++;
+                } else if (!nonuspatient && rs.getInt("dateofbirth") >= 10 && rs.getInt("dateofbirth") <= 14) {
+                    pediatrico1014EmTARV++;
+                }
+            }
+            rs.close();
+        }
+
+        map.put("totalpacientestransito", totalpacientestransito);
+        map.put("totalpacientesinicio", totalpacientesinicio);
+        map.put("totalpacientesmanter", totalpacientesmanter);
+        map.put("totalpacientesalterar", totalpacientesalterar);
+        map.put("totalpacientestransferidoDe", totalpacientestransferidoDe);
+        map.put("pacientesdispensadosparaDM", pacientesdispensadosparaDM);
+        map.put("pacientesdispensadosparaDT", pacientesdispensadosparaDT);
+        map.put("pacientesdispensadosparaDS", pacientesdispensadosparaDS);
+        map.put("mesesdispensados", mesesdispennsados / 4);
+        map.put("totalpacientesppe", totalpacientesppe);
+        map.put("totallinhas1", totallinhas1);
+        map.put("totallinhas2", totallinhas2);
+        map.put("totallinhas3", totallinhas3);
+        map.put("totallinhas", totallinhas1 + totallinhas2 + totallinhas3);
+        map.put("totalpacientesprep", totalpacientesprep);
+        map.put("totalpacientesCE", totalpacientesCE);
+        map.put("totalpacienteptv", totalpacienteptv);
+        map.put("totalpacientedc", totalpacientedc);
+        map.put("pacientesEmTarv", pacientesEmTarv);
+        map.put("adultosEmTarv", adultosEmTarv);
+        map.put("pediatrico04EmTARV", pediatrico04EmTARV);
+        map.put("pediatrico59EmTARV", pediatrico59EmTARV);
+        map.put("pediatrico1014EmTARV", pediatrico1014EmTARV);
+        return map;
+
+    }
+
+
+    public Map MMIA_Actualizado_Dispensas(String startDate, String endDate) throws ClassNotFoundException, SQLException {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        String query = " SELECT  distinct p.patient, "
+                + " 		ep.startreason,  "
+                + " 		p.reasonforupdate,  "
+                + " 		p.dispensatrimestral, "
+                + " 		p.dispensasemestral  "
+                + " FROM  "
+                + " ( "
+                + " 	select max(pre.date) predate, max(pa.pickupdate) pickupdate, max(pat.dateofbirth) dateofbirth, max(pa.weekssupply) weekssupply, "
+                + " 			pat.id, max(visit.id) episode "
+                + " 	from package pa  "
+                + " 	inner join packageddrugs pds on pds.parentpackage = pa.id  "
+                + " 	inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id  "
+                + " 	inner join prescription pre on pre.id = pa.prescription  "
+                + " 	inner join patient pat ON pre.patient=pat.id  "
+                + " 	INNER JOIN (SELECT MAX (startdate), patient, id  "
+                + " 				from episode WHERE stopdate is null and startdate <= '" + endDate + "' "
+                + " 				GROUP BY 2,3) visit on visit.patient = pat.id  "
+                + " 	where pds.amount <> 0 and pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <= '" + endDate + "'   "
+                + " 	GROUP BY 5 order by 5) pack  "
+                + " 	inner join prescription p on p.date = pack.predate and p.patient=pack.id  "
+                + " 	inner join patient pat on pat.id = pack.id  "
+                + " 	inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate "
+                + " 	inner join linhat l on l.linhaid = p.linhaid  "
+                + " 	inner join episode ep on ep.id = pack.episode ";
+
+        int pacientesdispensadosparaDM = 0;
+        int pacientesdispensadosparaDT = 0;
+        int pacientesdispensadosparaDS = 0;
+
+        conecta(iDartProperties.hibernateUsername, iDartProperties.hibernatePassword);
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) {
+            while (rs.next()) {
+                boolean nonuspatient = rs.getString("startreason").contains("nsito") || rs.getString("startreason").contains("ternidade");
+
+                // Dispensa Trimenstral ou Semestral
+                if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 0) {
+                    pacientesdispensadosparaDM++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 1 && rs.getInt("dispensasemestral") == 0) {
+                    pacientesdispensadosparaDT++;
+                } else if (!nonuspatient && rs.getInt("dispensatrimestral") == 0 && rs.getInt("dispensasemestral") == 1) {
+                    pacientesdispensadosparaDS++;
+                }
+            }
+            rs.close();
+        }
+
+        map.put("pacientesdispensadosparaDM", pacientesdispensadosparaDM);
+        map.put("pacientesdispensadosparaDT", pacientesdispensadosparaDT);
+        map.put("pacientesdispensadosparaDS", pacientesdispensadosparaDS);
+        return map;
+
+    }
+
 
     public List<MmiaStock> getStockMmmia(Date dataInicial, Date dataFinal, StockCenter stockCenter) {
 
@@ -581,6 +804,64 @@ public class ConexaoJDBC {
         return mmiaRegimenXLSList;
     }
 
+
+    public List<MmiaRegimeTerapeutico> getRegimenMmmiaActualizado(Date dataInicial, Date dataFinal) {
+
+        List<MmiaRegimeTerapeutico> mmiaRegimenXLSList = new ArrayList<MmiaRegimeTerapeutico>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String startDate = dateFormat.format(dataInicial);
+
+        String endDate = dateFormat.format(dataFinal);
+
+        try {
+            conecta(iDartProperties.hibernateUsername,
+                    iDartProperties.hibernatePassword);
+
+            String query =  " SELECT  distinct rt.regimeesquema,rt.codigoregime, count(distinct p.patient) as totalpacientes " +
+                    "FROM (select max(pre.date) predate, max(pa.pickupdate) pickupdate, pat.id " +
+                    "from package pa " +
+                    "inner join packageddrugs pds on pds.parentpackage = pa.id " +
+                    "inner join packagedruginfotmp pdit on pdit.packageddrug = pds.id " +
+                    "inner join prescription pre on pre.id = pa.prescription " +
+                    "inner join patient pat ON pre.patient=pat.id " +
+                    "where pds.amount <> 0 and (pg_catalog.date(pa.pickupdate) >= '" + startDate + "' and pg_catalog.date(pa.pickupdate) <=   '"+endDate+"')  " +
+                    "GROUP BY 3 order by 3) pack " +
+                    "inner join prescription p on p.date = pack.predate and p.patient=pack.id " +
+                    "inner join package pa on pa.prescription = p.id and pa.pickupdate = pack.pickupdate " +
+                    "inner join regimeterapeutico rt on rt.regimeid = p.regimeid " +
+                    "INNER JOIN (SELECT MAX (startdate),patient, episode.startreason " +
+                    "    from episode WHERE stopdate is null and startdate <=   '"+endDate+"' " +
+                    "    GROUP BY 2,3 " +
+                    ") visit on visit.patient = pack.id " +
+                    "where visit.startreason not like '%ansito%' and visit.startreason not like '%ternidade%' " +
+                    "group by 1,2 order by 1";
+
+            ResultSet rs = st.executeQuery(query);
+
+            if (rs != null) {
+
+                while (rs.next()) {
+                    MmiaRegimeTerapeutico mmiaRegimeTerapeutico = new MmiaRegimeTerapeutico();
+                    mmiaRegimeTerapeutico.setCodigo(rs.getString("codigoregime"));
+                    mmiaRegimeTerapeutico.setRegimeTerapeutico(rs.getString("regimeesquema"));
+                    mmiaRegimeTerapeutico.setTotalDoentes(String.valueOf(rs.getInt("totalpacientes")));
+
+                    mmiaRegimenXLSList.add(mmiaRegimeTerapeutico);
+                }
+                rs.close();
+            }
+
+            st.close();
+            conn_db.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return mmiaRegimenXLSList;
+    }
 
     /**
      * Mapa para pacientes e desagregacao no Relatorio de indicadores mensais
