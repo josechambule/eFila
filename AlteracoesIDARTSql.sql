@@ -7,6 +7,7 @@ ALTER TABLE clinic ADD COLUMN IF NOT EXISTS subDistrict character varying(255) C
 ALTER TABLE clinic ADD COLUMN IF NOT EXISTS code character varying(255) COLLATE pg_catalog."default" DEFAULT '';
 ALTER TABLE clinic ADD COLUMN IF NOT EXISTS facilityType character varying(255) COLLATE pg_catalog."default" DEFAULT '';
 ALTER TABLE clinic ADD COLUMN IF NOT EXISTS uuid character varying(255) COLLATE pg_catalog."default" DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS state integer DEFAULT 1;
 ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS syncstatus character(1) COLLATE pg_catalog."default" DEFAULT 'P'::bpchar;
 ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS syncuuid character varying(255) COLLATE pg_catalog."default";
 ALTER TABLE sync_temp_patients ADD COLUMN IF NOT EXISTS clinicuuid character varying(255) COLLATE pg_catalog."default";
@@ -125,6 +126,27 @@ CREATE TABLE IF NOT EXISTS sync_openmrs_dispense (
     returnvisituuid character varying(255) COLLATE pg_catalog."default",
     strnextpickup character varying(255) COLLATE pg_catalog."default",
     prescription integer NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS systemfunctionality (
+	id int4 NOT NULL,
+	description varchar(100) NOT NULL,
+	code varchar(100) NOT NULL,
+	CONSTRAINT systemfunctionality_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS "role" (
+	id int4 NOT NULL,
+	description varchar(100) NOT NULL,
+	code varchar(100) NOT NULL,
+	CONSTRAINT role_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS rolefunction (
+	roleid int4 NOT NULL,
+	functionid int4 NOT NULL,
+	CONSTRAINT rolefunction_fk FOREIGN KEY (roleid) REFERENCES "role"(id) ON DELETE CASCADE,
+	CONSTRAINT rolefunction_fk_1 FOREIGN KEY (functionid) REFERENCES systemfunctionality(id) ON DELETE CASCADE
 );
 
 INSERT INTO country (id, code, name) VALUES (1, '01', 'Moçambique');
