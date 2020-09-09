@@ -23,19 +23,13 @@
  */
 package org.celllife.idart.database.hibernate;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import model.nonPersistent.Autenticacao;
+import org.celllife.idart.misc.iDARTUtil;
 
 /**
  */
@@ -55,21 +49,30 @@ public class User {
 	@Column(name = "cl_password")
 	private String password;
 
-	@Column(name = "role", nullable = true)
-	private String role;
+
 
 	@Column(name = "cl_username")
 	private String username;
 	
-	@Column(name = "permission")
+	/*@Column(name = "permission")
 	private char permission;
-
+*/
 	@Column(name = "state")
 	private int state;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "ClinicUser", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "clinicId") })
-	private Set<Clinic> clinics; 
+	private Set<Clinic> clinics;
+
+	@ManyToMany(cascade = { CascadeType.PERSIST })
+	@JoinTable(
+			name = "user_role",
+			joinColumns = { @JoinColumn(name = "userid") },
+			inverseJoinColumns = { @JoinColumn(name = "roleid") }
+	)
+	private Set<Role> roleSet;
+
+
 	public User() {
 		super();
 	}
@@ -77,21 +80,23 @@ public class User {
 	/**
 	 * @param username
 	 * @param password
-	 * @param role
 	 * @param modified
 	 * @param clinics Set<Clinic>
-	 * @param permission
 	 */
-	public User(String username, String password, String role, char modified, Set<Clinic> clinics, char permission) {
+	public User(String username, String password, char modified, Set<Role> roleSet, Set<Clinic> clinics) {
 		super();
 		this.username = username;
 		this.password = Autenticacao.converteMD5(password);
-		this.role = role;
 		this.modified = modified;
+		this.roleSet = roleSet;
 		this.clinics=clinics;
-		this.permission=permission;
 	}
 
+	public void addRole(Role role){
+		if (this.roleSet == null) this.roleSet = new HashSet<>();
+
+		this.roleSet.add(role);
+	}
 	/**
 	 * Method getId.
 	 * @return int
@@ -116,13 +121,6 @@ public class User {
 		return password;
 	}
 
-	/**
-	 * Method getRole.
-	 * @return String
-	 */
-	public String getRole() {
-		return role;
-	}
 
 	/**
 	 * Method getUsername.
@@ -157,13 +155,6 @@ public class User {
 		this.password = Autenticacao.converteMD5(password);
 	}
 
-	/**
-	 * Method setRole.
-	 * @param role String
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	/**
 	 * Method setUsername.
@@ -189,20 +180,40 @@ public class User {
 		this.clinics = clinics;
 	}
 
-	/**
-	 * Metodo getPermission 
-	 * @return char permission
-	 */
-	public char getPermission() {
-		return permission;
-	}
-	/**
-	 * Metodo setPermission
-	 * @param permission char
-	 */
 
-	public void setPermission(char permission) {
-		this.permission = permission;
+
+	public Set<Role> getRoleSet() {
+		return roleSet;
+	}
+
+	public void setRoleSet(Set<Role> roleSet) {
+		this.roleSet = roleSet;
+	}
+
+	public boolean isPermitedTo(String functionalityCode){
+		if (this.roleSet == null || this.roleSet.isEmpty()) return false;
+
+		for (Role role : this.roleSet) {
+			if (role.getSysFunctions() == null || role.getSysFunctions().isEmpty()) return false;
+
+			for (SystemFunctionality functionality : role.getSysFunctions()) {
+				if (functionality.getCode().equalsIgnoreCase(functionalityCode)) return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasRole(String roleCode){
+		if (this.roleSet == null || this.roleSet.isEmpty()) return false;
+
+		for (Role role : this.roleSet) {
+			if (role.getCode().equalsIgnoreCase(roleCode)) return true;
+		}
+		return false;
+	}
+
+	public boolean isAdmin(){
+		return this.hasRole(Role.ADMINISTRATOR);
 	}
 
 	public int getState() {
@@ -223,5 +234,9 @@ public class User {
 
 	public void changeStateToNotActive() {
 		this.state = NOT_ACTIVO;
+	}
+
+	public boolean hasAssociatedRoles() {
+		return iDARTUtil.arrayHasElements(this.roleSet);
 	}
 }

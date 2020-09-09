@@ -10,6 +10,7 @@ import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
@@ -50,8 +51,21 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
     @Override
     protected boolean fieldsOk() {
-        return (txtFuncionality.getText() != null && txtFuncionality.getText().length() > 2) &&
-                (txtCodigo.getText() != null && txtCodigo.getText().length() > 2);
+        if (!iDARTUtil.stringHasValue(txtFuncionality.getText())){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Funcionalidade] deve estar preenchido.");
+            m.open();
+            return false;
+
+        }else if (!iDARTUtil.stringHasValue(txtCodigo.getText())){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Código] deve estar preenchido.");
+            m.open();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -75,8 +89,15 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
 
             MessageBox msg = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-            msg.setText("Adicção de nova funcionalidade");
-            msg.setMessage("Tem certeza de que deseja adicionar a funcionalidade ["+txtFuncionality.getText()+"] ao sistema?");
+            if (this.currFunctionality == null || this.currFunctionality.getId() <= 0) {
+                msg.setText("Adicção de nova funcionalidade do sistema");
+                msg.setMessage("Tem certeza de que deseja adicionar a funcionalidade ["+txtFuncionality.getText()+"] ao sistema?");
+            }else {
+                msg.setText("Edição de funcionalidade do sistema");
+                msg.setMessage("Tem certeza de que deseja guardar as alterações efectuadas à funcionalidade ["+txtFuncionality.getText()+"] no sistema?");
+            }
+
+
             option = msg.open();
 
             if(option == SWT.YES)
@@ -96,8 +117,8 @@ public class SystemFunctionalityManager extends GenericFormGui {
                     getHSession().flush();
                     tx.commit();
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
-                    m.setText("Nova funcionalidade gravada");
-                    m.setMessage("A funcionalidade '".concat(currFunctionality.getDescription()).concat( "' foi gravada com sucesso."));
+                    m.setText("Registo gravdo");
+                    m.setMessage("Os dados da funcionalidade '".concat(currFunctionality.getDescription()).concat( "' foram gravados com sucesso."));
                     m.open();
                     cmdCancelWidgetSelected();
 
@@ -114,11 +135,6 @@ public class SystemFunctionalityManager extends GenericFormGui {
                     getLog().error(he);
                 }
             }
-        }else {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-            m.setText("Preenchimento dos campos");
-            m.setMessage("Os campos [Perfil] e [Codigo] devem estar preenchidos.");
-            m.open();
         }
 
     }
@@ -214,16 +230,17 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
     private void cmdSearchWidgetSelected() {
 
+        clearForm();
+
         Search sysFunctionalitySearch = new Search(getHSession(), getShell(), CommonObjects.FUNCTIONALITY);
 
-        if (sysFunctionalitySearch.getValueSelected() != null) {
+        if (sysFunctionalitySearch.getValueSelected() != null && iDARTUtil.stringHasValue(sysFunctionalitySearch.getValueSelected()[0])) {
 
             currFunctionality = AdministrationManager.getFunctionalityByDescription(getHSession(), sysFunctionalitySearch.getValueSelected()[0]);
 
             txtFuncionality.setText(currFunctionality.getDescription());
             txtCodigo.setText(currFunctionality.getCode());
 
-            btnSearch.setEnabled(false);
 
             enableFields(true);
 

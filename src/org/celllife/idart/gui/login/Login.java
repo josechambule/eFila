@@ -448,7 +448,7 @@ public class Login implements GenericGuiInterface {
             if (CentralizationProperties.centralization.equalsIgnoreCase("off"))
                 checkOpenmrs = true;
             else if (CentralizationProperties.pharmacy_type.equalsIgnoreCase("F")
-                    || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")){
+                    || CentralizationProperties.pharmacy_type.equalsIgnoreCase("P")) {
                 successfulLogin = true;
                 checkOpenmrs = false;
             }
@@ -556,22 +556,28 @@ public class Login implements GenericGuiInterface {
                 }
             }
 
-            if (successfulLogin && theUser.isActive()) {
-                LocalObjects.setUser(theUser);
-                LocalObjects.currentClinic = theClinic.getClinicName()
-                        .equalsIgnoreCase(
-                                LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
-                        : theClinic;
-                log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
+            if (successfulLogin) {
+                if (!theUser.isActive()) {
+                    MessageDialog.openError(loginShell, Messages.getString("login.dialog.user.notActive"), Messages.getString("login.error.user.notActive")); //$NON-NLS-1$
+                    txtPassword.setFocus();
+                    txtPassword.setText("");
+                    successfulLogin = false;
+                } else if (!theUser.hasAssociatedRoles()) {
+                    MessageDialog.openError(loginShell, "Perfil do utilizador", "O utilizador não está associado a nenhum perfil de acesso ao sistema, por favor contactar o administrador."); //$NON-NLS-1$
+                    txtPassword.setFocus();
+                    txtPassword.setText("");
+                    successfulLogin = false;
+                } else {
+                    LocalObjects.setUser(theUser);
+                    LocalObjects.currentClinic = theClinic.getClinicName()
+                            .equalsIgnoreCase(
+                                    LocalObjects.mainClinic.getClinicName()) ? LocalObjects.mainClinic
+                            : theClinic;
+                    log.info("Login successful for user " + theUser.getUsername()); //$NON-NLS-1$
 
-                closeScreen();
-            }else {
-                MessageDialog.openError(loginShell, Messages.getString("login.dialog.user.notActive"), Messages.getString("login.error.user.notActive")); //$NON-NLS-1$
-                txtPassword.setFocus();
-                txtPassword.setText("");
-                successfulLogin = false;
+                    closeScreen();
+                }
             }
-
 
         } catch (HibernateException e) {
             e.printStackTrace();

@@ -215,10 +215,10 @@ new Rectangle(0, 0, 900, 700));
 		this.compOptions = compOptions;
 	}
 	
-	public char getUserPermission(){
+	/*public char getUserPermission(){
 		
 		
 		return  LocalObjects.getUser(getHSession()).getPermission();
-	}
+	}*/
 
 }

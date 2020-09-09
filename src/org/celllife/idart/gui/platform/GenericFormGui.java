@@ -437,7 +437,7 @@ GenericFormGuiInterface {
 	public void setBtnSaveText(String btnSaveText) {
 		this.btnSaveText = btnSaveText;
 	}
-	public char getUserPermission(){
+	/*public char getUserPermission(){
 		return  LocalObjects.getUser(getHSession()).getPermission();
-	}
+	}*/
 }

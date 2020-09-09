@@ -23,8 +23,6 @@ package org.celllife.idart.start;
 import model.manager.AdministrationManager;
 import model.manager.PatientManager;
 import model.manager.StockManager;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -32,6 +30,7 @@ import org.celllife.idart.commonobjects.*;
 import org.celllife.idart.database.*;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.database.hibernate.Clinic;
+import org.celllife.idart.database.hibernate.Role;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.events.EventManager;
 import org.celllife.idart.gui.login.Login;
@@ -166,7 +165,7 @@ public class PharmacyApplication {
         }
 
         try {
-            HibernateUtil.setValidation(true);
+            HibernateUtil.setValidation(false);
         } catch (Exception e) {
             String msg = "Error while checking database consistency: ";
             log.error(msg, e);
@@ -204,10 +203,10 @@ public class PharmacyApplication {
                     startRestOpenMRSThread(executorService);
 
                 try {
-                    String role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRole();
-                    if (role != null && role.equalsIgnoreCase("StudyWorker")) {
+                    Role role = LocalObjects.getUser(HibernateUtil.getNewSession()).getRoleSet().iterator().next();
+                    if (role != null && role.isStudyWorker()) {
                         welcome = new StudyWorkerWelcome();
-                    } else if (role != null && role.equalsIgnoreCase("ReportsWorker")) {
+                    } else if (role != null && role.isReportWorker()) {
                         welcome = new ReportWorkerWelcome();
                     } else {
                         if (LocalObjects.currentClinic == LocalObjects.mainClinic) {

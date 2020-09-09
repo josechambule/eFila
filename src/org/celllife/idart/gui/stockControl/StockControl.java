@@ -20,6 +20,7 @@
 package org.celllife.idart.gui.stockControl;
 
 import org.apache.log4j.Logger;
+import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
 import org.celllife.idart.database.dao.ConexaoJDBC;
 import org.celllife.idart.gui.deletions.DeleteStockPrescriptionsPackages;
@@ -307,7 +308,7 @@ public class StockControl extends GenericAdminGui {
 			}
 		});
 
-		if (getUserPermission() != 'A') {
+		if (!LocalObjects.getUser(getHSession()).isAdmin()) {
 			btnSync.setEnabled(false);
 		}else
 			btnSync.setEnabled(true);

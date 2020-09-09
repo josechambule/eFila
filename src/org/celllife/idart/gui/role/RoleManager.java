@@ -13,13 +13,13 @@ import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,6 +83,21 @@ public class RoleManager extends GenericFormGui {
     @Override
     protected boolean fieldsOk() {
 
+        if (!iDARTUtil.stringHasValue(txtRole.getText())){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Perfil] deve estar preenchido.");
+            m.open();
+            return false;
+
+        }else if (!iDARTUtil.stringHasValue(txtCodigo.getText())){
+            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
+            m.setText("Preenchimento dos campos");
+            m.setMessage("O campo [Código] deve estar preenchido.");
+            m.open();
+            return false;
+        }
+
         boolean checkedClinic = false;
         for (TableItem ti : tblFunctionalities.getItems()) {
             if (ti.getChecked()) {
@@ -93,7 +108,7 @@ public class RoleManager extends GenericFormGui {
 
         if (!checkedClinic) {
             MessageBox b = new MessageBox(getShell(), SWT.ICON_ERROR | SWT.OK);
-            b.setMessage("Todos os perfies precisam ter acesso a pelo menos uma funcionalidade associada. \n\n"
+            b.setMessage("Todos os perfies precisam ter pelo menos uma funcionalidade associada. \n\n"
                     + "Por favor, selecione pelo menos uma funcionalidade e tente salvar novamente.");
             b.setText("Nenhuma funcionalidade selecionada");
 
@@ -101,8 +116,7 @@ public class RoleManager extends GenericFormGui {
             return false;
         }
 
-        return (txtRole.getText() != null && txtRole.getText().length() > 2) &&
-                (txtCodigo.getText() != null && txtCodigo.getText().length() > 2);
+        return true;
     }
 
     @Override
@@ -126,8 +140,15 @@ public class RoleManager extends GenericFormGui {
 
 
             MessageBox msg = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-            msg.setText("Adicção de novo perfil");
-            msg.setMessage("Tem certeza de que deseja adicionar o perfil ["+txtRole.getText()+"] ao sistema?");
+
+            if (this.currentRole == null || this.currentRole.getId() <= 0) {
+                msg.setText("Adicção de novo perfil");
+                msg.setMessage("Tem certeza de que deseja adicionar o perfil ["+txtRole.getText()+"] ao sistema?");
+            }else {
+                msg.setText("Edição do perfil");
+                msg.setMessage("Tem certeza de que deseja gravar as alterações efectuadas ao perfil ["+txtRole.getText()+"] no sistema?");
+            }
+
             option = msg.open();
 
             if(option == SWT.YES)
@@ -149,8 +170,8 @@ public class RoleManager extends GenericFormGui {
                     getHSession().flush();
                     tx.commit();
                     MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_INFORMATION);
-                    m.setText("Novo perfil gravado");
-                    m.setMessage("O perfil'".concat(currentRole.getDescription()).concat( "' foi gravado com sucesso."));
+                    m.setText("Registo gravado");
+                    m.setMessage("Os dados do perfil'".concat(currentRole.getDescription()).concat( "' foram gravados com sucesso."));
                     m.open();
                     cmdCancelWidgetSelected();
 
@@ -167,11 +188,6 @@ public class RoleManager extends GenericFormGui {
                     getLog().error(he);
                 }
             }
-        }else {
-            MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
-            m.setText("Preenchimento dos campos");
-            m.setMessage("Os campos [Perfil] e [Codigo] devem estar preenchidos.");
-            m.open();
         }
     }
 
@@ -219,8 +235,6 @@ public class RoleManager extends GenericFormGui {
         grpRoleInfo = new Group(getShell(), SWT.NONE);
         grpRoleInfo.setBounds(new Rectangle(100, 110, 600, 280));
 
-
-
             // lblUser & txtUser
         Label lblRole = new Label(grpRoleInfo, SWT.NONE);
         lblRole.setBounds(new Rectangle(30, 20, 50, 20));
@@ -267,11 +281,13 @@ public class RoleManager extends GenericFormGui {
         TableColumn tblColClinicName = new TableColumn(tblFunctionalities, SWT.NONE);
         tblColClinicName.setText("Funcionalidade");
         tblColClinicName.setWidth(195);
-        populateClinicAccessList();
+        populateFunctionalityList();
 
     }
 
     private void cmdSearchWidgetSelected() {
+
+        clearForm();
 
         Search roleSearch = new Search(getHSession(), getShell(), CommonObjects.ROLE);
 
@@ -281,7 +297,6 @@ public class RoleManager extends GenericFormGui {
 
             txtRole.setText(currentRole.getDescription());
             txtCodigo.setText(currentRole.getCode());
-            btnSearch.setEnabled(false);
 
             for (SystemFunctionality functionality : currentRole.getSysFunctions()){
                 for (TableItem ti : tblFunctionalities.getItems()) {
@@ -291,7 +306,6 @@ public class RoleManager extends GenericFormGui {
                 }
             }
 
-
             enableFields(true);
 
             btnSave.setEnabled(true);
@@ -300,19 +314,13 @@ public class RoleManager extends GenericFormGui {
             btnSearch.setEnabled(true);
 
         }
-
     }
 
-    private void populateClinicAccessList() {
+    private void populateFunctionalityList() {
         for (SystemFunctionality functionality : AdministrationManager.getSystemFunctionalities(getHSession())) {
             TableItem ti = new TableItem(tblFunctionalities, SWT.None);
             ti.setText(0, functionality.getDescription());
             ti.setData(functionality);
-
-            /*if ((!isAddNotUpdate) && localUser.getClinics().contains(clinic)) {
-                ti.setChecked(true);
-            } */
-
         }
     }
 

@@ -8,6 +8,11 @@ import java.util.Set;
 @Table(name = "systemfunctionality")
 public class SystemFunctionality implements Comparable<SystemFunctionality>{
 
+    public static final String ADMINISTRATION           = "ADMINISTRATION";
+    public static final String PACIENT_ADMINISTRATION   = "PACIENT_ADMINISTRATION";
+    public static final String STOCK_ADMINISTRATION     = "STOCK_ADMINISTRATION";
+    public static final String REPORTS                  = "REPORTS";
+
     @Id
     @GeneratedValue
     private Integer id;

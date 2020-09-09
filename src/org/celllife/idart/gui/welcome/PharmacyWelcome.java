@@ -2,6 +2,8 @@ package org.celllife.idart.gui.welcome;
 
 import org.celllife.idart.commonobjects.LocalObjects;
 import org.celllife.idart.commonobjects.iDartProperties;
+import org.celllife.idart.database.hibernate.SystemFunctionality;
+import org.celllife.idart.database.hibernate.User;
 import org.celllife.idart.database.hibernate.util.HibernateUtil;
 import org.celllife.idart.gui.generalAdmin.GeneralAdmin;
 import org.celllife.idart.gui.patientAdmin.PatientAdmin;
@@ -25,9 +27,12 @@ import org.eclipse.swt.widgets.Label;
 /**
  */
 public class PharmacyWelcome extends GenericWelcome {
-	
+
+	private User currentUser;
+
 	public PharmacyWelcome() {
 		super();
+		this.currentUser = LocalObjects.getUser(HibernateUtil.getNewSession());
 	}
 
 	@Override
@@ -37,6 +42,10 @@ public class PharmacyWelcome extends GenericWelcome {
 
 	@Override
 	protected void createCompOptions(Composite compOptions) {
+
+		if (currentUser == null) {
+			this.currentUser = LocalObjects.getUser(HibernateUtil.getNewSession());
+		}
 		// generalAdmin
 		Label lblPicGeneralAdmin = new Label(compOptions, SWT.NONE);
 		lblPicGeneralAdmin.setBounds(new Rectangle(40, 0, 50, 43));
@@ -65,24 +74,24 @@ public class PharmacyWelcome extends GenericWelcome {
 			}
 		});
 		
-		if (getUserPermission() == 'A') {
-			lblPicGeneralAdmin.setEnabled(true); 
-			btnGeneralAdmin.setEnabled(true); 
+		if (currentUser.isAdmin()) {
+			lblPicGeneralAdmin.setEnabled(true);
+			btnGeneralAdmin.setEnabled(true);
+		}else {
+			lblPicGeneralAdmin.setEnabled(false);
+			btnGeneralAdmin.setEnabled(false);
 		}
 		
 		// patientAdmin
 		Label lblPicPatientAdmin = new Label(compOptions, SWT.NONE);
 		lblPicPatientAdmin.setBounds(new Rectangle(200, 0, 50, 43));
-		lblPicPatientAdmin.setImage(ResourceUtils
-				.getImage(iDartImage.PATIENTADMIN));
+		lblPicPatientAdmin.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
 		lblPicPatientAdmin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
 				new PatientAdmin(shell);
 			}
 		});
-		
-		
 
 		Button btnPatientAdmin = new Button(compOptions, SWT.NONE);
 		btnPatientAdmin.setData(iDartProperties.SWTBOT_KEY, Screens.PATIENT_ADMIN.getAccessButtonId());
@@ -98,6 +107,14 @@ public class PharmacyWelcome extends GenericWelcome {
 				new PatientAdmin(shell);
 			}
 		});
+
+		if (currentUser.isPermitedTo(SystemFunctionality.PACIENT_ADMINISTRATION)) {
+			lblPicPatientAdmin.setEnabled(true);
+			btnPatientAdmin.setEnabled(true);
+		}else {
+			lblPicPatientAdmin.setEnabled(false);
+			btnPatientAdmin.setEnabled(false);
+		}
 
 		// stockControl
 		Label lblPicStockControl = new Label(compOptions, SWT.NONE);
@@ -125,6 +142,14 @@ public class PharmacyWelcome extends GenericWelcome {
 			}
 		});
 
+		if (currentUser.isPermitedTo(SystemFunctionality.STOCK_ADMINISTRATION)) {
+			lblPicStockControl.setEnabled(true);
+			btnStockControl.setEnabled(true);
+		}else {
+			lblPicStockControl.setEnabled(false);
+			btnStockControl.setEnabled(false);
+		}
+
 		// reports
 		Label lblPicReports = new Label(compOptions, SWT.NONE);
 		lblPicReports.setBounds(new Rectangle(520, 0, 50, 43));
@@ -151,9 +176,14 @@ public class PharmacyWelcome extends GenericWelcome {
 				new NewReports(shell);
 			}
 		});
+
+		if (currentUser.isPermitedTo(SystemFunctionality.REPORTS)) {
+			lblPicReports.setEnabled(true);
+			btnReports.setEnabled(true);
+		}else {
+			lblPicReports.setEnabled(false);
+			btnReports.setEnabled(false);
+		}
 	}
-	
-    public char getUserPermission() {
-        return LocalObjects.getUser(HibernateUtil.getNewSession()).getPermission();
-    }
+
 }

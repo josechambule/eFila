@@ -76,7 +76,6 @@ import org.celllife.idart.print.label.PatientInfoLabel;
 import org.celllife.idart.print.label.PrintLabel;
 import org.celllife.idart.rest.utils.RestClient;
 import org.celllife.idart.rest.utils.RestUtils;
-import org.celllife.idart.start.PharmacyApplication;
 import org.celllife.mobilisr.client.exception.RestCommandException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -93,7 +92,6 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -1819,9 +1817,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         cmbClinic.setEnabled(e != null && e.isOpen());
         cmbClinic.setBackground(myColour);
 
-        if (LocalObjects.getUser(getHSession()).getRole() == null
-                || LocalObjects.getUser(getHSession()).getRole().isEmpty()
-                || LocalObjects.getUser(getHSession()).getRole().equalsIgnoreCase("Pharmacist")) {
+        if (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoleSet()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST)) {
             btnUpdatePrescription.setEnabled(enable);
             lblPicUpdatePrescription.setEnabled(enable);
         }
@@ -2049,9 +2045,7 @@ public class AddPatientOpenMrs extends GenericFormGui implements iDARTChangeList
         compUpdatePrescription = new Composite(getShell(), SWT.NONE);
         compUpdatePrescription.setBounds(new Rectangle(151, 560, 605, 50));
 
-        boolean enableUpdatePrescrition = LocalObjects.getUser(getHSession()).getRole().equalsIgnoreCase("Pharmacist")
-                || LocalObjects.getUser(getHSession()).getRole().isEmpty()
-                || LocalObjects.getUser(getHSession()).getRole() == null;
+        boolean enableUpdatePrescrition = (!iDARTUtil.arrayHasElements(LocalObjects.getUser(getHSession()).getRoleSet()) || LocalObjects.getUser(getHSession()).hasRole(Role.PHARMACIST));
 
         lblPicUpdatePrescription = new Label(compUpdatePrescription, SWT.NONE);
         lblPicUpdatePrescription.setBounds(new Rectangle(16, 3, 50, 43));

@@ -604,11 +604,9 @@ public class AdministrationManager {
      * @param clinics  Set<Clinics>
      * @return boolean
      */
-    public static boolean saveUser(Session session, String userName,
-                                   String password, String role, Set<Clinic> clinics, char tipo_user) {
+    public static boolean saveUser(Session session, String userName, String password, Set<Role> roles, Set<Clinic> clinics) {
         if (!userExists(session, userName)) {
-            User user = new User(userName, password, role, 'T',
-                    clinics, tipo_user);
+            User user = new User(userName, password, 'T', roles, clinics);
             session.save(user);
 
             // log the transaction
@@ -730,6 +728,16 @@ public class AdministrationManager {
                 .setString("theUserName", username).setMaxResults(1)
                 .uniqueResult();
         return user;
+    }
+
+    public static Role getRoleByCode(Session sess, String code) throws HibernateException {
+
+        Role role = (Role) sess
+                .createQuery(
+                        "select role from Role as role where role.code = :code")
+                .setString("code", code).setMaxResults(1)
+                .uniqueResult();
+        return role;
     }
 
     /**
