@@ -1269,9 +1269,9 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
         } else {
 
             txtPatientId.setText(localPatient.getPatientId());
-            txtOpenmrsuuid.setText(localPatient.getUuidopenmrs());
 
             if (!cmbEpisodeStartReason.getText().contains("nsito") && !cmbEpisodeStartReason.getText().contains("nidade"))
+
                 if (checkOpenmrs) {
                     try {
                         if (getServerStatus(JdbcProperties.urlBase).contains("Red")) {
@@ -1313,6 +1313,7 @@ public class AddPatient extends GenericFormGui implements iDARTChangeListener {
                             }
 
                             localPatient.setSex(cmbSex.getText().charAt(0));
+                            txtOpenmrsuuid.setText(localPatient.getUuidopenmrs());
 
                             String birthDate = jsonObject.getString("birthdate").trim();
 

@@ -145,8 +145,8 @@ public class LivroRegistoDiario extends GenericReportGui {
             return;
         }
 
-        if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
-                chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
+        if (!chkBtnInicio.getSelection() && !chkBtnManutencao.getSelection() && !chkBtnAlteraccao.getSelection() &&
+                !chkBtnTransfereDe.getSelection() && !chkBtnReinicio.getSelection()) {
             showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv", "Seleccione pelo menos um tipo TARV.");
             return;
 
@@ -186,8 +186,8 @@ public class LivroRegistoDiario extends GenericReportGui {
             return;
         }
 
-        if (chkBtnInicio.getSelection() == false && chkBtnManutencao.getSelection() == false && chkBtnAlteraccao.getSelection() == false &&
-                chkBtnTransfereDe.getSelection() == false && chkBtnReinicio.getSelection() == false) {
+        if (!chkBtnInicio.getSelection() && !chkBtnManutencao.getSelection() && !chkBtnAlteraccao.getSelection() &&
+                !chkBtnTransfereDe.getSelection() && !chkBtnReinicio.getSelection()) {
             showMessage(MessageDialog.ERROR, "Seleccionar Tipo Tarv", "Seleccione pelo menos um tipo TARV.");
             return;
 
