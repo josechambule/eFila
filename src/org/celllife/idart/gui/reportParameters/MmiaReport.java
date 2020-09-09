@@ -150,7 +150,7 @@ public class MmiaReport extends GenericReportGui {
 		lblInstructions = new Label(grpDateInfo, SWT.NONE);
 		lblInstructions.setBounds(new org.eclipse.swt.graphics.Rectangle(60,
 				20, 160, 20));
-		lblInstructions.setText("Select a Month and Year:");
+		lblInstructions.setText("Seleccione o período:");
 		lblInstructions.setFont(ResourceUtils.getFont(iDartFont.VERASANS_8));
 
 		cmbMonth = new CCombo(grpDateInfo, SWT.BORDER);

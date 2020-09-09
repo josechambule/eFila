@@ -41,11 +41,6 @@ UPDATE clinic set uuid = uuid_generate_v1() where mainclinic = true and (uuid is
 UPDATE regimeterapeutico set regimeesquema = regimeesquema || '_' where active = false;
 -- UPDATE drug set active = false, name = name || ' (Inactivo)', atccode_id = '[inactivo]' where atccode_id is null or atccode_id = '';
 DELETE FROM simpledomain WHERE description  = 'pharmacy_type';
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Unidade Sanitária');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Comunitária');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Privada');
-INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','.Outro');
-
 UPDATE regimeterapeutico SET regimenomeespecificado = 'cf05347e-063c-4896-91a4-097741cf6be6' WHERE regimeesquema LIKE 'ABC+3TC+LPV/r%';
 
 -- update clinic set clinicname = 'CS Chabeco' where mainclinic = true;
@@ -147,6 +142,13 @@ CREATE TABLE IF NOT EXISTS rolefunction (
 	functionid int4 NOT NULL,
 	CONSTRAINT rolefunction_fk FOREIGN KEY (roleid) REFERENCES "role"(id) ON DELETE CASCADE,
 	CONSTRAINT rolefunction_fk_1 FOREIGN KEY (functionid) REFERENCES systemfunctionality(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_role (
+	roleid int4 NOT NULL,
+	userid int4 NOT NULL,
+	CONSTRAINT user_role_fk FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT user_role_fk_1 FOREIGN KEY (roleid) REFERENCES public."role"(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO country (id, code, name) VALUES (1, '01', 'Moçambique');
@@ -337,5 +339,23 @@ INSERT INTO district (id, code, name, province ) VALUES (160, '13', 'Muembe', 11
 INSERT INTO district (id, code, name, province ) VALUES (161, '14', 'Ngauma', 11);
 INSERT INTO district (id, code, name, province ) VALUES (162, '15', 'Nipepe', 11);
 INSERT INTO district (id, code, name, province ) VALUES (163, '16', 'Sanga', 11);
+
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Unidade Sanitária');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Comunitária');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','Privada');
+INSERT INTO simpledomain VALUES (NEXTVAL('hibernate_sequence')::integer,'pharmacy_type','pharmacy_type','.Outro');
+
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Administrador','ADMIN');
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Técnico de Farmácia','PHARMACIST');
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Administrativo de Farmácia','PHARMACISTADMIN');
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Digitador','CLERK');
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Estagiários','STUDYWORKER');
+INSERT INTO "role" (id, description, code) values ((select max(id)+1 from "role") ,'Monitoria e Avaliação','MEA');
+INSERT INTO user_role (userid, roleid) values (select user.id, role.id
+                                               from user
+                                               inner join "role" on user.role = "role".description
+                                               where not exists (select * from user_role whre userid = user.id));
+ALTER TABLE users DROP COLUMN "role";
+ALTER TABLE users DROP COLUMN "permission";
 
 
