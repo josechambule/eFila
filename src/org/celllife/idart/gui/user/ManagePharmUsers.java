@@ -37,11 +37,7 @@ import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartColor;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
-import org.celllife.idart.messages.Messages;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -725,7 +721,7 @@ if(!localUser.isAdmin()){
 			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.STUDYWORKER));
 		}else if(rdBtnReports !=null && rdBtnReports.getSelection()){
 			roles.clear();
-			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.REPORTSWORKER));
+			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.MEA));
 		}else {
 			roles.clear();
 			roles.add(AdministrationManager.getRoleByCode(getHSession(), Role.PHARMACIST));

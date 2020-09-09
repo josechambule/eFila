@@ -10,6 +10,7 @@ import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
@@ -50,14 +51,14 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
     @Override
     protected boolean fieldsOk() {
-        if (txtFuncionality.getText() == null){
+        if (!iDARTUtil.stringHasValue(txtFuncionality.getText())){
             MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
             m.setText("Preenchimento dos campos");
             m.setMessage("O campo [Funcionalidade] deve estar preenchido.");
             m.open();
             return false;
 
-        }else if (txtCodigo.getText() == null ){
+        }else if (!iDARTUtil.stringHasValue(txtCodigo.getText())){
             MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
             m.setText("Preenchimento dos campos");
             m.setMessage("O campo [Código] deve estar preenchido.");
@@ -229,16 +230,17 @@ public class SystemFunctionalityManager extends GenericFormGui {
 
     private void cmdSearchWidgetSelected() {
 
+        clearForm();
+
         Search sysFunctionalitySearch = new Search(getHSession(), getShell(), CommonObjects.FUNCTIONALITY);
 
-        if (sysFunctionalitySearch.getValueSelected() != null) {
+        if (sysFunctionalitySearch.getValueSelected() != null && iDARTUtil.stringHasValue(sysFunctionalitySearch.getValueSelected()[0])) {
 
             currFunctionality = AdministrationManager.getFunctionalityByDescription(getHSession(), sysFunctionalitySearch.getValueSelected()[0]);
 
             txtFuncionality.setText(currFunctionality.getDescription());
             txtCodigo.setText(currFunctionality.getCode());
 
-            btnSearch.setEnabled(false);
 
             enableFields(true);
 

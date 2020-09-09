@@ -74,16 +74,18 @@ public class PharmacyWelcome extends GenericWelcome {
 			}
 		});
 		
-		if (currentUser.isPermitedTo(SystemFunctionality.ADMINISTRATION)) {
+		if (currentUser.isAdmin()) {
 			lblPicGeneralAdmin.setEnabled(true);
 			btnGeneralAdmin.setEnabled(true);
+		}else {
+			lblPicGeneralAdmin.setEnabled(false);
+			btnGeneralAdmin.setEnabled(false);
 		}
 		
 		// patientAdmin
 		Label lblPicPatientAdmin = new Label(compOptions, SWT.NONE);
 		lblPicPatientAdmin.setBounds(new Rectangle(200, 0, 50, 43));
-		lblPicPatientAdmin.setImage(ResourceUtils
-				.getImage(iDartImage.PATIENTADMIN));
+		lblPicPatientAdmin.setImage(ResourceUtils.getImage(iDartImage.PATIENTADMIN));
 		lblPicPatientAdmin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent mu) {
@@ -109,6 +111,9 @@ public class PharmacyWelcome extends GenericWelcome {
 		if (currentUser.isPermitedTo(SystemFunctionality.PACIENT_ADMINISTRATION)) {
 			lblPicPatientAdmin.setEnabled(true);
 			btnPatientAdmin.setEnabled(true);
+		}else {
+			lblPicPatientAdmin.setEnabled(false);
+			btnPatientAdmin.setEnabled(false);
 		}
 
 		// stockControl
@@ -140,6 +145,9 @@ public class PharmacyWelcome extends GenericWelcome {
 		if (currentUser.isPermitedTo(SystemFunctionality.STOCK_ADMINISTRATION)) {
 			lblPicStockControl.setEnabled(true);
 			btnStockControl.setEnabled(true);
+		}else {
+			lblPicStockControl.setEnabled(false);
+			btnStockControl.setEnabled(false);
 		}
 
 		// reports
@@ -172,6 +180,9 @@ public class PharmacyWelcome extends GenericWelcome {
 		if (currentUser.isPermitedTo(SystemFunctionality.REPORTS)) {
 			lblPicReports.setEnabled(true);
 			btnReports.setEnabled(true);
+		}else {
+			lblPicReports.setEnabled(false);
+			btnReports.setEnabled(false);
 		}
 	}
 

@@ -1,7 +1,6 @@
 package org.celllife.idart.database.hibernate;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -10,8 +9,8 @@ public class Role implements Comparable<Role>{
 
     public static final String PHARMACIST = "PHARMACIST";
     public static final String STUDYWORKER = "STUDYWORKER";
-    public static final String REPORTSWORKER = "REPORTSWORKER";
-    public static final String ADMINISTRATOR = "ADMINISTRATOR";
+    public static final String MEA = "MEA";
+    public static final String ADMINISTRATOR = "ADMIN";
 
     @Id
     @GeneratedValue
@@ -118,6 +117,6 @@ public class Role implements Comparable<Role>{
     }
 
     public boolean isReportWorker(){
-        return this.code.equals(REPORTSWORKER);
+        return this.code.equals(MEA);
     }
 }

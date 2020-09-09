@@ -584,4 +584,8 @@ public class iDARTUtil {
 		return array != null && array.size() > 0;
 	}
 
+	public static boolean stringHasValue(String string){
+		return string != null && !string.isEmpty() && string.length() > 0;
+	}
+
 }

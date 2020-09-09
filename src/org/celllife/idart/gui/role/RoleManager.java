@@ -13,6 +13,7 @@ import org.celllife.idart.gui.search.Search;
 import org.celllife.idart.gui.utils.ResourceUtils;
 import org.celllife.idart.gui.utils.iDartFont;
 import org.celllife.idart.gui.utils.iDartImage;
+import org.celllife.idart.misc.iDARTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
@@ -82,14 +83,14 @@ public class RoleManager extends GenericFormGui {
     @Override
     protected boolean fieldsOk() {
 
-        if (txtRole.getText() == null){
+        if (!iDARTUtil.stringHasValue(txtRole.getText())){
             MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
             m.setText("Preenchimento dos campos");
             m.setMessage("O campo [Perfil] deve estar preenchido.");
             m.open();
             return false;
 
-        }else if (txtCodigo.getText() == null ){
+        }else if (!iDARTUtil.stringHasValue(txtCodigo.getText())){
             MessageBox m = new MessageBox(getShell(), SWT.OK | SWT.ICON_WARNING);
             m.setText("Preenchimento dos campos");
             m.setMessage("O campo [Código] deve estar preenchido.");
@@ -234,8 +235,6 @@ public class RoleManager extends GenericFormGui {
         grpRoleInfo = new Group(getShell(), SWT.NONE);
         grpRoleInfo.setBounds(new Rectangle(100, 110, 600, 280));
 
-
-
             // lblUser & txtUser
         Label lblRole = new Label(grpRoleInfo, SWT.NONE);
         lblRole.setBounds(new Rectangle(30, 20, 50, 20));
@@ -288,6 +287,8 @@ public class RoleManager extends GenericFormGui {
 
     private void cmdSearchWidgetSelected() {
 
+        clearForm();
+
         Search roleSearch = new Search(getHSession(), getShell(), CommonObjects.ROLE);
 
         if (roleSearch.getValueSelected() != null) {
@@ -296,7 +297,6 @@ public class RoleManager extends GenericFormGui {
 
             txtRole.setText(currentRole.getDescription());
             txtCodigo.setText(currentRole.getCode());
-            btnSearch.setEnabled(false);
 
             for (SystemFunctionality functionality : currentRole.getSysFunctions()){
                 for (TableItem ti : tblFunctionalities.getItems()) {
@@ -306,7 +306,6 @@ public class RoleManager extends GenericFormGui {
                 }
             }
 
-
             enableFields(true);
 
             btnSave.setEnabled(true);
@@ -315,7 +314,6 @@ public class RoleManager extends GenericFormGui {
             btnSearch.setEnabled(true);
 
         }
-
     }
 
     private void populateFunctionalityList() {
@@ -323,11 +321,6 @@ public class RoleManager extends GenericFormGui {
             TableItem ti = new TableItem(tblFunctionalities, SWT.None);
             ti.setText(0, functionality.getDescription());
             ti.setData(functionality);
-
-            /*if ((!isAddNotUpdate) && localUser.getClinics().contains(clinic)) {
-                ti.setChecked(true);
-            } */
-
         }
     }
 
